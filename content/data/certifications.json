@@ -1,0 +1,86 @@
+{
+  "title": "Certification Guide",
+  "reviewed": "2026-08-31",
+  "reviewCycleDays": 180,
+  "summary": "Four logos on four bottles can mean four different things. This is what each certification actually verifies, what it does not, and where the phrase ‘cruelty-free’ carries no legal weight at all.",
+  "schemes": [
+    {
+      "id": "leaping-bunny",
+      "name": "Leaping Bunny",
+      "operator": "Cruelty Free International and the Coalition for Consumer Information on Cosmetics",
+      "url": "https://www.leapingbunny.org/",
+      "strength": "Strongest",
+      "verifies": [
+        "No animal testing by the company, its suppliers, or any third party acting on its behalf",
+        "A fixed cut-off date after which no animal testing may occur anywhere in the supply chain",
+        "Written declarations obtained from every ingredient supplier",
+        "A supplier monitoring system, re-committed to annually",
+        "Independent audits available to the certifying body"
+      ],
+      "doesNotVerify": [
+        "That the product is vegan — Leaping Bunny concerns testing, not ingredients",
+        "That the parent company applies the same standard across its other brands"
+      ],
+      "note": "The fixed cut-off date is the mechanism that distinguishes this scheme. A company cannot certify a product, then later commission testing on a reformulated ingredient and keep the mark."
+    },
+    {
+      "id": "peta",
+      "name": "PETA Beauty Without Bunnies",
+      "operator": "People for the Ethical Treatment of Animals",
+      "url": "https://crueltyfree.peta.org/",
+      "strength": "Moderate",
+      "verifies": [
+        "A signed statement of assurance from the company covering itself and its ingredient suppliers",
+        "A commitment not to conduct or commission animal testing anywhere in the world",
+        "Two published categories: ‘Animal Test-Free’ and ‘Animal Test-Free and Vegan’"
+      ],
+      "doesNotVerify": [
+        "Independent audit of the declaration — the scheme is documentation-based",
+        "Supplier-level evidence beyond the company's own assurance"
+      ],
+      "note": "A larger database with faster listing, resting on company attestation rather than audit. That is a real difference in evidential weight, not a reason to dismiss it."
+    },
+    {
+      "id": "vegan",
+      "name": "Vegan trademarks",
+      "operator": "The Vegan Society; Vegan Action / Certified Vegan; others",
+      "url": "https://www.vegansociety.com/your-business/vegan-trademark",
+      "strength": "Different question entirely",
+      "verifies": [
+        "No animal-derived ingredients in the formulation",
+        "In most schemes, no animal testing commissioned by the company"
+      ],
+      "doesNotVerify": [
+        "The supply-chain testing position with the rigour of a dedicated testing scheme",
+        "That no animal testing occurred at ingredient level historically"
+      ],
+      "note": "The most common point of confusion on a shelf. Vegan is a claim about what is in the bottle. Cruelty-free is a claim about how what is in the bottle was assessed. A product can be either without being both."
+    },
+    {
+      "id": "self-declared",
+      "name": "Uncertified ‘not tested on animals’ claims",
+      "operator": "The brand itself",
+      "url": "",
+      "strength": "No independent verification",
+      "verifies": [
+        "Nothing that has been checked by anyone outside the company"
+      ],
+      "doesNotVerify": [
+        "Whether the claim covers ingredients or only the finished product",
+        "Whether it covers suppliers and contract laboratories",
+        "Whether testing occurred before an unstated cut-off date",
+        "Whether testing is commissioned in markets that require it"
+      ],
+      "note": "In many markets this phrasing is unregulated. The most common construction — literally true, materially incomplete — is a finished-product claim on a product whose ingredients were animal-tested by a supplier. Canada's 2023 reform is notable precisely because it made false cruelty-free claims actionable."
+    }
+  ],
+  "questions": {
+    "title": "Four questions that separate a claim from a commitment",
+    "items": [
+      "Does the claim cover ingredients, or only the finished product?",
+      "Does it extend to suppliers and contract laboratories, or stop at the company's own facilities?",
+      "Is there a fixed cut-off date, or is the claim written in the present tense only?",
+      "Does the company sell in markets where an authority may require testing — and if so, under what exemption?"
+    ]
+  }
+}

@@ -1,0 +1,219 @@
+{
+  "name": "FERAL FEMME",
+  "nameParts": { "primary": "FERAL", "secondary": "FEMME." },
+  "tagline": "Educate. Expose. Empower.",
+  "motto": "Knowledge Creates Change",
+  "descriptor": "Research-based awareness · Educational activism platform",
+  "description": "FERAL FEMME is an educational activism platform that examines animal testing in the skincare and beauty industry through calm, research-based awareness. We publish primary-source research, plain-language explainers, and a public regulation tracker.",
+  "url": "https://feral-femme.co",
+  "locale": "en-GB",
+  "established": 2024,
+  "email": "hello@feral-femme.co",
+  "pressEmail": "press@feral-femme.co",
+  "educationEmail": "education@feral-femme.co",
+
+  "social": {
+    "instagram": "https://www.instagram.com/feralfemme.co",
+    "instagramHandle": "@feralfemme.co"
+  },
+
+  "pillars": [
+    {
+      "number": "01",
+      "title": "Research",
+      "summary": "We read the regulation, the test guidelines, and the peer-reviewed literature — then cite them in full.",
+      "detail": "Every claim on this platform is traceable to a primary source: a regulation, an OECD test guideline, a validation report, or a published study. Where evidence is contested, we say so."
+    },
+    {
+      "number": "02",
+      "title": "Educate",
+      "summary": "We translate regulatory language into plain English without flattening its complexity.",
+      "detail": "Legislation is written to be precise, not to be understood. Our explainers keep the precision and remove the barrier, so that a shopper, a student, and a policy researcher can all use the same page."
+    },
+    {
+      "number": "03",
+      "title": "Empower",
+      "summary": "Understanding a system is the precondition for changing it.",
+      "detail": "We do not tell people what to buy. We give them the structure of the industry, the meaning of each certification, and the questions worth asking — and let them decide."
+    }
+  ],
+
+  "nav": [
+    { "label": "Research", "href": "/research/" },
+    { "label": "Learn", "href": "/learn/" },
+    { "label": "Regulation", "href": "/regulation/" },
+    { "label": "Methods", "href": "/methods/" },
+    { "label": "Glossary", "href": "/glossary/" },
+    { "label": "About", "href": "/about/" }
+  ],
+
+  "footerNav": [
+    {
+      "title": "Platform",
+      "links": [
+        { "label": "Research Index", "href": "/research/" },
+        { "label": "Learning Modules", "href": "/learn/" },
+        { "label": "Regulation Tracker", "href": "/regulation/" },
+        { "label": "Non-Animal Methods", "href": "/methods/" },
+        { "label": "Certification Guide", "href": "/certifications/" },
+        { "label": "Glossary", "href": "/glossary/" }
+      ]
+    },
+    {
+      "title": "Organisation",
+      "links": [
+        { "label": "About", "href": "/about/" },
+        { "label": "Editorial Standards", "href": "/editorial-standards/" },
+        { "label": "Funding & Independence", "href": "/funding/" },
+        { "label": "Corrections", "href": "/corrections/" },
+        { "label": "Contact", "href": "/contact/" }
+      ]
+    },
+    {
+      "title": "Participate",
+      "links": [
+        { "label": "Support the Work", "href": "/support/" },
+        { "label": "Educational Licensing", "href": "/licensing/" },
+        { "label": "The Dispatch", "href": "/dispatch/" },
+        { "label": "Take Action", "href": "/act/" }
+      ]
+    },
+    {
+      "title": "Legal",
+      "links": [
+        { "label": "Privacy", "href": "/privacy/" },
+        { "label": "Terms", "href": "/terms/" },
+        { "label": "Accessibility", "href": "/accessibility/" },
+        { "label": "RSS Feed", "href": "/feed.xml" }
+      ]
+    }
+  ],
+
+  "newsletter": {
+    "name": "The Dispatch",
+    "cadence": "Monthly",
+    "summary": "One monthly briefing on regulatory movement, method validation, and industry disclosure. No promotions. No affiliate links. Unsubscribe in one click.",
+    "action": "",
+    "note": "Set `newsletter.action` in content/site.json to your provider's form endpoint (Buttondown, ConvertKit, MailerLite, Listmonk). Until then the form degrades to a mailto: link."
+  },
+
+  "support": {
+    "headline": "This platform is funded by its readers",
+    "summary": "FERAL FEMME takes no money from cosmetics manufacturers, retailers, or certification bodies. It carries no advertising and no affiliate links. That independence is only possible because readers pay for it directly.",
+    "currency": "GBP",
+    "currencySymbol": "£",
+    "tiers": [
+      {
+        "id": "reader",
+        "name": "Reader",
+        "price": 5,
+        "period": "month",
+        "summary": "Keeps the archive open and free for everyone.",
+        "benefits": [
+          "The Dispatch, delivered monthly",
+          "Early access to new research before publication",
+          "Named in the annual funding report (optional)"
+        ],
+        "link": ""
+      },
+      {
+        "id": "researcher",
+        "name": "Researcher",
+        "price": 15,
+        "period": "month",
+        "featured": true,
+        "summary": "Funds a working day of primary-source research each quarter.",
+        "benefits": [
+          "Everything in Reader",
+          "Full citation exports (BibTeX / RIS) for every study",
+          "Quarterly regulation digest with change tracking",
+          "Access to working notes and source documents"
+        ],
+        "link": ""
+      },
+      {
+        "id": "institution",
+        "name": "Institution",
+        "price": 75,
+        "period": "month",
+        "summary": "For libraries, departments, NGOs, and newsrooms.",
+        "benefits": [
+          "Everything in Researcher",
+          "Site-wide licence for classroom and internal use",
+          "Slide decks and lesson plans for every module",
+          "Direct line for research and fact-checking requests"
+        ],
+        "link": ""
+      }
+    ],
+    "oneOff": {
+      "label": "One-off contribution",
+      "summary": "A single contribution of any size, with no ongoing commitment.",
+      "link": ""
+    },
+    "note": "Set each tier's `link` to a Stripe Payment Link, Ko-fi, or Open Collective URL. Empty links render as an enquiry mailto: so the page never ships a dead button."
+  },
+
+  "licensing": {
+    "summary": "Schools, universities, and organisations can license the FERAL FEMME curriculum for teaching and internal training.",
+    "packages": [
+      {
+        "name": "Classroom",
+        "price": "£180 / year",
+        "audience": "Single school, college, or department",
+        "includes": [
+          "All learning modules as editable slide decks",
+          "Lesson plans with learning outcomes and assessment prompts",
+          "Printable source packs for seminar use",
+          "Annual content refresh"
+        ]
+      },
+      {
+        "name": "Institution",
+        "price": "£950 / year",
+        "audience": "University, NGO, or multi-site organisation",
+        "includes": [
+          "Everything in Classroom, licensed site-wide",
+          "Regulation tracker data export (CSV / JSON)",
+          "Two live sessions per year, remote",
+          "Co-branded module front matter"
+        ]
+      },
+      {
+        "name": "Commissioned Research",
+        "price": "On enquiry",
+        "audience": "Policy bodies, newsrooms, and funders",
+        "includes": [
+          "Scoped literature and regulation review",
+          "Written report with full citation apparatus",
+          "Published openly unless commercially confidential",
+          "Funding source disclosed on publication"
+        ]
+      }
+    ]
+  },
+
+  "brand": {
+    "colours": {
+      "blush": "#EFD8D8",
+      "crimson": "#9B0000",
+      "black": "#0A0A0A",
+      "white": "#FDFCFC"
+    },
+    "proportions": "60% Soft Blush · 25% Deep Crimson · 10% Pure Black · 5% Clean White",
+    "typography": {
+      "display": "Cormorant Garamond",
+      "body": "Montserrat"
+    }
+  },
+
+  "analytics": {
+    "provider": "",
+    "domain": "feral-femme.co",
+    "note": "Set provider to 'plausible' or 'umami' plus `src` to enable a cookieless, GDPR-friendly analytics script. Left empty, no third-party script is emitted at all."
+  },
+
+  "search": {
+    "enabled": true
+  }
+}
