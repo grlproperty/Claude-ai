@@ -13,7 +13,8 @@
     "new": "node scripts/new-entry.mjs",
     "social": "node scripts/social-kit.mjs",
     "check": "node scripts/check.mjs",
-    "ci": "npm run build && npm run check"
+    "ci": "npm run build && npm run check",
+    "instagram": "node scripts/pull-instagram.mjs"
   },
   "devDependencies": {
     "gray-matter": "^4.0.3",

@@ -144,10 +144,36 @@ frame, and going offscreen or backgrounding the tab pauses the loop.
 
 ### Imagery
 
-This build ships **no photography**. The archive's editorial imagery is
-AI-directed work by the founder and is not bundled here; archive plates render
-typographically instead. Every visual on the site is generated at build time or
-drawn in the browser.
+This build ships **no photography**. Archive plates render typographically, and
+every visual on the site is generated at build time or drawn in the browser.
+
+## Pulling the Instagram archive
+
+`npm run instagram` fetches the visual essays from the `instagram` connector
+(the Graph-API-backed one), downloads each image, writes WebP derivatives at two
+widths graded to the brand's photography direction, and records the posts in
+`content/data/instagram.json`. The archive page then leads with a gallery; until
+the first pull it stays typographic, and the build never fails for the absence.
+
+```bash
+WINDSOR_API_KEY=... npm run instagram          # fetch, download, optimise
+npm run instagram -- --dry-run                 # list what would be fetched
+npm run instagram -- --limit 20                # only the newest 20
+npm run instagram                              # re-optimise from cached data
+```
+
+Get the key from the Windsor dashboard under Settings → API. It is only needed
+to *fetch*; the derivatives are committed, so the site build and CI never touch
+the network or need the credential.
+
+**Instagram's `media_url` values are signed and expire within days**, which is
+why the images are downloaded and committed rather than hot-linked. Re-running
+is cheap: anything already on disk is skipped.
+
+**If the pull reports a plan error**, more accounts are connected to Windsor than
+its plan allows, and it returns the error text in place of every field. Keep the
+`instagram` account and disconnect the others at
+https://onboard.windsor.ai/, then run it again.
 
 Regenerating either font set is a one-off, and the output is committed so the
 build stays hermetic:

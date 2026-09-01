@@ -159,6 +159,11 @@ async function main() {
     library: await readJson(join(CONTENT, 'data/library.json')),
     archive: await readJson(join(CONTENT, 'data/archive.json')),
     sources: await readJson(join(CONTENT, 'data/sources.json')),
+    // Written by `npm run instagram`. Absent until the first pull, and the
+    // whole feed simply does not render rather than the build failing.
+    instagram: existsSync(join(CONTENT, 'data/instagram.json'))
+      ? await readJson(join(CONTENT, 'data/instagram.json'))
+      : null,
   };
 
   const notes = await loadCollection(join(CONTENT, 'field-notes'), '/field-notes/');
@@ -210,7 +215,7 @@ async function main() {
   await writePage('/library/', renderLibrary({ site, data: data.library }));
   track('/library/', { priority: '0.8' });
 
-  await writePage('/archive/', renderArchive({ site, data: data.archive }));
+  await writePage('/archive/', renderArchive({ site, data: data.archive, instagram: data.instagram }));
   track('/archive/', { priority: '0.8' });
 
   await writePage('/sources/', renderSources({ site, data: data.sources }));

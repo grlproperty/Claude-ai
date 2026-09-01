@@ -3,11 +3,11 @@ import { label, sectionHead, supportBanner, note, reviewStamp } from '../templat
 import { esc, typo, slugify, isoDate } from '../lib/util.mjs';
 
 /** Every decoder shares the same shell: search box, category chips, filtered list. */
-function decoderShell({ site, data, path, description, categories, items, footer = '', scripts = true }) {
-  const body = `
+function decoderShell({ site, data, path, description, categories, items, footer = '', lead = '', eyebrow = 'Free tool', scripts = true }) {
+  const body = `${lead}
 <section class="section--tight" style="padding-top:clamp(2.5rem,6vw,5rem);">
   <div class="wrap">
-    ${sectionHead({ eyebrow: 'Free tool', title: data.title, lede: data.summary, wide: true, level: 1 })}
+    ${sectionHead({ eyebrow, title: data.title, lede: data.summary, wide: true, level: 1 })}
 
     <div class="search">
       <label class="visually-hidden" for="q">Search ${esc(data.title.toLowerCase())}</label>
@@ -303,10 +303,16 @@ export function renderLibrary({ site, data }) {
       'The investigations, databases, and reports FERAL FEMME returns to — every one public, published by a named organisation, and linked to its original.',
     categories,
     items,
+    eyebrow: 'Research',
   });
 }
 
-export function renderArchive({ site, data }) {
+/**
+ * The visual essay series. Until `npm run instagram` has run there are no
+ * images, and each entry renders as a typographic plate; once the pull has
+ * happened the same page leads with the gallery.
+ */
+export function renderArchive({ site, data, instagram }) {
   const items = data.entries.map((e) => ({
     html: `<article class="entry reveal" data-text="${esc(`${e.title} ${e.caption} ${e.lore} ${e.badge}`.toLowerCase())}">
       <div class="entry__head">
@@ -318,10 +324,40 @@ export function renderArchive({ site, data }) {
     </article>`,
   }));
 
-  const footer = `<div style="margin-top:2.5rem;">${note(
-    'On the imagery',
-    `<p class="mb-0">${typo(data.note)} The visual essays are AI-directed editorial work by ${site.founder.name} — conceptual frames, not documentary photography — and that is disclosed wherever they appear.</p>`
-  )}</div>`;
+  const hasImages = Boolean(instagram?.posts?.length);
+
+  const gallery = hasImages
+    ? `<section class="section--tight">
+        <div class="wrap">
+          ${sectionHead({
+            eyebrow: `From Instagram · ${esc(instagram.handle)}`,
+            title: 'The visual essays',
+            lede: instagram.summary,
+            wide: true,
+          })}
+          <div class="gallery">
+            ${instagram.posts
+              .map(
+                (post) => `<figure class="shot reveal">
+                  <a href="${esc(post.permalink)}" target="_blank" rel="noopener noreferrer">
+                    <img src="${esc(post.thumb)}" alt="${esc(post.title)}" loading="lazy" decoding="async"${
+                      post.width && post.height ? ` width="${post.width}" height="${post.height}"` : ''
+                    }>
+                  </a>
+                  <figcaption>${typo(post.title)}</figcaption>
+                </figure>`
+              )
+              .join('')}
+          </div>
+        </div>
+      </section>`
+    : '';
+
+  const imageryNote = hasImages
+    ? `<p class="mb-0">The visual essays are AI-directed editorial work by ${esc(site.founder.name)} — conceptual frames, not documentary photography — and that is disclosed wherever they appear.</p>`
+    : `<p class="mb-0">${typo(data.note)} The visual essays are AI-directed editorial work by ${esc(site.founder.name)} — conceptual frames, not documentary photography — and that is disclosed wherever they appear.</p>`;
+
+  const footer = `<div style="margin-top:2.5rem;">${note('On the imagery', imageryNote)}</div>`;
 
   return decoderShell({
     site,
@@ -332,6 +368,8 @@ export function renderArchive({ site, data }) {
     categories: [],
     items,
     footer,
+    lead: gallery,
+    eyebrow: 'The archive',
   });
 }
 
