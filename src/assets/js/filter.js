@@ -30,10 +30,15 @@
       }
     }
 
-    if (active.status !== 'all' && item.getAttribute('data-status') !== active.status) return false;
-    if (active.topic !== 'all' && item.getAttribute('data-topic') !== active.topic) return false;
-    if (active.category !== 'all' && item.getAttribute('data-category') !== active.category) return false;
-    if (active.region !== 'all' && item.getAttribute('data-region') !== active.region) return false;
+    // Attributes hold a space-separated token list: a field note can sit under
+    // several topics, and a library entry under several tags, so an exact
+    // string comparison would drop every multi-tag item from every filter.
+    for (var key in active) {
+      if (active[key] === 'all') continue;
+      var raw = item.getAttribute('data-' + key);
+      if (!raw) return false;
+      if (raw.split(/\s+/).indexOf(active[key]) === -1) return false;
+    }
 
     return true;
   }

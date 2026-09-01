@@ -1,86 +1,185 @@
 {
-  "title": "Certification Guide",
+  "title": "Certification Decoder",
+  "slug": "certifications",
   "reviewed": "2026-08-31",
   "reviewCycleDays": 180,
-  "summary": "Four logos on four bottles can mean four different things. This is what each certification actually verifies, what it does not, and where the phrase ‘cruelty-free’ carries no legal weight at all.",
+  "summary": "A label is only as good as the standard behind it. Search a certification, seal, or logo you have seen on a product and find out who runs it, what it actually verifies, and — just as importantly — what it does not.",
   "schemes": [
     {
-      "id": "leaping-bunny",
       "name": "Leaping Bunny",
-      "operator": "Cruelty Free International and the Coalition for Consumer Information on Cosmetics",
-      "url": "https://www.leapingbunny.org/",
-      "strength": "Strongest",
-      "verifies": [
-        "No animal testing by the company, its suppliers, or any third party acting on its behalf",
-        "A fixed cut-off date after which no animal testing may occur anywhere in the supply chain",
-        "Written declarations obtained from every ingredient supplier",
-        "A supplier monitoring system, re-committed to annually",
-        "Independent audits available to the certifying body"
-      ],
-      "doesNotVerify": [
-        "That the product is vegan — Leaping Bunny concerns testing, not ingredients",
-        "That the parent company applies the same standard across its other brands"
-      ],
-      "note": "The fixed cut-off date is the mechanism that distinguishes this scheme. A company cannot certify a product, then later commission testing on a reformulated ingredient and keep the mark."
+      "cat": "animals",
+      "runby": "Cruelty Free International",
+      "verifies": "No animal testing at any stage — finished product AND ingredients — by the brand, its suppliers, or third parties, with a fixed cut-off date and independent audits plus supplier monitoring.",
+      "notguarantee": "Does NOT mean vegan. A Leaping Bunny product can still contain animal-derived ingredients (beeswax, lanolin, carmine).",
+      "src": "Cruelty Free International / Leaping Bunny Programme."
     },
     {
-      "id": "peta",
-      "name": "PETA Beauty Without Bunnies",
-      "operator": "People for the Ethical Treatment of Animals",
-      "url": "https://crueltyfree.peta.org/",
-      "strength": "Moderate",
-      "verifies": [
-        "A signed statement of assurance from the company covering itself and its ingredient suppliers",
-        "A commitment not to conduct or commission animal testing anywhere in the world",
-        "Two published categories: ‘Animal Test-Free’ and ‘Animal Test-Free and Vegan’"
-      ],
-      "doesNotVerify": [
-        "Independent audit of the declaration — the scheme is documentation-based",
-        "Supplier-level evidence beyond the company's own assurance"
-      ],
-      "note": "A larger database with faster listing, resting on company attestation rather than audit. That is a real difference in evidential weight, not a reason to dismiss it."
+      "name": "PETA — Beauty Without Bunnies",
+      "cat": "animals",
+      "runby": "PETA",
+      "verifies": "Brand has signed a statement of assurance that it and its suppliers do not test on animals. Two logos exist: ‘Animal Test-Free’ and ‘Animal Test-Free & Vegan’.",
+      "notguarantee": "The standard base logo relies on a signed pledge rather than independent audit, and the test-free-only logo does not mean vegan.",
+      "src": "PETA Beauty Without Bunnies programme."
     },
     {
-      "id": "vegan",
-      "name": "Vegan trademarks",
-      "operator": "The Vegan Society; Vegan Action / Certified Vegan; others",
-      "url": "https://www.vegansociety.com/your-business/vegan-trademark",
-      "strength": "Different question entirely",
-      "verifies": [
-        "No animal-derived ingredients in the formulation",
-        "In most schemes, no animal testing commissioned by the company"
-      ],
-      "doesNotVerify": [
-        "The supply-chain testing position with the rigour of a dedicated testing scheme",
-        "That no animal testing occurred at ingredient level historically"
-      ],
-      "note": "The most common point of confusion on a shelf. Vegan is a claim about what is in the bottle. Cruelty-free is a claim about how what is in the bottle was assessed. A product can be either without being both."
+      "name": "Certified Vegan (Vegan Society / Vegan Action)",
+      "cat": "animals",
+      "runby": "The Vegan Society (UK) / Vegan Action (US)",
+      "verifies": "No animal-derived ingredients and no animal testing by the company. The sunflower trademark requires an application and ingredient review.",
+      "notguarantee": "‘Vegan’ alone (uncertified) is unregulated. Vegan does not automatically mean cruelty-free unless the certifier also covers testing.",
+      "src": "The Vegan Society Trademark standards."
     },
     {
-      "id": "self-declared",
-      "name": "Uncertified ‘not tested on animals’ claims",
-      "operator": "The brand itself",
-      "url": "",
-      "strength": "No independent verification",
-      "verifies": [
-        "Nothing that has been checked by anyone outside the company"
-      ],
-      "doesNotVerify": [
-        "Whether the claim covers ingredients or only the finished product",
-        "Whether it covers suppliers and contract laboratories",
-        "Whether testing occurred before an unstated cut-off date",
-        "Whether testing is commissioned in markets that require it"
-      ],
-      "note": "In many markets this phrasing is unregulated. The most common construction — literally true, materially incomplete — is a finished-product claim on a product whose ingredients were animal-tested by a supplier. Canada's 2023 reform is notable precisely because it made false cruelty-free claims actionable."
+      "name": "RSPCA Assured",
+      "cat": "animals",
+      "runby": "RSPCA (UK)",
+      "verifies": "Farm-animal welfare against RSPCA species-specific standards, covering the animal’s life, transport, and slaughter, with assessment visits.",
+      "notguarantee": "It is a welfare scheme, not organic or free-range by default, and does not mean the animal was not killed.",
+      "src": "RSPCA Assured scheme standards."
+    },
+    {
+      "name": "Certified Humane",
+      "cat": "animals",
+      "runby": "Humane Farm Animal Care",
+      "verifies": "Farm-animal welfare standards including space, no cages for hens, and no routine antibiotics, with annual third-party inspection.",
+      "notguarantee": "A welfare label, not a ‘no-slaughter’ label; standards differ from organic and from country-specific free-range definitions.",
+      "src": "Humane Farm Animal Care standards."
+    },
+    {
+      "name": "RSPO",
+      "cat": "climate",
+      "runby": "Roundtable on Sustainable Palm Oil",
+      "verifies": "Palm oil produced to RSPO criteria on a certified plantation. ‘Segregated’ and ‘Identity Preserved’ are the strongest supply-chain models.",
+      "notguarantee": "Weaker models (‘Mass Balance’, ‘Book & Claim’/credits) mean certified and non-certified oil may be mixed. RSPO has faced criticism over deforestation in member supply chains.",
+      "src": "RSPO Principles & Criteria; Greenpeace critique."
+    },
+    {
+      "name": "GOTS",
+      "cat": "social",
+      "runby": "Global Organic Textile Standard",
+      "verifies": "Textiles with a minimum 70% certified organic fibre PLUS environmental and social criteria (banned toxic inputs, wastewater treatment, workers’ rights) across the whole supply chain.",
+      "notguarantee": "‘Made with organic’ (70–94%) is a lower grade than the ‘organic’ grade (95%+). Organic cotton still uses significant water.",
+      "src": "Global Organic Textile Standard v7.0."
+    },
+    {
+      "name": "OEKO-TEX Standard 100",
+      "cat": "social",
+      "runby": "OEKO-TEX Association",
+      "verifies": "That the finished textile has been tested for a list of harmful substances and is below defined limits — a chemical-safety label for the end product.",
+      "notguarantee": "It is NOT an organic, animal-welfare, labour, or environmental-footprint standard. It only addresses substances in the tested article.",
+      "src": "OEKO-TEX Standard 100 test criteria."
+    },
+    {
+      "name": "Fairtrade",
+      "cat": "social",
+      "runby": "Fairtrade International",
+      "verifies": "Producers received the Fairtrade Minimum Price and a Fairtrade Premium, with standards on labour rights and environmental practice, independently audited by FLOCERT.",
+      "notguarantee": "Covers the certified ingredient(s), not necessarily the whole product; on composite products a percentage applies. Not an organic or animal-welfare label.",
+      "src": "Fairtrade International Standards / FLOCERT."
+    },
+    {
+      "name": "B Corp",
+      "cat": "social",
+      "runby": "B Lab",
+      "verifies": "The whole COMPANY passed a verified assessment of its social and environmental performance, accountability, and transparency (minimum score 80), re-certified every three years.",
+      "notguarantee": "It rates the company overall — not any single product, and not specifically animal welfare or veganism. A B Corp can still sell products you might avoid.",
+      "src": "B Lab / B Impact Assessment."
+    },
+    {
+      "name": "FSC",
+      "cat": "climate",
+      "runby": "Forest Stewardship Council",
+      "verifies": "Wood, paper, or forest-derived material comes from responsibly managed forests meeting FSC environmental and social standards, tracked by chain-of-custody.",
+      "notguarantee": "‘FSC Mix’ blends certified, recycled, and ‘controlled’ material — not 100% certified. Look for ‘FSC 100%’ for the strongest claim.",
+      "src": "Forest Stewardship Council standards."
+    },
+    {
+      "name": "Soil Association Organic",
+      "cat": "food",
+      "runby": "Soil Association (UK)",
+      "verifies": "Organic certification for food, and a separate strict standard for organic health & beauty covering ingredients, GM-free, and (for beauty) no animal testing.",
+      "notguarantee": "Organic addresses how something is grown/made, not animal-welfare outcomes or whether an animal was killed.",
+      "src": "Soil Association Organic Standards."
+    },
+    {
+      "name": "USDA Organic / EU Organic Leaf",
+      "cat": "food",
+      "runby": "USDA (US) / EU Commission",
+      "verifies": "Food produced under legally-defined organic rules: no synthetic pesticides/fertilisers, no GMOs, and defined animal-welfare and feed rules for livestock.",
+      "notguarantee": "Organic is not automatically ‘free-range’ nor a guarantee of high welfare beyond the baseline rules; it is not a cruelty-free or vegan label.",
+      "src": "USDA NOP / EU Reg 2018/848."
+    },
+    {
+      "name": "Rainforest Alliance",
+      "cat": "climate",
+      "runby": "Rainforest Alliance",
+      "verifies": "Farms (coffee, cocoa, tea, bananas) met standards on forests, climate, human rights, and livelihoods, audited against the 2020 Sustainable Agriculture Standard.",
+      "notguarantee": "Uses mass-balance for cocoa (certified and non-certified can be mixed) and has faced scrutiny over on-the-ground enforcement.",
+      "src": "Rainforest Alliance 2020 Standard."
+    },
+    {
+      "name": "Fair Wear Foundation",
+      "cat": "social",
+      "runby": "Fair Wear Foundation",
+      "verifies": "That a clothing brand is a member working to improve labour conditions in its supply chain, assessed on its practices (a ‘Brand Performance Check’).",
+      "notguarantee": "It rates the brand’s EFFORT and management, not a pass/fail guarantee that every factory is perfect. Not an environmental or animal label.",
+      "src": "Fair Wear Foundation Code of Labour Practices."
+    },
+    {
+      "name": "Responsible Down / Wool Standard (RDS / RWS)",
+      "cat": "animals",
+      "runby": "Textile Exchange",
+      "verifies": "Down or wool traced through the supply chain with animal-welfare criteria — RDS prohibits live-plucking and force-feeding; RWS addresses sheep welfare and land management.",
+      "notguarantee": "It improves welfare within animal use; it does not mean no animal was farmed or slaughtered. Mulesing is prohibited under RWS but check the specific claim.",
+      "src": "Textile Exchange RDS / RWS standards."
+    },
+    {
+      "name": "Global Recycled Standard (GRS)",
+      "cat": "environment",
+      "runby": "Textile Exchange",
+      "verifies": "Tracks recycled content through the supply chain (minimum 20% to carry the logo, 50%+ for full claims), plus social and environmental criteria at each stage.",
+      "notguarantee": "Does NOT mean the whole garment is recycled, or that it is low-impact overall — only that the certified recycled content is genuine and traceable.",
+      "src": "Textile Exchange GRS."
+    },
+    {
+      "name": "bluesign",
+      "cat": "environment",
+      "runby": "bluesign technologies",
+      "verifies": "Manages chemical inputs across textile manufacturing — restricting hazardous substances and improving resource use at the factory level.",
+      "notguarantee": "Does NOT address animal welfare or garment-worker wages; it is a chemical and environmental management system, not an ethics-of-labour mark.",
+      "src": "bluesign system."
+    },
+    {
+      "name": "Cradle to Cradle Certified",
+      "cat": "environment",
+      "runby": "Cradle to Cradle Products Innovation Institute",
+      "verifies": "Assesses products across material health, reuse, renewable energy, water, and social fairness, at Bronze–Platinum levels.",
+      "notguarantee": "A low tier (Bronze) is a much weaker claim than Gold/Platinum — the level matters, and the logo alone doesn’t tell you which.",
+      "src": "Cradle to Cradle Products Innovation Institute."
+    },
+    {
+      "name": "Fair Trade Certified (US)",
+      "cat": "social",
+      "runby": "Fair Trade USA",
+      "verifies": "Sets standards for wages, safe conditions, and community funds for producers; distinct from Fairtrade International (different standards and governance).",
+      "notguarantee": "Does NOT certify the whole company — only specific certified products or facilities; the rest of the brand may be unaudited.",
+      "src": "Fair Trade USA."
+    },
+    {
+      "name": "ZQ Merino",
+      "cat": "animals",
+      "runby": "The New Zealand Merino Company",
+      "verifies": "Wool standard covering animal welfare (including non-mulesing), environmental management, and social responsibility on accredited farms.",
+      "notguarantee": "Applies to the certified wool fibre, not the finished garment’s full supply chain (dyeing, sewing, labour elsewhere).",
+      "src": "ZQ / NZ Merino."
+    },
+    {
+      "name": "Regenerative Organic Certified (ROC)",
+      "cat": "environment",
+      "runby": "Regenerative Organic Alliance",
+      "verifies": "Builds on organic certification with added requirements for soil health, animal welfare, and farmworker fairness — one of the stricter farm-level marks.",
+      "notguarantee": "Still farm-level: it certifies how a raw material was grown, not how the final product was manufactured or by whom.",
+      "src": "Regenerative Organic Alliance."
     }
-  ],
-  "questions": {
-    "title": "Four questions that separate a claim from a commitment",
-    "items": [
-      "Does the claim cover ingredients, or only the finished product?",
-      "Does it extend to suppliers and contract laboratories, or stop at the company's own facilities?",
-      "Is there a fixed cut-off date, or is the claim written in the present tense only?",
-      "Does the company sell in markets where an authority may require testing — and if so, under what exemption?"
-    ]
-  }
+  ]
 }

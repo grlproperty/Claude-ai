@@ -17,17 +17,16 @@ export function sectionHead({ eyebrow, title, lede, wide = false, centered = fal
   </div>`;
 }
 
-/** Card for a research entry or learning module. */
-export function entryCard(entry, { kind = 'Research' } = {}) {
+export function entryCard(entry, { kind = 'Field note' } = {}) {
   const meta = [
-    entry.topic ? `<span class="is-crimson">${esc(entry.topic)}</span>` : `<span class="is-crimson">${esc(kind)}</span>`,
+    `<span class="is-crimson">${esc(entry.topic || kind)}</span>`,
     entry.date ? `<span>${esc(formatDate(entry.date))}</span>` : '',
     entry.readingTime ? `<span>${entry.readingTime} min</span>` : '',
   ]
     .filter(Boolean)
     .join('');
 
-  return `<article class="card card--linked">
+  return `<article class="card card--linked tilt reveal">
     <div class="card__meta">${meta}</div>
     <h3><a class="stretch" href="${esc(entry.url)}">${typo(entry.title)}</a></h3>
     <p>${typo(entry.summary)}</p>
@@ -35,33 +34,9 @@ export function entryCard(entry, { kind = 'Research' } = {}) {
   </article>`;
 }
 
-/** Wide, image-led treatment for the single most important entry on a page. */
-export function featureCard(entry) {
-  return `<article class="feature">
-    <div class="feature__media">
-      ${
-        entry.image
-          ? `<img src="${esc(entry.image)}" alt="" loading="lazy" decoding="async" width="1200" height="1500">`
-          : ''
-      }
-    </div>
-    <div class="feature__body">
-      ${label(entry.topic || 'Featured research')}
-      <h2><a href="${esc(entry.url)}">${typo(entry.title)}</a></h2>
-      <p class="lede">${typo(entry.summary)}</p>
-      <div class="card__meta" style="margin-top:auto;padding-top:1.5rem;">
-        ${entry.date ? `<span>${esc(formatDate(entry.date))}</span>` : ''}
-        ${entry.readingTime ? `<span>${entry.readingTime} min read</span>` : ''}
-      </div>
-      <p class="mb-0"><a class="arrow" href="${esc(entry.url)}">Read the analysis</a></p>
-    </div>
-  </article>`;
-}
-
-/** Compact index row — the default listing treatment across the archive. */
 export function entryRow(entry, index) {
   return `<article class="row">
-    <div class="row__index">${String(index + 1).padStart(2, '0')} — ${esc(entry.topic || 'Research')}</div>
+    <div class="row__index">${String(index + 1).padStart(2, '0')} — ${esc(entry.topic || 'Field note')}</div>
     <div>
       <h3 class="row__title"><a href="${esc(entry.url)}">${typo(entry.title)}</a></h3>
       <p class="row__summary">${typo(entry.summary)}</p>
@@ -74,28 +49,12 @@ export function entryRow(entry, index) {
 }
 
 export function statBand(stats) {
-  return `<div class="stat-band">
+  return `<div class="stat-band reveal">
     ${stats
       .map(
         (s) => `<div class="stat">
-          <div class="stat__figure">${typo(s.figure)}</div>
+          <div class="stat__figure display">${typo(s.figure)}</div>
           <div class="stat__label">${esc(s.label)}</div>
-          <p class="stat__note">${typo(s.note)}</p>
-        </div>`
-      )
-      .join('')}
-  </div>`;
-}
-
-export function pillars(list) {
-  return `<div class="grid grid--3">
-    ${list
-      .map(
-        (p) => `<div class="pillar">
-          <div class="pillar__number">${esc(p.number)}</div>
-          <h3>${esc(p.title)}</h3>
-          <p>${typo(p.summary)}</p>
-          <p>${typo(p.detail)}</p>
         </div>`
       )
       .join('')}
@@ -137,28 +96,26 @@ export function newsletterForm(site, { dark = false } = {}) {
   </form>`;
 }
 
+/** Closing band: the funding position, and the briefing. */
 export function supportBanner(site) {
   return `<section class="section on-dark">
     <div class="wrap">
-      <div class="grid grid--2" style="align-items:center;">
+      <div class="grid grid--2" style="align-items:start;gap:4rem;">
         <div>
-          ${label('Support')}
-          <h2>${typo(site.support.headline)}</h2>
-          <p class="lede">${typo(site.support.summary)}</p>
+          ${label('Self-funded')}
+          <h2>${typo(site.donate.headline)}</h2>
+          <p class="lede">${typo(site.donate.summary)}</p>
           <p class="mb-0" style="margin-top:2rem;">
-            <a class="btn" href="/support/">Become a supporter</a>
-            <a class="btn btn--quiet" href="/funding/" style="margin-left:0.5rem;">How we are funded</a>
+            <a class="btn" href="/donate/">Donate</a>
+            <a class="btn btn--quiet" href="/about/" style="margin-left:0.5rem;">How we work</a>
           </p>
         </div>
         <div>
           ${label(site.newsletter.name)}
-          <p class="lede">${esc(site.newsletter.cadence)} — regulatory movement, method validation, and industry disclosure, in one email.</p>
+          <p class="lede">${esc(site.newsletter.cadence)} — the field notes connected to current reporting, and what to read, watch, and act on next.</p>
           ${newsletterForm(site, { dark: true })}
         </div>
       </div>
     </div>
   </section>`;
 }
-
-export const statusBadge = (status) =>
-  `<span class="status status--${esc(status)}">${esc(status)}</span>`;

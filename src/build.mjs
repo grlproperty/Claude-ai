@@ -1,12 +1,12 @@
 /**
  * FERAL FEMME — static build.
  *
- * Reads content/ (Markdown entries plus JSON datasets), renders every route to
- * dist/ as plain HTML, and generates the feed, sitemap, search index, and
+ * Reads content/ (Markdown field notes plus JSON datasets), renders every route
+ * to dist/ as plain HTML, and generates the feed, sitemap, search index, and
  * social preview images. No network access, no runtime, no database: the
  * output is a directory of files that any static host will serve.
  */
-import { readFile, writeFile, mkdir, readdir, rm, cp, stat } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, readdir, rm, cp } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { resolve, dirname, join, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -14,11 +14,21 @@ import matter from 'gray-matter';
 
 import { renderMarkdown, readingTime, excerpt, isoDate, slugify, esc, stripMarkdown } from './lib/util.mjs';
 import { renderHome } from './pages/home.mjs';
-import { renderResearchIndex, renderEntry } from './pages/research.mjs';
-import { renderLearnIndex, renderModule } from './pages/learn.mjs';
-import { renderRegulation, renderMethods, renderCertifications, renderGlossary } from './pages/datasets.mjs';
-import { renderSupport, renderLicensing, renderDispatch } from './pages/support.mjs';
-import { renderPage, renderNotFound, renderArchiveIndex } from './pages/simple.mjs';
+import { renderIndustries } from './pages/industries.mjs';
+import { renderFieldNotesIndex, renderFieldNote } from './pages/field-notes.mjs';
+import {
+  renderToolsIndex,
+  renderCertifications,
+  renderGreenwashing,
+  renderMaterials,
+  renderRecord,
+  renderAct,
+  renderLibrary,
+  renderArchive,
+  renderSources,
+} from './pages/decoders.mjs';
+import { renderDonate, renderBriefing } from './pages/donate.mjs';
+import { renderPage, renderNotFound } from './pages/simple.mjs';
 import { buildOgImages, buildBrandAssets } from './lib/images.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -35,7 +45,6 @@ async function writePage(path, html) {
   const out = join(DIST, rel);
   await mkdir(dirname(out), { recursive: true });
   await writeFile(out, html);
-  return rel;
 }
 
 async function writeFileAt(path, contents) {
@@ -46,8 +55,7 @@ async function writeFileAt(path, contents) {
 
 /**
  * Load a Markdown collection. Numeric filename prefixes order a collection
- * without appearing in its URLs, so `03-safety-without-animals.md` sorts third
- * and publishes at /learn/safety-without-animals/.
+ * without appearing in its URLs.
  */
 async function loadCollection(dir, base) {
   if (!existsSync(dir)) return [];
@@ -93,7 +101,7 @@ function buildFeed(site, entries) {
       <title>${esc(e.title)}</title>
       <link>${esc(url)}</link>
       <guid isPermaLink="true">${esc(url)}</guid>
-      <pubDate>${new Date(e.date ?? Date.now()).toUTCString()}</pubDate>
+      ${e.date ? `<pubDate>${new Date(e.date).toUTCString()}</pubDate>` : ''}
       <description>${esc(e.summary)}</description>
       ${e.topic ? `<category>${esc(e.topic)}</category>` : ''}
     </item>`;
@@ -107,7 +115,7 @@ function buildFeed(site, entries) {
     <link>${esc(site.url)}</link>
     <atom:link href="${esc(new URL('/feed.xml', site.url).href)}" rel="self" type="application/rss+xml"/>
     <description>${esc(site.description)}</description>
-    <language>en-GB</language>
+    <language>en</language>
     <copyright>© ${site.established}–${new Date().getUTCFullYear()} ${esc(site.name)}</copyright>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
 ${items}
@@ -141,78 +149,79 @@ async function main() {
   const started = Date.now();
 
   const site = await readJson(join(CONTENT, 'site.json'));
-  const regulation = await readJson(join(CONTENT, 'data/regulation.json'));
-  const methods = await readJson(join(CONTENT, 'data/methods.json'));
-  const certifications = await readJson(join(CONTENT, 'data/certifications.json'));
-  const glossary = await readJson(join(CONTENT, 'data/glossary.json'));
+  const data = {
+    industries: await readJson(join(CONTENT, 'data/industries.json')),
+    certifications: await readJson(join(CONTENT, 'data/certifications.json')),
+    greenwashing: await readJson(join(CONTENT, 'data/greenwashing.json')),
+    materials: await readJson(join(CONTENT, 'data/materials.json')),
+    record: await readJson(join(CONTENT, 'data/record.json')),
+    act: await readJson(join(CONTENT, 'data/act.json')),
+    library: await readJson(join(CONTENT, 'data/library.json')),
+    archive: await readJson(join(CONTENT, 'data/archive.json')),
+    sources: await readJson(join(CONTENT, 'data/sources.json')),
+  };
 
-  const research = await loadCollection(join(CONTENT, 'research'), '/research/');
-  const guides = await loadCollection(join(CONTENT, 'guides'), '/learn/');
+  const notes = await loadCollection(join(CONTENT, 'field-notes'), '/field-notes/');
   const pages = await loadCollection(join(CONTENT, 'pages'), '/');
 
   await rm(DIST, { recursive: true, force: true });
   await mkdir(DIST, { recursive: true });
 
-  // Static assets, then generated brand marks and social previews.
-  // `raw-*` originals stay out of the published output: they are the inputs to
-  // the image pipeline, not files any visitor should download.
-  await cp(ASSETS, join(DIST, 'assets'), {
-    recursive: true,
-    filter: (src) => !basename(src).startsWith('raw-'),
-  });
+  await cp(ASSETS, join(DIST, 'assets'), { recursive: true });
   if (existsSync(PUBLIC)) await cp(PUBLIC, DIST, { recursive: true });
   await buildBrandAssets({ dist: DIST, site });
 
   const routes = [];
   const track = (path, opts = {}) => routes.push({ path, ...opts });
 
-  // ---- core routes
-  await writePage('/', renderHome({ site, research, guides, regulation, methods }));
+  // ---- core
+  await writePage('/', renderHome({ site, notes, data }));
   track('/', { priority: '1.0', changefreq: 'weekly' });
 
-  await writePage('/research/', renderResearchIndex({ site, entries: research }));
-  track('/research/', { priority: '0.9', changefreq: 'weekly' });
+  await writePage('/industries/', renderIndustries({ site, data: data.industries, notes }));
+  track('/industries/', { priority: '0.9' });
 
-  for (const entry of research) {
-    await writePage(entry.url, renderEntry({ site, entry, all: research, glossary }));
-    track(entry.url, { lastmod: entry.updated ?? entry.date, priority: '0.8' });
+  await writePage('/field-notes/', renderFieldNotesIndex({ site, entries: notes }));
+  track('/field-notes/', { priority: '0.9', changefreq: 'weekly' });
+
+  for (const [i, note] of notes.entries()) {
+    const prev = notes[i - 1] ?? null;
+    const next = notes[i + 1] ?? null;
+    await writePage(note.url, renderFieldNote({ site, entry: note, all: notes, prev, next }));
+    track(note.url, { priority: '0.8' });
   }
 
-  await writePage('/learn/', renderLearnIndex({ site, modules: guides }));
-  track('/learn/', { priority: '0.9' });
+  // ---- tools and reference
+  await writePage('/tools/', renderToolsIndex({ site, data }));
+  track('/tools/', { priority: '0.9' });
 
-  for (const [i, mod] of guides.entries()) {
-    const prev = guides[i - 1] ?? null;
-    const next = guides[i + 1] ?? null;
-    await writePage(mod.url, renderModule({ site, module: mod, prev, next, all: guides, glossary }));
-    track(mod.url, { lastmod: mod.updated ?? mod.date, priority: '0.8' });
+  const tools = [
+    ['/tools/certifications/', renderCertifications, data.certifications],
+    ['/tools/greenwashing/', renderGreenwashing, data.greenwashing],
+    ['/tools/materials/', renderMaterials, data.materials],
+    ['/tools/record/', renderRecord, data.record],
+    ['/tools/act/', renderAct, data.act],
+  ];
+  for (const [path, render, dataset] of tools) {
+    await writePage(path, render({ site, data: dataset }));
+    track(path, { priority: '0.8', lastmod: dataset.reviewed });
   }
 
-  // ---- datasets
-  await writePage('/regulation/', renderRegulation({ site, data: regulation }));
-  track('/regulation/', { priority: '0.9', changefreq: 'weekly' });
+  await writePage('/library/', renderLibrary({ site, data: data.library }));
+  track('/library/', { priority: '0.8' });
 
-  await writePage('/methods/', renderMethods({ site, data: methods }));
-  track('/methods/', { priority: '0.8' });
+  await writePage('/archive/', renderArchive({ site, data: data.archive }));
+  track('/archive/', { priority: '0.8' });
 
-  await writePage('/certifications/', renderCertifications({ site, data: certifications }));
-  track('/certifications/', { priority: '0.8' });
+  await writePage('/sources/', renderSources({ site, data: data.sources }));
+  track('/sources/', { priority: '0.6' });
 
-  await writePage('/glossary/', renderGlossary({ site, data: glossary }));
-  track('/glossary/', { priority: '0.7' });
+  // ---- funding and audience
+  await writePage('/donate/', renderDonate({ site }));
+  track('/donate/', { priority: '0.9' });
 
-  // ---- revenue and audience
-  await writePage('/support/', renderSupport({ site }));
-  track('/support/', { priority: '0.9' });
-
-  await writePage('/licensing/', renderLicensing({ site }));
-  track('/licensing/', { priority: '0.8' });
-
-  await writePage('/dispatch/', renderDispatch({ site }));
-  track('/dispatch/', { priority: '0.7' });
-
-  await writePage('/archive/', renderArchiveIndex({ site, research, guides, pages }));
-  track('/archive/', { priority: '0.5' });
+  await writePage('/briefing/', renderBriefing({ site }));
+  track('/briefing/', { priority: '0.7' });
 
   // ---- markdown pages
   for (const page of pages) {
@@ -221,10 +230,9 @@ async function main() {
   }
 
   await writePage('/404', renderNotFound({ site }));
-  // 404 is served by the host on error, so it is deliberately not in the sitemap.
 
   // ---- generated files
-  await writeFileAt('/feed.xml', buildFeed(site, research));
+  await writeFileAt('/feed.xml', buildFeed(site, notes));
   await writeFileAt('/sitemap.xml', buildSitemap(site, routes));
   await writeFileAt(
     '/robots.txt',
@@ -252,20 +260,20 @@ async function main() {
     )
   );
 
-  // Client-side search index — small enough to ship whole, so search needs no server.
+  // Client-side search index, small enough to ship whole.
   const index = [
-    ...research.map((e) => ({ t: e.title, u: e.url, s: e.summary, k: 'Research', c: e.topic ?? '', b: e.text.slice(0, 1200) })),
-    ...guides.map((e) => ({ t: e.title, u: e.url, s: e.summary, k: 'Learn', c: 'Module', b: e.text.slice(0, 1200) })),
+    ...notes.map((e) => ({ t: e.title, u: e.url, s: e.summary, k: 'Field note', c: e.topic ?? '', b: e.text.slice(0, 1200) })),
     ...pages.map((e) => ({ t: e.title, u: e.url, s: e.summary, k: 'Page', c: '', b: e.text.slice(0, 600) })),
-    ...glossary.terms.map((t) => ({ t: t.term, u: `/glossary/#${slugify(t.term)}`, s: t.definition, k: 'Glossary', c: t.category, b: t.definition })),
-    ...regulation.jurisdictions.map((j) => ({ t: j.name, u: `/regulation/#${j.id}`, s: j.headline, k: 'Regulation', c: j.region, b: j.headline })),
+    ...data.certifications.schemes.map((x) => ({ t: x.name, u: `/tools/certifications/#${slugify(x.name)}`, s: x.verifies, k: 'Certification', c: x.cat, b: x.verifies })),
+    ...data.greenwashing.terms.map((x) => ({ t: x.term, u: `/tools/greenwashing/#${slugify(x.term)}`, s: x.actual, k: 'Greenwashing', c: x.cat, b: x.actual })),
+    ...data.materials.materials.map((x) => ({ t: x.name, u: `/tools/materials/#${slugify(x.name)}`, s: x.what, k: 'Material', c: x.cat, b: x.what })),
+    ...data.industries.industries.map((x) => ({ t: x.name, u: `/industries/#${slugify(x.name)}`, s: x.resource.title, k: 'Industry', c: '', b: x.resource.body })),
   ];
   await writeFileAt('/search-index.json', JSON.stringify(index));
 
-  // The Netlify/CloudFront-style redirect file is harmless elsewhere.
-  await writeFileAt('/_redirects', '/rss.xml  /feed.xml  301\n/feed  /feed.xml  301\n');
+  await writeFileAt('/_redirects', '/rss.xml  /feed.xml  301\n/feed  /feed.xml  301\n/research/  /field-notes/  301\n');
 
-  await buildOgImages({ dist: DIST, site, entries: [...research, ...guides] });
+  await buildOgImages({ dist: DIST, site, entries: notes });
 
   const files = await countFiles(DIST);
   console.log(

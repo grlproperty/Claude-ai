@@ -221,10 +221,7 @@ function pullQuote(markdown, fallback) {
 
 async function loadEntries() {
   const entries = [];
-  for (const [dir, kind] of [
-    ['research', 'Research'],
-    ['guides', 'Module'],
-  ]) {
+  for (const [dir, kind] of [['field-notes', 'Field note']]) {
     const full = join(CONTENT, dir);
     if (!existsSync(full)) continue;
     for (const file of (await readdir(full)).filter((f) => f.endsWith('.md'))) {
@@ -284,8 +281,8 @@ async function main() {
     await writeFile(
       join(dir, 'caption.txt'),
       `${entry.title}\n\n${entry.summary}\n\n` +
-        `Full entry with sources: feral-femme.co/${entry.kind === 'Module' ? 'learn' : 'research'}/${entry.slug}/\n\n` +
-        `#FeralFemme #CrueltyFree #AnimalTesting #EthicalBeauty #CosmeticsRegulation #EducateExposeEmpower\n`
+        `Read the full note: feral-femme.co/field-notes/${entry.slug}/\n\n` +
+        `#FeralFemme #KnowledgeCreatesChange #EthicalConsumption #Greenwashing #SupplyChain #CitedAndSourced\n`
     );
 
     console.log(`  ${entry.slug} — ${slides.length} slides`);

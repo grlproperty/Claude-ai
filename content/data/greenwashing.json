@@ -1,0 +1,261 @@
+{
+  "title": "Greenwashing Decoder",
+  "slug": "greenwashing",
+  "reviewed": "2026-08-31",
+  "reviewCycleDays": 180,
+  "summary": "A reference for the language brands use when they want to suggest virtue without committing to it. Each term shows what brands typically claim and what the term actually means.",
+  "terms": [
+    {
+      "term": "Natural",
+      "cat": "general",
+      "claim": "Often implies \"good for you\" or \"safe\", suggesting wholesome plant origin.",
+      "actual": "In most jurisdictions there is no legal definition of \"natural\" in cosmetics or food labelling. Arsenic, lead, and poison ivy are also \"natural\".",
+      "src": "US FTC: \"no clear definition\"; EU food law: no harmonised meaning."
+    },
+    {
+      "term": "Eco-friendly",
+      "cat": "general",
+      "claim": "The product is gentle on the environment.",
+      "actual": "Considered too vague to substantiate by the US FTC. The Green Guides require any environmental claim be qualified with what specifically is eco-friendly and how.",
+      "src": "FTC Green Guides §260.4."
+    },
+    {
+      "term": "Biodegradable",
+      "cat": "waste",
+      "claim": "The product breaks down naturally and harmlessly.",
+      "actual": "Must be qualified — biodegradable under what conditions? Within what timeframe? Most \"biodegradable\" plastics require industrial composting (60°C+) which most consumers cannot access.",
+      "src": "FTC Green Guides §260.8; EU EN 13432 standard."
+    },
+    {
+      "term": "Compostable",
+      "cat": "waste",
+      "claim": "You can compost the packaging at home.",
+      "actual": "Usually means industrially compostable, not home-compostable. Distinguish between BPI / TUV \"OK Compost HOME\" certification and \"OK Compost INDUSTRIAL\".",
+      "src": "EU EN 13432 (industrial); EN 17427 (home)."
+    },
+    {
+      "term": "Recyclable",
+      "cat": "waste",
+      "claim": "This product can be recycled.",
+      "actual": "Only meaningful if recycling facilities for the specific material are available to most consumers in your region. Theoretically recyclable ≠ practically recycled. Globally, less than 9% of all plastic ever made has been recycled.",
+      "src": "OECD Global Plastics Outlook 2022."
+    },
+    {
+      "term": "Cruelty-free",
+      "cat": "animals",
+      "claim": "No animals were harmed.",
+      "actual": "Not legally defined globally. May refer to the finished product but not individual ingredients, or only to the manufacturer’s own labs not third-party testing. Look for Leaping Bunny or PETA Beauty Without Bunnies certification.",
+      "src": "EU Cosmetics Reg banned animal-tested cosmetics from sale since 2013; cruelty-free labelling unregulated."
+    },
+    {
+      "term": "Vegan",
+      "cat": "animals",
+      "claim": "Contains no animal-derived ingredients.",
+      "actual": "In cosmetics, not legally defined — but a \"vegan\" label generally means no animal-derived ingredients. It does NOT mean cruelty-free.",
+      "src": "Vegan Society / Vegan Action certification."
+    },
+    {
+      "term": "Sustainable",
+      "cat": "general",
+      "claim": "Doesn’t harm the environment over time.",
+      "actual": "No regulatory definition. The UN Brundtland definition is \"meeting the needs of the present without compromising future generations\" — meaningless as a product label.",
+      "src": "UN Brundtland Commission (1987)."
+    },
+    {
+      "term": "Carbon-neutral",
+      "cat": "climate",
+      "claim": "The company has zero net carbon emissions.",
+      "actual": "Almost always achieved through carbon offsets, not actual emission reductions. Many offset schemes have been investigated for over-claiming. The EU proposes banning the term unless backed by science-based reductions.",
+      "src": "EU Green Claims Directive (2023 proposal); Guardian/Die Zeit/SourceMaterial Verra investigation (2023)."
+    },
+    {
+      "term": "Net-zero",
+      "cat": "climate",
+      "claim": "Net carbon emissions of zero.",
+      "actual": "Usually depends on offsets and assumed future negative-emissions technology. The SBTi Net-Zero Standard sets criteria (90%+ absolute reduction by 2050) but few corporate \"net-zero\" claims meet it.",
+      "src": "Science Based Targets initiative (SBTi)."
+    },
+    {
+      "term": "Plant-based",
+      "cat": "food",
+      "claim": "Made primarily from plants.",
+      "actual": "No regulatory threshold. \"Plant-based\" can mean 100% plant or \"contains some plants\" depending on the product.",
+      "src": "FDA: no enforced definition."
+    },
+    {
+      "term": "Clean / Clean beauty",
+      "cat": "beauty",
+      "claim": "Free of harmful or \"bad\" ingredients.",
+      "actual": "No regulatory definition. Each retailer (Sephora, Credo, Ulta) sets its own \"clean\" criteria — they don’t agree with each other.",
+      "src": "No regulatory standard."
+    },
+    {
+      "term": "Free-range",
+      "cat": "animals",
+      "claim": "Animals roamed freely outdoors.",
+      "actual": "In the EU, \"free-range\" eggs require 4m² per hen of outdoor access — but only theoretical access; many never go outside. For meat, the term is less regulated. UK definitions are similar.",
+      "src": "EU Reg 589/2008 (eggs); UK DEFRA."
+    },
+    {
+      "term": "Organic",
+      "cat": "food",
+      "claim": "Grown without synthetic chemicals.",
+      "actual": "Legally defined in EU and US — requires certification (USDA Organic, EU Organic logo). The term itself, alone, on a product is regulated. But \"organic\" cosmetic claims are less tightly controlled.",
+      "src": "EU Reg 2018/848; USDA NOP."
+    },
+    {
+      "term": "Fair trade",
+      "cat": "social",
+      "claim": "Workers received fair wages and conditions.",
+      "actual": "Several certifications exist (Fairtrade International, Fair Trade USA, World Fair Trade Organization) with different standards. \"Fair trade\" without certification is meaningless.",
+      "src": "Fairtrade International standards."
+    },
+    {
+      "term": "Locally sourced",
+      "cat": "general",
+      "claim": "Came from nearby.",
+      "actual": "No regulatory definition of \"local\". Some EU/UK retailers define it as within 30 miles or within county — but the term on packaging is unregulated.",
+      "src": "UK ASA case law."
+    },
+    {
+      "term": "Non-toxic",
+      "cat": "beauty",
+      "claim": "Will not cause harm.",
+      "actual": "Dose-dependent and undefined. The FTC Green Guides require substantiation for non-toxic claims; the EU has prohibited the unqualified use of \"non-toxic\" on detergents and cleaning products.",
+      "src": "FTC Green Guides §260.10; EU Detergents Regulation."
+    },
+    {
+      "term": "Greener / More sustainable",
+      "cat": "general",
+      "claim": "Less harmful than the alternative.",
+      "actual": "Comparative claims require disclosure of the comparison basis. \"Greener than what?\" \"More sustainable than which version?\" — must be substantiated.",
+      "src": "FTC Green Guides §260.4; UK CMA Green Claims Code 2021."
+    },
+    {
+      "term": "Made with renewable energy",
+      "cat": "climate",
+      "claim": "The factory runs on solar/wind etc.",
+      "actual": "May refer to purchased Renewable Energy Certificates (RECs) that don’t actually power the factory. Look for guarantees of additionality and physical delivery.",
+      "src": "EU Green Claims Directive (2023 proposal)."
+    },
+    {
+      "term": "Conscious / Mindful",
+      "cat": "general",
+      "claim": "Thoughtfully made.",
+      "actual": "Marketing language only. No regulatory meaning. The UK ASA and EU Green Claims Directive both flag these as unsubstantiated vagueness.",
+      "src": "EU Green Claims Directive (2023 proposal)."
+    },
+    {
+      "term": "Ethically sourced",
+      "cat": "social",
+      "claim": "Materials and labour meet fair standards.",
+      "actual": "No legal definition and no required certification. Without a named standard (Fairtrade, SA8000, WFTO) it is an unverifiable marketing phrase.",
+      "src": "UK CMA Green Claims Code 2021."
+    },
+    {
+      "term": "Responsibly sourced",
+      "cat": "social",
+      "claim": "Sourcing considers people and planet.",
+      "actual": "Undefined and self-declared. ‘Responsible’ sets no measurable bar — ask: responsible to whom, verified by whom?",
+      "src": "EU Green Claims Directive (2023 proposal)."
+    },
+    {
+      "term": "Reef-safe",
+      "cat": "climate",
+      "claim": "This sunscreen won’t harm coral reefs.",
+      "actual": "There is no standardised or regulated definition of ‘reef-safe’. Check the actual filters — avoid oxybenzone and octinoxate rather than trusting the label.",
+      "src": "US NOAA / Hawaii Act 104."
+    },
+    {
+      "term": "Ocean-bound plastic",
+      "cat": "waste",
+      "claim": "Made from plastic rescued from the sea.",
+      "actual": "Usually means plastic collected within ~50 km of a coastline — not from the ocean itself. Definitions vary by certifier and are often generous.",
+      "src": "Zero Plastic Oceans / OBP certification."
+    },
+    {
+      "term": "Made with recycled materials",
+      "cat": "waste",
+      "claim": "The product is recycled.",
+      "actual": "Can mean as little as 1% recycled content. Look for a stated percentage and whether it is post-consumer (used by people) or pre-consumer (factory offcuts).",
+      "src": "ISO 14021 / FTC Green Guides."
+    },
+    {
+      "term": "Chemical-free",
+      "cat": "beauty",
+      "claim": "Contains no chemicals.",
+      "actual": "Scientifically impossible — water is a chemical. The term is meaningless and flagged as misleading by regulators.",
+      "src": "UK ASA rulings; EU Green Claims Directive."
+    },
+    {
+      "term": "Dermatologist-tested",
+      "cat": "beauty",
+      "claim": "Proven safe by skin doctors.",
+      "actual": "Only means a dermatologist was involved in testing — not that it passed, nor how many people, nor the result. ‘Tested’ is not ‘approved’.",
+      "src": "US FDA cosmetics guidance."
+    },
+    {
+      "term": "Hypoallergenic",
+      "cat": "beauty",
+      "claim": "Won’t cause allergic reactions.",
+      "actual": "No federal standard or required testing in the US. Manufacturers define it themselves. Any product can be labelled hypoallergenic.",
+      "src": "US FDA: ‘no meaning’."
+    },
+    {
+      "term": "Grass-fed",
+      "cat": "food",
+      "claim": "The animal ate only grass, on pasture.",
+      "actual": "In many markets animals may be ‘grass-fed’ yet grain-finished, or fed grass indoors. ‘100% grass-fed’ and pasture certifications are stricter.",
+      "src": "USDA (withdrew its grass-fed standard in 2016)."
+    },
+    {
+      "term": "Cage-free",
+      "cat": "animals",
+      "claim": "Hens roam freely, not in cages.",
+      "actual": "Means hens are uncaged inside a barn — not that they go outdoors or have much space. Distinct from free-range or pasture-raised.",
+      "src": "EU Reg 589/2008; RSPCA Assured standards."
+    },
+    {
+      "term": "Humanely raised",
+      "cat": "animals",
+      "claim": "Animals had good welfare.",
+      "actual": "Not legally defined in most markets. Meaningful only with a third-party welfare certification (e.g. RSPCA Assured, Certified Humane, GAP).",
+      "src": "No regulatory standard."
+    },
+    {
+      "term": "No nasties",
+      "cat": "beauty",
+      "claim": "Free from harmful ingredients.",
+      "actual": "Marketing shorthand with no definition. Each brand decides what a ‘nasty’ is — often to imply competitors are unsafe.",
+      "src": "UK ASA / EU Green Claims Directive."
+    },
+    {
+      "term": "Tree-free",
+      "cat": "waste",
+      "claim": "No trees were cut for this paper.",
+      "actual": "Can be true (bamboo, sugarcane bagasse) but doesn’t address the water, land, or transport footprint of the alternative crop. Verify the whole picture.",
+      "src": "FTC Green Guides §260.4."
+    },
+    {
+      "term": "Climate positive / Climate neutral",
+      "cat": "climate",
+      "claim": "The product removes more carbon than it emits.",
+      "actual": "Almost always relies on offsets rather than actual removals, and ‘positive’ claims are even harder to substantiate than ‘neutral’ ones. The EU proposes restricting both.",
+      "src": "EU Green Claims Directive (2023 proposal)."
+    },
+    {
+      "term": "Palm-oil free",
+      "cat": "climate",
+      "claim": "Contains no palm oil, so it’s better for forests.",
+      "actual": "Sometimes true, but replacements (coconut, soy, shea) can need MORE land. Certified sustainable palm (RSPO) can be a lower-impact choice than a blanket boycott.",
+      "src": "IUCN Palm Oil Task Force 2018."
+    },
+    {
+      "term": "Small-batch / Artisan",
+      "cat": "general",
+      "claim": "Handmade in tiny, careful quantities.",
+      "actual": "No definition of ‘small’ or ‘artisan’. Large manufacturers use these terms freely to imply craft and care.",
+      "src": "No regulatory standard."
+    }
+  ]
+}

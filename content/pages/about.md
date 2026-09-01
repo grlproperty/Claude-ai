@@ -1,41 +1,43 @@
 ---
 title: About
-summary: FERAL FEMME is an educational activism platform examining animal testing in the skincare and beauty industry through calm, research-based awareness.
+summary: FERAL FEMME investigates every industry built on a body that could not agree to it — and holds animals and women at equal weight.
 order: 1
 ---
 
-FERAL FEMME exists because the information required to make an informed ethical choice about cosmetics is public, and almost entirely unread.
+Most industries solve a problem someone already has. Several of the ones documented here make their money somewhere else: from a body that was never asked.
 
-It is public because regulation is published, test guidelines are published, and validation reports are published. It is unread because those documents are written to be precise rather than to be understood, and because the summaries that reach consumers compress them past the point where the meaning survives.
+That is the whole remit. We investigate every industry built on a body that could not agree to it, and we hold animals and women at equal weight. Neither is a metaphor for the other. Both are literal.
 
-This platform sits between the two. We read the primary sources and write what they say.
+## What we publish
 
-## What we are
+**Field notes** — investigations that already exist in the public record, read in full, reframed, and connected to the pattern of the industry they document. The original publisher always gets the credit.
 
-An educational platform. We publish research entries, structured learning modules, a global regulation tracker, and a certification guide. Everything is free to read, and there is no paywall on any of it.
+**The digital archive** — numbered entries in the visual essay series, each a single documented case filed with its caption.
 
-## What we are not
+**The reading list** — the investigations, databases, and reports the notes are built from, every one public and linked to its original.
 
-We do not sell cosmetics, recommend brands, or maintain a list of approved products. Product recommendations date immediately, require constant verification we could not honestly promise, and would place us in a commercial relationship with the industry we examine.
+**Free tools** — the Certification, Greenwashing, and Material decoders, the Record Checker, and the Where to Act directory. No account, no sign-up, no payment.
 
-We do not accept funding from cosmetics manufacturers, retailers, ingredient suppliers, or certification bodies. We carry no advertising and no affiliate links. Our [funding](/funding/) is set out in full.
+## The cruelty is rarely called cruelty
 
-We do not campaign for specific legislation or endorse organisations. We describe what instruments do and where they stop.
+It is called tradition, testing, farming, research, wellness, self-care. It appears on a label as *cage-free*, *clinically proven*, *carbon neutral*, *responsibly sourced*, *cruelty-free*. Each of those phrases is doing less work than the marketing implies, and several of them mean nothing at all in law.
 
-## Method
+We translate the vocabulary, cite the source, and file the receipt — across fashion, food, beauty, wildlife, medicine, tech, and the advertising that obscures all of it.
 
-Every factual claim is traceable to a primary source — a regulation, an adopted test guideline, a validation report, or a published study — and cited at the foot of the entry. Where evidence is contested, we say so and describe the disagreement rather than resolving it silently.
+## Who runs it
 
-Where a gap exists in the science, we state it. The entry on [repeated-dose toxicity](/research/the-endpoint-nobody-has-solved/) exists because overstating the completeness of non-animal methods is the most reliable way to lose an argument to someone who knows the field.
+FERAL FEMME was founded in 2026 by **Ayden Rosemary Brown** and is based in South Africa. It is independently funded through reader donations: no advertisers, no industry sponsorship, no affiliate revenue, and no funding from any company whose conduct this platform documents.
 
-Our full [editorial standards](/editorial-standards/) set out how entries are researched, reviewed, and corrected.
+That independence is the reason the [Record Checker](/tools/record/) can name companies without hesitating.
 
-## Voice
+## On the imagery
 
-The imagery on this platform is deliberate. It places women and animals within the same context of confinement, because the visual language of the beauty industry and the visual reality of a testing facility are rarely allowed to occupy the same frame.
+The archive's visual essays are created using AI image generation, directed by Ayden Rosemary Brown. Each image is a deliberate frame — conceptual editorial work, not documentary photography — and that is disclosed wherever it appears.
 
-The writing is the opposite register: restrained, structured, cited. The photography is there to make you look. The text is there to be checked.
+We state this plainly because a platform that documents misleading claims cannot itself be ambiguous about how its own material is made.
 
-## Correction
+## Written to be verified, not agreed with
 
-If anything published here is inaccurate, tell us. Corrections are published in full with the date and the substance of the change, at [/corrections/](/corrections/). We would rather be corrected than be quoted incorrectly.
+You are not asked to take anything here on trust. Every factual claim is traceable to a named publisher, regulator, or research body, and the [source list](/sources/) is public. Where the evidence is contested, we say so. Where we get something wrong, we [correct it in public](/corrections/).
+
+Our full [editorial standards](/editorial-standards/) set out how that works.

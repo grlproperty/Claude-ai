@@ -1,0 +1,201 @@
+{
+  "title": "Industries We Document",
+  "slug": "industries",
+  "reviewed": "2026-08-31",
+  "reviewCycleDays": 180,
+  "summary": "Ten industries, one pattern. Each is built somewhere on a body that could not agree to it. For each we keep a standing reference — the single most useful public investigation or database in that field — alongside our own field notes.",
+  "industries": [
+    {
+      "number": "01",
+      "name": "Beauty",
+      "tags": [
+        "Beauty",
+        "Animal Testing"
+      ],
+      "resource": {
+        "publisher": "Humane Society International · ongoing campaign",
+        "title": "#BeCrueltyFree — Country-by-Country Cosmetics Testing Tracker",
+        "body": "The most comprehensive public tracker of which jurisdictions have banned cosmetics testing on animals, where loopholes still exist, and which bills are in motion. Updated continuously as policy changes. Essential reference work for anyone trying to verify a “cruelty-free” claim against the law that actually applies.",
+        "url": "https://www.hsi.org/issues/be-cruelty-free/",
+        "label": "Read at HSI"
+      },
+      "also": {
+        "title": "EWG Skin Deep",
+        "url": "https://www.ewg.org/skindeep/"
+      }
+    },
+    {
+      "number": "02",
+      "name": "Fashion",
+      "tags": [
+        "Fashion",
+        "Women's Rights",
+        "Labour"
+      ],
+      "resource": {
+        "publisher": "The Sunday Times · 2020 · Boohoo Leicester investigation",
+        "title": "Inside Britain's Sweatshops: Boohoo, Leicester, and Sub-Minimum-Wage Garment Work",
+        "body": "The undercover reporting that documented Leicester garment factories paying workers under UK minimum wage to supply Boohoo. Triggered the Garment and Textiles Workers Trust review and remains the most consequential UK garment investigation of the last decade.",
+        "url": "https://www.thetimes.co.uk/article/boohoo-fashion-giant-faces-slavery-investigation-vj3lsphq3",
+        "label": "Read at The Times"
+      },
+      "also": {
+        "title": "Synthetics Anonymous — Changing Markets",
+        "url": "https://changingmarkets.org/report/synthetics-anonymous-fashion-brands-addiction-to-fossil-fuels/"
+      }
+    },
+    {
+      "number": "03",
+      "name": "Food & Agriculture",
+      "tags": [
+        "Food",
+        "Labour"
+      ],
+      "resource": {
+        "publisher": "The New York Times · 2023 · Hannah Dreier",
+        "title": "Alone and Exploited: Migrant Children in US Meatpacking",
+        "body": "Pulitzer-winning investigation documenting unaccompanied migrant children working in US slaughterhouses and food-processing plants, often through subcontracted cleaning agencies. Led to Department of Labor enforcement actions and a federal interagency taskforce.",
+        "url": "https://www.nytimes.com/2023/02/25/us/unaccompanied-migrant-child-workers-exploitation.html",
+        "label": "Read at NYT"
+      },
+      "also": {
+        "title": "Compassion in World Farming — research reports",
+        "url": "https://www.ciwf.com/research/reports/"
+      }
+    },
+    {
+      "number": "04",
+      "name": "Animal Welfare",
+      "tags": [
+        "Animals",
+        "Wildlife"
+      ],
+      "resource": {
+        "publisher": "World Animal Protection · 2020",
+        "title": "The Hidden Cost of Wildlife Tourism",
+        "body": "Audit of wildlife tourism attractions globally — elephant rides, tiger selfies, dolphin shows. WAP's scoring methodology ranks each attraction type on welfare impact, with detailed field documentation. Triggered changes in TripAdvisor's listing policies and several tour-operator commitments.",
+        "url": "https://www.worldanimalprotection.org/our-work/animals-wild/wildlife-not-entertainers/",
+        "label": "Read at WAP"
+      },
+      "also": {
+        "title": "Born Free — zoo investigations",
+        "url": "https://www.bornfree.org.uk/zoo-investigations"
+      }
+    },
+    {
+      "number": "05",
+      "name": "Women's Rights",
+      "tags": [
+        "Women",
+        "Labour"
+      ],
+      "resource": {
+        "publisher": "SOMO & India Committee of the Netherlands · multiple reports",
+        "title": "Captured by Cotton: The Sumangali Scheme in Tamil Nadu Garment Mills",
+        "body": "Years of documentation on the bonded-labour scheme targeting young women in South Indian spinning mills — multi-year contracts, lump-sum payments framed as dowry, confined accommodation. Names supplier factories and the major brands sourcing from them.",
+        "url": "https://www.somo.nl/captured-by-cotton-2/",
+        "label": "Read at SOMO"
+      },
+      "also": {
+        "title": "Geena Davis Institute — research",
+        "url": "https://seejane.org/research-informs-empowers/"
+      }
+    },
+    {
+      "number": "06",
+      "name": "Environment",
+      "tags": [
+        "Environment",
+        "Greenwashing"
+      ],
+      "resource": {
+        "publisher": "The Guardian, Die Zeit & SourceMaterial · 2023",
+        "title": "Revealed: More Than 90% of Rainforest Carbon Offsets by the Biggest Provider Are Worthless",
+        "body": "The investigation that broke open the voluntary carbon market. Analysed Verra's rainforest credit programme and found a substantial majority of credits did not represent real emissions reductions. The fallout reshaped corporate offset strategies worldwide.",
+        "url": "https://www.theguardian.com/environment/2023/jan/18/revealed-forest-carbon-offsets-biggest-provider-worthless-verra-aoe",
+        "label": "Read at The Guardian"
+      },
+      "also": {
+        "title": "Greenpeace — Detox",
+        "url": "https://www.greenpeace.org/international/act/detox/"
+      }
+    },
+    {
+      "number": "07",
+      "name": "Technology",
+      "tags": [
+        "Tech",
+        "Labour",
+        "Mining"
+      ],
+      "resource": {
+        "publisher": "Amnesty International · 2016, updated",
+        "title": "“This Is What We Die For”: Human Rights Abuses in the DRC Cobalt Trade",
+        "body": "The foundational report mapping artisanal cobalt mining in the Democratic Republic of Congo to global consumer-electronics supply chains. Documented child labour, fatal accidents, and severe health consequences, and named the brands sourcing from the affected trade.",
+        "url": "https://www.amnesty.org/en/documents/afr62/3183/2016/en/",
+        "label": "Read at Amnesty"
+      },
+      "also": {
+        "title": "Out of Control — Forbrukerrådet",
+        "url": "https://www.forbrukerradet.no/out-of-control/"
+      }
+    },
+    {
+      "number": "08",
+      "name": "Consumer Rights",
+      "tags": [
+        "Consumer",
+        "Greenwashing"
+      ],
+      "resource": {
+        "publisher": "UK Competition and Markets Authority · 2022–ongoing",
+        "title": "Green Claims Code — Investigations into ASOS, Boohoo, Asda and Unilever",
+        "body": "The CMA's enforcement portfolio against misleading environmental claims. The 2022 ASOS / Boohoo / Asda case forced commitments to substantiate or remove sustainability claims. The 2023 Unilever investigation extended the same scrutiny to FMCG.",
+        "url": "https://www.gov.uk/government/news/cma-investigates-fashion-brands-for-greenwashing",
+        "label": "Read at GOV.UK"
+      },
+      "also": {
+        "title": "Deceived by Design — Forbrukerrådet",
+        "url": "https://www.forbrukerradet.no/undersokelse/no-undersokelsekategori/deceived-by-design/"
+      }
+    },
+    {
+      "number": "09",
+      "name": "Corporate Accountability",
+      "tags": [
+        "Corporate",
+        "Supply Chains"
+      ],
+      "resource": {
+        "publisher": "Business & Human Rights Resource Centre · ongoing",
+        "title": "Allegations Tracker — Corporate Human Rights Abuses",
+        "body": "The single most useful open database in this space. Tracks alleged corporate human-rights abuses and each company's response — or refusal to respond. Searchable by company, country, industry, and issue. If a brand has been named in a major investigation, it is here.",
+        "url": "https://www.business-humanrights.org/en/",
+        "label": "Read at BHRRC"
+      },
+      "also": {
+        "title": "Not Fit-for-Purpose — MSI Integrity",
+        "url": "https://www.msi-integrity.org/not-fit-for-purpose/"
+      }
+    },
+    {
+      "number": "10",
+      "name": "Media & Advertising",
+      "tags": [
+        "Media",
+        "Influencers"
+      ],
+      "resource": {
+        "publisher": "UK Advertising Standards Authority & CMA · 2021 sweep",
+        "title": "An Influencer's Guide — Disclosure Compliance Monitoring",
+        "body": "The 2021 monitoring sweep documented widespread non-disclosure of paid promotion across UK influencer Instagram and TikTok accounts. The ASA followed up with public rulings against named accounts, and the accompanying Influencer's Guide remains the clearest statement of what disclosure actually requires.",
+        "url": "https://www.asa.org.uk/resource/influencers-guide.html",
+        "label": "Read at the ASA"
+      },
+      "also": {
+        "title": "Dove Self-Esteem Project",
+        "url": "https://www.dove.com/uk/dove-self-esteem-project.html"
+      }
+    }
+  ]
+}

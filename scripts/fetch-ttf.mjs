@@ -20,10 +20,11 @@ const OUT = resolve(ROOT, 'tools/fonts');
 const UA = 'Mozilla/4.0';
 
 const WANTED = [
+  { family: 'Bodoni Moda', weight: 500, file: 'BodoniModa-Medium.ttf' },
+  { family: 'Bodoni Moda', weight: 400, file: 'BodoniModa-Regular.ttf' },
   { family: 'Cormorant Garamond', weight: 600, file: 'CormorantGaramond-SemiBold.ttf' },
-  { family: 'Cormorant Garamond', weight: 400, file: 'CormorantGaramond-Regular.ttf' },
-  { family: 'Montserrat', weight: 500, file: 'Montserrat-Medium.ttf' },
-  { family: 'Montserrat', weight: 300, file: 'Montserrat-Light.ttf' },
+  { family: 'Jost', weight: 500, file: 'Jost-Medium.ttf' },
+  { family: 'Jost', weight: 300, file: 'Jost-Light.ttf' },
 ];
 
 async function main() {

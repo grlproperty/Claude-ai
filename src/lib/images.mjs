@@ -17,7 +17,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const FONT_DIR = join(ROOT, 'tools/fonts');
 const FC_DIR = join(ROOT, 'tools/.fontconfig');
 
-const C = { blush: '#EFD8D8', crimson: '#9B0000', ink: '#0A0A0A', white: '#FDFCFC' };
+const C = { blush: '#F6DFE2', crimson: '#8E0B14', ink: '#12100F', white: '#FDFCFC' };
 
 let fontsReady = false;
 
@@ -55,8 +55,8 @@ const xml = (s) =>
     .replace(/"/g, '&quot;');
 
 /**
- * Greedy wrap using per-character width ratios measured for Cormorant Garamond
- * at semibold. Approximate by design: the card has generous margins, and an
+ * Greedy wrap using per-character width ratios measured for Bodoni Moda at
+ * medium. Approximate by design: the card has generous margins, and an
  * exact text metric would mean shipping a font parser to save a few pixels.
  */
 function wrap(text, fontSize, maxWidth, maxLines = 4) {
@@ -64,10 +64,10 @@ function wrap(text, fontSize, maxWidth, maxLines = 4) {
   const wide = new Set('MWmw@'.split(''));
   const widthOf = (s) =>
     [...s].reduce((w, ch) => {
-      if (narrow.has(ch)) return w + fontSize * 0.28;
-      if (wide.has(ch)) return w + fontSize * 0.82;
-      if (ch === ' ') return w + fontSize * 0.24;
-      return w + fontSize * 0.5;
+      if (narrow.has(ch)) return w + fontSize * 0.3;
+      if (wide.has(ch)) return w + fontSize * 0.88;
+      if (ch === ' ') return w + fontSize * 0.26;
+      return w + fontSize * 0.55;
     }, 0);
 
   const lines = [];
@@ -103,21 +103,21 @@ function ogSvg({ title, eyebrow, site, kicker }) {
   <rect width="${W}" height="${H}" fill="${C.blush}"/>
   <rect x="0" y="0" width="${W}" height="10" fill="${C.crimson}"/>
   <rect x="90" y="128" width="56" height="2" fill="${C.crimson}"/>
-  <text x="168" y="136" font-family="Montserrat" font-size="19" font-weight="500"
+  <text x="168" y="136" font-family="Jost" font-size="19" font-weight="500"
         letter-spacing="4.2" fill="${C.crimson}">${xml(eyebrow.toUpperCase())}</text>
   ${lines
     .map(
       (l, i) =>
-        `<text x="90" y="${blockTop + i * size * 1.14}" font-family="Cormorant Garamond" font-size="${size}" font-weight="600" fill="${C.ink}">${xml(l)}</text>`
+        `<text x="90" y="${blockTop + i * size * 1.14}" font-family="Bodoni Moda" font-size="${size}" font-weight="500" fill="${C.ink}">${xml(l)}</text>`
     )
     .join('\n  ')}
   <rect x="90" y="${H - 132}" width="${W - 180}" height="1" fill="${C.ink}" opacity="0.16"/>
-  <text x="90" y="${H - 76}" font-family="Cormorant Garamond" font-size="40" font-weight="600"
-        letter-spacing="7" fill="${C.crimson}">FERAL</text>
-  <text x="248" y="${H - 76}" font-family="Cormorant Garamond" font-size="33" font-weight="600"
-        letter-spacing="8" fill="${C.ink}">FEMME.</text>
-  <text x="${W - 90}" y="${H - 76}" text-anchor="end" font-family="Montserrat" font-size="17"
-        font-weight="300" letter-spacing="3.4" fill="${C.ink}" opacity="0.55">${xml(kicker.toUpperCase())}</text>
+  <text x="90" y="${H - 76}" font-family="Bodoni Moda" font-size="34" font-weight="500"
+        letter-spacing="9" fill="${C.crimson}">FERAL</text>
+  <text x="248" y="${H - 76}" font-family="Bodoni Moda" font-size="34" font-weight="500"
+        letter-spacing="9" fill="${C.ink}">FEMME.</text>
+  <text x="${W - 90}" y="${H - 76}" text-anchor="end" font-family="Jost" font-size="17"
+        font-weight="300" letter-spacing="3.4" fill="${C.ink}" opacity="0.62">${xml(kicker.toUpperCase())}</text>
 </svg>`;
 }
 
@@ -127,8 +127,8 @@ function markSvg({ size = 512, background = C.blush } = {}) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
   <rect width="${size}" height="${size}" fill="${background}"/>
   <circle cx="${c}" cy="${c}" r="${size * 0.375}" fill="none" stroke="${C.crimson}" stroke-width="${size * 0.014}"/>
-  <text x="${c}" y="${c + size * 0.115}" text-anchor="middle" font-family="Cormorant Garamond"
-        font-size="${size * 0.34}" font-weight="600" letter-spacing="${size * 0.012}" fill="${C.crimson}">FF</text>
+  <text x="${c}" y="${c + size * 0.115}" text-anchor="middle" font-family="Bodoni Moda"
+        font-size="${size * 0.32}" font-weight="500" letter-spacing="${size * 0.02}" fill="${C.crimson}">FF</text>
 </svg>`;
 }
 

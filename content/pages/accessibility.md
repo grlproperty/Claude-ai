@@ -1,7 +1,7 @@
 ---
 title: Accessibility
 summary: What this platform commits to, what it currently meets, and how to report a barrier.
-order: 8
+order: 7
 ---
 
 An educational platform that cannot be read by everyone who needs it has failed at its stated purpose. This page sets out what we hold ourselves to.
@@ -16,7 +16,7 @@ Every page is built as semantic HTML with a single main landmark, an ordered hea
 
 Colour contrast for body text, headings, and interactive elements is tested against the WCAG AA thresholds. The brand palette is used in ways that keep text contrast above the required ratios rather than at the edge of them.
 
-Colour is never the sole carrier of meaning. Status indicators in the regulation tracker pair a colour with a text label.
+Colour is never the sole carrier of meaning. Category indicators across the decoders pair a colour with a text label.
 
 All functionality is operable by keyboard, with a visible focus indicator on every interactive element.
 
@@ -26,11 +26,13 @@ Motion is minimal, and everything that moves respects the `prefers-reduced-motio
 
 Text reflows to 320 pixels without horizontal scrolling. Wide content — tables and datasets — scrolls within its own container rather than moving the page.
 
-The site is usable without JavaScript. Search and filtering are progressive enhancements; every page renders its full content in HTML.
+The site is usable without JavaScript. Search, filtering, card tilt, scroll reveal, and the hero animation are all progressive enhancements; every page renders its full content in HTML without them.
 
 ## Known limitations
 
-Some primary sources we link to are PDFs published by regulators and standards bodies. We do not control their accessibility and cannot remediate them. Where a document is central to an entry, we summarise its relevant content in the entry text so that the argument does not depend on opening the PDF.
+Many sources we link to are PDFs published by newsrooms, regulators, and NGOs. We do not control their accessibility and cannot remediate them. Where a document is central to a field note, we summarise its relevant content in the note itself so the argument never depends on opening the PDF.
+
+The hero on the home page renders a WebGL animation. It is decorative, hidden from assistive technology, holds no information, renders a single static frame under `prefers-reduced-motion`, and falls back to a plain CSS pattern where WebGL is unavailable.
 
 ## Reporting a barrier
 

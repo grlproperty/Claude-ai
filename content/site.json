@@ -1,88 +1,113 @@
 {
   "name": "FERAL FEMME",
-  "nameParts": { "primary": "FERAL", "secondary": "FEMME." },
-  "tagline": "Educate. Expose. Empower.",
+  "nameParts": { "primary": "FERAL", "secondary": "FEMME", "stop": "." },
+  "tagline": "Two subjects. One machine. Same refusal to consent.",
   "motto": "Knowledge Creates Change",
-  "descriptor": "Research-based awareness · Educational activism platform",
-  "description": "FERAL FEMME is an educational activism platform that examines animal testing in the skincare and beauty industry through calm, research-based awareness. We publish primary-source research, plain-language explainers, and a public regulation tracker.",
+  "standard": "Written to be verified, not agreed with.",
+  "descriptor": "Editorial · Research · Tools",
+  "established": 2026,
+  "location": "South Africa",
+  "funding": "Self-Funded",
+  "description": "FERAL FEMME investigates every industry built on a body that could not agree to it — holding animals and women at equal weight. Public-record reporting, reframed with attribution, across ten industries, with free sustainability tools.",
   "url": "https://feral-femme.co",
-  "locale": "en-GB",
-  "established": 2024,
-  "email": "hello@feral-femme.co",
-  "pressEmail": "press@feral-femme.co",
-  "educationEmail": "education@feral-femme.co",
+  "locale": "en-ZA",
+
+  "founder": {
+    "name": "Ayden Rosemary Brown",
+    "role": "Founder & Editorial Director",
+    "email": "ayden@feral-femme.co"
+  },
+
+  "email": "info@feral-femme.co",
+  "correctionsEmail": "corrections@feral-femme.co",
 
   "social": {
     "instagram": "https://www.instagram.com/feralfemme.co",
     "instagramHandle": "@feralfemme.co"
   },
 
-  "pillars": [
-    {
-      "number": "01",
-      "title": "Research",
-      "summary": "We read the regulation, the test guidelines, and the peer-reviewed literature — then cite them in full.",
-      "detail": "Every claim on this platform is traceable to a primary source: a regulation, an OECD test guideline, a validation report, or a published study. Where evidence is contested, we say so."
-    },
-    {
-      "number": "02",
-      "title": "Educate",
-      "summary": "We translate regulatory language into plain English without flattening its complexity.",
-      "detail": "Legislation is written to be precise, not to be understood. Our explainers keep the precision and remove the barrier, so that a shopper, a student, and a policy researcher can all use the same page."
-    },
-    {
-      "number": "03",
-      "title": "Empower",
-      "summary": "Understanding a system is the precondition for changing it.",
-      "detail": "We do not tell people what to buy. We give them the structure of the industry, the meaning of each certification, and the questions worth asking — and let them decide."
-    }
-  ],
+  "positioning": {
+    "lede": "We investigate every industry built on a body that could not agree to it — and we hold animals and women at equal weight. Neither is a metaphor for the other. Both are literal.",
+    "body": "The cruelty is rarely called cruelty. It is called tradition, testing, farming, research, wellness, self-care. We translate the vocabulary, cite the source, and file the receipt — across fashion, food, beauty, wildlife, medicine, tech, and the advertising that obscures all of it."
+  },
 
   "nav": [
-    { "label": "Research", "href": "/research/" },
-    { "label": "Learn", "href": "/learn/" },
-    { "label": "Regulation", "href": "/regulation/" },
-    { "label": "Methods", "href": "/methods/" },
-    { "label": "Glossary", "href": "/glossary/" },
+    { "label": "Industries", "href": "/industries/" },
+    { "label": "Field Notes", "href": "/field-notes/" },
+    { "label": "Archive", "href": "/archive/" },
+    { "label": "Tools", "href": "/tools/" },
     { "label": "About", "href": "/about/" }
+  ],
+
+  "method": [
+    {
+      "title": "Public-Record Reporting",
+      "body": "Field notes summarise investigations that already exist in the public record — the Sunday Times, the Guardian, Reuters, AP, the New York Times, the Bureau of Investigative Journalism, peer-reviewed studies, parliamentary inquiries, regulatory filings.",
+      "stamp": "Sourced & cited"
+    },
+    {
+      "title": "Editorial Synthesis",
+      "body": "Each source is read, reframed in Feral Femme's restrained editorial voice, and connected to the broader pattern of the industry it documents. The original publisher always gets the credit.",
+      "stamp": "Reframed & attributed"
+    },
+    {
+      "title": "AI-Directed Editorial Imagery",
+      "body": "The archive's visual essays are created using AI image generation, directed by Ayden Rosemary Brown. Each image is a deliberate frame — conceptual editorial work, not documentary photography.",
+      "stamp": "Disclosed throughout"
+    },
+    {
+      "title": "Sustainability Tools",
+      "body": "Nine free interactive tools turn awareness into practice — from the Wardrobe Wear Counter and the Plant Plate Tracker to the Ingredient, Greenwashing, Certification, and Material decoders.",
+      "stamp": "Free to use"
+    },
+    {
+      "title": "The Research Briefing",
+      "body": "A monthly newsletter that connects the field notes to current reporting and points readers toward what to read, watch, and act on next.",
+      "stamp": "Monthly cadence"
+    },
+    {
+      "title": "Self-Funded Platform",
+      "body": "Feral Femme is independently funded through reader donations. No advertisers, no industry sponsorship, no editorial conflicts of interest.",
+      "stamp": "Reader-supported"
+    }
   ],
 
   "footerNav": [
     {
-      "title": "Platform",
+      "title": "Read",
       "links": [
-        { "label": "Research Index", "href": "/research/" },
-        { "label": "Learning Modules", "href": "/learn/" },
-        { "label": "Regulation Tracker", "href": "/regulation/" },
-        { "label": "Non-Animal Methods", "href": "/methods/" },
-        { "label": "Certification Guide", "href": "/certifications/" },
-        { "label": "Glossary", "href": "/glossary/" }
+        { "label": "Field Notes", "href": "/field-notes/" },
+        { "label": "Industries", "href": "/industries/" },
+        { "label": "Digital Archive", "href": "/archive/" },
+        { "label": "The Research Briefing", "href": "/briefing/" }
       ]
     },
     {
-      "title": "Organisation",
+      "title": "Tools",
+      "links": [
+        { "label": "All Tools", "href": "/tools/" },
+        { "label": "Certification Decoder", "href": "/tools/certifications/" },
+        { "label": "Greenwashing Decoder", "href": "/tools/greenwashing/" },
+        { "label": "Material Decoder", "href": "/tools/materials/" },
+        { "label": "Record Checker", "href": "/tools/record/" },
+        { "label": "Where to Act", "href": "/tools/act/" }
+      ]
+    },
+    {
+      "title": "Platform",
       "links": [
         { "label": "About", "href": "/about/" },
         { "label": "Editorial Standards", "href": "/editorial-standards/" },
-        { "label": "Funding & Independence", "href": "/funding/" },
         { "label": "Corrections", "href": "/corrections/" },
+        { "label": "Sources", "href": "/sources/" },
         { "label": "Contact", "href": "/contact/" }
-      ]
-    },
-    {
-      "title": "Participate",
-      "links": [
-        { "label": "Support the Work", "href": "/support/" },
-        { "label": "Educational Licensing", "href": "/licensing/" },
-        { "label": "The Dispatch", "href": "/dispatch/" },
-        { "label": "Take Action", "href": "/act/" }
       ]
     },
     {
       "title": "Legal",
       "links": [
-        { "label": "Privacy", "href": "/privacy/" },
-        { "label": "Terms", "href": "/terms/" },
+        { "label": "Privacy & POPIA", "href": "/privacy/" },
+        { "label": "Terms of Use", "href": "/terms/" },
         { "label": "Accessibility", "href": "/accessibility/" },
         { "label": "RSS Feed", "href": "/feed.xml" }
       ]
@@ -90,130 +115,59 @@
   ],
 
   "newsletter": {
-    "name": "The Dispatch",
+    "name": "The Research Briefing",
     "cadence": "Monthly",
-    "summary": "One monthly briefing on regulatory movement, method validation, and industry disclosure. No promotions. No affiliate links. Unsubscribe in one click.",
+    "summary": "A monthly briefing connecting the field notes to current reporting, and pointing you toward what to read, watch, and act on next. No promotions. Unsubscribe in one click.",
     "action": "",
-    "note": "Set `newsletter.action` in content/site.json to your provider's form endpoint (Buttondown, ConvertKit, MailerLite, Listmonk). Until then the form degrades to a mailto: link."
+    "note": "Set `newsletter.action` to your provider's form endpoint. Until then the form degrades to a mailto: link."
   },
 
-  "support": {
-    "headline": "This platform is funded by its readers",
-    "summary": "FERAL FEMME takes no money from cosmetics manufacturers, retailers, or certification bodies. It carries no advertising and no affiliate links. That independence is only possible because readers pay for it directly.",
-    "currency": "GBP",
-    "currencySymbol": "£",
-    "tiers": [
-      {
-        "id": "reader",
-        "name": "Reader",
-        "price": 5,
-        "period": "month",
-        "summary": "Keeps the archive open and free for everyone.",
-        "benefits": [
-          "The Dispatch, delivered monthly",
-          "Early access to new research before publication",
-          "Named in the annual funding report (optional)"
-        ],
-        "link": ""
-      },
-      {
-        "id": "researcher",
-        "name": "Researcher",
-        "price": 15,
-        "period": "month",
-        "featured": true,
-        "summary": "Funds a working day of primary-source research each quarter.",
-        "benefits": [
-          "Everything in Reader",
-          "Full citation exports (BibTeX / RIS) for every study",
-          "Quarterly regulation digest with change tracking",
-          "Access to working notes and source documents"
-        ],
-        "link": ""
-      },
-      {
-        "id": "institution",
-        "name": "Institution",
-        "price": 75,
-        "period": "month",
-        "summary": "For libraries, departments, NGOs, and newsrooms.",
-        "benefits": [
-          "Everything in Researcher",
-          "Site-wide licence for classroom and internal use",
-          "Slide decks and lesson plans for every module",
-          "Direct line for research and fact-checking requests"
-        ],
-        "link": ""
-      }
+  "donate": {
+    "headline": "Fund the research directly",
+    "summary": "Feral Femme is self-funded and reader-supported. A donation funds independent investigative work with no strings attached — no advertisers, no industry sponsorship, no editorial conflicts of interest.",
+    "currency": "USD",
+    "currencySymbol": "$",
+    "processor": "PayPal",
+    "processorNote": "PayPal charges in USD. Your bank sets the final rate.",
+    "link": "",
+    "amounts": [
+      { "value": 5, "label": "Supporter", "detail": "Contributes toward source-database access and hosting." },
+      { "value": 25, "label": "Funds one research investigation", "detail": "Covers source database access, editorial research time, and open-access publication.", "featured": true },
+      { "value": 100, "label": "Funds a week of research", "detail": "Covers a full week of source-database access, editorial research time, and writing." },
+      { "value": 500, "label": "Sponsors a full month of research", "detail": "Covers all platform costs — hosting, database access, editorial work, and distribution — for one full month." }
     ],
-    "oneOff": {
-      "label": "One-off contribution",
-      "summary": "A single contribution of any size, with no ongoing commitment.",
-      "link": ""
-    },
-    "note": "Set each tier's `link` to a Stripe Payment Link, Ko-fi, or Open Collective URL. Empty links render as an enquiry mailto: so the page never ships a dead button."
-  },
-
-  "licensing": {
-    "summary": "Schools, universities, and organisations can license the FERAL FEMME curriculum for teaching and internal training.",
-    "packages": [
-      {
-        "name": "Classroom",
-        "price": "£180 / year",
-        "audience": "Single school, college, or department",
-        "includes": [
-          "All learning modules as editable slide decks",
-          "Lesson plans with learning outcomes and assessment prompts",
-          "Printable source packs for seminar use",
-          "Annual content refresh"
-        ]
-      },
-      {
-        "name": "Institution",
-        "price": "£950 / year",
-        "audience": "University, NGO, or multi-site organisation",
-        "includes": [
-          "Everything in Classroom, licensed site-wide",
-          "Regulation tracker data export (CSV / JSON)",
-          "Two live sessions per year, remote",
-          "Co-branded module front matter"
-        ]
-      },
-      {
-        "name": "Commissioned Research",
-        "price": "On enquiry",
-        "audience": "Policy bodies, newsrooms, and funders",
-        "includes": [
-          "Scoped literature and regulation review",
-          "Written report with full citation apparatus",
-          "Published openly unless commercially confidential",
-          "Funding source disclosed on publication"
-        ]
-      }
-    ]
+    "causes": [
+      "General Research Fund",
+      "Animal Testing Investigation",
+      "Fast Fashion Reporting",
+      "Food Systems Research",
+      "Greenwashing Coverage",
+      "Tech & Labour Research"
+    ],
+    "note": "Set `donate.link` to a PayPal.me or hosted-button URL. Empty renders an enquiry mailto: so the page never ships a dead button."
   },
 
   "brand": {
     "colours": {
-      "blush": "#EFD8D8",
-      "crimson": "#9B0000",
-      "black": "#0A0A0A",
-      "white": "#FDFCFC"
+      "blush": "#F6DFE2",
+      "blushDeep": "#EFD8DC",
+      "blushPale": "#F9E7EA",
+      "crimson": "#8E0B14",
+      "crimsonDeep": "#6E1220",
+      "black": "#12100F",
+      "white": "#FDFCFC",
+      "dim": "#4A3C3E"
     },
-    "proportions": "60% Soft Blush · 25% Deep Crimson · 10% Pure Black · 5% Clean White",
     "typography": {
-      "display": "Cormorant Garamond",
-      "body": "Montserrat"
+      "display": "Bodoni Moda",
+      "editorial": "Cormorant Garamond",
+      "ui": "Jost"
     }
   },
 
   "analytics": {
     "provider": "",
-    "domain": "feral-femme.co",
-    "note": "Set provider to 'plausible' or 'umami' plus `src` to enable a cookieless, GDPR-friendly analytics script. Left empty, no third-party script is emitted at all."
-  },
-
-  "search": {
-    "enabled": true
+    "measurementId": "G-GJ387VT80N",
+    "note": "The previous build loaded Google Analytics. It is disabled here by default: set `provider` to 'ga4' to re-enable it, and disclose it on /privacy/ first. Left empty, no third-party script is emitted."
   }
 }

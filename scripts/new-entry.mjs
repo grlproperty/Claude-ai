@@ -18,8 +18,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const CONTENT = join(ROOT, 'content');
 
 const KINDS = {
-  research: { dir: 'research', label: 'research entry', route: '/research/' },
-  guide: { dir: 'guides', label: 'learning module', route: '/learn/' },
+  note: { dir: 'field-notes', label: 'field note', route: '/field-notes/' },
   page: { dir: 'pages', label: 'page', route: '/' },
 };
 
@@ -39,9 +38,8 @@ function parseArgs(argv) {
 const usage = () => {
   console.error(
     'Usage:\n' +
-      '  npm run new -- research "Entry title" [--topic Regulation]\n' +
-      '  npm run new -- guide    "Module title" [--order 6]\n' +
-      '  npm run new -- page     "Page title"\n'
+      '  npm run new -- note "Field note title" [--topic Fashion]\n' +
+      '  npm run new -- page "Page title"\n'
   );
   process.exit(1);
 };
@@ -61,18 +59,16 @@ async function main() {
   await mkdir(dir, { recursive: true });
 
   const slug = slugify(flags.slug ?? title);
-  const today = new Date().toISOString().slice(0, 10);
 
   // Learning modules and pages are ordered by a numeric filename prefix that
   // never appears in the URL; research entries are ordered by date.
-  let filename = `${slug}.md`;
-  let order = null;
-  if (kind.dir !== 'research') {
-    const existing = (await readdir(dir)).filter((f) => f.endsWith('.md'));
-    const highest = existing.reduce((n, f) => Math.max(n, Number(/^(\d+)/.exec(f)?.[1] ?? 0)), 0);
-    order = Number(flags.order ?? highest + 1);
-    if (kind.dir === 'guides') filename = `${String(order).padStart(2, '0')}-${slug}.md`;
-  }
+  // Both collections order by a numeric filename prefix that never appears in
+  // the URL, so a new entry lands at the end unless --order says otherwise.
+  const existing = (await readdir(dir)).filter((f) => f.endsWith('.md'));
+  const highest = existing.reduce((n, f) => Math.max(n, Number(/^(\d+)/.exec(f)?.[1] ?? 0)), 0);
+  const order = Number(flags.order ?? highest + 1);
+  const filename =
+    kind.dir === 'field-notes' ? `${String(order).padStart(2, '0')}-${slug}.md` : `${slug}.md`;
 
   const path = join(dir, filename);
   if (existsSync(path)) {
@@ -80,19 +76,16 @@ async function main() {
     process.exit(1);
   }
 
+  const topic = flags.topic ?? 'Corporate';
   const front =
-    kind.dir === 'research'
-      ? `---\ntitle: ${title}\nsummary: One or two sentences stating what this entry establishes. This is the text that appears in the archive and in link previews, so it should stand alone.\ntopic: ${flags.topic ?? 'Regulation'}\ndate: ${today}\nupdated: ${today}\n---\n`
-      : kind.dir === 'guides'
-        ? `---\ntitle: ${title}\nsummary: What this module gives the reader, in one sentence.\norder: ${order}\nduration: 8\noutcomes:\n  - First thing the reader will be able to do\n  - Second thing the reader will be able to do\n---\n`
-        : `---\ntitle: ${title}\nsummary: One sentence describing this page.\norder: ${order}\n---\n`;
+    kind.dir === 'field-notes'
+      ? `---\ntitle: ${JSON.stringify(title)}\nsummary: "One or two sentences stating what this note establishes. This is the text that appears in the index and in link previews, so it should stand alone."\ntopic: ${JSON.stringify(topic)}\ntopics: ${JSON.stringify([topic])}\nform: "Long read"\nduration: 6\norder: ${order}\n---\n`
+      : `---\ntitle: ${JSON.stringify(title)}\nsummary: "One sentence describing this page."\norder: ${order}\n---\n`;
 
   const body =
-    kind.dir === 'research'
-      ? `\nOpen with the claim this entry corrects or the question it answers. No preamble.\n\n## First section\n\nBody copy. Every factual assertion here must be traceable to something in the Sources list below. Where the evidence is contested, say so rather than picking a side silently.\n\n## Second section\n\nMore body copy.\n\n## What to take from this\n\nThe generalisable point, stated plainly.\n\n## Sources\n\n1. Instrument or study, with full citation. https://example.org/primary-source\n2. Second source.\n`
-      : kind.dir === 'guides'
-        ? `\nOpen by saying what this module establishes and what it assumes from the previous one.\n\n## First section\n\nBody copy.\n\n## Second section\n\nBody copy.\n\n## Check yourself\n\nA question the reader should be able to answer without looking back.\n\nA second question.\n`
-        : `\nBody copy.\n\n## First section\n\nMore body copy.\n`;
+    kind.dir === 'field-notes'
+      ? `\nOpen with the claim this note corrects or the question it answers. No preamble.\n\nName the original publisher in the body, not only in a citation — the reporting belongs to them.\n\n## First section\n\nBody copy. Every factual assertion must be traceable to a named publisher, regulator, or research body. Where the evidence is contested, say so rather than picking a side silently.\n\n## Second section\n\nMore body copy.\n\n## What to take from this\n\nThe generalisable point, stated plainly.\n`
+      : `\nBody copy.\n\n## First section\n\nMore body copy.\n`;
 
   await writeFile(path, front + body);
 

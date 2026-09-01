@@ -2,19 +2,17 @@
   "name": "feral-femme",
   "version": "1.0.0",
   "private": true,
-  "description": "FERAL FEMME — educational activism platform exposing animal testing in the beauty industry through research-based awareness.",
+  "description": "FERAL FEMME \u2014 editorial, research, and free sustainability tools across ten industries.",
   "type": "module",
   "engines": {
     "node": ">=20"
   },
   "scripts": {
     "build": "node src/build.mjs",
-    "images": "node scripts/optimise-images.mjs",
     "dev": "node scripts/dev-server.mjs",
     "new": "node scripts/new-entry.mjs",
     "social": "node scripts/social-kit.mjs",
     "check": "node scripts/check.mjs",
-    "prebuild": "node scripts/optimise-images.mjs",
     "ci": "npm run build && npm run check"
   },
   "devDependencies": {

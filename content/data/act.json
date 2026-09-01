@@ -1,0 +1,69 @@
+{
+  "title": "Where to Act",
+  "slug": "act",
+  "reviewed": "2026-08-31",
+  "reviewCycleDays": 365,
+  "summary": "Reading is the first step; this is the second. A directory of established organisations working on the two subjects we hold at equal weight — women and animals — across the industries we cover.",
+  "organisations": [
+    {
+      "name": "Human Rights Watch — Women's Rights",
+      "cat": "women",
+      "what": "Investigates and reports on women's rights globally, including healthcare and bodily-autonomy restrictions.",
+      "url": "https://www.hrw.org/topic/womens-rights"
+    },
+    {
+      "name": "UN Women",
+      "cat": "women",
+      "what": "UN body for gender equality; runs programmes and publishes data on women in crisis contexts.",
+      "url": "https://www.unwomen.org/en/get-involved"
+    },
+    {
+      "name": "Amnesty International",
+      "cat": "women",
+      "what": "Campaigns on human rights including women's rights and bodily autonomy; petitions and urgent actions.",
+      "url": "https://www.amnesty.org/en/get-involved/"
+    },
+    {
+      "name": "Malala Fund",
+      "cat": "women",
+      "what": "Works for girls' education, including in Afghanistan where secondary and higher education are banned.",
+      "url": "https://malala.org/"
+    },
+    {
+      "name": "World Animal Protection",
+      "cat": "animals",
+      "what": "Global animal-welfare organisation working on farming, wildlife, and animals in disasters.",
+      "url": "https://www.worldanimalprotection.org/"
+    },
+    {
+      "name": "FOUR PAWS",
+      "cat": "animals",
+      "what": "International animal-welfare organisation; strong on fur, wool (mulesing), and wild-animal trade.",
+      "url": "https://www.four-paws.org/campaigns-topics"
+    },
+    {
+      "name": "Cruelty Free International",
+      "cat": "animals",
+      "what": "Works to end animal testing worldwide; runs the Leaping Bunny programme.",
+      "url": "https://crueltyfreeinternational.org/what-you-can-do"
+    },
+    {
+      "name": "Collective Fashion Justice",
+      "cat": "both",
+      "what": "Connects fashion's harm to both animals and people — a 'total ethics fashion' approach.",
+      "url": "https://www.collectivefashionjustice.org/"
+    },
+    {
+      "name": "Changing Markets Foundation",
+      "cat": "environment",
+      "what": "Investigates greenwashing and corporate environmental claims across sectors.",
+      "url": "https://changingmarkets.org/"
+    },
+    {
+      "name": "Fashion Revolution",
+      "cat": "both",
+      "what": "Global movement for transparency in fashion supply chains — garment-worker rights and environmental impact.",
+      "url": "https://www.fashionrevolution.org/get-involved/"
+    }
+  ]
+}

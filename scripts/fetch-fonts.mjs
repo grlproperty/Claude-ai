@@ -15,9 +15,12 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const FONT_DIR = resolve(ROOT, 'src/assets/fonts');
 const CSS_OUT = resolve(ROOT, 'src/assets/css/fonts.css');
 
+// The brand stack: Bodoni Moda for the wordmark and display, Cormorant Garamond
+// for editorial headings and body serif, Jost for labels and UI.
 const SPEC =
-  'family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,600' +
-  '&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400';
+  'family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;1,6..96,400' +
+  '&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,600' +
+  '&family=Jost:ital,wght@0,300;0,400;0,500;0,600;1,400';
 
 const UA =
   'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';

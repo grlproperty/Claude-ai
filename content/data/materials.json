@@ -1,0 +1,198 @@
+{
+  "title": "Material Decoder",
+  "slug": "materials",
+  "reviewed": "2026-08-31",
+  "reviewCycleDays": 180,
+  "summary": "Read a care label and want to know what a material really is — and what it costs an animal or the planet? Search a fibre, leather, filling, or fabric.",
+  "materials": [
+    {
+      "name": "Leather",
+      "cat": "animal",
+      "what": "Tanned hide, mostly a co-product of the beef and dairy industries (cattle), but also goat, sheep, pig, and — in luxury — exotic species.",
+      "welfare": "Tied directly to the meat/dairy system: the same slaughter, plus welfare issues in some sourcing countries. ‘Genuine leather’ tells you nothing about the animal’s life.",
+      "environment": "Chrome tanning uses heavy metals and pollutes waterways where poorly regulated; cattle rearing is land- and emissions-intensive. Vegetable tanning is cleaner but still hide-based.",
+      "alternatives": "Cactus (Desserto), mycelium/mushroom (Mylo, Reishi), cork, Piñatex (pineapple leaf), apple and grape leather, and recycled/bio-based synthetics. Note some ‘vegan leathers’ are plastic-based.",
+      "src": "FOUR PAWS Leather; Collective Fashion Justice; Higg MSI."
+    },
+    {
+      "name": "Wool",
+      "cat": "animal",
+      "what": "Fibre shorn from sheep (merino, lambswool), also goats (mohair, cashmere) and others. Marketed as natural and renewable.",
+      "welfare": "Key issue is mulesing — cutting skin from lambs’ hindquarters, still legal in parts of Australia. Shearing can be rushed and rough on a piecework system. Look for non-mulesed / RWS-certified wool.",
+      "environment": "Biodegradable and durable, but sheep are significant methane emitters and grazing drives land use. Lower microplastic shedding than synthetics.",
+      "alternatives": "Recycled wool, organic non-mulesed wool (RWS), and plant fibres — organic cotton, hemp, linen, TENCEL lyocell, and innovative fibres like nettle.",
+      "src": "Textile Exchange RWS; FOUR PAWS; PETA mulesing investigations."
+    },
+    {
+      "name": "Cashmere",
+      "cat": "animal",
+      "what": "Ultra-fine undercoat combed or shorn from cashmere goats, largely from Mongolia and China. Very high yield per garment relative to the animal.",
+      "welfare": "Combing can be painful if rushed; goats are vulnerable to cold after harvesting. Rapid demand has driven welfare and herd-size problems.",
+      "environment": "Overgrazing by cashmere goats is a major driver of grassland desertification in Mongolia and Inner Mongolia. High land footprint per kilo of fibre.",
+      "alternatives": "Recycled cashmere, ethically-certified cashmere (e.g. SFA, The Good Cashmere Standard), and soft plant/regenerated fibres like TENCEL or organic cotton blends.",
+      "src": "Sustainable Fibre Alliance; Textile Exchange."
+    },
+    {
+      "name": "Down & Feathers",
+      "cat": "animal",
+      "what": "The soft under-plumage of ducks and geese, used as insulation in jackets and bedding.",
+      "welfare": "Live-plucking and force-feeding (for foie gras co-product down) are the core concerns. RDS/Downpass certification prohibits both — look for it explicitly.",
+      "environment": "A natural, high-warmth, long-lived insulator with a lower footprint than making equivalent synthetic loft, but tied to poultry farming.",
+      "alternatives": "Recycled down, and plant/recycled synthetic insulations — PrimaLoft Bio, recycled polyester fill, kapok, and plant-down (e.g. FLWRDWN).",
+      "src": "Textile Exchange RDS; FOUR PAWS."
+    },
+    {
+      "name": "Silk",
+      "cat": "animal",
+      "what": "Filament unwound from the cocoon of the silkworm (the domesticated moth Bombyx mori).",
+      "welfare": "Conventional silk boils or steams the cocoons with the pupae still inside, killing them, to keep the filament unbroken. ‘Peace silk’/Ahimsa silk lets the moth emerge first.",
+      "environment": "Biodegradable and renewable, but sericulture is water- and energy-intensive and mulberry cultivation uses land and agrochemicals.",
+      "alternatives": "Peace/Ahimsa silk, and plant/regenerated fibres — TENCEL, cupro, bamboo lyocell, and the lab-grown protein ‘spider silk’ (e.g. Brewed Protein).",
+      "src": "Collective Fashion Justice; Higg MSI."
+    },
+    {
+      "name": "Fur",
+      "cat": "animal",
+      "what": "Pelt with the hair still attached, from farmed mink, fox, raccoon dog, chinchilla, or trapped wild animals.",
+      "welfare": "Farmed fur animals are typically kept in small wire cages and killed by gassing or electrocution. Trapping causes prolonged suffering. Fur farming is now banned or being phased out in much of Europe.",
+      "environment": "Pelt dressing uses toxic chemicals to stop biodegradation; fur farming carries disease-spillover risk (mink and COVID-19).",
+      "alternatives": "There is no ethical case for new fur. For the look, choose recycled or plant-based faux textures — though check these aren’t pure virgin plastic — or simply other materials entirely.",
+      "src": "Humane Society International; FOUR PAWS; Fur Free Alliance."
+    },
+    {
+      "name": "Mohair",
+      "cat": "animal",
+      "what": "Lustrous fibre from the Angora goat, much of it from South Africa — the world’s largest producer.",
+      "welfare": "PETA’s 2018 investigation into South African mohair farms prompted many brands to drop it; the industry responded with the Responsible Mohair Standard (RMS). Look for RMS certification.",
+      "environment": "Natural and biodegradable, but goat grazing carries land-use impact similar to other pastoral fibres.",
+      "alternatives": "RMS-certified mohair, recycled fibres, and soft plant/regenerated alternatives (brushed organic cotton, TENCEL blends).",
+      "src": "Textile Exchange RMS; PETA mohair investigation 2018."
+    },
+    {
+      "name": "Angora",
+      "cat": "animal",
+      "what": "Extremely soft fibre from the Angora rabbit (distinct from Angora goat mohair).",
+      "welfare": "Undercover footage of live-plucking of rabbits led most major retailers to ban angora. The welfare risk is high and hard to verify.",
+      "environment": "Low volume; impacts dominated by the welfare issue rather than land or water.",
+      "alternatives": "Brushed cotton, recycled fibres, and soft synthetics or regenerated cellulosics for the same halo/softness.",
+      "src": "PETA angora investigations; retailer bans (2013 onward)."
+    },
+    {
+      "name": "Exotic skins",
+      "cat": "animal",
+      "what": "Leather from crocodiles, alligators, snakes, lizards, and ostriches, used in luxury bags, shoes, and straps.",
+      "welfare": "Serious welfare concerns in farming and killing methods; some sourcing intersects with wildlife-trafficking and CITES-protected species.",
+      "environment": "Small volume but high per-item impact; several species are trade-restricted under CITES.",
+      "alternatives": "Embossed plant leathers and textured bio-based materials replicate the look without the animal or the trafficking risk.",
+      "src": "CITES; FOUR PAWS; Collective Fashion Justice."
+    },
+    {
+      "name": "Viscose / Rayon",
+      "cat": "plant",
+      "what": "A regenerated cellulosic fibre made by chemically dissolving wood pulp and re-forming it as a filament. Semi-synthetic, not a true natural fibre.",
+      "welfare": "No animal welfare issue, but conventional viscose has been linked to deforestation of ancient/endangered forests for pulp.",
+      "environment": "The viscose process uses carbon disulphide and other hazardous chemicals; poorly-controlled factories cause serious pollution and worker harm. Sourcing matters enormously.",
+      "alternatives": "Closed-loop lyocell (TENCEL) recycles its solvent and uses certified wood; look for FSC pulp and CanopyStyle-audited suppliers. EcoVero is a lower-impact viscose.",
+      "src": "Canopy Hot Button Report; Changing Markets Foundation."
+    },
+    {
+      "name": "Cotton",
+      "cat": "plant",
+      "what": "The classic plant fibre from the cotton plant’s seed boll. Breathable, biodegradable, and animal-free.",
+      "welfare": "No animal welfare issue; the concerns are human — forced labour has been documented in some cotton supply chains (e.g. certain regions), and pesticide exposure for farmers.",
+      "environment": "Conventional cotton is thirsty and pesticide-heavy. Organic and rain-fed cotton cut chemical and (sometimes) water use, but organic can need more land.",
+      "alternatives": "Organic cotton (GOTS), recycled cotton, and lower-thirst fibres — hemp, linen, and TENCEL — for many of the same uses.",
+      "src": "Textile Exchange; Better Cotton Initiative."
+    },
+    {
+      "name": "Hemp & Linen",
+      "cat": "plant",
+      "what": "Bast fibres from the hemp and flax plants — among the oldest and lowest-impact textiles. Animal-free.",
+      "welfare": "No animal welfare issue.",
+      "environment": "Both need little water, few or no pesticides, improve soil, and are fully biodegradable — among the most sustainable mainstream fibres. Main downside is a coarser hand and more creasing.",
+      "alternatives": "These ARE the alternative — reach for them in place of thirstier or animal fibres. Blends with organic cotton or TENCEL soften the feel.",
+      "src": "Higg MSI; Textile Exchange."
+    },
+    {
+      "name": "Recycled Polyester (rPET)",
+      "cat": "synthetic",
+      "what": "Polyester spun from recycled plastic (often bottles) rather than virgin fossil feedstock. Common in activewear and fleece.",
+      "welfare": "No animal welfare issue.",
+      "environment": "Lower carbon and waste than virgin polyester, but it still SHEDS MICROPLASTICS in every wash and is hard to recycle again. A bridge, not a destination.",
+      "alternatives": "Prefer natural fibres for anything washed often; use a microfibre-catching wash bag; and choose rPET over virgin synthetic when a synthetic is genuinely needed.",
+      "src": "Textile Exchange; Ellen MacArthur Foundation."
+    },
+    {
+      "name": "Bamboo fabric",
+      "cat": "plant",
+      "what": "Usually ‘bamboo’ clothing is actually bamboo VISCOSE — the plant is dissolved and regenerated like rayon, not woven from the raw plant.",
+      "welfare": "No animal welfare issue.",
+      "environment": "Bamboo grows fast with little input, but the viscose conversion is chemically intensive — so soft ‘bamboo’ is only as clean as the factory. True mechanically-processed bamboo linen is rare and coarse.",
+      "alternatives": "Bamboo lyocell (closed-loop) over bamboo viscose; or TENCEL, hemp, and organic cotton for a verified lower-impact choice.",
+      "src": "US FTC bamboo labelling rulings; Canopy."
+    },
+    {
+      "name": "Alpaca",
+      "cat": "animal",
+      "what": "Fibre shorn from alpacas, marketed as a soft, warm luxury wool alternative from South America (mainly Peru).",
+      "welfare": "Shearing can be rough; a 2020 investigation documented handling that distressed the animals. No universal welfare standard covers most alpaca supply.",
+      "environment": "Lower water use than cashmere and less land-degrading than goats, but still a grazing-animal fibre with land and methane costs.",
+      "alternatives": "Recycled wool, organic cotton, Tencel/lyocell blends for warmth.",
+      "src": "Textile Exchange; PETA alpaca investigation (2020)."
+    },
+    {
+      "name": "Shearling",
+      "cat": "animal",
+      "what": "A sheep or lamb skin tanned with the wool still on — hide and fleece in one piece. Not the same as shorn wool.",
+      "welfare": "Requires the animal to be slaughtered for its skin; a slaughter product, not a shearing by-product.",
+      "environment": "Combines leather-tanning impacts (chemicals) with animal-rearing land and emissions costs.",
+      "alternatives": "Faux shearling from recycled polyester, or Tencel-pile fabrics.",
+      "src": "Collective Fashion Justice; FOUR PAWS."
+    },
+    {
+      "name": "Peace Silk (Ahimsa)",
+      "cat": "animal",
+      "what": "Silk where moths are allowed to emerge from the cocoon before it is processed, marketed as a cruelty-reduced alternative to conventional silk.",
+      "welfare": "Better than conventional silk (which boils the pupae alive), but the moths are still bred, often flightless, and short-lived. ‘Cruelty-free’ claims are contested.",
+      "environment": "Similar land and water footprint to conventional silk; lower yield can mean more resource per metre.",
+      "alternatives": "Tencel, cupro (regenerated cotton linter), or high-quality viscose for drape.",
+      "src": "Textile Exchange; peer-reviewed sericulture studies."
+    },
+    {
+      "name": "Merino wool",
+      "cat": "animal",
+      "what": "Fine wool from merino sheep, dominant in activewear and base layers, mostly from Australia and New Zealand.",
+      "welfare": "The key issue is mulesing — cutting skin from the lamb’s hindquarters, often without pain relief, to prevent flystrike. Non-mulesed and RWS-certified wool exists.",
+      "environment": "Grazing land use and methane; overgrazing can degrade soil. Biodegradable at end of life, unlike synthetics.",
+      "alternatives": "Non-mulesed or RWS-certified merino; recycled wool; plant-based performance fibres.",
+      "src": "Textile Exchange RWS; FOUR PAWS mulesing reporting."
+    },
+    {
+      "name": "Organic cotton",
+      "cat": "plant",
+      "what": "Cotton grown without synthetic pesticides or fertilisers, certified by standards such as GOTS or OCS.",
+      "welfare": "No animal welfare issue. Labour conditions vary — certification and audits matter, and audits can be gamed.",
+      "environment": "Lower chemical load and often rain-fed, but still a thirsty crop; certification does not automatically mean low water use.",
+      "alternatives": "Recycled cotton, hemp, linen for lower water impact.",
+      "src": "Textile Exchange; GOTS."
+    },
+    {
+      "name": "Tencel / Lyocell",
+      "cat": "plant",
+      "what": "A regenerated cellulose fibre made from wood pulp in a closed-loop solvent process, branded Tencel by Lenzing.",
+      "welfare": "No animal welfare issue.",
+      "environment": "Closed-loop process recycles ~99% of solvent; low water and land use if wood is responsibly sourced (FSC/PEFC). Among the lower-impact fibres.",
+      "alternatives": "Already a strong alternative; look for FSC-certified feedstock.",
+      "src": "Canopy; Lenzing published data."
+    },
+    {
+      "name": "Deadstock / recycled fabric",
+      "cat": "synthetic",
+      "what": "Leftover or reclaimed fabric diverted from waste — marketed as circular. ‘Deadstock’ is loosely defined and sometimes overstated.",
+      "welfare": "Depends on the original fibre; a deadstock wool is still wool.",
+      "environment": "Genuinely reduces waste when real, but the term is unregulated and used to greenwash overproduction. Verify the source.",
+      "alternatives": "Certified recycled content (GRS) with traceability.",
+      "src": "Changing Markets Foundation; Textile Exchange GRS."
+    }
+  ]
+}

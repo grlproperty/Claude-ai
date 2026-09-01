@@ -1,10 +1,13 @@
 # FERAL FEMME
 
-The website for FERAL FEMME — an educational activism platform examining animal
-testing in the skincare and beauty industry through calm, research-based
-awareness.
+The website for FERAL FEMME — an editorial, research, and sustainability-tools
+platform investigating every industry built on a body that could not agree to
+it, holding animals and women at equal weight.
 
-**Educate. Expose. Empower.** · [feral-femme.co](https://feral-femme.co) ·
+**Two subjects. One machine. Same refusal to consent.**
+
+Est. 2026 · South Africa · Self-funded ·
+[feral-femme.co](https://feral-femme.co) ·
 [@feralfemme.co](https://www.instagram.com/feralfemme.co)
 
 ---
@@ -19,15 +22,21 @@ It publishes:
 
 | Route | What it is |
 | --- | --- |
-| `/` | Home — pillars, latest research, dataset index |
-| `/research/` | Long-form entries, filterable and searchable |
-| `/learn/` | A five-module curriculum, ordered and cross-linked |
-| `/regulation/` | Global regulation tracker, filterable by status and region |
-| `/methods/` | Non-animal test methods, endpoint by endpoint |
-| `/certifications/` | What each certification scheme actually verifies |
-| `/glossary/` | Terminology, searchable |
-| `/support/`, `/licensing/` | Membership, institutional licensing, commissions |
-| `/about/`, `/funding/`, `/editorial-standards/`, `/corrections/` | The institutional pages that make an ethics platform credible |
+| `/` | Home — WebGL cage hero, method, industries, tools |
+| `/field-notes/` | 18 long-form and short notes, filterable and searchable |
+| `/industries/` | The ten industries, each with its standing reference |
+| `/archive/` | 60 numbered entries in the visual essay series |
+| `/library/` | 42 investigations and databases, linked to their originals |
+| `/tools/` | Index of the six free reference tools |
+| `/tools/certifications/` | 22 schemes — who runs them, what they verify, what they do not |
+| `/tools/greenwashing/` | 36 terms — what is implied, what is meant |
+| `/tools/materials/` | 21 materials — welfare position, environmental cost, alternatives |
+| `/tools/record/` | 21 documented findings against named companies |
+| `/tools/act/` | 10 organisations, filterable by subject |
+| `/sources/` | The 54 publishers and bodies this platform cites |
+| `/donate/` | Reader funding — the platform's only revenue |
+| `/about/`, `/editorial-standards/`, `/corrections/`, `/contact/` | The institutional pages |
+| `/privacy/`, `/terms/`, `/accessibility/` | POPIA-aligned legal pages |
 
 Plus `/feed.xml`, `/sitemap.xml`, `/robots.txt`, `/search-index.json`, a social
 preview card per entry, and a generated favicon and app-icon set.
@@ -48,34 +57,30 @@ Node 20 or newer.
 All content lives in `content/`. Nothing else needs to be touched to publish.
 
 ```bash
-npm run new -- research "The Title"  --topic Regulation
-npm run new -- guide    "Module Title" --order 6
-npm run new -- page     "Page Title"
+npm run new -- note "Field note title" --topic Fashion
+npm run new -- page "Page title"
 ```
 
-- `content/research/*.md` — research entries, ordered by `date`
-- `content/guides/*.md` — learning modules, ordered by the numeric filename
+- `content/field-notes/*.md` — field notes, ordered by the numeric filename
   prefix, which never appears in the URL
 - `content/pages/*.md` — institutional pages
-- `content/data/*.json` — the four maintained datasets
-- `content/site.json` — navigation, membership tiers, newsletter, analytics
+- `content/data/*.json` — the nine maintained datasets
+- `content/site.json` — navigation, positioning, method, donation tiers,
+  newsletter, analytics
 
 ### Front matter
 
 ```yaml
 ---
-title: The Marketing Ban Is Not a Testing Ban
-summary: One or two sentences that stand alone in the archive and in link previews.
-topic: Regulation          # groups the entry and drives the archive filter
-date: 2026-02-11
-updated: 2026-08-31        # shown as "Reviewed"
-featured: true             # at most one; leads the home page
-image: /assets/img/editorial-portrait-1200.webp
+title: "What \"Cage-Free\" Actually Means"
+summary: "One or two sentences that stand alone in the index and in link previews."
+topic: "Animals"                 # the primary topic
+topics: ["Animals", "Note"]      # every topic; drives the index filter
+form: "Short"                    # or "Long read"
+duration: 3                      # minutes
+order: 4                         # position in the index
 ---
 ```
-
-Learning modules use `order`, `duration`, and an `outcomes:` list instead of
-`topic` and `date`.
 
 ## Verification
 
@@ -88,6 +93,9 @@ Learning modules use `order`, `duration`, and an `outcomes:` list instead of
   from `site.css` itself, so the check cannot drift from what ships
 
 It warns, without failing, when a dataset has passed its declared review cycle.
+
+Contrast is checked for text at 4.5:1 and for control borders at 3:1, the two
+thresholds WCAG actually sets.
 
 This runs on every pull request and before every deploy. The accessibility page
 makes public commitments; this is what holds the site to them.
@@ -108,18 +116,38 @@ this is the mechanism that keeps that visible.
 
 ## Design system
 
-The brand kit is implemented, not approximated. `src/assets/css/site.css` holds
-the whole system in one file.
+`src/assets/css/site.css` holds the whole system in one file.
 
-- **Palette** — Soft Blush `#EFD8D8`, Deep Crimson `#9B0000`, Pure Black
-  `#0A0A0A`, Clean White `#FDFCFC`, used at the specified 60/25/10/5
-  proportions. Every derived tone is a mix of those four; no new hues.
-- **Type** — Cormorant Garamond for display, Montserrat for body and UI. Two
-  families, as the brand rules require. Both are self-hosted from
-  `src/assets/fonts/`, so the site makes no third-party requests and no visitor
-  IP address reaches a font CDN.
-- **Imagery** — the campaign photography, graded to the brand's stated
-  direction (desaturated, cool-toned) by `scripts/optimise-images.mjs`.
+- **Palette** — Blush `#F6DFE2`, Crimson `#8E0B14`, Ink `#12100F`, White
+  `#FDFCFC`, plus two blush tints and a dim. Every de-emphasis level is an
+  alpha over those, and the alphas are the lowest that clear WCAG AA.
+- **Type** — three faces, each with one job. **Bodoni Moda** carries the
+  wordmark, hero, and figures; a didone's extreme thick/thin is the visual
+  signature. **Cormorant Garamond** carries editorial headings and long-form
+  serif. **Jost** carries labels, UI, and data. All self-hosted from
+  `src/assets/fonts/`, so the site makes no third-party requests and no
+  visitor IP address reaches a font CDN.
+- **Depth** — one elevation ramp (`--lift-1/2/3`), pointer-tilted cards, and
+  scroll reveal. Every one of them is a progressive enhancement.
+
+### The cage
+
+`src/assets/js/cage.js` renders the hero's wireframe birdcage in raw WebGL —
+bowed bars, rings, and a suspension chain, rotating slowly with pointer
+parallax. It is the brand's own motif rather than a generic shader.
+
+No 3D library: the scene is roughly 2,000 line segments, so a 600KB framework
+would be almost entirely dead weight on a page whose point is that it loads
+fast and requests nothing from anyone else. It degrades in three steps — no
+WebGL falls back to a CSS lattice, `prefers-reduced-motion` renders one static
+frame, and going offscreen or backgrounding the tab pauses the loop.
+
+### Imagery
+
+This build ships **no photography**. The archive's editorial imagery is
+AI-directed work by the founder and is not bundled here; archive plates render
+typographically instead. Every visual on the site is generated at build time or
+drawn in the browser.
 
 Regenerating either font set is a one-off, and the output is committed so the
 build stays hermetic:
@@ -137,24 +165,24 @@ headings, a pull quote, and the closing reflection card. 1080 × 1350 PNG plus a
 caption file, written to `social/<slug>/`.
 
 ```bash
-npm run social                                       # every entry
-npm run social -- marketing-ban-is-not-a-testing-ban  # one entry
+npm run social                                    # every field note
+npm run social -- what-cage-free-actually-means   # one note
 ```
 
 ## Configuration
 
 Everything commercial is configured in `content/site.json`, not in code.
 
-- **Membership** — set each tier's `link` to a Stripe Payment Link, Ko-fi, or
-  Open Collective URL. Empty links render as an enquiry `mailto:`, so the page
-  is publishable before the payment provider is connected and never ships a
-  dead button.
+- **Donations** — set `donate.link` to a PayPal.me or hosted-button URL. Empty
+  renders an enquiry `mailto:`, so the page is publishable before the processor
+  is connected and never ships a dead button.
 - **Newsletter** — set `newsletter.action` to your provider's form endpoint
   (Buttondown, ConvertKit, MailerLite, Listmonk). Until then the form degrades
   to `mailto:`.
-- **Analytics** — left empty, no third-party script is emitted at all. Set
-  `provider` and `src` only for a cookieless, aggregate-only provider, and
-  update `/privacy/` to name it before switching it on.
+- **Analytics** — **no analytics script is emitted.** The previous build loaded
+  Google Analytics (`G-GJ387VT80N`); that is retained in `site.json` but
+  disabled. Set `analytics.provider` to `"ga4"` to re-enable it, and update
+  `/privacy/` to disclose it first.
 
 ## Deployment
 
@@ -166,7 +194,7 @@ The output is a plain directory, so Netlify, Cloudflare Pages, Vercel, or any
 static host works equally well — build command `npm run build`, output `dist`.
 
 **One deployment caveat.** Every asset and link is an absolute path (`/assets/…`,
-`/research/…`), which assumes the site is served from the root of a domain. That
+`/field-notes/…`), which assumes the site is served from the root of a domain. That
 is correct for `feral-femme.co` and for a `*.github.io` user site, but a GitHub
 Pages *project* site serves from a subpath (`/<repo>/`) and every path would
 break. Use a custom domain, or a user/organisation site, rather than a project
@@ -176,5 +204,6 @@ path.
 
 Written content is published under
 [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/). The FERAL FEMME
-name and marks, and all campaign photography, are fully reserved. Cormorant
-Garamond and Montserrat are licensed under the SIL Open Font License 1.1.
+name and marks, and the archive's editorial imagery, are fully reserved. Bodoni
+Moda, Cormorant Garamond, and Jost are licensed under the SIL Open Font
+License 1.1.
