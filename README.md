@@ -144,22 +144,33 @@ frame, and going offscreen or backgrounding the tab pauses the loop.
 
 ### Imagery
 
-This build ships **no photography**. Archive plates render typographically, and
-every visual on the site is generated at build time or drawn in the browser.
+The archive carries **67 visual essays pulled from Instagram** — AI-directed
+editorial work by the founder, disclosed as such wherever it appears. Everything
+else on the site is generated at build time or drawn in the browser.
+
+Images are committed as WebP derivatives at two widths. The 36MB of originals
+live in a gitignored cache, so the repository carries only what ships.
 
 ## Pulling the Instagram archive
 
-`npm run instagram` fetches the visual essays from the `instagram` connector
-(the Graph-API-backed one), downloads each image, writes WebP derivatives at two
-widths graded to the brand's photography direction, and records the posts in
-`content/data/instagram.json`. The archive page then leads with a gallery; until
-the first pull it stays typographic, and the build never fails for the absence.
+`npm run instagram` fetches the visual essays, downloads each image, writes WebP
+derivatives at two widths graded to the brand's photography direction, and
+records the posts in `content/data/instagram.json`. The archive page leads with
+the gallery; before the first pull it stays typographic, and the build never
+fails for the absence.
+
+Either Instagram connector works. `instagram_public` is the default because it
+needs no Graph API app review; `instagram` carries extra insight fields but the
+same media set. On a video or reel the still comes from `media_thumbnail_url` —
+`media_url` is the MP4 itself.
 
 ```bash
-WINDSOR_API_KEY=... npm run instagram          # fetch, download, optimise
-npm run instagram -- --dry-run                 # list what would be fetched
-npm run instagram -- --limit 20                # only the newest 20
-npm run instagram                              # re-optimise from cached data
+WINDSOR_API_KEY=... npm run instagram            # fetch, download, optimise
+npm run instagram -- --dry-run                   # list what would be fetched
+npm run instagram -- --limit 20                  # only the newest 20
+npm run instagram -- --from rows.json            # a saved Windsor payload
+npm run instagram -- --connector instagram       # the Graph-API connector
+npm run instagram                                # re-optimise cached data
 ```
 
 Get the key from the Windsor dashboard under Settings → API. It is only needed
@@ -171,9 +182,10 @@ why the images are downloaded and committed rather than hot-linked. Re-running
 is cheap: anything already on disk is skipped.
 
 **If the pull reports a plan error**, more accounts are connected to Windsor than
-its plan allows, and it returns the error text in place of every field. Keep the
-`instagram` account and disconnect the others at
-https://onboard.windsor.ai/, then run it again.
+its plan allows, and it returns the error text in place of every field rather
+than as an HTTP error. Disconnect the surplus accounts at
+https://onboard.windsor.ai/ and run it again. The script detects that specific
+response and refuses to write it into the site as content.
 
 Regenerating either font set is a one-off, and the output is committed so the
 build stays hermetic:
