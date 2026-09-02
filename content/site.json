@@ -118,7 +118,7 @@
     "name": "The Research Briefing",
     "cadence": "Sent on publication",
     "summary": "Every field note in full, sent the day it is published — the whole note, not a summary with a link back. No promotions, no product recommendations, one-click unsubscribe.",
-    "action": "https://assets.mailerlite.com/jsonp/2610955/forms/197498746009814230/subscribe",
+    "action": "https://assets.mailerlite.com/jsonp/2610955/forms/197500769051608208/subscribe",
     "emailField": "fields[email]",
     "fields": { "ml-submit": "1", "anticsrf": "true" },
     "confirmText": "Thank you — check your inbox to confirm your subscription.",
@@ -126,7 +126,7 @@
     "fromName": "FERAL FEMME",
     "fromEmail": "info@feral-femme.co",
     "automationStart": "2026-09-02",
-    "note": "`action` is MailerLite embedded form 197498746009814230 on account 2610955, posted to assets.mailerlite.com rather than the dashboard.mailerlite.com address MailerLite's own share page carries: that one 301s here, and fetch downgrades a POST to a GET when it follows a 301, which would drop the address. `emailField` and `fields` are the names that endpoint expects. The form has double opt-in on, which is why `confirmText` tells the reader to confirm. `group` is the list the form feeds and the briefing sends to; `automationStart` is the cutover before which no note is ever mailed. Clearing `action` degrades the form to a mailto: link."
+    "note": "`action` is MailerLite embedded form 197500769051608208 on account 2610955, posted to assets.mailerlite.com rather than the dashboard.mailerlite.com address MailerLite's own share page carries: that one 301s here, and fetch downgrades a POST to a GET when it follows a 301, which would drop the address. `emailField` and `fields` are the names that endpoint expects. The form has double opt-in on, which is why `confirmText` tells the reader to confirm. `group` is the list the form feeds and the briefing sends to; `automationStart` is the cutover before which no note is ever mailed. Clearing `action` degrades the form to a mailto: link."
   },
 
   "donate": {
