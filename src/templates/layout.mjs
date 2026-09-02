@@ -15,6 +15,7 @@ function masthead(site, current) {
     .join('');
 
   return `<header class="masthead">
+  <div class="masthead__progress" data-progress aria-hidden="true"></div>
   <div class="wrap masthead__inner">
     ${wordmark(site)}
     <nav class="nav" id="nav" aria-label="Primary">${links}</nav>

@@ -95,6 +95,88 @@
     }
   }
 
+  // ---- reveal stagger ----------------------------------------------------
+  // A row of cards that all arrive on the same frame reads as one block
+  // sliding, which is the thing that makes a reveal look automated. Offsetting
+  // siblings by a few tens of milliseconds reads as them settling instead.
+  // Capped: past the fifth the delay is longer than anyone will wait for.
+  if (!reduced) {
+    // The count is parked on the parent node itself. An object keyed by the
+    // node would stringify every parent to "[object HTMLDivElement]" and share
+    // one counter across the whole page, so the first card in the second group
+    // starts already delayed.
+    var counted = [];
+    Array.prototype.forEach.call(reveals, function (el) {
+      var parent = el.parentNode;
+      if (!parent) return;
+      if (parent.revealIndex == null) {
+        parent.revealIndex = 0;
+        counted.push(parent);
+      }
+      el.style.transitionDelay = Math.min(parent.revealIndex, 5) * 65 + 'ms';
+      parent.revealIndex += 1;
+    });
+    counted.forEach(function (parent) {
+      delete parent.revealIndex;
+    });
+  }
+
+  // ---- reading progress --------------------------------------------------
+  // How far through the page you are, on the rule the masthead already sits
+  // on. No new furniture: the line is there either way, this only fills it.
+  var progress = document.querySelector('[data-progress]');
+  if (progress && !reduced) {
+    var ticking = false;
+    var setProgress = function () {
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      var pct = max > 0 ? Math.min(1, Math.max(0, (window.scrollY || 0) / max)) : 0;
+      progress.style.transform = 'scaleX(' + pct.toFixed(4) + ')';
+      ticking = false;
+    };
+    window.addEventListener(
+      'scroll',
+      function () {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(setProgress);
+      },
+      { passive: true }
+    );
+    window.addEventListener('resize', setProgress, { passive: true });
+    // Lazy images land after the first measurement and make the page taller,
+    // which strands the bar short of full at the bottom. Remeasure when the
+    // document actually changes size rather than only when it is scrolled.
+    if ('ResizeObserver' in window) new ResizeObserver(setProgress).observe(document.body);
+    window.addEventListener('load', setProgress);
+    setProgress();
+  }
+
+  // ---- hero parallax -----------------------------------------------------
+  // The plate holds back very slightly against the scroll, which separates it
+  // from the type in front of it. Small on purpose: enough to feel, not enough
+  // to notice, and it stops entirely once the hero is off screen.
+  var plate = document.querySelector('.hero__plate');
+  if (plate && !reduced && window.matchMedia('(min-width: 68rem)').matches) {
+    var hero = plate.closest('.hero');
+    var plateTicking = false;
+    var setParallax = function () {
+      var y = window.scrollY || 0;
+      var limit = hero ? hero.offsetHeight : 800;
+      if (y < limit) plate.style.transform = 'translate3d(0,' + (y * 0.075).toFixed(2) + 'px,0)';
+      plateTicking = false;
+    };
+    window.addEventListener(
+      'scroll',
+      function () {
+        if (plateTicking) return;
+        plateTicking = true;
+        requestAnimationFrame(setParallax);
+      },
+      { passive: true }
+    );
+    setParallax();
+  }
+
   // ---- subscribe form ----------------------------------------------------
   // Posts in the background so the reader stays on the page. Without this the
   // browser still submits natively to the provider, which is why the form is

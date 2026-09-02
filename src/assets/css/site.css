@@ -385,6 +385,7 @@ code {
 
 .masthead {
   position: sticky;
+  isolation: isolate;
   top: 0;
   z-index: 100;
   background: rgba(246, 223, 226, 0);
@@ -1880,6 +1881,27 @@ code {
 
 .prose a.crosslink::after {
   content: '';
+}
+
+/* The masthead already ends in a hairline rule; this fills it from the left as
+   you read. Sitting on the rule rather than above it means the page gains a
+   progress indicator without gaining a bar. */
+.masthead__progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--crimson);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .masthead__progress {
+    display: none;
+  }
 }
 
 /* ------------------------------------------------------------ entry page */
