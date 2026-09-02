@@ -84,7 +84,7 @@
   // The plate is looked up on every frame rather than captured once: in the
   // single-file build the hero is replaced whenever the reader navigates home,
   // and a held reference would keep moving an element no longer in the page.
-  if (!reduced && window.matchMedia('(min-width: 68rem)').matches) {
+  if (!reduced) {
     var plateTicking = false;
     var setParallax = function () {
       plateTicking = false;
@@ -93,7 +93,10 @@
       var hero = plate.closest('.hero');
       var y = window.scrollY || 0;
       var limit = hero ? hero.offsetHeight : 800;
-      if (y < limit) plate.style.transform = 'translate3d(0,' + (y * 0.075).toFixed(2) + 'px,0)';
+      // Gentler on a narrow screen, where the plate has less room above it
+      // before it meets what follows — but present, rather than absent.
+      var rate = window.innerWidth >= 1088 ? 0.075 : 0.04;
+      if (y < limit) plate.style.transform = 'translate3d(0,' + (y * rate).toFixed(2) + 'px,0)';
     };
     window.addEventListener(
       'scroll',
@@ -141,6 +144,56 @@
       el.addEventListener('pointerleave', reset);
       el.addEventListener('blur', reset, true);
     });
+  }
+
+  // ---- touch press -------------------------------------------------------
+  // The tilt above needs a pointer, so on a touch screen the cards had no
+  // response at all. A press gives the same acknowledgement in the language
+  // that device has, and it lifts on release rather than snapping.
+  if (!reduced && !window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    var press = function (el, on) {
+      el.style.transition = 'transform .28s cubic-bezier(.2,.8,.3,1)';
+      el.style.transform = on ? 'scale(.985)' : '';
+    };
+    Array.prototype.forEach.call(document.querySelectorAll('.tilt'), function (el) {
+      el.addEventListener('touchstart', function () { press(el, true); }, { passive: true });
+      ['touchend', 'touchcancel', 'touchmove'].forEach(function (ev) {
+        el.addEventListener(ev, function () { press(el, false); }, { passive: true });
+      });
+    });
+  }
+
+  // ---- counting figures --------------------------------------------------
+  // The stat band counts real things — notes written, entries filed — so the
+  // figures run up to their value when they arrive. Read from the rendered
+  // text, so nothing has to be duplicated into an attribute, and left exactly
+  // as written if it is not a plain number.
+  if (!reduced && 'IntersectionObserver' in window) {
+    var figures = document.querySelectorAll('.stat__figure');
+    if (figures.length) {
+      var counter = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            counter.unobserve(entry.target);
+            var el = entry.target;
+            var target = parseInt(el.textContent, 10);
+            if (!isFinite(target) || String(target) !== el.textContent.trim()) return;
+            var started = null;
+            var tick = function (now) {
+              if (started === null) started = now;
+              var k = Math.min(1, (now - started) / 900);
+              el.textContent = String(Math.round(target * (1 - Math.pow(1 - k, 3))));
+              if (k < 1) requestAnimationFrame(tick);
+            };
+            el.textContent = '0';
+            requestAnimationFrame(tick);
+          });
+        },
+        { threshold: 0.6 }
+      );
+      Array.prototype.forEach.call(figures, function (el) { counter.observe(el); });
+    }
   }
 
   // ---- scroll reveal -----------------------------------------------------

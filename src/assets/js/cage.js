@@ -460,6 +460,11 @@
   var pointerX = 0;
   var pointerY = 0;
   var lastScroll = window.scrollY || 0;
+  // Absolute scroll position drives a slow turn, so the cage shows a different
+  // face as the hero leaves. The swing impulses below sit on top of it. This
+  // is the part that works identically on a phone, where there is no pointer.
+  var scrollTurn = 0;
+  var scrollTurnTarget = 0;
 
   if (!reduced) {
     window.addEventListener(
@@ -481,8 +486,8 @@
         var y = window.scrollY || 0;
         // Scrolling nudges it the way a passing draught would.
         swing.vz += Math.max(-40, Math.min(40, y - lastScroll)) * 0.0016;
-        swing.vspin += Math.max(-40, Math.min(40, y - lastScroll)) * 0.0009;
         lastScroll = y;
+        scrollTurnTarget = (y / Math.max(1, window.innerHeight)) * 0.85;
       },
       { passive: true }
     );
@@ -529,11 +534,16 @@
     // the photograph cut it in half, which loses the one thing a cage has to
     // read as: a closed shape. It now hangs at a distance where hook, dome,
     // body and base all sit inside the column between the type and the plate.
-    var depth = wide ? 8.6 : 10.2;
-    var offsetX = wide ? 0.16 : 0;
+    var depth = wide ? 8.6 : 9.4;
+    // On a narrow screen it hangs to the right of the type and runs off the
+    // edge, which is how it earns the room to be an object there rather than
+    // the faint texture it used to be.
+    var offsetX = wide ? 0.16 : 0.62;
     // Hung below the wordmark rather than across it. Crossing the letterforms
     // costs the one piece of type the whole page is built around.
-    var offsetY = wide ? -0.62 : 0.1;
+    // Low enough on a phone that the crown clears the buttons; what it loses
+    // behind the plate below reads as depth rather than as truncation.
+    var offsetY = wide ? -0.62 : -1.0;
 
     var aspect = width / height;
     var proj = perspective(0.8, aspect, 0.1, 40);
@@ -543,7 +553,9 @@
     // ones do not — every position collides with running text — so there it
     // drops back to a texture behind the type rather than something competing
     // with it. Same geometry, different job.
-    gl.uniform1f(uAlpha, wide ? 0.9 : 0.42);
+    // The same object on both. It used to drop to a third of its weight on a
+    // phone, which is most of why the two did not feel like the same site.
+    gl.uniform1f(uAlpha, wide ? 0.9 : 0.82);
 
     if (built < 1) {
       built = Math.min(1, (now - t0) / 1000 / BUILD);
@@ -556,9 +568,13 @@
     // Rotated about the hook, not the middle: a hung object pivots where it is
     // held. Translate the pivot to the origin, swing, and put it back.
     var pivot = HEIGHT / 2 + 0.3;
+    scrollTurn += (scrollTurnTarget - scrollTurn) * Math.min(1, dt * 4);
     var hang = multiply(
       translate(0, -pivot, 0),
-      multiply(rotateZ(swing.z + idle), multiply(rotateX(swing.x), rotateY(swing.spin + elapsed * 0.05)))
+      multiply(
+        rotateZ(swing.z + idle),
+        multiply(rotateX(swing.x), rotateY(swing.spin + scrollTurn + elapsed * 0.05))
+      )
     );
     var model = multiply(translate(0, pivot, 0), hang);
     var mv = multiply(translate(offsetX, offsetY, -depth), multiply(rotateX(-0.06), model));

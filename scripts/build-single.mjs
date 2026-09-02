@@ -204,7 +204,9 @@ async function main() {
   var miss = ${JSON.stringify(rewrite(notFound))};
   var views = {};
 
-  function render(path) {
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function paint(path) {
     var t = views[path];
     main.innerHTML = t ? t.textContent.replace(/<\\\/script/gi, '</script') : miss;
     document.title = t ? t.getAttribute('data-title') : 'Page not found';
@@ -215,6 +217,34 @@ async function main() {
       if (FF.initFilters) FF.initFilters();
       if (FF.initCage) FF.initCage();
     }
+  }
+
+  /**
+   * Pages cross-fade rather than cutting. Without it a swap is a hard jump
+   * with no sense of having gone anywhere — the one place the single-file
+   * build feels unlike the site it is standing in for. The outgoing page is
+   * given a moment to leave, then the new one is painted and scrolled to the
+   * top before it is shown, so the reader never sees the middle of it.
+   */
+  function render(path, animate) {
+    if (reduced || !animate) {
+      paint(path);
+      main.style.opacity = '';
+      main.style.transform = '';
+      return;
+    }
+    main.style.transition = 'opacity .16s ease, transform .16s ease';
+    main.style.opacity = '0';
+    main.style.transform = 'translateY(6px)';
+    setTimeout(function () {
+      paint(path);
+      window.scrollTo(0, 0);
+      requestAnimationFrame(function () {
+        main.style.transition = 'opacity .34s cubic-bezier(.2,.8,.3,1), transform .34s cubic-bezier(.2,.8,.3,1)';
+        main.style.opacity = '1';
+        main.style.transform = 'none';
+      });
+    }, 160);
   }
 
   function current() {
@@ -231,8 +261,10 @@ async function main() {
     var path = current() || '/';
     if (path !== showing) {
       showing = path;
-      render(path);
-      if (scroll) window.scrollTo(0, 0);
+      render(path, scroll);
+      // The animated path scrolls to the top itself, once the new page is in
+      // place — doing it here would scroll the outgoing one.
+      if (scroll && reduced) window.scrollTo(0, 0);
     } else if (location.hash && location.hash.indexOf('#/') !== 0) {
       var el = document.getElementById(location.hash.slice(1));
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
