@@ -26,6 +26,8 @@
     "note": "`profiles` drives the Find us page and the footer. Add an entry per platform; nothing else needs changing.",
     "profiles": [
       { "name": "Instagram", "handle": "@feralfemme.co", "url": "https://www.instagram.com/feralfemme.co", "what": "The visual essays, published first and in full." },
+      { "name": "Facebook", "handle": "Feral Femme", "url": "https://www.facebook.com/share/19Cqr8uTip/", "what": "Field notes and corrections, posted in full for people who read there." },
+      { "name": "TikTok", "handle": "@feral.femme.co", "url": "https://www.tiktok.com/@feral.femme.co", "what": "The short form — one claim, one source, in under a minute." },
       { "name": "LinkedIn", "handle": "Feral Femme", "url": "https://www.linkedin.com/company/feral-femme/", "what": "The company page — research, partnerships, and speaking." }
     ]
   },

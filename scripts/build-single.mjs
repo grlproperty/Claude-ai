@@ -261,8 +261,17 @@ async function main() {
     var t = views[path];
     main.innerHTML = t ? t.textContent.replace(/<\\\/script/gi, '</script') : miss;
     document.title = t ? t.getAttribute('data-title') : 'Page not found';
+    // The masthead sits outside <main>, so it survives the swap — including
+    // the mobile menu's open state. Closing the panel without also resetting
+    // the button leaves it reading "Close" over a shut menu, and telling a
+    // screen reader it is expanded.
     var nav = document.getElementById('nav');
     if (nav) nav.setAttribute('data-open', 'false');
+    var toggle = document.querySelector('.nav-toggle');
+    if (toggle) {
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.textContent = 'Menu';
+    }
     if (window.FF) {
       if (FF.initContent) FF.initContent();
       if (FF.initFilters) FF.initFilters();
@@ -298,16 +307,48 @@ async function main() {
     }, 160);
   }
 
+  /**
+   * Every route ends in a slash, and an address arriving from outside often
+   * does not — a link in a bio, a pasted URL, something typed from memory.
+   * Matching those strictly is how a working page becomes a 404 for a reader
+   * who did nothing wrong, so the near misses are resolved rather than
+   * rejected. Only the exact key is used to look the view up.
+   */
+  function resolve(path) {
+    if (!path) return '/';
+    var q = path.indexOf('?');
+    if (q > -1) path = path.slice(0, q);
+    if (path.charAt(0) !== '/') path = '/' + path;
+    if (views[path]) return path;
+    if (path.charAt(path.length - 1) !== '/' && views[path + '/']) return path + '/';
+    if (path.length > 1 && path.charAt(path.length - 1) === '/' && views[path.slice(0, -1)])
+      return path.slice(0, -1);
+    var low = path.toLowerCase();
+    if (views[low]) return low;
+    if (views[low + '/']) return low + '/';
+    return path;
+  }
+
   function current() {
     var h = location.hash;
     // Only #/ is a route. #main and #industries are anchors within the page
     // that is already showing, and re-rendering on those would throw away the
     // reader's position every time they used the skip link.
-    return h.indexOf('#/') === 0 ? h.slice(1) : null;
+    if (h.indexOf('#/') === 0) return resolve(h.slice(1));
+
+    // No route in the fragment. If the server handed us a path anyway — an
+    // .htaccess that sends every address here, or a host that serves this file
+    // for anything it cannot find — that path is what the reader asked for.
+    var p = location.pathname;
+    if (p && p !== '/' && p !== '/index.html') {
+      var hit = resolve(p);
+      if (views[hit]) return hit;
+    }
+    return null;
   }
 
   // Rendered by the document itself, so the first pass has nothing to do.
-  var showing = (location.hash.indexOf('#/') === 0 ? location.hash.slice(1) : '/') === '/' ? '/' : null;
+  var showing = '/';
   function apply(scroll) {
     var path = current() || '/';
     if (path !== showing) {
@@ -333,6 +374,15 @@ async function main() {
       views[t.getAttribute('data-route')] = t;
     });
     apply(false);
+  }
+
+  // A path-shaped arrival gets the fragment it should have had, so that going
+  // back, sharing, or reloading all land on the same page as the first visit.
+  if (location.hash.indexOf('#/') !== 0 && location.pathname !== '/' && location.pathname !== '/index.html') {
+    var landed = location.pathname;
+    document.addEventListener('DOMContentLoaded', function () {
+      if (views[resolve(landed)]) history.replaceState(null, '', '#' + resolve(landed));
+    });
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
@@ -417,9 +467,29 @@ async function main() {
 `
   );
   copied.push('404.html');
-  const htaccess = join(ROOT, 'public', '.htaccess');
-  if (existsSync(htaccess)) {
-    await writeFile(join(OUT, '.htaccess'), await readFile(htaccess));
+  // The shared .htaccess plus the one rule only this build needs. In the
+  // normal build /find-us/ is a real directory; here it is nothing at all, so
+  // without this an address someone typed, pasted or put in a bio dies at the
+  // server before the router ever sees it. Anything that is not a real file
+  // is handed to index.html, and the router reads the path off location.
+  const shared = join(ROOT, 'public', '.htaccess');
+  if (existsSync(shared)) {
+    const spa = `
+
+# --- single-file build only -------------------------------------------------
+#
+# Every page lives inside index.html. A request for /find-us/ is not a file on
+# disk, so it has to be handed to the document that can render it; the router
+# then reads location.pathname and shows the right page. Real files — the feed,
+# robots.txt, the manifest — are matched first and served as themselves.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ /index.html [L]
+</IfModule>
+`;
+    await writeFile(join(OUT, '.htaccess'), (await readFile(shared, 'utf8')) + spa);
     copied.push('.htaccess');
   }
 
