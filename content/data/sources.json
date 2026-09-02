@@ -1,7 +1,7 @@
 {
   "title": "Source Authorities",
   "slug": "sources",
-  "reviewed": "2026-08-31",
+  "reviewed": "2026-09-02",
   "reviewCycleDays": 365,
   "summary": "The publishers, regulators, and research bodies this platform cites. Every field note links back to the original; this is the standing list of who those originals come from.",
   "authorities": [
@@ -167,7 +167,7 @@
     },
     {
       "name": "Changing Markets Foundation",
-      "url": "https://changingmarkets.org/reports/"
+      "url": "https://changingmarkets.org/our-work/"
     },
     {
       "name": "Ellen MacArthur Foundation",

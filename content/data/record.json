@@ -1,7 +1,7 @@
 {
   "title": "Record Checker",
   "slug": "record",
-  "reviewed": "2026-08-31",
+  "reviewed": "2026-09-02",
   "reviewCycleDays": 120,
   "summary": "Documented regulatory actions, court rulings, and formal findings, each tied to a named public source. This holds only what the public record shows. Absence of a record is not evidence of good practice.",
   "findings": [
@@ -10,7 +10,7 @@
       "sector": "Food / meat",
       "finding": "NY Attorney General sued JBS USA (Feb 2024) over its 'Net Zero by 2040' marketing; separately paid US$4M in fines (Jan 2025) over child-labour violations at US facilities.",
       "src": "NY Attorney General; US Dept. of Labor.",
-      "url": "https://ag.ny.gov/press-release/2024/attorney-general-james-sues-jbs-usa-fraudulent-net-zero-climate-claims"
+      "url": "https://ag.ny.gov/press-release/2024/attorney-general-james-sues-worlds-largest-beef-producer-misrepresenting"
     },
     {
       "name": "TotalEnergies",
@@ -87,14 +87,14 @@
       "sector": "Beauty / skincare",
       "finding": "Settled with the US FTC over fake reviews — the CEO and staff posted reviews of their own products on Sephora.com and used a VPN to evade detection. Settlement reached; no admission of fault.",
       "src": "US FTC settlement (2019)",
-      "url": "https://www.ftc.gov/news-events/news/press-releases/2019/10/cosmetics-firm-settles-ftc-allegations-it-deceived-consumers-through-fake-online-reviews"
+      "url": "https://www.ftc.gov/legal-library/browse/cases-proceedings/192-3008-sunday-riley-modern-skincare-llc-matter"
     },
     {
       "name": "Grande Cosmetics",
       "sector": "Beauty / lash & brow",
       "finding": "Agreed to a US$6.25M class-action settlement (Jan 2024) over claims it failed to disclose that its serums contain isopropyl cloprostenate, alleged to carry undisclosed side-effect risks. Company maintains products are safe.",
       "src": "Class-action settlement (2024)",
-      "url": "https://topclassactions.com/lawsuit-settlements/lawsuit-news/grande-cosmetics-6-25m-class-action-settlement/"
+      "url": "https://topclassactions.com/lawsuit-settlements/closed-settlements/grande-cosmetics-false-advertising-6-25m-class-action-lawsuit-settlement/"
     },
     {
       "name": "Sephora",

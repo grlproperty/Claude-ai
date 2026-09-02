@@ -1,7 +1,7 @@
 {
   "title": "Industries We Document",
   "slug": "industries",
-  "reviewed": "2026-08-31",
+  "reviewed": "2026-09-02",
   "reviewCycleDays": 180,
   "summary": "Ten industries, one pattern. Each is built somewhere on a body that could not agree to it. For each we keep a standing reference — the single most useful public investigation or database in that field — alongside our own field notes.",
   "industries": [
@@ -71,10 +71,10 @@
         "Wildlife"
       ],
       "resource": {
-        "publisher": "World Animal Protection · 2020",
-        "title": "The Hidden Cost of Wildlife Tourism",
-        "body": "Audit of wildlife tourism attractions globally — elephant rides, tiger selfies, dolphin shows. WAP's scoring methodology ranks each attraction type on welfare impact, with detailed field documentation. Triggered changes in TripAdvisor's listing policies and several tour-operator commitments.",
-        "url": "https://www.worldanimalprotection.org/our-work/animals-wild/wildlife-not-entertainers/",
+        "publisher": "World Animal Protection · ongoing research programme",
+        "title": "Wildlife Tourism Investigations — Tracking the Travel Industry",
+        "body": "World Animal Protection's standing research library on wildlife used for entertainment. Tracking the Travel Industry scores named travel companies and booking platforms on the attractions they sell; Paradise Lost and Bred to Entertain document conditions on the ground in Bali and Thailand. The scoring methodology is published, so a claim about a specific operator can be traced back to what was actually observed.",
+        "url": "https://www.worldanimalprotection.us/research/",
         "label": "Read at WAP"
       },
       "also": {
@@ -151,12 +151,12 @@
         "publisher": "UK Competition and Markets Authority · 2022–ongoing",
         "title": "Green Claims Code — Investigations into ASOS, Boohoo, Asda and Unilever",
         "body": "The CMA's enforcement portfolio against misleading environmental claims. The 2022 ASOS / Boohoo / Asda case forced commitments to substantiate or remove sustainability claims. The 2023 Unilever investigation extended the same scrutiny to FMCG.",
-        "url": "https://www.gov.uk/government/news/cma-investigates-fashion-brands-for-greenwashing",
+        "url": "https://www.gov.uk/government/news/green-claims-cma-secures-landmark-changes-from-asos-boohoo-and-asda",
         "label": "Read at GOV.UK"
       },
       "also": {
         "title": "Deceived by Design — Forbrukerrådet",
-        "url": "https://www.forbrukerradet.no/undersokelse/no-undersokelsekategori/deceived-by-design/"
+        "url": "https://www.forbrukerradet.no/side/facebook-and-google-manipulate-users-into-sharing-personal-data/"
       }
     },
     {

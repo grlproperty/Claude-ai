@@ -1,7 +1,7 @@
 {
   "title": "The Reading List",
   "slug": "library",
-  "reviewed": "2026-08-31",
+  "reviewed": "2026-09-02",
   "reviewCycleDays": 180,
   "summary": "The investigations, databases, and reports we return to. Every one is public, published by a named organisation, and linked to its original. This is the shelf the field notes are built from.",
   "entries": [
@@ -51,10 +51,10 @@
         "Fashion",
         "Labour"
       ],
-      "publisher": "Clean Clothes Campaign · ongoing",
-      "title": "Living Wage Reports & Brand Tracker",
-      "summary": "CCC publishes country-by-country research on the gap between garment-worker wages and a calculable living wage. Their Filthy Rich Fashion Tycoons report contrasted brand owner net worths with the years a Bangladeshi garment worker would need to earn one of those fortunes. Hard to argue with.",
-      "url": "https://cleanclothes.org/livingwage"
+      "publisher": "Clean Clothes Campaign · 2025 roadmap, ongoing research",
+      "title": "The Living Wage Roadmap & Brand Tracker",
+      "summary": "CCC publishes country-by-country research on the gap between garment-worker wages and a calculable living wage, and in 2025 set out a Living Wage Roadmap — a sequenced set of demands brands can be measured against rather than one distant target. Their Filthy Rich Fashion Tycoons work contrasted brand-owner net worths with the years a Bangladeshi garment worker would need to earn one of those fortunes. Hard to argue with.",
+      "url": "https://cleanclothes.org/news/2025/ccc-publishes-a-living-wage-roadmap"
     },
     {
       "tags": [
@@ -91,10 +91,10 @@
         "Animals",
         "Wildlife"
       ],
-      "publisher": "World Animal Protection · 2020",
-      "title": "The Hidden Cost of Wildlife Tourism",
-      "summary": "Audit of wildlife tourism attractions globally — elephant rides, tiger selfies, dolphin shows. WAP's scoring methodology ranks each attraction type on welfare impact, with detailed field documentation. Triggered changes in TripAdvisor's listing policies and several tour operator commitments.",
-      "url": "https://www.worldanimalprotection.org/our-work/animals-wild/wildlife-not-entertainers/"
+      "publisher": "World Animal Protection · ongoing research programme",
+      "title": "Wildlife Tourism Investigations — Tracking the Travel Industry",
+      "summary": "World Animal Protection's standing research library on wildlife used for entertainment. Tracking the Travel Industry scores named travel companies and booking platforms on the attractions they sell; Paradise Lost and Bred to Entertain document conditions on the ground in Bali and Thailand. The scoring methodology is published, so a claim about a specific operator can be traced back to what was actually observed.",
+      "url": "https://www.worldanimalprotection.us/research/"
     },
     {
       "tags": [
@@ -175,7 +175,7 @@
       "publisher": "UK Competition and Markets Authority · 2022–ongoing",
       "title": "Green Claims Code — Investigations into ASOS, Boohoo, Asda, Unilever",
       "summary": "The CMA's enforcement portfolio against misleading environmental claims. The 2022 ASOS / Boohoo / Asda case forced commitments to substantiate or remove sustainability claims. The 2023 Unilever investigation extended to FMCG. Read alongside the CMA's published Green Claims Code for what regulators actually expect of brands.",
-      "url": "https://www.gov.uk/government/news/cma-investigates-fashion-brands-for-greenwashing"
+      "url": "https://www.gov.uk/government/news/green-claims-cma-secures-landmark-changes-from-asos-boohoo-and-asda"
     },
     {
       "tags": [
@@ -185,7 +185,7 @@
       "publisher": "Norwegian Consumer Council · 2018",
       "title": "Deceived by Design: Dark Patterns in Privacy Settings",
       "summary": "The foundational report on dark patterns in consent design — Facebook, Google, Windows 10 analysed in detail. Established the vocabulary now used by regulators (forced action, framing, false sense of urgency). Five years later, EU's Digital Services Act explicitly bans many of the patterns this report catalogued.",
-      "url": "https://www.forbrukerradet.no/undersokelse/no-undersokelsekategori/deceived-by-design/"
+      "url": "https://www.forbrukerradet.no/side/facebook-and-google-manipulate-users-into-sharing-personal-data/"
     },
     {
       "tags": [
@@ -232,10 +232,10 @@
         "Beauty",
         "Consumer"
       ],
-      "publisher": "Beauty Counter / Environmental Working Group · 2023",
+      "publisher": "Environmental Working Group · 2023",
       "title": "\"What's the Deal With Beauty Counter?\" — A Look at Better Beauty Advocacy",
       "summary": "Beauty Counter (now Counter Brands) built a brand on cosmetics-policy advocacy — pushing for federal cosmetics reform that ultimately became MoCRA. The trajectory is documented in their public submissions to Congress, the Senate HELP Committee record, and EWG's reporting on the multi-year legislative push. A rare example of an industry actor lobbying for stricter regulation of itself.",
-      "url": "https://www.ewg.org/news-insights/news/2022/12/finally-after-eight-years-major-cosmetics-reform-bill-becomes-law"
+      "url": "https://www.ewg.org/news-insights/news/2023/12/reforming-federal-cosmetics-law-what-modernization-cosmetics-regulation"
     },
     {
       "tags": [
@@ -295,7 +295,7 @@
       "publisher": "Four Paws International · multi-year investigations",
       "title": "Wool / Down / Fur — Welfare Investigations and Brand Trackers",
       "summary": "Four Paws maintains some of the most thorough multi-year investigations into animal-derived textile supply chains. The wool work covers mulesing; the down work covers force-feeding and live-plucking; the fur work covers fur-farm conditions across China, Poland, and Finland. Most reports include named brand sourcing.",
-      "url": "https://www.four-paws.org/campaigns-topics/topics/fashion-with-a-conscience"
+      "url": "https://www.four-paws.org/campaigns-topics/topics/animals-abused-for-fashion"
     },
     {
       "tags": [
@@ -355,7 +355,7 @@
       "publisher": "Strategic Organizing Center · annual",
       "title": "The Injury Machine — Amazon Warehouse Injury Rate Reports",
       "summary": "The SOC's annual analysis of OSHA-mandated injury data from Amazon US warehouses. Documents that Amazon's serious-injury rate is consistently approximately twice the industry average for warehouses. The data is from Amazon's own legally required filings; the analysis simply makes them readable.",
-      "url": "https://thesoc.org/our-work/amazon/"
+      "url": "https://thesoc.org/campaigns/health-and-safety-at-amazon/"
     },
     {
       "tags": [
@@ -382,10 +382,10 @@
         "Consumer",
         "Tech"
       ],
-      "publisher": "US Federal Trade Commission · 2024",
-      "title": "\"Click to Cancel\" Rule — Final Rule on Negative-Option Marketing",
-      "summary": "The FTC's 2024 rule requiring that cancelling a subscription must be as easy as signing up. The accompanying record of complaints and enforcement actions is publicly searchable and is the best US-side evidence base on dark-pattern consumer harms in subscriptions, free trials, and auto-renewals.",
-      "url": "https://www.ftc.gov/legal-library/browse/federal-register-notices/16-cfr-part-425-rule-concerning-negative-option-requirements"
+      "publisher": "US Federal Trade Commission · 2024, vacated 2025",
+      "title": "\"Click to Cancel\" — the Negative-Option Rule, Vacated and Being Rewritten",
+      "summary": "The FTC's 2024 rule would have required that cancelling a subscription be as easy as signing up. The Eighth Circuit vacated it in July 2025 on procedural grounds — the Commission had skipped a required regulatory analysis — and the FTC reopened rulemaking in January 2026. Negative-option marketing is still policed under ROSCA and state auto-renewal laws. The rulemaking record remains the best US-side evidence base on dark-pattern harms in subscriptions, free trials, and auto-renewals.",
+      "url": "https://www.ftc.gov/legal-library/browse/rules/negative-option-rule"
     },
     {
       "tags": [
