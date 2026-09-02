@@ -116,6 +116,15 @@
       if (!form.checkValidity()) return;
       e.preventDefault();
 
+      // Only a bot fills a field no human can see. Report success and post
+      // nothing: a bot told it failed simply tries again.
+      var trap = form.querySelector('input[name="_gotcha"]');
+      if (trap && trap.value) {
+        form.reset();
+        say('Thank you — you are on the list.', true);
+        return;
+      }
+
       button.disabled = true;
       status.hidden = true;
 

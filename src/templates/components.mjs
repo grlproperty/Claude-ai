@@ -94,18 +94,25 @@ export function reviewStamp(dataset) {
  *
  * `note: false` drops the standing note, for pages that already say the same
  * thing in their own copy.
+ *
+ * The address input takes its name from `newsletter.emailField`, because
+ * providers disagree about it and a POST carrying the wrong one is the worst
+ * kind of failure: the endpoint accepts the request, the form reports success,
+ * and no subscriber is ever created. Formspree and FormSubmit want `email`;
+ * a MailerLite embedded form wants `fields[email]`.
  */
 export function newsletterForm(site, { dark = false, note = true } = {}) {
   const n = site.newsletter;
   const action = n.action || `mailto:${site.email}?subject=${encodeURIComponent(`Subscribe: ${n.name}`)}`;
   const isMailto = !n.action;
   const id = dark ? 'd' : 'l';
+  const field = isMailto ? 'email' : n.emailField || 'email';
 
   return `<form class="form" action="${esc(action)}" method="${isMailto ? 'get' : 'post'}"${
     isMailto ? '' : ' target="_blank" data-subscribe'
   }>
     <label class="visually-hidden" for="nl-email-${id}">Email address</label>
-    <input id="nl-email-${id}" type="email" name="email" required placeholder="you@example.com" autocomplete="email">
+    <input id="nl-email-${id}" type="email" name="${esc(field)}" required placeholder="you@example.com" autocomplete="email">
     ${
       isMailto
         ? ''

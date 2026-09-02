@@ -236,8 +236,18 @@ Everything commercial is configured in `content/site.json`, not in code.
   to give is both the lighter and the more honest option. Adopting the embed
   would mean disclosing it on `/privacy/` first.
 - **Newsletter** — set `newsletter.action` to the subscribe endpoint of the
-  provider that sends the feed (Buttondown, MailerLite, ConvertKit, Listmonk).
-  Until then the form degrades to `mailto:`. See below for the sending side.
+  provider that sends the feed (Buttondown, MailerLite, ConvertKit, Listmonk),
+  and `newsletter.emailField` to the field name that endpoint expects: `email`
+  for Formspree and FormSubmit, `fields[email]` for a MailerLite embedded form.
+  Getting the field name wrong is the worst kind of failure available here —
+  the endpoint accepts the POST, the form reports success, and no subscriber is
+  ever created — so check it against the provider's own embed code rather than
+  assuming. Until `action` is set the form degrades to `mailto:`. See below for
+  the sending side.
+
+  No API key belongs in this repository. A subscribe endpoint is a public URL
+  by design; an API key is an account credential, and the static site has
+  nothing to do with it.
 - **Analytics** — **no analytics script is emitted.** The previous build loaded
   Google Analytics (`G-GJ387VT80N`); that is retained in `site.json` but
   disabled. Set `analytics.provider` to `"ga4"` to re-enable it, and update

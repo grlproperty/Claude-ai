@@ -119,7 +119,8 @@
     "cadence": "Sent on publication",
     "summary": "Every field note in full, sent the day it is published — the whole note, not a summary with a link back. No promotions, no product recommendations, one-click unsubscribe.",
     "action": "",
-    "note": "Set `newsletter.action` to the subscribe endpoint of the provider that sends the feed. Until then the form degrades to a mailto: link."
+    "emailField": "email",
+    "note": "Set `newsletter.action` to the subscribe endpoint of the provider that sends the feed, and `emailField` to the field name that endpoint expects — `email` for Formspree and FormSubmit, `fields[email]` for a MailerLite embedded form. Until `action` is set the form degrades to a mailto: link."
   },
 
   "donate": {
