@@ -65,7 +65,7 @@ export function renderHome({ site, notes, data }) {
   </div>
 </section>
 
-<section class="section on-dark">
+<section class="section on-dark" id="about">
   <div class="wrap">
     <div class="grid grid--2" style="gap:4rem;align-items:start;">
       <div class="reveal">
@@ -96,7 +96,7 @@ export function renderHome({ site, notes, data }) {
   </div>
 </section>
 
-<section class="section">
+<section class="section" id="field-notes">
   <div class="wrap">
     ${sectionHead({
       eyebrow: 'Latest',
@@ -110,7 +110,7 @@ export function renderHome({ site, notes, data }) {
   </div>
 </section>
 
-<section class="section on-pale">
+<section class="section on-pale" id="industries">
   <div class="wrap">
     ${sectionHead({
       eyebrow: 'The remit',
@@ -133,7 +133,7 @@ export function renderHome({ site, notes, data }) {
   </div>
 </section>
 
-<section class="section">
+<section class="section" id="tools">
   <div class="wrap">
     ${sectionHead({
       eyebrow: 'Free tools',
@@ -164,7 +164,7 @@ export function renderHome({ site, notes, data }) {
 
 ${
   shots.length
-    ? `<section class="section on-pale">
+    ? `<section class="section on-pale" id="archive">
   <div class="wrap">
     ${sectionHead({
       eyebrow: `The visual essays · ${esc(data.instagram.handle)}`,
