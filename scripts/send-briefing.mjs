@@ -72,6 +72,27 @@ async function api(path, init = {}) {
   return data;
 }
 
+/**
+ * Unauthenticated mail is not a style problem. Without SPF and DKIM the
+ * receiving side has nothing to check the sender against, so the note lands in
+ * spam or is refused outright — and a domain that sends unauthenticated mail
+ * accumulates a reputation that outlasts the fix. Warned rather than enforced:
+ * the account owner may be mid-setup, and refusing to send is not this script's
+ * call to make.
+ */
+async function preflight(site) {
+  const account = (await api('/account'))?.data ?? {};
+  if (account.domain_auth === false) {
+    console.warn(
+      `\n  ! ${site.url.replace(/^https?:\/\//, '')} is not authenticated for sending in MailerLite.\n` +
+        '    SPF and DKIM are unset, so this mail will be filtered or refused.\n' +
+        '    Fix at https://dashboard.mailerlite.com/account/domains before relying on it.\n'
+    );
+  }
+  const cap = account.plan?.max_subscribers;
+  if (cap) console.log(`Account: ${account.plan?.name ?? 'unknown'} plan, up to ${cap} subscribers`);
+}
+
 /** Every campaign name on the account, across all statuses. */
 async function existingNames() {
   const names = new Set();
@@ -120,6 +141,8 @@ async function main() {
   const held = index.notes.length - fresh.length;
 
   console.log(`${index.notes.length} notes · ${held} predate the cutover (${start}) and are never sent`);
+
+  await preflight(site);
 
   const already = await existingNames();
   let queue = fresh.filter((note) => !already.has(campaignName(note)));

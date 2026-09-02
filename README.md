@@ -299,6 +299,13 @@ MAILERLITE_API_KEY=... npm run briefing            # list what would be sent
 MAILERLITE_API_KEY=... npm run briefing -- --send  # create and send
 ```
 
+Before the first real send, authenticate the sending domain in MailerLite
+(Settings → Domains). Without SPF and DKIM the receiving side has nothing to
+check the sender against, so the note is filtered or refused — and a domain
+that sends unauthenticated mail earns a reputation that outlasts the fix. The
+script checks this on every run and warns, but does not refuse: whether to send
+anyway is the account owner's call, not the script's.
+
 To enable it, add `MAILERLITE_API_KEY` to the repository secrets. **Issue a
 separate key for this.** A key restricted to an IP allowlist — the right setting
 for one used from a fixed machine — cannot work from a CI runner, which never
