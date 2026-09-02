@@ -5,6 +5,7 @@ topic: "Beauty"
 topics: ["Beauty","Women","Media"]
 form: "Long read"
 duration: 8
+date: 2026-09-02
 order: 1
 ---
 Most industries solve a problem someone already has. The beauty industry, almost uniquely, makes its money by first persuading you that you have a problem at all. This is not a new observation. Dove's Real Truth About Beauty report — first conducted in 2004 and repeated several times since — found that only a small minority of women describe themselves as "beautiful." The same campaigns that turned this finding into a marketing platform were, of course, run by Unilever, which also owns brands selling skin-lightening creams in markets where they remain commercially significant.

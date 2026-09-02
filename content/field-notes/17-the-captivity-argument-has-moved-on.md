@@ -5,6 +5,7 @@ topic: "Animals"
 topics: ["Animals","Note"]
 form: "Short"
 duration: 4
+date: 2026-09-02
 order: 17
 ---
 The cultural conversation about wild animals in entertainment has progressed in ways the cultural conversation does not always notice. Blackfish (the 2013 documentary about SeaWorld's orca programme) marks a useful watershed: in 2016 SeaWorld ended its orca breeding programme; in 2021 the United States passed the SAFE Act extending federal protections; multiple countries have banned or severely restricted dolphinariums.

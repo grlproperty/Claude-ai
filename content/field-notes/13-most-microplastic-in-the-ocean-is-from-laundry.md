@@ -5,6 +5,7 @@ topic: "Environment"
 topics: ["Environment","Fashion","Note"]
 form: "Short"
 duration: 3
+date: 2026-09-02
 order: 13
 ---
 The IUCN's 2017 report Primary Microplastics in the Oceans estimated that approximately 35% of primary microplastics entering the marine environment globally come from synthetic-fibre textiles, principally shed during washing. That's the largest single source — larger than tyre wear (28%), city dust (24%), or any of the other contributing sources. Synthetic fibres — polyester, nylon, acrylic — shed microscopic fragments during every wash cycle.

@@ -5,6 +5,7 @@ topic: "Fashion"
 topics: ["Fashion","Women","Labour"]
 form: "Long read"
 duration: 9
+date: 2026-09-02
 order: 2
 ---
 The International Labour Organization's figures suggest the global garment workforce sits at roughly 75 million people. Of those, the consensus estimate from the ILO and Clean Clothes Campaign is that approximately 80% are women. It is one of the largest female workforces in the world. It is also one of the lowest-paid. The Asia Floor Wage Alliance — the umbrella body that calculates a region-specific living wage by methodology agreed across unions and NGOs — has documented for over a decade that garment workers in major producer countries (Bangladesh, Cambodia, India, Vietnam) earn a fraction of the figure their own methodology defines as the minimum needed for basic dignity.

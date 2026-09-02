@@ -137,10 +137,10 @@ export function renderBriefing({ site }) {
   const body = `
 <section class="section" style="padding-top:clamp(2.5rem,6vw,5rem);">
   <div class="wrap wrap--narrow center">
-    ${label(`${n.cadence} briefing`)}
+    ${label(n.cadence)}
     <h1 class="display" style="font-size:clamp(2.6rem,7vw,4.5rem);text-transform:uppercase;">${esc(n.name)}</h1>
     <p class="lede">${typo(n.summary)}</p>
-    <div style="display:flex;justify-content:center;margin-top:2.5rem;">
+    <div style="max-width:32rem;margin:2.5rem auto 0;">
       ${newsletterForm(site, { note: false })}
     </div>
   </div>
@@ -148,13 +148,13 @@ export function renderBriefing({ site }) {
 
 <section class="section on-white">
   <div class="wrap wrap--narrow">
-    ${sectionHead({ eyebrow: 'What is in it', title: 'Four sections, every issue' })}
+    ${sectionHead({ eyebrow: 'What is in it', title: 'One note, whole, when it lands' })}
     <div class="rows" style="border-top-color:var(--rule-strong);">
       ${[
-        ['The field notes', 'What was published since the last issue, and the reporting each note was built from.'],
-        ['What moved', 'Regulatory actions, rulings, and formal findings across the ten industries — with the source.'],
-        ['Read, watch, act', 'One investigation worth your time, and one organisation worth your attention.'],
-        ['One correction', 'A widely repeated claim about these industries that is wrong, and what the record actually says.'],
+        ['The note in full', 'The complete field note as published — not a summary with a link back to it. You can read the whole thing without leaving your inbox.'],
+        ['Every claim sourced', 'The links are the ones in the note itself: the reporting, ruling, or record each claim was built from, credited to whoever did the work.'],
+        ['No schedule', 'There is no edition to fill, so nothing is padded to meet one. You hear from us when a note is published, and not otherwise.'],
+        ['Nothing else', 'No promotions, no affiliate links, no product recommendations, no sponsored placements — the same as everywhere else on this site.'],
       ]
         .map(
           ([t, x]) => `<div class="row row--label-14">
@@ -167,8 +167,8 @@ export function renderBriefing({ site }) {
 
     <div style="margin-top:3rem;">
       ${note(
-        'What it is not',
-        `<p class="mb-0">No promotions, no affiliate links, no product recommendations, no sponsored placements. Your address is used to send this and nothing else, is shared with no one, and is deleted on unsubscribe. See <a href="/privacy/">Privacy &amp; POPIA</a>.</p>`
+        'Your address',
+        `<p class="mb-0">Used to send this and nothing else. Shared with no one, sold to no one, and deleted when you unsubscribe — which every issue carries a one-click link for. See <a href="/privacy/">Privacy &amp; POPIA</a>.</p>`
       )}
     </div>
   </div>

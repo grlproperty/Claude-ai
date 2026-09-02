@@ -5,6 +5,7 @@ topic: "Tech"
 topics: ["Tech","Note"]
 form: "Short"
 duration: 4
+date: 2026-09-02
 order: 5
 ---
 The UN Global E-waste Monitor 2024 puts the world's annual e-waste at 62 million tonnes (2022 figure) — a stream that has been growing roughly five times faster than the documented recycling rate. Only about 22% is formally recycled. The rest is either landfilled, informally processed, or exported — frequently to Ghana, India, or Nigeria where workers strip devices for precious metals under hazardous conditions. Most of that e-waste did not need to be e-waste.

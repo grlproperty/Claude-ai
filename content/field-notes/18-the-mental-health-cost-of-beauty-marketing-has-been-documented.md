@@ -5,6 +5,7 @@ topic: "Women"
 topics: ["Women","Media","Beauty","Note"]
 form: "Short"
 duration: 5
+date: 2026-09-02
 order: 18
 ---
 The evidence base linking exposure to beauty advertising and social-media imagery with documented mental-health outcomes — particularly in adolescent girls — has grown considerably since 2018. The relevant findings, briefly. The Facebook (Meta) internal research. In September 2021, The Wall Street Journal's "Facebook Files" series published internal Meta research documents acquired from whistleblower Frances Haugen. The documents included Instagram's own commissioned research finding that for a meaningful proportion of teenage girls using the platform, Instagram exacerbated body-image concerns.

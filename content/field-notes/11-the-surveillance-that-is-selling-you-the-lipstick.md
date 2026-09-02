@@ -5,6 +5,7 @@ topic: "Tech"
 topics: ["Tech","Media","Women"]
 form: "Long read"
 duration: 9
+date: 2026-09-02
 order: 11
 ---
 The Cambridge Analytica case in 2018 — 87 million Facebook profiles harvested without consent, used to build psychometric models for political advertising — produced widespread public alarm. What it did not produce was widespread public understanding that the same infrastructure underwrites everyday consumer advertising. Cambridge Analytica's methodology was distinctive in one respect: the data was acquired in violation of Facebook's terms (such as they were).

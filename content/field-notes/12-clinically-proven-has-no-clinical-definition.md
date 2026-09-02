@@ -5,6 +5,7 @@ topic: "Beauty"
 topics: ["Beauty","Women","Note"]
 form: "Short"
 duration: 4
+date: 2026-09-02
 order: 12
 ---
 "Clinically proven" or "clinically tested" appears on a substantial fraction of skincare products sold in the US, UK, and EU. The phrase has no legal definition in any of those jurisdictions. It does not mean what "clinical trial" means in a pharmaceutical context. It does not require independent verification. In practice, the underlying evidence base for a "clinically proven" cosmetic claim can range from a small open-label study commissioned by the manufacturer (n=20, 4 weeks, no control group) to substantive, peer-reviewed efficacy research.

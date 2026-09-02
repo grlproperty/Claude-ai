@@ -92,8 +92,39 @@ async function loadCollection(dir, base) {
 
 // -------------------------------------------------------------------- feeds
 
+/**
+ * Rewrite root-relative URLs to absolute ones.
+ *
+ * Inside the site `/field-notes/x/` resolves against the current page. In a
+ * feed reader, and in the email a subscriber opens, there is no current page:
+ * every such link is dead unless it carries the origin.
+ */
+function absolutise(html, base) {
+  return html
+    .replace(/(href|src)="\/([^/][^"]*)"/g, (_, attr, path) => `${attr}="${new URL(`/${path}`, base).href}"`)
+    .replace(/(href|src)="\/"/g, (_, attr) => `${attr}="${new URL('/', base).href}"`);
+}
+
+/** CDATA, with the one sequence that can close the section early neutralised. */
+const cdata = (s) => `<![CDATA[${String(s).replace(/\]\]>/g, ']]&gt;')}]]>`;
+
+/**
+ * The RSS feed, which is also the newsletter.
+ *
+ * Subscribers receive each field note through a provider that watches this
+ * file, so it carries the whole note in content:encoded rather than a teaser —
+ * an email holding only a summary and a link is a worse thing to receive than
+ * the note itself. <description> stays a plain-text summary for readers and
+ * previews that show one.
+ *
+ * Ordering is by date, newest first, because that is what a feed reader and an
+ * RSS-driven campaign both key off. `order` breaks ties: the whole back
+ * catalogue was published on the same day, and within that day the intended
+ * reading order is the one the site uses.
+ */
 function buildFeed(site, entries) {
-  const items = entries
+  const items = [...entries]
+    .sort((a, b) => new Date(b.date ?? 0) - new Date(a.date ?? 0) || (b.order ?? 0) - (a.order ?? 0))
     .slice(0, 30)
     .map((e) => {
       const url = new URL(e.url, site.url).href;
@@ -103,13 +134,18 @@ function buildFeed(site, entries) {
       <guid isPermaLink="true">${esc(url)}</guid>
       ${e.date ? `<pubDate>${new Date(e.date).toUTCString()}</pubDate>` : ''}
       <description>${esc(e.summary)}</description>
+      <content:encoded>${cdata(
+        `${absolutise(e.html, site.url)}\n<hr>\n<p><a href="${esc(url)}">Read this note on ${esc(
+          site.name
+        )}</a> — every claim links to the original source.</p>`
+      )}</content:encoded>
       ${e.topic ? `<category>${esc(e.topic)}</category>` : ''}
     </item>`;
     })
     .join('\n');
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>${esc(site.name)} — ${esc(site.descriptor)}</title>
     <link>${esc(site.url)}</link>
@@ -193,7 +229,7 @@ async function main() {
     const prev = notes[i - 1] ?? null;
     const next = notes[i + 1] ?? null;
     await writePage(note.url, renderFieldNote({ site, entry: note, all: notes, prev, next }));
-    track(note.url, { priority: '0.8' });
+    track(note.url, { priority: '0.8', lastmod: note.date });
   }
 
   // ---- tools and reference

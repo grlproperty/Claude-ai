@@ -5,6 +5,7 @@ topic: "Consumer"
 topics: ["Consumer","Corporate","Note"]
 form: "Short"
 duration: 4
+date: 2026-09-02
 order: 7
 ---
 In April 2013, the Rana Plaza building in Savar, Bangladesh, collapsed. Inside the building had been factories producing for major Western brands. Several of those factories had been recently audited by major social-audit firms. The audits had not flagged the structural issues. This is not an isolated incident. MSI Integrity's 2020 report Not Fit-for-Purpose documented that the major multi-stakeholder initiatives — Fair Labor Association, Ethical Trading Initiative, Roundtable on Sustainable Palm Oil, and others — have systematically failed to deliver on their stated mandates.

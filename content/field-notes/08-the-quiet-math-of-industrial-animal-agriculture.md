@@ -5,6 +5,7 @@ topic: "Food"
 topics: ["Food","Animals","Environment","Note"]
 form: "Short"
 duration: 5
+date: 2026-09-02
 order: 8
 ---
 Approximately 80 billion land animals are slaughtered for food each year. The figure is calculated from UN FAO production statistics and varies modestly by year and accounting method, but the order of magnitude is stable. About 78 billion of them are chickens. The figure for fish is harder. The Fishcount project, drawing on FAO capture data and Mood & Brooke's average-weight estimates, places annual wild-fish capture at between 0.79 and 2.3 trillion individuals.

@@ -5,6 +5,7 @@ topic: "Media"
 topics: ["Media","Note"]
 form: "Short"
 duration: 3
+date: 2026-09-02
 order: 6
 ---
 The US FTC's Endorsement Guides — the foundational document for influencer advertising disclosure — require that any material connection between an endorser and a brand be disclosed "clearly and conspicuously." The UK's Advertising Standards Authority requires the same under CAP Code rule 3.1 and the Communications Act. What does "clear and conspicuous" mean in practice? The ASA's 2021 monitoring sweep and its subsequent rulings give a working definition.

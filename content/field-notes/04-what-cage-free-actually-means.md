@@ -5,6 +5,7 @@ topic: "Animals"
 topics: ["Animals","Note"]
 form: "Short"
 duration: 3
+date: 2026-09-02
 order: 4
 ---
 "Cage-free" in the US and EU contexts means hens are not kept in battery cages. It does not mean the hens go outside. It does not mean they have meaningful space per bird. In many cage-free systems the floor density is high enough that the hens still live in close confinement. "Free-range" requires outdoor access, but the standards vary widely by jurisdiction. EU "free-range" eggs (Marketing Standards Regulation 1308/2013) require at least 4 m² of outdoor space per hen.

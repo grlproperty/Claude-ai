@@ -78,9 +78,16 @@ topic: "Animals"                 # the primary topic
 topics: ["Animals", "Note"]      # every topic; drives the index filter
 form: "Short"                    # or "Long read"
 duration: 3                      # minutes
+date: 2026-09-02                 # publication date; drives the feed
 order: 4                         # position in the index
 ---
 ```
+
+`date` is not decorative. It is what `feed.xml` publishes as `<pubDate>`, which
+is how feed readers order the notes and how the newsletter provider decides
+what is new. A note without one is invisible to both. The whole launch set
+carries the same date — none of it was public before — and each note written
+after that carries the day it goes live.
 
 ## Verification
 
@@ -214,13 +221,40 @@ Everything commercial is configured in `content/site.json`, not in code.
 - **Donations** — set `donate.link` to a PayPal.me or hosted-button URL. Empty
   renders an enquiry `mailto:`, so the page is publishable before the processor
   is connected and never ships a dead button.
-- **Newsletter** — set `newsletter.action` to your provider's form endpoint
-  (Buttondown, ConvertKit, MailerLite, Listmonk). Until then the form degrades
-  to `mailto:`.
+- **Newsletter** — set `newsletter.action` to the subscribe endpoint of the
+  provider that sends the feed (Buttondown, MailerLite, ConvertKit, Listmonk).
+  Until then the form degrades to `mailto:`. See below for the sending side.
 - **Analytics** — **no analytics script is emitted.** The previous build loaded
   Google Analytics (`G-GJ387VT80N`); that is retained in `site.json` but
   disabled. Set `analytics.provider` to `"ga4"` to re-enable it, and update
   `/privacy/` to disclose it first.
+
+## The briefing sends itself
+
+Subscribers receive each field note in full on the day it is published. Nothing
+here sends the mail: the provider does, by watching `/feed.xml`. There is no
+scheduled job to maintain, no API key in the repository, and no separate edition
+to write — publishing the note *is* sending it.
+
+The feed carries the whole note in `content:encoded`, with every root-relative
+link rewritten to an absolute one, so what lands in an inbox is the article
+rather than a teaser. Items are ordered by `date`, newest first.
+
+To connect it:
+
+1. Create the list at your provider and verify the sending domain (SPF and
+   DKIM). Skipping this is what puts the mail in spam.
+2. Create an RSS-driven campaign pointed at `https://feral-femme.co/feed.xml`.
+3. **Set its start date to now.** The entire launch set shares one publication
+   date, so a campaign that treats the back catalogue as new will mail all
+   eighteen notes at once. Every provider has this control; find it before
+   enabling the campaign, not after.
+4. Copy the provider's subscribe endpoint into `newsletter.action`.
+
+The claims the site makes about this are on `/briefing/` and `/privacy/`: the
+note in full, every claim sourced, no schedule, nothing else, and a one-click
+unsubscribe in every issue. The provider supplies the unsubscribe. If the
+sending arrangement changes, those two pages change with it.
 
 ## Deployment
 

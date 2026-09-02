@@ -62,8 +62,8 @@
     },
     {
       "title": "The Research Briefing",
-      "body": "A monthly newsletter that connects the field notes to current reporting and points readers toward what to read, watch, and act on next.",
-      "stamp": "Monthly cadence"
+      "body": "Every field note is sent to subscribers in full on the day it is published, through a provider that reads the site’s own feed. No separate edition, and nothing in the email that is not on the site.",
+      "stamp": "Sent on publication"
     },
     {
       "title": "Self-Funded Platform",
@@ -116,10 +116,10 @@
 
   "newsletter": {
     "name": "The Research Briefing",
-    "cadence": "Monthly",
-    "summary": "A monthly briefing connecting the field notes to current reporting, and pointing you toward what to read, watch, and act on next. No promotions. Unsubscribe in one click.",
+    "cadence": "Sent on publication",
+    "summary": "Every field note in full, sent the day it is published — the whole note, not a summary with a link back. No promotions, no product recommendations, one-click unsubscribe.",
     "action": "",
-    "note": "Set `newsletter.action` to your provider's form endpoint. Until then the form degrades to a mailto: link."
+    "note": "Set `newsletter.action` to the subscribe endpoint of the provider that sends the feed. Until then the form degrades to a mailto: link."
   },
 
   "donate": {

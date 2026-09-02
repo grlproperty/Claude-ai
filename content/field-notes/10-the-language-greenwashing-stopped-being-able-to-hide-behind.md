@@ -5,6 +5,7 @@ topic: "Environment"
 topics: ["Environment","Corporate","Consumer"]
 form: "Long read"
 duration: 7
+date: 2026-09-02
 order: 10
 ---
 Until recently, environmental marketing claims sat in a regulatory grey zone. The US FTC's Green Guides (2012) and the UK CMA's Green Claims Code (2021) existed as guidance — applied to specific complaints but rarely enforced at scale. The result: a marketplace where "eco-friendly," "sustainably sourced," and "carbon neutral" appeared on packaging with minimal substantiation requirement. Three things changed in 2023–2024. 1.

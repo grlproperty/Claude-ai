@@ -5,6 +5,7 @@ topic: "Environment"
 topics: ["Environment","Corporate","Consumer"]
 form: "Long read"
 duration: 7
+date: 2026-09-02
 order: 3
 ---
 For about a decade, the standard corporate response to scrutiny over carbon emissions was a carbon-offset purchase, a press release, and a logo on the packaging. The mechanism was simple: count your emissions, buy an equivalent number of "credits" that represented emissions reduced or avoided somewhere else, and call yourself carbon neutral. This was always going to be vulnerable to verification. The credits represented things that did not happen — trees that were not cut down, methane that was not released.

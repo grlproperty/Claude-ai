@@ -138,7 +138,7 @@ export function supportBanner(site) {
         </div>
         <div>
           ${label(site.newsletter.name)}
-          <p class="lede">${esc(site.newsletter.cadence)} — the field notes connected to current reporting, and what to read, watch, and act on next.</p>
+          <p class="lede">Every field note, in full, on the day it is published. Nothing else.</p>
           ${newsletterForm(site, { dark: true })}
         </div>
       </div>

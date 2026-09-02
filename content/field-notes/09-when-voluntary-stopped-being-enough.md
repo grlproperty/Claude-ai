@@ -5,6 +5,7 @@ topic: "Corporate"
 topics: ["Corporate","Fashion","Women"]
 form: "Long read"
 duration: 8
+date: 2026-09-02
 order: 9
 ---
 The voluntary corporate social responsibility era — broadly, the period from the late 1990s to the late 2010s — produced an enormous infrastructure of codes, multi-stakeholder initiatives, third-party certifications, and annual reports. It produced fewer measurable improvements in the supply chains it claimed to police. MSI Integrity's Not Fit-for-Purpose (2020) is the most comprehensive published audit of that infrastructure's failure.

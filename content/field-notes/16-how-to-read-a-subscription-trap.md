@@ -5,6 +5,7 @@ topic: "Consumer"
 topics: ["Consumer","Tech","Note"]
 form: "Short"
 duration: 5
+date: 2026-09-02
 order: 16
 ---
 A "subscription trap" is the consumer-protection term for a service that is engineered to be easy to start and hard to leave. The US Federal Trade Commission's 2024 "Click to Cancel" rule was specifically targeted at the structural patterns documented in the field for years. Here is what those patterns look like in practice. "Free trial" with a stored payment method. The default at trial end is conversion to paid. Cancellation requires action the user must remember to take.

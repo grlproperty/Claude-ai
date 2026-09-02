@@ -5,6 +5,7 @@ topic: "Women"
 topics: ["Women","Corporate","Note"]
 form: "Short"
 duration: 4
+date: 2026-09-02
 order: 15
 ---
 Among the genuinely useful things to come out of corporate-governance reform in the last decade is the rise of female board representation in major markets. Norway's 40% quota law (2003) was the early example. The EU's 2022 Women on Boards Directive set a 40% target for non-executive directors by 2026. California's now-overturned 2018 SB 826 led to substantial increases in board diversity before being ruled unconstitutional in 2022.

@@ -5,6 +5,7 @@ topic: "Food"
 topics: ["Food","Animals","Note"]
 form: "Short"
 duration: 4
+date: 2026-09-02
 order: 14
 ---
 The Fishcount project, drawing on FAO capture data, places annual wild-fish capture at between 0.79 and 2.3 trillion individuals. Farmed fish add roughly another 100 billion. Compared to the ~80 billion land animals slaughtered annually, the order-of-magnitude difference is striking — and the public attention to it is correspondingly inverted. The reason is partly historical (fish do not feature prominently in the welfare frameworks that built up around mammals and birds) and partly empirical (fish welfare science is younger than mammalian welfare science, and the policy infrastructure has not caught up).
