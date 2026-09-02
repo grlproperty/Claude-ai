@@ -46,6 +46,42 @@ ${supportBanner(site)}
   });
 }
 
+/**
+ * A page that has moved.
+ *
+ * GitHub Pages honours no redirect configuration — the `_redirects` file is a
+ * Netlify convention and is simply served as a text file — so a legacy URL has
+ * to redirect itself. Written as a real page rather than a bare meta refresh:
+ * a reader whose browser ignores the refresh, or who arrives with JavaScript
+ * off, still sees where the thing went and can click through.
+ */
+export function renderRedirect({ site, from, to, title }) {
+  const body = `
+<section class="section" style="padding-block:clamp(4rem,14vw,10rem);">
+  <div class="wrap wrap--narrow center">
+    ${label('Moved')}
+    <h1>${esc(title)} has moved</h1>
+    <p class="lede">This page now lives at <a href="${esc(to)}">${esc(to)}</a>. You should arrive there in a moment.</p>
+    <div class="hero__actions" style="justify-content:center;">
+      <a class="btn" href="${esc(to)}">Go there now</a>
+    </div>
+  </div>
+</section>
+`;
+
+  return layout({
+    site,
+    title: `${title} has moved`,
+    description: `${title} has moved to ${to}. This page redirects there automatically.`,
+    path: from,
+    body,
+    noindex: true,
+    // Relative, deliberately. An absolute production URL here would throw
+    // anyone on a preview or local build straight out to the live site.
+    head: `<meta http-equiv="refresh" content="0; url=${esc(to)}">`,
+  });
+}
+
 export function renderNotFound({ site }) {
   const body = `
 <section class="section" style="padding-block:clamp(4rem,14vw,10rem);">

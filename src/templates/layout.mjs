@@ -82,6 +82,7 @@ export function layout({
   ogImage = '/assets/og/default.png',
   scripts = [],
   noindex = false,
+  head = '',
 }) {
   const canonical = new URL(path, site.url).href;
   const fullTitle = path === '/' ? `${site.name} — ${site.descriptor}` : `${title} · ${site.name}`;
@@ -98,6 +99,7 @@ export function layout({
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(fullTitle)}</title>
+${head}
 <meta name="description" content="${esc(desc)}">
 <link rel="canonical" href="${esc(canonical)}">
 ${noindex ? '<meta name="robots" content="noindex, follow">' : ''}

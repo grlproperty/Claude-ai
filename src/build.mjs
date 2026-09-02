@@ -28,7 +28,7 @@ import {
   renderSources,
 } from './pages/decoders.mjs';
 import { renderDonate, renderBriefing } from './pages/donate.mjs';
-import { renderPage, renderNotFound } from './pages/simple.mjs';
+import { renderPage, renderNotFound, renderRedirect } from './pages/simple.mjs';
 import { buildOgImages, buildBrandAssets } from './lib/images.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -300,10 +300,25 @@ async function main() {
     track(page.url, { priority: '0.5' });
   }
 
-  await writePage('/404', renderNotFound({ site }));
+  // GitHub Pages, Netlify and Cloudflare all serve /404.html for an unknown
+  // path. A page at /404/index.html is a page nobody ever reaches.
+  await writeFileAt('/404.html', renderNotFound({ site }));
+
+  // The same hosts honour no redirect configuration, so a legacy URL has to
+  // redirect itself. _redirects below is kept for hosts that do read it.
+  for (const [from, to, title] of [
+    ['/research/', '/field-notes/', 'The research index'],
+    ['/feed/', '/feed.xml', 'The feed'],
+  ]) {
+    await writePage(from, renderRedirect({ site, from, to, title }));
+  }
 
   // ---- generated files
-  await writeFileAt('/feed.xml', buildFeed(site, notes));
+  const feed = buildFeed(site, notes);
+  await writeFileAt('/feed.xml', feed);
+  // The old feed address, served as the feed rather than as a redirect: a feed
+  // reader asking for XML should not be handed an HTML page telling it to move.
+  await writeFileAt('/rss.xml', feed);
   await writeFileAt('/briefing.json', buildBriefingIndex(site, notes));
   await writeFileAt('/sitemap.xml', buildSitemap(site, routes));
   await writeFileAt(
