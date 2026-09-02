@@ -1,0 +1,431 @@
+{
+  "title": "The Reading List",
+  "slug": "library",
+  "reviewed": "2026-08-31",
+  "reviewCycleDays": 180,
+  "summary": "The investigations, databases, and reports we return to. Every one is public, published by a named organisation, and linked to its original. This is the shelf the field notes are built from.",
+  "entries": [
+    {
+      "tags": [
+        "Beauty",
+        "Animal Testing"
+      ],
+      "publisher": "Humane Society International · ongoing campaign",
+      "title": "#BeCrueltyFree — Country-by-Country Cosmetics Testing Tracker",
+      "summary": "The most comprehensive public tracker of which jurisdictions have banned cosmetics testing on animals, where loopholes still exist, and which bills are in motion. Updated continuously as policy changes. Essential reference work for anyone trying to verify a \"cruelty-free\" claim against the legal reality of where a product was tested.",
+      "url": "https://www.hsi.org/issues/be-cruelty-free/"
+    },
+    {
+      "tags": [
+        "Beauty",
+        "Consumer Rights"
+      ],
+      "publisher": "Environmental Working Group · 2023–2024",
+      "title": "Skin Deep Database — Ingredient Hazard Reporting",
+      "summary": "EWG's open database maps cosmetic ingredients to published toxicology and endocrine-disruption research. Tens of thousands of products rated. The methodology page makes the limits of the rating system transparent — which is more than most certification schemes do.",
+      "url": "https://www.ewg.org/skindeep/"
+    },
+    {
+      "tags": [
+        "Fashion",
+        "Women's Rights",
+        "Labour"
+      ],
+      "publisher": "The Sunday Times · 2020 · Boohoo Leicester investigation",
+      "title": "Inside Britain's Sweatshops: Boohoo, Leicester, and Sub-Minimum-Wage Garment Work",
+      "summary": "The undercover reporting that documented Leicester garment factories paying workers under UK minimum wage to supply Boohoo. Triggered the Garment and Textiles Workers Trust review and remains the most consequential UK garment investigation of the last decade. Search via the named outlet — paywalled but archived widely.",
+      "url": "https://www.thetimes.co.uk/article/boohoo-fashion-giant-faces-slavery-investigation-vj3lsphq3"
+    },
+    {
+      "tags": [
+        "Fashion",
+        "Environment"
+      ],
+      "publisher": "Changing Markets Foundation · 2021",
+      "title": "Synthetics Anonymous: Fashion Brands' Addiction to Fossil Fuels",
+      "summary": "Documented the gap between brands' \"sustainability\" marketing and their continued reliance on virgin polyester. Audited 46 fashion brands on actual fibre usage versus claims. Few came out well. The follow-up Licence to Greenwash (2022) extends the methodology.",
+      "url": "https://changingmarkets.org/report/synthetics-anonymous-fashion-brands-addiction-to-fossil-fuels/"
+    },
+    {
+      "tags": [
+        "Fashion",
+        "Labour"
+      ],
+      "publisher": "Clean Clothes Campaign · ongoing",
+      "title": "Living Wage Reports & Brand Tracker",
+      "summary": "CCC publishes country-by-country research on the gap between garment-worker wages and a calculable living wage. Their Filthy Rich Fashion Tycoons report contrasted brand owner net worths with the years a Bangladeshi garment worker would need to earn one of those fortunes. Hard to argue with.",
+      "url": "https://cleanclothes.org/livingwage"
+    },
+    {
+      "tags": [
+        "Food",
+        "Labour"
+      ],
+      "publisher": "The New York Times · 2023 (Hannah Dreier)",
+      "title": "Alone and Exploited: Migrant Children in US Meatpacking",
+      "summary": "Pulitzer-winning investigation documenting unaccompanied migrant children working in US slaughterhouses and food-processing plants, often through subcontracted cleaning agencies. Led to Department of Labor enforcement actions and a federal interagency taskforce. Sobering, careful, indispensable reporting.",
+      "url": "https://www.nytimes.com/2023/02/25/us/unaccompanied-migrant-child-workers-exploitation.html"
+    },
+    {
+      "tags": [
+        "Food",
+        "Animal Welfare"
+      ],
+      "publisher": "Compassion in World Farming · ongoing",
+      "title": "Beyond Factory Farming Reports — Pigs, Chickens, Dairy",
+      "summary": "CIWF's documentation series on intensive farming systems. The reports include facility audits, peer-reviewed welfare science, and policy recommendations. Their work on \"fast-growing\" broiler chicken welfare (the leg-deformity and mortality data) is the most cited evidence base for the Better Chicken Commitment.",
+      "url": "https://www.ciwf.com/research/reports/"
+    },
+    {
+      "tags": [
+        "Food",
+        "Environment"
+      ],
+      "publisher": "The Bureau of Investigative Journalism · 2022",
+      "title": "The Cattle Behind Brazil's Deforestation",
+      "summary": "TBIJ's long-running tracing of cattle supply chains from the Brazilian Amazon to global meat brands. Documents the \"cattle laundering\" — animals moved from illegal-deforestation ranches to certified ones before slaughter. Critical reading on why JBS, Marfrig, and Minerva supply-chain claims need scrutiny.",
+      "url": "https://www.thebureauinvestigates.com/stories/2019-07-02/jbs-brazilian-butchers-took-over-the-world"
+    },
+    {
+      "tags": [
+        "Animals",
+        "Wildlife"
+      ],
+      "publisher": "World Animal Protection · 2020",
+      "title": "The Hidden Cost of Wildlife Tourism",
+      "summary": "Audit of wildlife tourism attractions globally — elephant rides, tiger selfies, dolphin shows. WAP's scoring methodology ranks each attraction type on welfare impact, with detailed field documentation. Triggered changes in TripAdvisor's listing policies and several tour operator commitments.",
+      "url": "https://www.worldanimalprotection.org/our-work/animals-wild/wildlife-not-entertainers/"
+    },
+    {
+      "tags": [
+        "Animals",
+        "Captivity"
+      ],
+      "publisher": "Born Free Foundation · ongoing",
+      "title": "EU Zoo Inquiry — Welfare Conditions in European Zoos",
+      "summary": "Decade-long programme inspecting European zoos against the EU Zoos Directive. Has produced national-level reports on zoo compliance failures across Italy, Spain, France, Greece, and others — most of which remain unaddressed.",
+      "url": "https://www.bornfree.org.uk/zoo-investigations"
+    },
+    {
+      "tags": [
+        "Women",
+        "Labour"
+      ],
+      "publisher": "SOMO & India Committee of the Netherlands · multiple reports",
+      "title": "Captured by Cotton: The Sumangali Scheme in Tamil Nadu Garment Mills",
+      "summary": "Years of documentation on the bonded-labour scheme targeting young women in South Indian spinning mills — multi-year contracts, lump-sum payments framed as dowry, confined accommodation. Names supplier factories and major brands sourcing from them.",
+      "url": "https://www.somo.nl/captured-by-cotton-2/"
+    },
+    {
+      "tags": [
+        "Women",
+        "Media"
+      ],
+      "publisher": "Geena Davis Institute on Gender in Media · annual",
+      "title": "Gender Representation Reports — Advertising & Film",
+      "summary": "Quantitative analysis of how women are depicted in advertising and film across multiple markets. The 2023 advertising report covered 2 million ads and documented persistent patterns: women shown in domestic contexts more often than men, men shown in leadership contexts more often than women. Boring methodology, devastating findings.",
+      "url": "https://seejane.org/research-informs-empowers/"
+    },
+    {
+      "tags": [
+        "Environment",
+        "Greenwashing"
+      ],
+      "publisher": "The Guardian, Die Zeit, SourceMaterial · 2023",
+      "title": "Revealed: More than 90% of Rainforest Carbon Offsets by Biggest Provider Are Worthless",
+      "summary": "The investigation that broke open the voluntary carbon market. Analysed Verra's rainforest credit programme and found a substantial majority of credits did not represent real emissions reductions. The fallout reshaped corporate offset strategies and prompted Verra's leadership transition. One of the most consequential climate investigations of the decade.",
+      "url": "https://www.theguardian.com/environment/2023/jan/18/revealed-forest-carbon-offsets-biggest-provider-worthless-verra-aoe"
+    },
+    {
+      "tags": [
+        "Environment",
+        "Water"
+      ],
+      "publisher": "Greenpeace · long-running",
+      "title": "Detox My Fashion — Hazardous Chemical Discharge in Textile Manufacturing",
+      "summary": "The campaign that pulled brand commitments on the most toxic dyeing chemicals. Documented discharge into rivers in China, Indonesia, and elsewhere. Resulted in formal Detox commitments from 80+ major brands. The follow-up audits track who actually delivered against their commitments.",
+      "url": "https://www.greenpeace.org/international/act/detox/"
+    },
+    {
+      "tags": [
+        "Tech",
+        "Labour",
+        "Mining"
+      ],
+      "publisher": "Amnesty International · 2016, updated multiple times",
+      "title": "\"This Is What We Die For\": Human Rights Abuses in the DRC Cobalt Trade",
+      "summary": "The foundational report mapping artisanal cobalt mining in the Democratic Republic of Congo to global consumer electronics supply chains. Documented child labour, fatal accidents, and severe health consequences. Named the brands sourcing from the affected trade. Subsequent updates have tracked which companies improved their due diligence and which did not.",
+      "url": "https://www.amnesty.org/en/documents/afr62/3183/2016/en/"
+    },
+    {
+      "tags": [
+        "Tech",
+        "Privacy"
+      ],
+      "publisher": "Norwegian Consumer Council · 2020",
+      "title": "Out of Control: How Consumers Are Exploited by the Online Advertising Industry",
+      "summary": "Documented in granular detail how a single user's data is routinely shared with hundreds of third parties via real-time bidding. The report named specific data brokers and ad-tech firms, with concrete examples. Triggered GDPR enforcement actions and was central to the IAB Europe consent-framework ruling.",
+      "url": "https://www.forbrukerradet.no/out-of-control/"
+    },
+    {
+      "tags": [
+        "Consumer",
+        "Greenwashing"
+      ],
+      "publisher": "UK Competition and Markets Authority · 2022–ongoing",
+      "title": "Green Claims Code — Investigations into ASOS, Boohoo, Asda, Unilever",
+      "summary": "The CMA's enforcement portfolio against misleading environmental claims. The 2022 ASOS / Boohoo / Asda case forced commitments to substantiate or remove sustainability claims. The 2023 Unilever investigation extended to FMCG. Read alongside the CMA's published Green Claims Code for what regulators actually expect of brands.",
+      "url": "https://www.gov.uk/government/news/cma-investigates-fashion-brands-for-greenwashing"
+    },
+    {
+      "tags": [
+        "Consumer",
+        "Dark Patterns"
+      ],
+      "publisher": "Norwegian Consumer Council · 2018",
+      "title": "Deceived by Design: Dark Patterns in Privacy Settings",
+      "summary": "The foundational report on dark patterns in consent design — Facebook, Google, Windows 10 analysed in detail. Established the vocabulary now used by regulators (forced action, framing, false sense of urgency). Five years later, EU's Digital Services Act explicitly bans many of the patterns this report catalogued.",
+      "url": "https://www.forbrukerradet.no/undersokelse/no-undersokelsekategori/deceived-by-design/"
+    },
+    {
+      "tags": [
+        "Corporate",
+        "Supply Chains"
+      ],
+      "publisher": "Business & Human Rights Resource Centre · ongoing",
+      "title": "Allegations Tracker — Corporate Human Rights Abuses",
+      "summary": "The single most useful open database in this space. Tracks alleged corporate human-rights abuses and the company responses (or refusals to respond) to each. Searchable by company, country, industry, and issue. If a brand has been named in a major investigation, the response — or absence of one — is here.",
+      "url": "https://www.business-humanrights.org/en/"
+    },
+    {
+      "tags": [
+        "Corporate",
+        "Audit Failures"
+      ],
+      "publisher": "MSI Integrity · 2020",
+      "title": "Not Fit-for-Purpose: The Grand Experiment of Multi-Stakeholder Initiatives",
+      "summary": "Damning multi-year assessment of the major multi-stakeholder initiatives (Fair Labor Association, Roundtable on Sustainable Palm Oil, Ethical Trading Initiative) — finding most have systematically failed to deliver on their human-rights mandates. Caused real reform conversations across the sector.",
+      "url": "https://www.msi-integrity.org/not-fit-for-purpose/"
+    },
+    {
+      "tags": [
+        "Media",
+        "Influencers"
+      ],
+      "publisher": "UK Advertising Standards Authority & CMA · 2021 sweep",
+      "title": "An Influencer's Guide — Disclosure Compliance Monitoring",
+      "summary": "The 2021 monitoring sweep documented widespread non-disclosure of paid promotion across UK influencer Instagram and TikTok accounts. The ASA followed up with public rulings against specific named accounts. The accompanying Influencer's Guide is the clearest statement of what \"clear and conspicuous\" actually means in practice.",
+      "url": "https://www.asa.org.uk/resource/influencers-guide.html"
+    },
+    {
+      "tags": [
+        "Media",
+        "Body Image"
+      ],
+      "publisher": "Dove Self-Esteem Project · annual research",
+      "title": "Real Beauty / The Cost of Beauty Reports",
+      "summary": "Yes — Dove is owned by Unilever and the campaign is marketing. And yet the research itself is methodologically serious and shows what advertising does to women's body image. The Cost of Beauty film and accompanying research document the toll. Read with the appropriate context: a beauty brand telling the truth about beauty marketing is itself an industry development worth tracking.",
+      "url": "https://www.dove.com/uk/dove-self-esteem-project.html"
+    },
+    {
+      "tags": [
+        "Beauty",
+        "Consumer"
+      ],
+      "publisher": "Beauty Counter / Environmental Working Group · 2023",
+      "title": "\"What's the Deal With Beauty Counter?\" — A Look at Better Beauty Advocacy",
+      "summary": "Beauty Counter (now Counter Brands) built a brand on cosmetics-policy advocacy — pushing for federal cosmetics reform that ultimately became MoCRA. The trajectory is documented in their public submissions to Congress, the Senate HELP Committee record, and EWG's reporting on the multi-year legislative push. A rare example of an industry actor lobbying for stricter regulation of itself.",
+      "url": "https://www.ewg.org/news-insights/news/2022/12/finally-after-eight-years-major-cosmetics-reform-bill-becomes-law"
+    },
+    {
+      "tags": [
+        "Beauty",
+        "Environment"
+      ],
+      "publisher": "Beat the Microbead campaign · ongoing since 2012",
+      "title": "Microplastic Ingredients in Cosmetics — Country-by-Country Tracker",
+      "summary": "The campaign that produced the first major restrictions on microplastic ingredients in cosmetics. The UK banned rinse-off microbeads in 2018; the EU restricted intentionally-added microplastics under REACH in 2023. The Plastic Soup Foundation maintains the tracker; their open-data ingredient database is the most comprehensive consumer tool.",
+      "url": "https://www.beatthemicrobead.org/"
+    },
+    {
+      "tags": [
+        "Fashion",
+        "Corporate"
+      ],
+      "publisher": "Fashion Revolution · annual",
+      "title": "Fashion Transparency Index — 250 Brands Scored on Disclosure",
+      "summary": "The annual benchmark that scores the world's largest fashion brands on what they publish about their supply chains, environmental and human-rights policies, governance, and impact. The average score has barely moved year on year. The methodology and brand-by-brand reports are open. If a brand will not appear in the index, that's also informative.",
+      "url": "https://www.fashionrevolution.org/about/transparency/"
+    },
+    {
+      "tags": [
+        "Fashion",
+        "Environment"
+      ],
+      "publisher": "McKinsey & Global Fashion Agenda · ongoing reports",
+      "title": "The State of Fashion — Sustainability Pages",
+      "summary": "McKinsey's annual State of Fashion report (with the Business of Fashion) is the industry's preferred mirror. The sustainability sections are useful precisely because they document what the industry itself acknowledges — which is usually the most defensible floor of the actual situation. Reading the McKinsey number then reading the NGO-published number is a fast education.",
+      "url": "https://www.mckinsey.com/industries/retail/our-insights/state-of-fashion"
+    },
+    {
+      "tags": [
+        "Food",
+        "Corporate"
+      ],
+      "publisher": "FAIRR Initiative · annual",
+      "title": "Coller FAIRR Protein Producer Index",
+      "summary": "The major animal-protein producers (Tyson, JBS, Cargill, Marfrig, Smithfield, and 50+ others) scored across welfare, antibiotics, emissions, food safety, labour. The methodology is rigorous and the index is read by major institutional investors. The bottom of the index is consistently the same names, year after year.",
+      "url": "https://www.fairr.org/index"
+    },
+    {
+      "tags": [
+        "Food",
+        "Labour"
+      ],
+      "publisher": "Associated Press · 2015 (Pulitzer)",
+      "title": "Slaves on Thai Fishing Boats — The Associated Press Investigation",
+      "summary": "The Pulitzer-winning AP investigation that traced slave-caught seafood from forced-labour fishing fleets in Indonesian waters through Thai processing plants and into supermarket supply chains. Resulted in the freedom of more than 2,000 men. The Thai industry has been the subject of ongoing reform efforts, with mixed results; the structural conditions that enabled the original abuses have not been fully remedied.",
+      "url": "https://www.ap.org/about/awards-and-recognition/seafood-from-slaves/"
+    },
+    {
+      "tags": [
+        "Animals",
+        "Fashion"
+      ],
+      "publisher": "Four Paws International · multi-year investigations",
+      "title": "Wool / Down / Fur — Welfare Investigations and Brand Trackers",
+      "summary": "Four Paws maintains some of the most thorough multi-year investigations into animal-derived textile supply chains. The wool work covers mulesing; the down work covers force-feeding and live-plucking; the fur work covers fur-farm conditions across China, Poland, and Finland. Most reports include named brand sourcing.",
+      "url": "https://www.four-paws.org/campaigns-topics/topics/fashion-with-a-conscience"
+    },
+    {
+      "tags": [
+        "Animals",
+        "Research"
+      ],
+      "publisher": "Open Philanthropy · ongoing research",
+      "title": "Farm Animal Welfare Reports and Funding Decisions",
+      "summary": "Open Philanthropy publishes its own internal research on which farm-animal welfare interventions have demonstrable evidence of impact. The work is rigorous, transparent, and useful for anyone deciding where to direct attention, advocacy, or donations. Their cage-free corporate-campaign analysis is the clearest published evidence base for that intervention.",
+      "url": "https://www.openphilanthropy.org/focus/farm-animal-welfare/"
+    },
+    {
+      "tags": [
+        "Women",
+        "Labour"
+      ],
+      "publisher": "ActionAid & AFWA · multi-country research",
+      "title": "Sexual Harassment in Asian Garment Factories — Structural Documentation",
+      "summary": "Country-by-country documentation of sexual harassment as a structural feature of garment-factory line supervision — Bangladesh, Cambodia, Vietnam, Indonesia. The research has been used as evidence in ILO Convention 190 advocacy (Violence and Harassment Convention, 2019), and in negotiations leading to the Asia Floor Wage Alliance's Safe Circle programme.",
+      "url": "https://asia.floorwage.org/"
+    },
+    {
+      "tags": [
+        "Women",
+        "Media"
+      ],
+      "publisher": "UN Women / Unstereotype Alliance · ongoing",
+      "title": "The Unstereotype Alliance — Industry Self-Audit on Gender Stereotyping in Ads",
+      "summary": "An industry coalition convened by UN Women, bringing together Unilever, Microsoft, Mars, Diageo, and other major advertisers to commit to non-stereotyped portrayals. The annual \"Gender Equality Means Business\" report tracks member compliance and benchmarks against external measurement. Imperfect, but better data than no data.",
+      "url": "https://www.unstereotypealliance.org/"
+    },
+    {
+      "tags": [
+        "Environment",
+        "Climate"
+      ],
+      "publisher": "UN Environment Programme · annual",
+      "title": "Emissions Gap Report — The Distance Between Pledges and Trajectory",
+      "summary": "The single most consequential annual climate publication outside of the IPCC's assessment cycles. The Emissions Gap Report sets out, in plain numbers, the difference between current national climate pledges and the trajectory required to meet the Paris Agreement temperature goals. Each year, the gap is bigger.",
+      "url": "https://www.unep.org/resources/emissions-gap-report-2024"
+    },
+    {
+      "tags": [
+        "Environment",
+        "Food"
+      ],
+      "publisher": "Mighty Earth · ongoing",
+      "title": "Soy and Cattle Deforestation Reports — Brazilian Cerrado & Amazon",
+      "summary": "Mighty Earth's investigations trace soy and cattle from Brazilian deforestation frontiers through Cargill, ADM, Bunge, and the major meat processors to global brands. The work has driven changes in trader sourcing policies and informed the EU Deforestation Regulation (effective from January 2025 onward).",
+      "url": "https://www.mightyearth.org/"
+    },
+    {
+      "tags": [
+        "Tech",
+        "Labour"
+      ],
+      "publisher": "Strategic Organizing Center · annual",
+      "title": "The Injury Machine — Amazon Warehouse Injury Rate Reports",
+      "summary": "The SOC's annual analysis of OSHA-mandated injury data from Amazon US warehouses. Documents that Amazon's serious-injury rate is consistently approximately twice the industry average for warehouses. The data is from Amazon's own legally required filings; the analysis simply makes them readable.",
+      "url": "https://thesoc.org/our-work/amazon/"
+    },
+    {
+      "tags": [
+        "Tech",
+        "Environment"
+      ],
+      "publisher": "Basel Action Network · GPS-tracking investigations",
+      "title": "e-Trash Transparency Project — Where US E-Waste Actually Goes",
+      "summary": "BAN has, repeatedly, placed GPS trackers inside discarded electronics dropped at US recycling programmes and traced the devices' journey. The tracked devices have repeatedly ended up not at the certified recycler the consumer was promised, but in informal e-waste processing facilities in Hong Kong, Pakistan, Thailand, and elsewhere.",
+      "url": "https://www.ban.org/trash-transparency"
+    },
+    {
+      "tags": [
+        "Consumer",
+        "Greenwashing"
+      ],
+      "publisher": "BEUC — The European Consumer Organisation · 2023",
+      "title": "Complaint Against 17 Airlines for Misleading \"Sustainable\" Claims",
+      "summary": "BEUC and 23 of its members filed a coordinated complaint against major European airlines for greenwashing — particularly around \"carbon neutral\" flights and SAF (sustainable aviation fuel) marketing. The complaint was successful; the Dutch Advertising Code Committee separately ruled against KLM in 2022.",
+      "url": "https://www.beuc.eu/"
+    },
+    {
+      "tags": [
+        "Consumer",
+        "Tech"
+      ],
+      "publisher": "US Federal Trade Commission · 2024",
+      "title": "\"Click to Cancel\" Rule — Final Rule on Negative-Option Marketing",
+      "summary": "The FTC's 2024 rule requiring that cancelling a subscription must be as easy as signing up. The accompanying record of complaints and enforcement actions is publicly searchable and is the best US-side evidence base on dark-pattern consumer harms in subscriptions, free trials, and auto-renewals.",
+      "url": "https://www.ftc.gov/legal-library/browse/federal-register-notices/16-cfr-part-425-rule-concerning-negative-option-requirements"
+    },
+    {
+      "tags": [
+        "Corporate",
+        "Modern Slavery"
+      ],
+      "publisher": "Walk Free Foundation · biennial",
+      "title": "Global Slavery Index — Country and G20 Methodology",
+      "summary": "The most cited estimate of contemporary forced labour and forced marriage. The 2023 edition estimated approximately 50 million people in modern slavery globally. The G20-imports analysis traces which products purchased by G20 countries are at highest risk — electronics, garments, palm oil, fish, cocoa, and rice top the list.",
+      "url": "https://www.walkfree.org/global-slavery-index/"
+    },
+    {
+      "tags": [
+        "Corporate",
+        "Supply Chains"
+      ],
+      "publisher": "KnowTheChain · biennial sectoral benchmarks",
+      "title": "KnowTheChain Benchmarks — Apparel, Food & Beverage, ICT",
+      "summary": "Three sectors are tracked: apparel/footwear, food/beverage, ICT. Each ranks the largest publicly listed companies on forced-labour risk indicators including recruitment-fee policies, worker voice mechanisms, and remediation. The same companies appear at the bottom across multiple benchmark cycles. The data drives much of the institutional-investor pressure that supply-chain advocacy depends on.",
+      "url": "https://knowthechain.org/"
+    },
+    {
+      "tags": [
+        "Media",
+        "Journalism"
+      ],
+      "publisher": "Reuters Institute for the Study of Journalism · annual",
+      "title": "Digital News Report — Trust, Consumption, and Platform Effects",
+      "summary": "The single most comprehensive annual study of how people consume news across 40+ countries. The Oxford-based Reuters Institute publishes the methodology, the country reports, and the underlying survey data. Trust in news is documented as declining; platform-mediated news consumption is documented as rising. The two trends connect.",
+      "url": "https://reutersinstitute.politics.ox.ac.uk/digital-news-report"
+    },
+    {
+      "tags": [
+        "Media",
+        "Climate"
+      ],
+      "publisher": "New Weather Institute & Adfree Cities · ongoing",
+      "title": "Badvertising — Fossil Fuel Advertising and the Climate Crisis",
+      "summary": "A campaign documenting fossil-fuel advertising as a public-health and climate concern, modelled on tobacco-control precedents. Amsterdam (2020), Toronto (2022), and several other cities have introduced restrictions on fossil-fuel advertising in public spaces. France's 2022 Climate & Resilience Law banned advertising for fossil fuels. The research base is open.",
+      "url": "https://www.badvertising.org/"
+    }
+  ]
+}

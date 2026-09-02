@@ -1,0 +1,156 @@
+{
+  "title": "Record Checker",
+  "slug": "record",
+  "reviewed": "2026-08-31",
+  "reviewCycleDays": 120,
+  "summary": "Documented regulatory actions, court rulings, and formal findings, each tied to a named public source. This holds only what the public record shows. Absence of a record is not evidence of good practice.",
+  "findings": [
+    {
+      "name": "JBS",
+      "sector": "Food / meat",
+      "finding": "NY Attorney General sued JBS USA (Feb 2024) over its 'Net Zero by 2040' marketing; separately paid US$4M in fines (Jan 2025) over child-labour violations at US facilities.",
+      "src": "NY Attorney General; US Dept. of Labor.",
+      "url": "https://ag.ny.gov/press-release/2024/attorney-general-james-sues-jbs-usa-fraudulent-net-zero-climate-claims"
+    },
+    {
+      "name": "TotalEnergies",
+      "sector": "Energy / advertising",
+      "finding": "Paris Judicial Tribunal ruled (Oct 2025) that its 'carbon neutrality by 2050' marketing breached consumer-protection law — a first against a major oil company for greenwashing.",
+      "src": "Paris Judicial Tribunal.",
+      "url": "https://blogs.law.columbia.edu/climatechange/"
+    },
+    {
+      "name": "Shein",
+      "sector": "Fashion",
+      "finding": "Italy's competition authority fined a Shein-linked company €1M (Aug 2025) for misleading environmental claims about its clothing.",
+      "src": "AGCM (Italian Competition Authority).",
+      "url": "https://en.agcm.it/en/media/press-releases/"
+    },
+    {
+      "name": "KLM",
+      "sector": "Aviation / advertising",
+      "finding": "Amsterdam District Court ruled (2024) that KLM's 'Fly Responsibly' carbon-offset claims lacked adequate, verifiable evidence.",
+      "src": "Amsterdam District Court.",
+      "url": "https://www.rechtspraak.nl/"
+    },
+    {
+      "name": "L'Oréal",
+      "sector": "Beauty",
+      "finding": "Excluded from the Leaping Bunny programme; the company states it tests 'where required by law', a reference to markets such as China where animal testing can be required.",
+      "src": "Cruelty Free International.",
+      "url": "https://crueltyfreeinternational.org/"
+    },
+    {
+      "name": "Boohoo",
+      "sector": "Fashion",
+      "finding": "UK reporting and an independent review (Levitt QC, 2020) found serious supply-chain failings in Leicester garment factories, including underpayment; 50+ MPs wrote to the Home Secretary.",
+      "src": "Levitt QC independent review; UK Parliament.",
+      "url": "https://www.parliament.uk/"
+    },
+    {
+      "name": "Mobilewalla",
+      "sector": "Tech / data",
+      "finding": "US FTC finalised an order (Jan 2025) banning the data broker from selling sensitive location data, including visits to health facilities and places of worship.",
+      "src": "US Federal Trade Commission.",
+      "url": "https://www.ftc.gov/news-events/news/press-releases/2025/01/ftc-finalizes-order-banning-mobilewalla-selling-sensitive-location-data"
+    },
+    {
+      "name": "Gravy Analytics / Venntel",
+      "sector": "Tech / data",
+      "finding": "US FTC action (Dec 2024) banning the sale of sensitive location data; the companies processed billions of location signals daily from ~1 billion devices.",
+      "src": "US Federal Trade Commission.",
+      "url": "https://www.ftc.gov/news-events/news/press-releases/2024/12/ftc-takes-action-against-gravy-analytics-venntel-unlawfully-selling-location-data-tracking-consumers"
+    },
+    {
+      "name": "H&M",
+      "sector": "Fashion / fast fashion",
+      "finding": "EU regulators (2022) found the vast majority of H&M's sustainability claims unsubstantiated; H&M reached a US$3M settlement over its \"Conscious Collection\" marketing and removed Higg sustainability scores after they were challenged.",
+      "src": "EU consumer authorities; US class-action settlement",
+      "url": "https://www.business-humanrights.org/en/latest-news/hm-faces-class-action-over-conscious-collection-greenwashing-claims/"
+    },
+    {
+      "name": "Zara / Inditex",
+      "sector": "Fashion / fast fashion",
+      "finding": "Remains within the EU Consumer Protection Cooperation Network's review scope; watchdogs flagged product terms ('natural', 'sustainable fabric') now restricted under EU rules. No formal EU sanction published as of 2026 — scrutiny ongoing.",
+      "src": "EU CPC Network; Business & Human Rights Resource Centre",
+      "url": "https://www.business-humanrights.org/en/from-us/press-releases/global-fashion-brands-accused-of-greenwashing-over-net-zero-plans/"
+    },
+    {
+      "name": "Nike",
+      "sector": "Fashion / footwear",
+      "finding": "Named in a 2025 report (The Missing Thread) for bold decarbonisation pledges that omit protections for supply-chain workers affected by the shift — 'greenwashing' by exclusion of labour.",
+      "src": "Business & Human Rights Resource Centre",
+      "url": "https://www.business-humanrights.org/en/from-us/press-releases/global-fashion-brands-accused-of-greenwashing-over-net-zero-plans/"
+    },
+    {
+      "name": "Sunday Riley",
+      "sector": "Beauty / skincare",
+      "finding": "Settled with the US FTC over fake reviews — the CEO and staff posted reviews of their own products on Sephora.com and used a VPN to evade detection. Settlement reached; no admission of fault.",
+      "src": "US FTC settlement (2019)",
+      "url": "https://www.ftc.gov/news-events/news/press-releases/2019/10/cosmetics-firm-settles-ftc-allegations-it-deceived-consumers-through-fake-online-reviews"
+    },
+    {
+      "name": "Grande Cosmetics",
+      "sector": "Beauty / lash & brow",
+      "finding": "Agreed to a US$6.25M class-action settlement (Jan 2024) over claims it failed to disclose that its serums contain isopropyl cloprostenate, alleged to carry undisclosed side-effect risks. Company maintains products are safe.",
+      "src": "Class-action settlement (2024)",
+      "url": "https://topclassactions.com/lawsuit-settlements/lawsuit-news/grande-cosmetics-6-25m-class-action-settlement/"
+    },
+    {
+      "name": "Sephora",
+      "sector": "Beauty / retail",
+      "finding": "Agreed to pay US$775,000 (2025) to settle California claims over improper hazardous-waste disposal. Note: a separate suit alleging its 'Clean at Sephora' label was misleading was dismissed in 2024 — the court found no deception.",
+      "src": "California settlement (2025); NY federal court dismissal (2024)",
+      "url": "https://www.globalcosmeticsnews.com/2025-in-review-see-you-in-court-litigation-intensifies-amid-heightened-scrutiny/"
+    },
+    {
+      "name": "Yves Rocher",
+      "sector": "Beauty / cosmetics",
+      "finding": "Under examination by Paris judges over France's corporate duty-of-vigilance law, concerning alleged labour violations in Turkey. A ruling is expected in 2026 — this is a pending case, not a finding.",
+      "src": "French duty-of-vigilance proceedings (ruling expected 2026)",
+      "url": "https://www.globalcosmeticsnews.com/2025-in-review-see-you-in-court-litigation-intensifies-amid-heightened-scrutiny/"
+    },
+    {
+      "name": "Coca-Cola, Nestlé, Kraft Heinz & others",
+      "sector": "Food / ultra-processed",
+      "finding": "Named in a San Francisco lawsuit (Dec 2025) alleging deceptive marketing of ultra-processed foods, including health-oriented messaging and child-directed branding, under California's Unfair Competition Law. Pending — allegations, not proven; companies dispute the claims.",
+      "src": "City of San Francisco lawsuit (2025), pending",
+      "url": "https://www.npr.org/2025/12/03/g-s1-100212/san-francisco-sues-manufacturers-ultraprocessed-foods"
+    },
+    {
+      "name": "Kroger",
+      "sector": "Food / retail",
+      "finding": "Subject of a 2024 class action alleging eggs labelled 'Farm Fresh' came from chickens in industrial confinement. A documented labelling dispute — consult the case for the current status.",
+      "src": "Sorkin v. Kroger Co. (N.D. Ill. 2024)",
+      "url": "https://nationalaglawcenter.org/aglaw-reporter/case-law-index/food-labeling/"
+    },
+    {
+      "name": "Walmart",
+      "sector": "Food / retail",
+      "finding": "Named in a 2024 case alleging salmon marketed as 'sustainable' was deceptively labelled. A documented labelling dispute — consult the case for the current status.",
+      "src": "Sanchez v. Walmart Inc. (N.D. Ill. 2024)",
+      "url": "https://nationalaglawcenter.org/aglaw-reporter/case-law-index/food-labeling/"
+    },
+    {
+      "name": "Canada Goose",
+      "sector": "Fashion / outerwear (animals)",
+      "finding": "After a PETA complaint to the US FTC, the company stopped making claims that its standards ensured suppliers didn't abuse animals. It pledged to end fur use (2021/2022) but faced continued campaigns over down sourcing. Mix of regulatory outcome + ongoing advocacy scrutiny.",
+      "src": "US FTC complaint outcome; PETA campaigns",
+      "url": "https://www.peta.org/news/canada-goose-new-fur-policy/"
+    },
+    {
+      "name": "Patagonia",
+      "sector": "Fashion / outerwear (animals)",
+      "finding": "Twice suspended wool purchasing after PETA exposés documented cruelty at approved 'responsible wool' suppliers that violated the brand's own welfare standards. Advocacy-sourced investigation; the brand has responded and changed suppliers.",
+      "src": "PETA investigations (advocacy source)",
+      "url": "https://www.peta.org/news/read-petas-response-to-patagonias-reaction-to-horrifying-investigation-of-its-sustainable-wool-supplier/"
+    },
+    {
+      "name": "Estée Lauder",
+      "sector": "Beauty / cosmetics",
+      "finding": "A US federal judge (SDNY) declined to dismiss a securities-fraud suit alleging the company concealed its reliance on 'daigou' gray-market sales in China, later reaching a settlement with investors. Investor-disclosure matter, not a product claim.",
+      "src": "SDNY securities litigation; investor settlement",
+      "url": "https://insights.citeline.com/hbw-insight/beauty/policy-and-regulation/legal/"
+    }
+  ]
+}

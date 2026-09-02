@@ -1,0 +1,430 @@
+{
+  "title": "The Digital Archive",
+  "slug": "archive",
+  "reviewed": "2026-08-31",
+  "reviewCycleDays": 365,
+  "summary": "Numbered entries in the visual essay series. Each is a single documented case, filed with its caption and the note that sits behind it.",
+  "note": "Archive plates are rendered typographically. The original AI-directed editorial imagery is not bundled with this build.",
+  "entries": [
+    {
+      "index": "FF · 01 / 60",
+      "badge": "FASHION",
+      "title": "FERAL FEMME — The Product. The Cage.",
+      "caption": "FF · 01 / 60",
+      "lore": "A body bound in wire mesh holds the bottle. The bottle is whole. The body is caged. Beauty industry: what is sold to you, and what is paid for that beauty."
+    },
+    {
+      "index": "FF · 02 / 60",
+      "badge": "EDITORIAL",
+      "title": "In the Workshop — Lamp & Shadow",
+      "caption": "FF · 02 / 60",
+      "lore": "FERAL FEMME. The atelier portrait. Lit by a single lamp. Caged in wire. The hybrid waits to be witnessed."
+    },
+    {
+      "index": "FF · 03 / 60",
+      "badge": "ARCHIVE",
+      "title": "Gallery — Same Cage, Different Species",
+      "caption": "FF · 03 / 60",
+      "lore": "Installation view: wire sculptures of fox, hare, deer. Above them, the FERAL FEMME poster — a hybrid in the same cage. The exhibition itself is the argument."
+    },
+    {
+      "index": "FF · 04 / 60",
+      "badge": "EDITORIAL",
+      "title": "Mirror — Caged, Marked, Awake",
+      "caption": "FF · 04 / 60",
+      "lore": "Bathroom mirror. Cage on the head. FERAL written on the cheek. The reflection sees what the world refuses to."
+    },
+    {
+      "index": "FF · 05 / 60",
+      "badge": "EDITORIAL",
+      "title": "Not Your Experiment.",
+      "caption": "FF · 05 / 60",
+      "lore": "Two femmes in lab uniforms. Blue solution spilled across the floor. Sign held: NOT YOUR EXPERIMENT. The refusal is editorial."
+    },
+    {
+      "index": "FF · 06 / 60",
+      "badge": "EDITORIAL",
+      "title": "Three Femmes — Lab Triptych",
+      "caption": "FF · 06 / 60",
+      "lore": "Three lab-coat femmes in white tile. A FERAL FEMME placard on the table. A cage on the right. The frame contains the entire argument."
+    },
+    {
+      "index": "FF · 07 / 60",
+      "badge": "FASHION",
+      "title": "The Seated — Light Through Bars",
+      "caption": "FF · 07 / 60",
+      "lore": "Seated. Composed. The shadow of bars across the body. The cage on the floor empty — for now."
+    },
+    {
+      "index": "FF · 08 / 60",
+      "badge": "EDITORIAL",
+      "title": "Close-Up — The Witness Marked",
+      "caption": "FF · 08 / 60",
+      "lore": "Close-up: pale nose, smudged makeup, hybrid ears. Shadow bars fall across the face. The cage is not in the frame. The cage is the frame."
+    },
+    {
+      "index": "FF · 09 / 60",
+      "badge": "ARCHIVE",
+      "title": "Art As Resistance",
+      "caption": "FF · 09 / 60",
+      "lore": "Studio. Cracked mirror. Protest signs: ART AS RESISTANCE, CRUELTY-FREE FREE. The artist as witness, painting her own face."
+    },
+    {
+      "index": "FF · 10 / 60",
+      "badge": "EDITORIAL",
+      "title": "The Sticker Wall",
+      "caption": "FF · 10 / 60",
+      "lore": "Bathroom mirror covered in stickers. FERAL FEMME printed above the reflection. Beauty products on the counter. Everything caged. Everything sold."
+    },
+    {
+      "index": "FF · 11 / 60",
+      "badge": "ARCHIVE",
+      "title": "Feral Femme Archive — File 7.2-12",
+      "caption": "FF · 11 / 60",
+      "lore": "Feral Femme Archive · Editorial · 16.V.2026 · File 7.2-12 · Beauty / Unregulated. Subject F.062 · 1026B. Cruelty classified. Declassified."
+    },
+    {
+      "index": "FF · 12 / 60",
+      "badge": "EDITORIAL",
+      "title": "Same Cage. Different Species.",
+      "caption": "FF · 12 / 60",
+      "lore": "Editorial Cover · Issue 05 · \"Same cage. Different species.\" Every \"tested\" claim ends in the same room. One body wears the cage. The other is the cage."
+    },
+    {
+      "index": "FF · 13 / 60",
+      "badge": "BEAUTY",
+      "title": "Marked — Property of Industry",
+      "caption": "FF · 13 / 60",
+      "lore": "Marked. Numbered. Property of industry. The barcode reads: 6 02569 01345 — a SKU like any other product."
+    },
+    {
+      "index": "FF · 14 / 60",
+      "badge": "BEAUTY",
+      "title": "The Veiled — Beauty Tested",
+      "caption": "FF · 14 / 60",
+      "lore": "Beauty industry: tested on rabbits, mice, guinea pigs. The veil obscures but does not protect. Industry standards across nations not bound by cruelty-free law."
+    },
+    {
+      "index": "FF · 15 / 60",
+      "badge": "BEAUTY",
+      "title": "The Tank — Cosmetic Testing",
+      "caption": "FF · 15 / 60",
+      "lore": "Submerged in the solution being tested. No exit. No consent. No regulation outside EU/UK borders. Beauty Industry · Unregulated · Cosmetic Testing."
+    },
+    {
+      "index": "FF · 16 / 60",
+      "badge": "FASHION",
+      "title": "Crimson — The Body Remembers",
+      "caption": "FF · 16 / 60",
+      "lore": "The body remembers what marketing erases. Editorial: scarred, blackened, restrained, witnessed."
+    },
+    {
+      "index": "FF · 17 / 60",
+      "badge": "FASHION",
+      "title": "Paint — One Wears the Cage",
+      "caption": "FF · 17 / 60",
+      "lore": "One wears the cage. The other becomes it. Fashion editorial in crimson and black."
+    },
+    {
+      "index": "FF · 18 / 60",
+      "badge": "EDITORIAL",
+      "title": "Seen Through Red — The Filter They Apply",
+      "caption": "FF · 18 / 60",
+      "lore": "A red acrylic plate held over a caged face. The industry filters every body through its own colour before it sells it back. FERAL bleeds through anyway."
+    },
+    {
+      "index": "FF · 19 / 60",
+      "badge": "ARCHIVE",
+      "title": "The Grid — Measured For Market",
+      "caption": "FF · 19 / 60",
+      "lore": "A wire grid mapped across the face. Every feature plotted, scored, and priced. The word on the cheek refuses the scoring."
+    },
+    {
+      "index": "FF · 20 / 60",
+      "badge": "FASHION",
+      "title": "Crinoline Cage — Couture As Confinement",
+      "caption": "FF · 20 / 60",
+      "lore": "Haute couture rendered as containment. The cage is the garment and the garment is the cage. Beauty sold as restraint."
+    },
+    {
+      "index": "FF · 21 / 60",
+      "badge": "EDITORIAL",
+      "title": "Bloom Of Red — The Mark Left Behind",
+      "caption": "FF · 21 / 60",
+      "lore": "A red sun bleeds down the concrete. The body stands defiant in the wreckage of what was done to it."
+    },
+    {
+      "index": "FF · 22 / 60",
+      "badge": "ARCHIVE",
+      "title": "Fragile Specimen — Handle As Product",
+      "caption": "FF · 22 / 60",
+      "lore": "Boxed, labelled, and shipped. FRAGILE. SPECIMEN. The body reduced to cargo for the industry that purchased it."
+    },
+    {
+      "index": "FF · 23 / 60",
+      "badge": "BEAUTY",
+      "title": "Calipers — Beauty By The Millimetre",
+      "caption": "FF · 23 / 60",
+      "lore": "Gloved hands measure the face to the millimetre. The beauty industry quantifies precisely what it intends to sell."
+    },
+    {
+      "index": "FF · 24 / 60",
+      "badge": "EDITORIAL",
+      "title": "Shrink-Wrapped — Sealed For Sale",
+      "caption": "FF · 24 / 60",
+      "lore": "Bound in plastic and wire, packaged like meat. Preserved for a shelf, not for a life."
+    },
+    {
+      "index": "FF · 25 / 60",
+      "badge": "ARCHIVE",
+      "title": "Pinned — FERAL FEMME, Catalogued",
+      "caption": "FF · 25 / 60",
+      "lore": "Mounted and pinned like a butterfly under glass. The specimen card reads FERAL FEMME. The collection keeps growing."
+    },
+    {
+      "index": "FF · 26 / 60",
+      "badge": "FASHION",
+      "title": "Caged Heart — The Cost Of Couture",
+      "caption": "FF · 26 / 60",
+      "lore": "A wire cage cradles an exposed heart. Fashion that puts the very organ it extracts on display."
+    },
+    {
+      "index": "FF · 27 / 60",
+      "badge": "EDITORIAL",
+      "title": "Redacted — What They Won't Let You See",
+      "caption": "FF · 27 / 60",
+      "lore": "A red bar censors the body. The industry decides which parts of you are permitted to be seen."
+    },
+    {
+      "index": "FF · 28 / 60",
+      "badge": "FASHION",
+      "title": "Lattice — Bound In Leather",
+      "caption": "FF · 28 / 60",
+      "lore": "A body woven into a leather grid. Crouched, contained, and still watching."
+    },
+    {
+      "index": "FF · 29 / 60",
+      "badge": "FASHION",
+      "title": "The Apparatus — Worn As A Dress",
+      "caption": "FF · 29 / 60",
+      "lore": "An industrial cage clamps around lace and corsetry. The machine and the garment become a single restraint."
+    },
+    {
+      "index": "FF · 30 / 60",
+      "badge": "EDITORIAL",
+      "title": "Strung Up — The Body On Wires",
+      "caption": "FF · 30 / 60",
+      "lore": "Suspended by steel cable and posed mid-air. A puppet shaped by the industry's hand."
+    },
+    {
+      "index": "FF · 31 / 60",
+      "badge": "EDITORIAL",
+      "title": "Half Mask — The Face They Prefer",
+      "caption": "FF · 31 / 60",
+      "lore": "Marionette strings and a glossy black half-mask. Half the face is hidden; the industry sells only the part it likes."
+    },
+    {
+      "index": "FF · 32 / 60",
+      "badge": "ARCHIVE",
+      "title": "The Rig — Held In Place",
+      "caption": "FF · 32 / 60",
+      "lore": "Springs and bolts torque around the skull. The specimen held still for inspection in the workshop."
+    },
+    {
+      "index": "FF · 33 / 60",
+      "badge": "EDITORIAL",
+      "title": "Restraint — The Trap Beneath",
+      "caption": "FF · 33 / 60",
+      "lore": "Buckled into white restraint with a steel trap waiting below. Compliance demanded, danger guaranteed."
+    },
+    {
+      "index": "FF · 34 / 60",
+      "badge": "BEAUTY",
+      "title": "The Quiet Specimen — After The Session",
+      "caption": "FF · 34 / 60",
+      "lore": "Stripped of apparatus, marked, and kneeling. What remains of a body once the industry sets down its tools."
+    },
+    {
+      "index": "FF · 35 / 60",
+      "badge": "FASHION",
+      "title": "The Pelt — Someone Wore This First",
+      "caption": "FF · 35 / 60",
+      "lore": "Draped in spotted fur, slipping off a red heel. The coat had an owner before it was ever a coat."
+    },
+    {
+      "index": "FF · 36 / 60",
+      "badge": "EDITORIAL",
+      "title": "The Footage — Evidence On Loop",
+      "caption": "FF · 36 / 60",
+      "lore": "Kneeling before a monitor that replays the muzzle and the scream. The archive refuses to look away."
+    },
+    {
+      "index": "FF · 37 / 60",
+      "badge": "FASHION",
+      "title": "Unicorn Pelt — Selling The Myth",
+      "caption": "FF · 37 / 60",
+      "lore": "A creature that never existed, skinned for the runway regardless. The industry will manufacture even the magic it kills."
+    },
+    {
+      "index": "FF · 38 / 60",
+      "badge": "FASHION",
+      "title": "Unicorn Pelt — Profile Of A Trophy",
+      "caption": "FF · 38 / 60",
+      "lore": "The horn left intact, the head left empty. Fantasy reduced to a garment and a price tag."
+    },
+    {
+      "index": "FF · 39 / 60",
+      "badge": "EDITORIAL",
+      "title": "Down — Held Before The Harvest",
+      "caption": "FF · 39 / 60",
+      "lore": "She cradles the goose whose down fills the coats. Warmth for one body, taken from another."
+    },
+    {
+      "index": "FF · 40 / 60",
+      "badge": "BEAUTY",
+      "title": "Serpent — Beauty That Constricts",
+      "caption": "FF · 40 / 60",
+      "lore": "A pale snake coils across the face. The thing sold as exotic is the thing that tightens."
+    },
+    {
+      "index": "FF · 41 / 60",
+      "badge": "EDITORIAL",
+      "title": "Trinkets — Animals Made Ornamental",
+      "caption": "FF · 41 / 60",
+      "lore": "Pets glazed into porcelain charms and strung from a collar. Affection downgraded to accessory."
+    },
+    {
+      "index": "FF · 42 / 60",
+      "badge": "EDITORIAL",
+      "title": "The Herd — A Witness In The Field",
+      "caption": "FF · 42 / 60",
+      "lore": "Cheek to cheek with the animal the leather is taken from. The field remembers what the showroom forgets."
+    },
+    {
+      "index": "FF · 43 / 60",
+      "badge": "EDITORIAL",
+      "title": "Holy / Sibal — The Companion Held",
+      "caption": "FF · 43 / 60",
+      "lore": "Scarred arms wrap a small cat. The gloves curse and pray at once. FERAL FEMME."
+    },
+    {
+      "index": "FF · 44 / 60",
+      "badge": "EDITORIAL",
+      "title": "Teeth Bared — Protect What's Left",
+      "caption": "FF · 44 / 60",
+      "lore": "Teeth to the glove, the cat shielded against the body. A warning to anyone who reaches."
+    },
+    {
+      "index": "FF · 45 / 60",
+      "badge": "FASHION",
+      "title": "Red Bloom — Couture On Ice",
+      "caption": "FF · 45 / 60",
+      "lore": "A storm of red ruffles perched on clear acrylic. Beauty that costs the body its footing."
+    },
+    {
+      "index": "FF · 46 / 60",
+      "badge": "BEAUTY",
+      "title": "Ringed — Marked In Red",
+      "caption": "FF · 46 / 60",
+      "lore": "A split-painted face against deep red. Each ring a target, each target a sale."
+    },
+    {
+      "index": "FF · 47 / 60",
+      "badge": "FASHION",
+      "title": "Pleated Wild — Out Past The Studio",
+      "caption": "FF · 47 / 60",
+      "lore": "Engineered pleats meet wet moss and bare branches. The specimen returned briefly to the field."
+    },
+    {
+      "index": "FF · 48 / 60",
+      "badge": "EDITORIAL",
+      "title": "The Going Rate — Cash On The Floor",
+      "caption": "FF · 48 / 60",
+      "lore": "Perched on worn leather with money scattered beneath. Everyone in the room already knows the price."
+    },
+    {
+      "index": "FF · 49 / 60",
+      "badge": "EDITORIAL",
+      "title": "Boardroom Bloom — Dressed For The Meeting",
+      "caption": "FF · 49 / 60",
+      "lore": "Couture ruffles folded into an office chair. The body styled for the people who trade it."
+    },
+    {
+      "index": "FF · 50 / 60",
+      "badge": "BEAUTY",
+      "title": "Tulle Dusk — The Soft Sell",
+      "caption": "FF · 50 / 60",
+      "lore": "Wrapped in clouds of pink and orange tulle. Softness staged to make the cage look gentle."
+    },
+    {
+      "index": "FF · 51 / 60",
+      "badge": "FASHION",
+      "title": "Tulle Storm — Colour As Camouflage",
+      "caption": "FF · 51 / 60",
+      "lore": "A crouch inside layered tulle and shadow. The prettier the cloud, the easier to hide the leash."
+    },
+    {
+      "index": "FF · 52 / 60",
+      "badge": "FASHION",
+      "title": "Red Mantle — Seated In Crimson",
+      "caption": "FF · 52 / 60",
+      "lore": "Swathed head to boot in red fringe. Dressed as a warning, posed as a want."
+    },
+    {
+      "index": "FF · 53 / 60",
+      "badge": "EDITORIAL",
+      "title": "Backdrop Taped — The Set Exposed",
+      "caption": "FF · 53 / 60",
+      "lore": "Mid-motion against a half-taped sweep. The illusion and its scaffolding shown at once."
+    },
+    {
+      "index": "FF · 54 / 60",
+      "badge": "BEAUTY",
+      "title": "Crimson Brim — The Face Beneath The Fringe",
+      "caption": "FF · 54 / 60",
+      "lore": "Red fringe veils the eyes; the painted muzzle stays. Even hidden, the mark shows."
+    },
+    {
+      "index": "FF · 55 / 60",
+      "badge": "EDITORIAL",
+      "title": "Behind The Glass — The Captive’s Stare",
+      "caption": "FF · 55 / 60",
+      "lore": "Held behind glass, waiting. The species changes; the room does not."
+    },
+    {
+      "index": "FF · 56 / 60",
+      "badge": "EDITORIAL",
+      "title": "Submerged — Soft Hours In A Hard Room",
+      "caption": "FF · 56 / 60",
+      "lore": "Eyes closed against green tile. Rooms like this aren’t designed for living things."
+    },
+    {
+      "index": "FF · 57 / 60",
+      "badge": "EDITORIAL",
+      "title": "Cling — The Film That Smothers",
+      "caption": "FF · 57 / 60",
+      "lore": "Plastic against breath. Every clear wrap is somebody’s last room."
+    },
+    {
+      "index": "FF · 58 / 60",
+      "badge": "FASHION",
+      "title": "Adorned — The Coat And Its Cost",
+      "caption": "FF · 58 / 60",
+      "lore": "Python at the throat, fur across the lap. Glamour stitched from two endings."
+    },
+    {
+      "index": "FF · 59 / 60",
+      "badge": "EDITORIAL",
+      "title": "Yolk — The Daily Cracking",
+      "caption": "FF · 59 / 60",
+      "lore": "An egg in a pan held to the ear. Listen long enough and the hens come through."
+    },
+    {
+      "index": "FF · 60 / 60",
+      "badge": "BEAUTY",
+      "title": "Specimen — The Ear Wired Up",
+      "caption": "FF · 60 / 60",
+      "lore": "Strings taped to skin, ears propped open. A study in what’s done to be certain it works."
+    }
+  ]
+}

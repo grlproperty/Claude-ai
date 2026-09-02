@@ -1,0 +1,84 @@
+# Weekly maintenance. The regulation tracker and the other datasets each declare
+# a review cycle; when one lapses the site says so on its own face, and this job
+# opens an issue so it does not go unnoticed.
+#
+# It also rebuilds and redeploys, which keeps generated dates current.
+name: Dataset review
+
+on:
+  schedule:
+    # 07:00 UTC every Monday.
+    - cron: '0 7 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - name: Check dataset review cycles
+        id: check
+        run: |
+          # `npm run check` prints a warning line per lapsed dataset and still
+          # exits 0; we surface those lines rather than the exit code.
+          npm run check 2>&1 | tee check.log
+          if grep -q 'past its' check.log; then
+            {
+              echo 'stale=true'
+              echo 'body<<EOF'
+              grep 'past its' check.log
+              echo 'EOF'
+            } >> "$GITHUB_OUTPUT"
+          else
+            echo 'stale=false' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open a review issue
+        if: steps.check.outputs.stale == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = `The following datasets have passed their declared review cycle:
+
+            \`\`\`
+            ${{ steps.check.outputs.body }}
+            \`\`\`
+
+            Re-read the primary sources, update \`content/data/*.json\`, and set a
+            new \`reviewed\` date. Until that happens the affected pages display a
+            notice telling readers the data may be out of date.`;
+
+            const title = 'Dataset review due';
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'dataset-review',
+            });
+
+            if (existing.data.some((i) => i.title === title)) {
+              core.info('A review issue is already open.');
+              return;
+            }
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+              labels: ['dataset-review'],
+            });

@@ -1,0 +1,185 @@
+{
+  "name": "FERAL FEMME",
+  "nameParts": { "primary": "FERAL", "secondary": "FEMME", "stop": "." },
+  "tagline": "Two subjects. One machine. Same refusal to consent.",
+  "motto": "Knowledge Creates Change",
+  "standard": "Written to be verified, not agreed with.",
+  "descriptor": "Editorial · Research · Tools",
+  "established": 2026,
+  "location": "South Africa",
+  "funding": "Self-Funded",
+  "description": "FERAL FEMME investigates every industry built on a body that could not agree to it — holding animals and women at equal weight. Public-record reporting, reframed with attribution, across ten industries, with free sustainability tools.",
+  "url": "https://feral-femme.co",
+  "locale": "en-ZA",
+
+  "founder": {
+    "name": "Ayden Rosemary Brown",
+    "role": "Founder & Editorial Director",
+    "email": "ayden@feral-femme.co"
+  },
+
+  "email": "info@feral-femme.co",
+  "correctionsEmail": "corrections@feral-femme.co",
+
+  "social": {
+    "instagram": "https://www.instagram.com/feralfemme.co",
+    "instagramHandle": "@feralfemme.co"
+  },
+
+  "positioning": {
+    "lede": "We investigate every industry built on a body that could not agree to it — and we hold animals and women at equal weight. Neither is a metaphor for the other. Both are literal.",
+    "body": "The cruelty is rarely called cruelty. It is called tradition, testing, farming, research, wellness, self-care. We translate the vocabulary, cite the source, and file the receipt — across fashion, food, beauty, wildlife, medicine, tech, and the advertising that obscures all of it."
+  },
+
+  "nav": [
+    { "label": "Industries", "href": "/industries/" },
+    { "label": "Field Notes", "href": "/field-notes/" },
+    { "label": "Archive", "href": "/archive/" },
+    { "label": "Tools", "href": "/tools/" },
+    { "label": "About", "href": "/about/" }
+  ],
+
+  "method": [
+    {
+      "title": "Public-Record Reporting",
+      "body": "Field notes summarise investigations that already exist in the public record — the Sunday Times, the Guardian, Reuters, AP, the New York Times, the Bureau of Investigative Journalism, peer-reviewed studies, parliamentary inquiries, regulatory filings.",
+      "stamp": "Sourced & cited"
+    },
+    {
+      "title": "Editorial Synthesis",
+      "body": "Each source is read, reframed in Feral Femme's restrained editorial voice, and connected to the broader pattern of the industry it documents. The original publisher always gets the credit.",
+      "stamp": "Reframed & attributed"
+    },
+    {
+      "title": "AI-Directed Editorial Imagery",
+      "body": "The archive's visual essays are created using AI image generation, directed by Ayden Rosemary Brown. Each image is a deliberate frame — conceptual editorial work, not documentary photography.",
+      "stamp": "Disclosed throughout"
+    },
+    {
+      "title": "Sustainability Tools",
+      "body": "Nine free interactive tools turn awareness into practice — from the Wardrobe Wear Counter and the Plant Plate Tracker to the Ingredient, Greenwashing, Certification, and Material decoders.",
+      "stamp": "Free to use"
+    },
+    {
+      "title": "The Research Briefing",
+      "body": "Every field note is sent to subscribers in full on the day it is published, through a provider that reads the site’s own feed. No separate edition, and nothing in the email that is not on the site.",
+      "stamp": "Sent on publication"
+    },
+    {
+      "title": "Self-Funded Platform",
+      "body": "Feral Femme is independently funded through reader donations. No advertisers, no industry sponsorship, no editorial conflicts of interest.",
+      "stamp": "Reader-supported"
+    }
+  ],
+
+  "footerNav": [
+    {
+      "title": "Read",
+      "links": [
+        { "label": "Field Notes", "href": "/field-notes/" },
+        { "label": "Industries", "href": "/industries/" },
+        { "label": "Digital Archive", "href": "/archive/" },
+        { "label": "The Research Briefing", "href": "/briefing/" }
+      ]
+    },
+    {
+      "title": "Tools",
+      "links": [
+        { "label": "All Tools", "href": "/tools/" },
+        { "label": "Certification Decoder", "href": "/tools/certifications/" },
+        { "label": "Greenwashing Decoder", "href": "/tools/greenwashing/" },
+        { "label": "Material Decoder", "href": "/tools/materials/" },
+        { "label": "Record Checker", "href": "/tools/record/" },
+        { "label": "Where to Act", "href": "/tools/act/" }
+      ]
+    },
+    {
+      "title": "Platform",
+      "links": [
+        { "label": "About", "href": "/about/" },
+        { "label": "Editorial Standards", "href": "/editorial-standards/" },
+        { "label": "Corrections", "href": "/corrections/" },
+        { "label": "Sources", "href": "/sources/" },
+        { "label": "Contact", "href": "/contact/" }
+      ]
+    },
+    {
+      "title": "Legal",
+      "links": [
+        { "label": "Privacy & POPIA", "href": "/privacy/" },
+        { "label": "Terms of Use", "href": "/terms/" },
+        { "label": "Accessibility", "href": "/accessibility/" },
+        { "label": "RSS Feed", "href": "/feed.xml" }
+      ]
+    }
+  ],
+
+  "newsletter": {
+    "name": "The Research Briefing",
+    "cadence": "Sent on publication",
+    "summary": "Every field note in full, sent the day it is published — the whole note, not a summary with a link back. No promotions, no product recommendations, one-click unsubscribe.",
+    "action": "https://assets.mailerlite.com/jsonp/2610955/forms/197500769051608208/subscribe",
+    "emailField": "fields[email]",
+    "fields": { "ml-submit": "1", "anticsrf": "true" },
+    "confirmText": "Thank you — check your inbox to confirm your subscription.",
+    "group": "197498763186538080",
+    "fromName": "FERAL FEMME",
+    "fromEmail": "info@feral-femme.co",
+    "automationStart": "2026-09-02",
+    "note": "`action` is MailerLite embedded form 197500769051608208 on account 2610955, posted to assets.mailerlite.com rather than the dashboard.mailerlite.com address MailerLite's own share page carries: that one 301s here, and fetch downgrades a POST to a GET when it follows a 301, which would drop the address. `emailField` and `fields` are the names that endpoint expects. The form has double opt-in on, which is why `confirmText` tells the reader to confirm. `group` is the list the form feeds and the briefing sends to; `automationStart` is the cutover before which no note is ever mailed. Clearing `action` degrades the form to a mailto: link."
+  },
+
+  "donate": {
+    "headline": "Fund the research directly",
+    "summary": "Feral Femme is self-funded and reader-supported. A donation funds independent investigative work with no strings attached — no advertisers, no industry sponsorship, no editorial conflicts of interest.",
+    "currency": "USD",
+    "currencySymbol": "$",
+    "processor": "PayPal",
+    "processorNote": "PayPal charges in USD. Your bank sets the final rate.",
+    "link": "",
+    "amounts": [
+      { "value": 5, "label": "Supporter", "detail": "Contributes toward source-database access and hosting.", "link": "https://www.paypal.com/ncp/payment/X6QXG54CXEF3G" },
+      { "value": 20, "label": "Contributor", "detail": "Goes toward source-database access and the editorial research behind the field notes.", "featured": true, "link": "https://www.paypal.com/ncp/payment/2GR8MNDD8P2C6" },
+      { "value": 50, "label": "Sustainer", "detail": "Goes toward research time, paywalled reporting, and keeping every note free to read.", "link": "https://www.paypal.com/ncp/payment/3TQQK7D4GZHNW" },
+      { "value": 100, "label": "Patron", "detail": "Goes toward the standing costs — database subscriptions, archive access, hosting — that the platform carries whether or not anyone gives.", "link": "https://www.paypal.com/ncp/payment/NK9DX66D2VADQ" }
+    ],
+    "custom": {
+      "label": "Any other amount",
+      "detail": "Name your own figure at checkout.",
+      "link": "https://www.paypal.com/ncp/payment/EGLRP2XVTY964"
+    },
+    "causes": [
+      "General Research Fund",
+      "Animal Testing Investigation",
+      "Fast Fashion Reporting",
+      "Food Systems Research",
+      "Greenwashing Coverage",
+      "Tech & Labour Research"
+    ],
+    "note": "Each amount carries its own PayPal payment link, because a no-code checkout link has its amount fixed on PayPal's side and ignores one appended to the URL. `donate.link` is the fallback for a PayPal.me or hosted-button URL, which do take an appended amount. With neither set, the page renders an enquiry mailto: rather than a dead button."
+  },
+
+  "brand": {
+    "colours": {
+      "blush": "#F6DFE2",
+      "blushDeep": "#EFD8DC",
+      "blushPale": "#F9E7EA",
+      "crimson": "#8E0B14",
+      "crimsonDeep": "#6E1220",
+      "black": "#12100F",
+      "white": "#FDFCFC",
+      "dim": "#4A3C3E"
+    },
+    "typography": {
+      "display": "Bodoni Moda",
+      "editorial": "Cormorant Garamond",
+      "ui": "Jost"
+    }
+  },
+
+  "analytics": {
+    "provider": "",
+    "measurementId": "G-GJ387VT80N",
+    "note": "The previous build loaded Google Analytics. It is disabled here by default: set `provider` to 'ga4' to re-enable it, and disclose it on /privacy/ first. Left empty, no third-party script is emitted."
+  }
+}
