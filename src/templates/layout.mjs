@@ -51,7 +51,12 @@ function colophon(site) {
     <div class="colophon__base">
       <span>© ${site.established}–${year} ${esc(site.name)}</span>
       <span>Est. ${site.established} · ${esc(site.location)} · ${esc(site.funding)}</span>
-      <span><a href="${esc(site.social.instagram)}" rel="me noopener noreferrer" target="_blank">${esc(site.social.instagramHandle)}</a></span>
+      ${(site.social.profiles ?? [])
+        .map(
+          (p) =>
+            `<span><a href="${esc(p.url)}" rel="me noopener noreferrer" target="_blank">${esc(p.handle)}</a></span>`
+        )
+        .join('')}
       <span><a href="mailto:${esc(site.email)}">${esc(site.email)}</a></span>
       <span>${esc(site.motto)}</span>
     </div>
