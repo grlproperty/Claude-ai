@@ -8,6 +8,13 @@
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // Everything below divides in two. The global half binds to the window and
+  // the shell, and runs once. The content half attaches to markup inside
+  // <main>, and has to be able to run again whenever that markup is replaced —
+  // which is what the single-file build of this site does when it navigates.
+  // Keeping the split explicit is what stops a second run from binding a
+  // second copy of every window listener.
+
   // ---- masthead ----------------------------------------------------------
   var masthead = document.querySelector('.masthead');
   if (masthead) {
@@ -40,6 +47,71 @@
     });
   }
 
+  // ---- reading progress --------------------------------------------------
+  // How far through the page you are, on the rule the masthead already sits
+  // on. No new furniture: the line is there either way, this only fills it.
+  var progress = document.querySelector('[data-progress]');
+  if (progress && !reduced) {
+    var ticking = false;
+    var setProgress = function () {
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      var pct = max > 0 ? Math.min(1, Math.max(0, (window.scrollY || 0) / max)) : 0;
+      progress.style.transform = 'scaleX(' + pct.toFixed(4) + ')';
+      ticking = false;
+    };
+    window.addEventListener(
+      'scroll',
+      function () {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(setProgress);
+      },
+      { passive: true }
+    );
+    window.addEventListener('resize', setProgress, { passive: true });
+    // Lazy images land after the first measurement and make the page taller,
+    // which strands the bar short of full at the bottom. Remeasure when the
+    // document actually changes size rather than only when it is scrolled.
+    if ('ResizeObserver' in window) new ResizeObserver(setProgress).observe(document.body);
+    window.addEventListener('load', setProgress);
+    setProgress();
+  }
+
+  // ---- hero parallax -----------------------------------------------------
+  // The plate holds back very slightly against the scroll, which separates it
+  // from the type in front of it. Small on purpose: enough to feel, not enough
+  // to notice, and it stops entirely once the hero is off screen.
+  // The plate is looked up on every frame rather than captured once: in the
+  // single-file build the hero is replaced whenever the reader navigates home,
+  // and a held reference would keep moving an element no longer in the page.
+  if (!reduced && window.matchMedia('(min-width: 68rem)').matches) {
+    var plateTicking = false;
+    var setParallax = function () {
+      plateTicking = false;
+      var plate = document.querySelector('.hero__plate');
+      if (!plate) return;
+      var hero = plate.closest('.hero');
+      var y = window.scrollY || 0;
+      var limit = hero ? hero.offsetHeight : 800;
+      if (y < limit) plate.style.transform = 'translate3d(0,' + (y * 0.075).toFixed(2) + 'px,0)';
+    };
+    window.addEventListener(
+      'scroll',
+      function () {
+        if (plateTicking) return;
+        plateTicking = true;
+        requestAnimationFrame(setParallax);
+      },
+      { passive: true }
+    );
+    setParallax();
+  }
+
+
+  // ------------------------------------------------ content-scoped
+  // Re-runnable. Called once now, and again by the router in the
+  // single-file build after it swaps the contents of <main>.
+  function initContent() {
   // ---- pointer tilt ------------------------------------------------------
   // Cards rotate a few degrees toward the pointer. Capped low deliberately:
   // this is an editorial platform, and a card that swings is a toy.
@@ -119,62 +191,6 @@
     counted.forEach(function (parent) {
       delete parent.revealIndex;
     });
-  }
-
-  // ---- reading progress --------------------------------------------------
-  // How far through the page you are, on the rule the masthead already sits
-  // on. No new furniture: the line is there either way, this only fills it.
-  var progress = document.querySelector('[data-progress]');
-  if (progress && !reduced) {
-    var ticking = false;
-    var setProgress = function () {
-      var max = document.documentElement.scrollHeight - window.innerHeight;
-      var pct = max > 0 ? Math.min(1, Math.max(0, (window.scrollY || 0) / max)) : 0;
-      progress.style.transform = 'scaleX(' + pct.toFixed(4) + ')';
-      ticking = false;
-    };
-    window.addEventListener(
-      'scroll',
-      function () {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(setProgress);
-      },
-      { passive: true }
-    );
-    window.addEventListener('resize', setProgress, { passive: true });
-    // Lazy images land after the first measurement and make the page taller,
-    // which strands the bar short of full at the bottom. Remeasure when the
-    // document actually changes size rather than only when it is scrolled.
-    if ('ResizeObserver' in window) new ResizeObserver(setProgress).observe(document.body);
-    window.addEventListener('load', setProgress);
-    setProgress();
-  }
-
-  // ---- hero parallax -----------------------------------------------------
-  // The plate holds back very slightly against the scroll, which separates it
-  // from the type in front of it. Small on purpose: enough to feel, not enough
-  // to notice, and it stops entirely once the hero is off screen.
-  var plate = document.querySelector('.hero__plate');
-  if (plate && !reduced && window.matchMedia('(min-width: 68rem)').matches) {
-    var hero = plate.closest('.hero');
-    var plateTicking = false;
-    var setParallax = function () {
-      var y = window.scrollY || 0;
-      var limit = hero ? hero.offsetHeight : 800;
-      if (y < limit) plate.style.transform = 'translate3d(0,' + (y * 0.075).toFixed(2) + 'px,0)';
-      plateTicking = false;
-    };
-    window.addEventListener(
-      'scroll',
-      function () {
-        if (plateTicking) return;
-        plateTicking = true;
-        requestAnimationFrame(setParallax);
-      },
-      { passive: true }
-    );
-    setParallax();
   }
 
   // ---- subscribe form ----------------------------------------------------
@@ -309,4 +325,9 @@
       observer.observe(t);
     });
   }
+  }
+
+  initContent();
+  window.FF = window.FF || {};
+  window.FF.initContent = initContent;
 })();

@@ -8,6 +8,7 @@
 (function () {
   'use strict';
 
+  function init() {
   var list = document.querySelector('[data-filter-list]');
   if (!list) return;
 
@@ -111,4 +112,9 @@
     query = initial.trim().toLowerCase();
     apply();
   }
+  }
+
+  init();
+  window.FF = window.FF || {};
+  window.FF.initFilters = init;
 })();

@@ -15,7 +15,8 @@
     "check": "node scripts/check.mjs",
     "ci": "npm run build && npm run check",
     "instagram": "node scripts/pull-instagram.mjs",
-    "briefing": "node scripts/send-briefing.mjs"
+    "briefing": "node scripts/send-briefing.mjs",
+    "single": "node src/build.mjs && node scripts/build-single.mjs"
   },
   "devDependencies": {
     "gray-matter": "^4.0.3",

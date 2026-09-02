@@ -26,11 +26,16 @@
  * Degrades in three steps: no WebGL → CSS lattice (via data-state);
  * reduced-motion → one still frame, upright; offscreen or hidden tab → paused.
  */
-(function () {
+(function start() {
   'use strict';
+  window.FF = window.FF || {};
+  window.FF.initCage = start;
 
   var host = document.querySelector('[data-cage]');
   if (!host) return;
+  // The single-file build calls this again on returning to the homepage; a
+  // second canvas on the same host would stack and double the draw cost.
+  if (host.querySelector('canvas')) return;
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
