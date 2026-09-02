@@ -29,6 +29,7 @@ import {
 } from './pages/decoders.mjs';
 import { renderDonate, renderBriefing } from './pages/donate.mjs';
 import { ENTRY_TYPES, renderEntry } from './pages/entry.mjs';
+import { buildTermIndex, crosslink } from './lib/crosslink.mjs';
 import { renderPage, renderNotFound, renderRedirect } from './pages/simple.mjs';
 import { buildOgImages, buildBrandAssets } from './lib/images.mjs';
 
@@ -234,6 +235,18 @@ async function main() {
   };
 
   const notes = await loadCollection(join(CONTENT, 'field-notes'), '/field-notes/');
+
+  // Link terms in the written work to the entry that defines them. Done here
+  // rather than in the Markdown so that adding an entry connects the existing
+  // notes to it, and so nobody has to hand-maintain a hundred cross-references.
+  const terms = buildTermIndex(ENTRY_TYPES, data);
+  let crosslinks = 0;
+  for (const note of notes) {
+    const before = note.html;
+    note.html = crosslink(note.html, terms);
+    crosslinks += (note.html.match(/class="crosslink"/g) ?? []).length;
+    if (note.html !== before) note.hasCrosslinks = true;
+  }
   const pages = await loadCollection(join(CONTENT, 'pages'), '/');
 
   await rm(DIST, { recursive: true, force: true });
@@ -381,7 +394,7 @@ async function main() {
 
   const files = await countFiles(DIST);
   console.log(
-    `Built ${routes.length} routes (${entryPages} entry pages) · ${files} files · ${(
+    `Built ${routes.length} routes (${entryPages} entry pages, ${crosslinks} crosslinks) · ${files} files · ${(
       (Date.now() - started) / 1000
     ).toFixed(2)}s → dist/`
   );

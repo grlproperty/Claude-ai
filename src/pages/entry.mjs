@@ -84,6 +84,7 @@ export const ENTRY_TYPES = [
   },
   {
     id: 'greenwashing',
+    generic: true, // common words, so guard against proper-noun matches
     collection: 'terms',
     base: '/tools/greenwashing/',
     parent: { name: 'Greenwashing Decoder', url: '/tools/greenwashing/' },
@@ -96,6 +97,7 @@ export const ENTRY_TYPES = [
   },
   {
     id: 'materials',
+    generic: true, // common words, so guard against proper-noun matches
     collection: 'materials',
     base: '/tools/materials/',
     parent: { name: 'Material Decoder', url: '/tools/materials/' },

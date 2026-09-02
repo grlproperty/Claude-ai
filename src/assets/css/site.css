@@ -1870,6 +1870,18 @@ code {
   }
 }
 
+/* A crosslink points at a definition on this site; an ordinary link in the
+   prose points at somebody else's reporting. Marking them apart means a
+   reader can tell, before clicking, whether they are leaving. */
+.prose a.crosslink {
+  border-bottom-style: dotted;
+  border-bottom-width: 1px;
+}
+
+.prose a.crosslink::after {
+  content: '';
+}
+
 /* ------------------------------------------------------------ entry page */
 
 .crumb {
