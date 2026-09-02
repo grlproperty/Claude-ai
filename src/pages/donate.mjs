@@ -5,8 +5,9 @@ import { esc, typo } from '../lib/util.mjs';
 /**
  * Build the URL that opens PayPal with an amount already filled in.
  *
- * The two shapes PayPal hands out take the amount completely differently, and
- * appending to the wrong one produces a link that opens a blank donation form:
+ * Only for `donate.link`, the account-wide fallback. The two shapes PayPal
+ * hands out there take the amount completely differently, and appending to the
+ * wrong one produces a link that opens a blank donation form:
  *
  *   paypal.me/handle          → /25USD as a path segment
  *   paypal.com/donate?...     → &amount=25&currency_code=USD as query params
@@ -27,20 +28,28 @@ function donateUrl(d, amount) {
 }
 
 /**
- * The donation link is configured in content/site.json. Where it is not set,
- * the button degrades to an enquiry mailto: rather than shipping a dead
- * control — the page is publishable before the processor is connected.
+ * The link behind one amount, in the order the configuration should win.
+ *
+ * A per-amount `link` is used exactly as given. These are PayPal no-code
+ * checkout links, and their amount is fixed on PayPal's side when the button
+ * is created — appending one to the URL does nothing, so the tier and the link
+ * have to be paired in the configuration and never computed here.
+ *
+ * `donate.link` is the account-wide fallback and does take an appended amount.
+ * With neither set the button degrades to an enquiry mailto: rather than
+ * shipping a dead control, so the page is publishable before the processor is
+ * connected.
  */
-function donateAction(site, amount, featured) {
+function donateAction(site, { value, link, featured, text }) {
   const d = site.donate;
   const cls = `btn${featured ? '' : ' btn--ghost'}`;
-  if (d.link) {
-    return `<a class="${cls}" href="${esc(donateUrl(d, amount))}" rel="noopener" target="_blank">Give ${esc(
-      d.currencySymbol
-    )}${amount}</a>`;
-  }
-  const subject = encodeURIComponent(`Donation — ${d.currencySymbol}${amount}`);
-  return `<a class="${cls}" href="mailto:${esc(site.email)}?subject=${subject}">Give ${esc(d.currencySymbol)}${amount}</a>`;
+  const outbound = (href) => `<a class="${cls}" href="${esc(href)}" rel="noopener" target="_blank">${esc(text)}</a>`;
+
+  if (link) return outbound(link);
+  if (d.link) return outbound(donateUrl(d, value));
+
+  const subject = encodeURIComponent(`Donation — ${d.currencySymbol}${value}`);
+  return `<a class="${cls}" href="mailto:${esc(site.email)}?subject=${subject}">${esc(text)}</a>`;
 }
 
 export function renderDonate({ site }) {
@@ -62,14 +71,29 @@ export function renderDonate({ site }) {
             <div class="amount__value display">${esc(d.currencySymbol)}${a.value}</div>
             <p class="amount__label">${typo(a.label)}</p>
             <p class="amount__detail">${typo(a.detail)}</p>
-            ${donateAction(site, a.value, a.featured)}
+            ${donateAction(site, {
+              value: a.value,
+              link: a.link,
+              featured: a.featured,
+              text: `Give ${d.currencySymbol}${a.value}`,
+            })}
           </div>`
         )
         .join('')}
     </div>
 
+    ${
+      d.custom?.link
+        ? `<div class="amount amount--custom reveal">
+      <p class="amount__label">${typo(d.custom.label)}</p>
+      <p class="amount__detail">${typo(d.custom.detail)}</p>
+      ${donateAction(site, { value: '', link: d.custom.link, text: 'Choose an amount' })}
+    </div>`
+        : ''
+    }
+
     <p class="src-note" style="margin-top:1.5rem;">
-      ${esc(d.processor)} · ${esc(d.processorNote)} Conversions shown elsewhere are approximate; your bank sets the final rate.
+      ${esc(d.processor)} · ${esc(d.processorNote)}
     </p>
   </div>
 </section>
@@ -100,7 +124,7 @@ export function renderDonate({ site }) {
           <div class="tags">
             ${d.causes.map((c) => `<span class="tag">${esc(c)}</span>`).join('')}
           </div>
-          <p class="src-note">A donation can be tagged to the strand of research you most want funded.</p>
+          <p class="src-note">To earmark a donation, name the strand in the message field at PayPal checkout. Untagged donations go to the general research fund.</p>
         </div>
       </div>
 

@@ -1522,6 +1522,33 @@ code {
   background: var(--blush-pale);
 }
 
+/* The open-amount card sits below the ladder rather than in it: it has no
+   figure to set against the others, and given a fifth column it would read as
+   a tier priced at nothing. */
+.amount--custom {
+  margin-top: var(--s4);
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2) var(--s4);
+  background: transparent;
+  box-shadow: none;
+  border-style: dashed;
+}
+
+.amount--custom .amount__label,
+.amount--custom .amount__detail {
+  margin-bottom: 0;
+}
+
+.amount--custom .amount__detail {
+  flex: 1 1 12rem;
+}
+
+.amount--custom .btn {
+  margin-top: 0;
+}
+
 .amount__value {
   font-family: var(--display);
   font-size: 2.8rem;

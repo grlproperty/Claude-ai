@@ -218,9 +218,23 @@ npm run social -- what-cage-free-actually-means   # one note
 
 Everything commercial is configured in `content/site.json`, not in code.
 
-- **Donations** — set `donate.link` to a PayPal.me or hosted-button URL. Empty
-  renders an enquiry `mailto:`, so the page is publishable before the processor
-  is connected and never ships a dead button.
+- **Donations** — each entry in `donate.amounts` carries its own `link`, and
+  `donate.custom.link` backs the open-amount button. These are PayPal no-code
+  checkout links, whose amount is fixed on PayPal's side when the button is
+  created: appending one to the URL does nothing, so the tier and the link are
+  paired in the configuration and never computed in code. Changing a tier's
+  figure therefore means creating the matching button in PayPal first. The
+  account-wide `donate.link` is a fallback for a PayPal.me or hosted-button URL,
+  which *do* take an appended amount. With neither set the page renders an
+  enquiry `mailto:` rather than a dead button.
+
+  The buttons are plain links on purpose. PayPal also offers a `sdk/js`
+  hosted-buttons embed, which would put a third-party script on the page and
+  let PayPal observe every visitor to `/donate/` whether or not they give. This
+  site makes no third-party requests at all — fonts are self-hosted and
+  analytics are off — so a link that contacts PayPal only once someone chooses
+  to give is both the lighter and the more honest option. Adopting the embed
+  would mean disclosing it on `/privacy/` first.
 - **Newsletter** — set `newsletter.action` to the subscribe endpoint of the
   provider that sends the feed (Buttondown, MailerLite, ConvertKit, Listmonk).
   Until then the form degrades to `mailto:`. See below for the sending side.

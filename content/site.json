@@ -131,11 +131,16 @@
     "processorNote": "PayPal charges in USD. Your bank sets the final rate.",
     "link": "",
     "amounts": [
-      { "value": 5, "label": "Supporter", "detail": "Contributes toward source-database access and hosting." },
-      { "value": 25, "label": "Funds one research investigation", "detail": "Covers source database access, editorial research time, and open-access publication.", "featured": true },
-      { "value": 100, "label": "Funds a week of research", "detail": "Covers a full week of source-database access, editorial research time, and writing." },
-      { "value": 500, "label": "Sponsors a full month of research", "detail": "Covers all platform costs — hosting, database access, editorial work, and distribution — for one full month." }
+      { "value": 5, "label": "Supporter", "detail": "Contributes toward source-database access and hosting.", "link": "https://www.paypal.com/ncp/payment/X6QXG54CXEF3G" },
+      { "value": 20, "label": "Contributor", "detail": "Goes toward source-database access and the editorial research behind the field notes.", "featured": true, "link": "https://www.paypal.com/ncp/payment/2GR8MNDD8P2C6" },
+      { "value": 50, "label": "Sustainer", "detail": "Goes toward research time, paywalled reporting, and keeping every note free to read.", "link": "https://www.paypal.com/ncp/payment/3TQQK7D4GZHNW" },
+      { "value": 100, "label": "Funds a week of research", "detail": "Covers a full week of source-database access, editorial research time, and writing.", "link": "https://www.paypal.com/ncp/payment/NK9DX66D2VADQ" }
     ],
+    "custom": {
+      "label": "Any other amount",
+      "detail": "Name your own figure at checkout.",
+      "link": "https://www.paypal.com/ncp/payment/EGLRP2XVTY964"
+    },
     "causes": [
       "General Research Fund",
       "Animal Testing Investigation",
@@ -144,7 +149,7 @@
       "Greenwashing Coverage",
       "Tech & Labour Research"
     ],
-    "note": "Set `donate.link` to a PayPal.me or hosted-button URL. Empty renders an enquiry mailto: so the page never ships a dead button."
+    "note": "Each amount carries its own PayPal payment link, because a no-code checkout link has its amount fixed on PayPal's side and ignores one appended to the URL. `donate.link` is the fallback for a PayPal.me or hosted-button URL, which do take an appended amount. With neither set, the page renders an enquiry mailto: rather than a dead button."
   },
 
   "brand": {
