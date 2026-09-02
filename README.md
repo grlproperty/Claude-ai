@@ -248,6 +248,16 @@ Everything commercial is configured in `content/site.json`, not in code.
   No API key belongs in this repository. A subscribe endpoint is a public URL
   by design; an API key is an account credential, and the static site has
   nothing to do with it.
+
+  Two traps, both found the hard way against the live endpoint:
+
+  - **Post to `assets.mailerlite.com`, not `dashboard.mailerlite.com`.** The
+    dashboard address that MailerLite's own share page carries answers with a
+    301 to the assets one, and `fetch` downgrades a POST to a GET when it
+    follows a 301 — the address would be dropped on the way.
+  - **A 2xx is not agreement.** MailerLite answers a rejected address with HTTP
+    200 and `{"success":false,...}`. Checking `res.ok` alone tells a reader they
+    subscribed when they did not, so the body is parsed and the flag checked.
 - **Analytics** — **no analytics script is emitted.** The previous build loaded
   Google Analytics (`G-GJ387VT80N`); that is retained in `site.json` but
   disabled. Set `analytics.provider` to `"ga4"` to re-enable it, and update

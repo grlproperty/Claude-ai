@@ -117,7 +117,9 @@ export function newsletterForm(site, { dark = false, note = true } = {}) {
       isMailto
         ? ''
         : `<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="visually-hidden">
-    <input type="hidden" name="_subject" value="${esc(`Subscribe: ${n.name}`)}">`
+    ${Object.entries(n.fields ?? {})
+      .map(([k, v]) => `<input type="hidden" name="${esc(k)}" value="${esc(v)}">`)
+      .join('\n    ')}`
     }
     <button class="btn" type="submit">Subscribe</button>
     ${
@@ -125,7 +127,9 @@ export function newsletterForm(site, { dark = false, note = true } = {}) {
         ? `<p class="form__note">${esc(typo(n.summary))} <a href="/privacy/">What we do with your address</a>.</p>`
         : ''
     }
-    <p class="form__status" role="status" aria-live="polite" hidden></p>
+    <p class="form__status" role="status" aria-live="polite" hidden${
+      isMailto ? '' : ` data-confirm="${esc(n.confirmText || 'Thank you — you are on the list.')}"`
+    }></p>
   </form>`;
 }
 

@@ -101,6 +101,18 @@
   // marked up as a working form first and enhanced second.
   var subscribeForms = document.querySelectorAll('form[data-subscribe]');
 
+  // Providers nest validation messages differently; take the first string.
+  var firstError = function (data) {
+    var found = '';
+    var walk = function (node) {
+      if (found || node == null) return;
+      if (typeof node === 'string') found = node;
+      else if (typeof node === 'object') for (var k in node) walk(node[k]);
+    };
+    walk(data.errors || data.error || data.message);
+    return found;
+  };
+
   Array.prototype.forEach.call(subscribeForms, function (form) {
     var status = form.querySelector('.form__status');
     var button = form.querySelector('button[type="submit"]');
@@ -134,14 +146,34 @@
         headers: { Accept: 'application/json' },
       })
         .then(function (res) {
-          if (!res.ok) throw new Error(String(res.status));
-          form.reset();
-          say('Thank you — you are on the list.', true);
+          // A 2xx is not agreement. MailerLite answers a rejected address with
+          // HTTP 200 and {"success":false}, so trusting the status alone tells
+          // a reader they subscribed when they did not.
+          return res.text().then(function (body) {
+            var data = null;
+            try {
+              data = JSON.parse(body);
+            } catch (err) {
+              data = null;
+            }
+            if (!res.ok) throw new Error(String(res.status));
+            if (data && data.success === false) throw new Error(firstError(data) || 'rejected');
+            form.reset();
+            say(status.getAttribute('data-confirm') || 'Thank you — you are on the list.', true);
+          });
         })
-        .catch(function () {
-          // Never claim a subscription that did not happen: send them to a
-          // route that reaches a person instead.
-          say('That did not go through. Email info@feral-femme.co and we will add you.', false);
+        .catch(function (err) {
+          // Never claim a subscription that did not happen. Where the provider
+          // said what was wrong with the address, that is more use than a
+          // generic apology; otherwise send them to a route that reaches a
+          // person.
+          var reason = String((err && err.message) || '');
+          say(
+            reason && reason !== 'rejected' && !/^\d+$/.test(reason)
+              ? reason
+              : 'That did not go through. Email info@feral-femme.co and we will add you.',
+            false
+          );
         })
         .then(function () {
           button.disabled = false;

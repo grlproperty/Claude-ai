@@ -118,9 +118,11 @@
     "name": "The Research Briefing",
     "cadence": "Sent on publication",
     "summary": "Every field note in full, sent the day it is published — the whole note, not a summary with a link back. No promotions, no product recommendations, one-click unsubscribe.",
-    "action": "",
-    "emailField": "email",
-    "note": "Set `newsletter.action` to the subscribe endpoint of the provider that sends the feed, and `emailField` to the field name that endpoint expects — `email` for Formspree and FormSubmit, `fields[email]` for a MailerLite embedded form. Until `action` is set the form degrades to a mailto: link."
+    "action": "https://assets.mailerlite.com/jsonp/2610955/forms/197498746009814230/subscribe",
+    "emailField": "fields[email]",
+    "fields": { "ml-submit": "1", "anticsrf": "true" },
+    "confirmText": "Thank you — check your inbox to confirm your subscription.",
+    "note": "`action` is MailerLite embedded form 197498746009814230 on account 2610955, posted to assets.mailerlite.com rather than the dashboard.mailerlite.com address MailerLite's own share page carries: that one 301s here, and fetch downgrades a POST to a GET when it follows a 301, which would drop the address. `emailField` and `fields` are the names that endpoint expects. `confirmText` assumes double opt-in is on; change it if a subscriber is added without confirming. Clearing `action` degrades the form to a mailto: link."
   },
 
   "donate": {
