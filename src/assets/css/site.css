@@ -1968,6 +1968,92 @@ code {
   margin: 0.4rem 0 0;
 }
 
+/* -------------------------------------------------------------- curtain */
+
+/* display:none by default. The script that shows this is also the only thing
+   that removes it, so if scripting is off it must never appear at all. */
+.curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+  background: var(--blush);
+}
+
+.curtain[data-on] {
+  display: flex;
+}
+
+.curtain[data-off] {
+  opacity: 0;
+  transform: translateY(-1.5%);
+  transition: opacity 0.62s var(--ease), transform 0.62s var(--ease);
+  pointer-events: none;
+}
+
+.curtain__mark {
+  font-family: var(--display);
+  font-size: clamp(1.5rem, 6vw, 2.4rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--crimson);
+  animation: curtain-mark 0.9s var(--ease-out) both;
+}
+
+.curtain__mark em {
+  font-style: normal;
+  color: var(--ink);
+}
+
+.curtain__mark span {
+  color: var(--crimson);
+}
+
+/* A sweep, not a fill. Nothing here knows how much is left to load, and a bar
+   that pretends to is the one thing a reader can catch you lying about. */
+.curtain__line {
+  position: relative;
+  width: min(220px, 46vw);
+  height: 1px;
+  overflow: hidden;
+  background: rgba(20, 20, 20, 0.12);
+}
+
+.curtain__line i {
+  position: absolute;
+  inset: 0;
+  background: var(--crimson);
+  transform-origin: 0 50%;
+  animation: curtain-sweep 1.15s var(--ease) infinite;
+}
+
+@keyframes curtain-mark {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes curtain-sweep {
+  0% {
+    transform: translateX(-100%) scaleX(0.45);
+  }
+  50% {
+    transform: translateX(0%) scaleX(0.7);
+  }
+  100% {
+    transform: translateX(100%) scaleX(0.45);
+  }
+}
+
 /* ---------------------------------------------------------------- intro */
 
 /* The hero arrives in sequence rather than all at once: the standfirst, then

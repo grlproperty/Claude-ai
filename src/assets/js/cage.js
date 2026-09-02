@@ -534,16 +534,18 @@
     // the photograph cut it in half, which loses the one thing a cage has to
     // read as: a closed shape. It now hangs at a distance where hook, dome,
     // body and base all sit inside the column between the type and the plate.
-    var depth = wide ? 8.6 : 9.4;
-    // On a narrow screen it hangs to the right of the type and runs off the
-    // edge, which is how it earns the room to be an object there rather than
-    // the faint texture it used to be.
-    var offsetX = wide ? 0.16 : 0.62;
+    // On a narrow screen the canvas is the full height of a stacked hero, so
+    // the camera sits much further back to bring the object down to the size
+    // of the gap beside the wordmark. These numbers were solved from that
+    // gap's position on screen rather than found by eye.
+    var depth = wide ? 8.6 : 16;
+    var offsetX = wide ? 0.16 : 1.5;
     // Hung below the wordmark rather than across it. Crossing the letterforms
     // costs the one piece of type the whole page is built around.
-    // Low enough on a phone that the crown clears the buttons; what it loses
-    // behind the plate below reads as depth rather than as truncation.
-    var offsetY = wide ? -0.62 : -1.0;
+    // High on a phone: the clear column to the right of the wordmark, above
+    // the paragraph, which is the only place on that layout where a whole
+    // object fits without sitting on running text.
+    var offsetY = wide ? -0.62 : 4.6;
 
     var aspect = width / height;
     var proj = perspective(0.8, aspect, 0.1, 40);

@@ -158,10 +158,27 @@ async function main() {
 
   // ---- assemble ------------------------------------------------------------
 
+  /**
+   * The curtain has to be able to paint before its own stylesheet exists.
+   *
+   * A browser cannot start on <body> until <head> is parsed, and the head here
+   * carries a quarter of a megabyte of fonts and CSS — on a slow line that is
+   * over a second in which nothing at all is on screen, which is precisely the
+   * second the curtain is for. So the rules it needs are pulled out and put in
+   * front, and everything else moves into the body behind it.
+   */
+  const curtainRules = [
+    (/:root\s*\{[^}]*\}/.exec(css) || [''])[0],
+    ...(css.match(/\.curtain[^{]*\{[^}]*\}/g) ?? []),
+    ...(css.match(/@keyframes curtain-[a-z]+\s*\{[\s\S]*?\n\}/g) ?? []),
+  ].join('\n');
+
   const head = `<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${routes.find((r) => r.path === '/').title}</title>
 <meta name="description" content="${(/<meta name="description" content="([^"]*)"/.exec(shell) || [, ''])[1]}">
-<style>${criticalFonts}\n${css}
+<style>${curtainRules}</style>`;
+
+  const mainStyles = `<style>${criticalFonts}\n${css}
 /* Links to addresses that do not exist inside a single file keep their words
    without pretending to be clickable. */
 .was-link{color:inherit;text-decoration:none;border:0;cursor:default}
@@ -177,8 +194,15 @@ async function main() {
 
   const home = routes.find((r) => r.path === '/');
 
+  const beforeMain = body.slice(0, mainOpenEnd);
+  const curtainEnd = beforeMain.indexOf('</script>') + '</script>'.length;
+  const curtain = beforeMain.slice(0, curtainEnd);
+  const restOfShell = beforeMain.slice(curtainEnd);
+
   const shellBody =
-    stripScripts(rewrite(inlineImages(body.slice(0, mainOpenEnd)))) +
+    curtain +
+    mainStyles +
+    stripScripts(rewrite(inlineImages(restOfShell))) +
     rewrite(inlineImages(home.html)) +
     stripScripts(rewrite(inlineImages(body.slice(mainEnd))));
 

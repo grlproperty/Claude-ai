@@ -137,6 +137,43 @@ ${jsonLd}
 ${analytics(site)}
 </head>
 <body${bodyClass ? ` class="${esc(bodyClass)}"` : ''}>
+<!--
+  The opening curtain. Hidden in CSS and only shown by the script below, so a
+  reader without JavaScript never meets an overlay that nothing will remove.
+  It is not a fake progress bar: the line sweeps rather than filling, because
+  nothing here knows how far through the load it is. It lifts on the load
+  event, with a floor so it cannot flash, a ceiling so a stalled asset cannot
+  trap the page, and a session flag so it happens once rather than on every
+  page.
+-->
+<div class="curtain" data-curtain aria-hidden="true">
+  <div class="curtain__mark">${esc(site.nameParts.primary)} <em>${esc(site.nameParts.secondary)}</em><span>${esc(
+    site.nameParts.stop
+  )}</span></div>
+  <div class="curtain__line"><i></i></div>
+</div>
+<script>
+(function () {
+  var el = document.currentScript.previousElementSibling;
+  var seen = false;
+  try { seen = !!sessionStorage.getItem('ff-open'); } catch (e) {}
+  if (seen || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { el.parentNode.removeChild(el); return; }
+  el.setAttribute('data-on', '');
+  var start = Date.now(), gone = false;
+  function lift() {
+    if (gone) return;
+    gone = true;
+    try { sessionStorage.setItem('ff-open', '1'); } catch (e) {}
+    setTimeout(function () {
+      el.setAttribute('data-off', '');
+      setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 700);
+    }, Math.max(0, 520 - (Date.now() - start)));
+  }
+  if (document.readyState === 'complete') lift();
+  else window.addEventListener('load', lift);
+  setTimeout(lift, 6000);
+})();
+</script>
 <a class="skip" href="#main">Skip to content</a>
 ${masthead(site, path)}
 <main id="main">
