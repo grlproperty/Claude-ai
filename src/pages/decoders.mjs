@@ -132,7 +132,7 @@ export function renderCertifications({ site, data }) {
       s.cat,
       `${s.name} ${s.runby} ${s.verifies} ${s.notguarantee}`,
       `<div class="entry__head">
-        <h2 class="entry__name">${typo(s.name)}</h2>
+        <h2 class="entry__name"><a href="/tools/certifications/${esc(slugify(s.name))}/">${typo(s.name)}</a></h2>
         <span class="tag">${esc(s.cat)}</span>
       </div>
       <p class="entry__runby">Run by ${esc(s.runby)}</p>
@@ -163,7 +163,7 @@ export function renderGreenwashing({ site, data }) {
       t.cat,
       `${t.term} ${t.claim} ${t.actual}`,
       `<div class="entry__head">
-        <h2 class="entry__name">${typo(t.term)}</h2>
+        <h2 class="entry__name"><a href="/tools/greenwashing/${esc(slugify(t.term))}/">${typo(t.term)}</a></h2>
         <span class="tag">${esc(t.cat)}</span>
       </div>
       <div class="detail-grid">
@@ -193,7 +193,7 @@ export function renderMaterials({ site, data }) {
       m.cat,
       `${m.name} ${m.what} ${m.welfare} ${m.environment}`,
       `<div class="entry__head">
-        <h2 class="entry__name">${typo(m.name)}</h2>
+        <h2 class="entry__name"><a href="/tools/materials/${esc(slugify(m.name))}/">${typo(m.name)}</a></h2>
         <span class="tag">${esc(m.cat)}</span>
       </div>
       <p class="entry__runby">${typo(m.what)}</p>
@@ -225,7 +225,7 @@ export function renderRecord({ site, data }) {
       f.sector,
       `${f.name} ${f.sector} ${f.finding}`,
       `<div class="entry__head">
-        <h2 class="entry__name">${typo(f.name)}</h2>
+        <h2 class="entry__name"><a href="/tools/record/${esc(slugify(f.name))}/">${typo(f.name)}</a></h2>
         <span class="tag">${esc(f.sector)}</span>
       </div>
       <div class="panel"><h3>Documented finding</h3><p>${typo(f.finding)}</p></div>

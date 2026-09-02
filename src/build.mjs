@@ -28,6 +28,7 @@ import {
   renderSources,
 } from './pages/decoders.mjs';
 import { renderDonate, renderBriefing } from './pages/donate.mjs';
+import { ENTRY_TYPES, renderEntry } from './pages/entry.mjs';
 import { renderPage, renderNotFound, renderRedirect } from './pages/simple.mjs';
 import { buildOgImages, buildBrandAssets } from './lib/images.mjs';
 
@@ -278,6 +279,21 @@ async function main() {
     track(path, { priority: '0.8', lastmod: dataset.reviewed });
   }
 
+  // A page per catalogued entry, sitting under its decoder. These are the
+  // pages a search engine can actually rank: an anchor on a long index carries
+  // no title, description, or structured data of its own.
+  let entryPages = 0;
+  for (const type of ENTRY_TYPES) {
+    const dataset = data[type.id];
+    const entries = dataset[type.collection];
+    for (const entry of entries) {
+      const path = `${type.base}${slugify(type.nameOf(entry))}/`;
+      await writePage(path, renderEntry({ site, type, entry, entries, dataset }));
+      track(path, { priority: '0.7', lastmod: dataset.reviewed });
+      entryPages += 1;
+    }
+  }
+
   await writePage('/library/', renderLibrary({ site, data: data.library }));
   track('/library/', { priority: '0.8' });
 
@@ -351,9 +367,10 @@ async function main() {
   const index = [
     ...notes.map((e) => ({ t: e.title, u: e.url, s: e.summary, k: 'Field note', c: e.topic ?? '', b: e.text.slice(0, 1200) })),
     ...pages.map((e) => ({ t: e.title, u: e.url, s: e.summary, k: 'Page', c: '', b: e.text.slice(0, 600) })),
-    ...data.certifications.schemes.map((x) => ({ t: x.name, u: `/tools/certifications/#${slugify(x.name)}`, s: x.verifies, k: 'Certification', c: x.cat, b: x.verifies })),
-    ...data.greenwashing.terms.map((x) => ({ t: x.term, u: `/tools/greenwashing/#${slugify(x.term)}`, s: x.actual, k: 'Greenwashing', c: x.cat, b: x.actual })),
-    ...data.materials.materials.map((x) => ({ t: x.name, u: `/tools/materials/#${slugify(x.name)}`, s: x.what, k: 'Material', c: x.cat, b: x.what })),
+    ...data.certifications.schemes.map((x) => ({ t: x.name, u: `/tools/certifications/${slugify(x.name)}/`, s: x.verifies, k: 'Certification', c: x.cat, b: `${x.verifies} ${x.notguarantee}` })),
+    ...data.greenwashing.terms.map((x) => ({ t: x.term, u: `/tools/greenwashing/${slugify(x.term)}/`, s: x.actual, k: 'Greenwashing', c: x.cat, b: `${x.claim} ${x.actual}` })),
+    ...data.materials.materials.map((x) => ({ t: x.name, u: `/tools/materials/${slugify(x.name)}/`, s: x.what, k: 'Material', c: x.cat, b: `${x.what} ${x.welfare} ${x.environment}` })),
+    ...data.record.findings.map((x) => ({ t: x.name, u: `/tools/record/${slugify(x.name)}/`, s: x.finding, k: 'Record', c: x.sector, b: x.finding })),
     ...data.industries.industries.map((x) => ({ t: x.name, u: `/industries/#${slugify(x.name)}`, s: x.resource.title, k: 'Industry', c: '', b: x.resource.body })),
   ];
   await writeFileAt('/search-index.json', JSON.stringify(index));
@@ -364,7 +381,9 @@ async function main() {
 
   const files = await countFiles(DIST);
   console.log(
-    `Built ${routes.length} routes · ${files} files · ${((Date.now() - started) / 1000).toFixed(2)}s → dist/`
+    `Built ${routes.length} routes (${entryPages} entry pages) · ${files} files · ${(
+      (Date.now() - started) / 1000
+    ).toFixed(2)}s → dist/`
   );
 }
 

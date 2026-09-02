@@ -141,7 +141,7 @@
       { "value": 5, "label": "Supporter", "detail": "Contributes toward source-database access and hosting.", "link": "https://www.paypal.com/ncp/payment/X6QXG54CXEF3G" },
       { "value": 20, "label": "Contributor", "detail": "Goes toward source-database access and the editorial research behind the field notes.", "featured": true, "link": "https://www.paypal.com/ncp/payment/2GR8MNDD8P2C6" },
       { "value": 50, "label": "Sustainer", "detail": "Goes toward research time, paywalled reporting, and keeping every note free to read.", "link": "https://www.paypal.com/ncp/payment/3TQQK7D4GZHNW" },
-      { "value": 100, "label": "Funds a week of research", "detail": "Covers a full week of source-database access, editorial research time, and writing.", "link": "https://www.paypal.com/ncp/payment/NK9DX66D2VADQ" }
+      { "value": 100, "label": "Patron", "detail": "Goes toward the standing costs — database subscriptions, archive access, hosting — that the platform carries whether or not anyone gives.", "link": "https://www.paypal.com/ncp/payment/NK9DX66D2VADQ" }
     ],
     "custom": {
       "label": "Any other amount",

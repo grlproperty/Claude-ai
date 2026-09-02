@@ -1454,6 +1454,7 @@ code {
   border-color: var(--rule);
 }
 
+.panel h2,
 .panel h3 {
   font-family: var(--ui);
   font-size: 0.56rem;
@@ -1867,6 +1868,75 @@ code {
     opacity: 1 !important;
     transform: none !important;
   }
+}
+
+/* ------------------------------------------------------------ entry page */
+
+.crumb {
+  font-family: var(--ui);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.crumb a {
+  color: var(--ink-muted);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.crumb a:hover {
+  color: var(--crimson);
+  border-bottom-color: currentColor;
+}
+
+.crumb__sep {
+  color: var(--rule-strong);
+}
+
+/* The title on an index links to the entry's own page; it should not look
+   like a link until it is reached for, or every index becomes blue soup. */
+.entry__name a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.entry__name a:hover {
+  color: var(--crimson);
+  border-bottom-color: currentColor;
+}
+
+.peer-list {
+  list-style: none;
+  margin: var(--s3) 0 0;
+  /* set below via the section, kept here so the list itself stays flush */
+  padding: 0;
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.peer-list li {
+  border-bottom: 1px solid var(--rule);
+}
+
+.peer-list a {
+  display: block;
+  padding: 0.85rem 0;
+  font-family: var(--editorial);
+  font-size: 1.05rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.peer-list a:hover {
+  color: var(--crimson);
 }
 
 /* --------------------------------------------------------------- gallery */
