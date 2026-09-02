@@ -37,9 +37,16 @@ jobs:
       - name: Verify
         run: npm run check
 
-      # enablement turns Pages on through the API on the first run, so the
-      # deploy does not sit failing until somebody visits the settings screen.
-      # It is a no-op once Pages is configured.
+      # Pages must be switched on for the repository before this can publish:
+      # Settings -> Pages -> Build and deployment -> Source: GitHub Actions.
+      #
+      # enablement asks the action to create the Pages site itself, and it
+      # cannot with the workflow's own token — "Create Pages site failed:
+      # Resource not accessible by integration". Creating one needs
+      # administration:write, which GitHub withholds from GITHUB_TOKEN and
+      # which the permissions block above cannot grant. Left set because it
+      # costs nothing, is a no-op once Pages exists, and would work if this
+      # step were ever handed a token that carries the scope.
       - uses: actions/configure-pages@v5
         with:
           enablement: true
