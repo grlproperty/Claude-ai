@@ -31,6 +31,7 @@ import { renderDonate, renderBriefing } from './pages/donate.mjs';
 import { ENTRY_TYPES, renderEntry } from './pages/entry.mjs';
 import { buildTermIndex, crosslink } from './lib/crosslink.mjs';
 import { renderPage, renderNotFound, renderRedirect } from './pages/simple.mjs';
+import { renderFindUs } from './pages/find-us.mjs';
 import { buildOgImages, buildBrandAssets } from './lib/images.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -322,6 +323,9 @@ async function main() {
 
   await writePage('/briefing/', renderBriefing({ site }));
   track('/briefing/', { priority: '0.7' });
+
+  await writePage('/find-us/', renderFindUs({ site }));
+  track('/find-us/', { priority: '0.7' });
 
   // ---- markdown pages
   for (const page of pages) {

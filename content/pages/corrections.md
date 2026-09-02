@@ -6,7 +6,7 @@ order: 3
 
 We correct errors of fact promptly and visibly. Substantive corrections — those that change the meaning of a field note or a dataset entry — are recorded here permanently. Minor corrections to typography, links, and formatting are made without notice.
 
-To report an error, write to [corrections@feral-femme.co](mailto:corrections@feral-femme.co) with the entry, the passage, and the basis for the correction. We would rather be corrected than quoted incorrectly.
+To report an error, write to [info@feral-femme.co](mailto:info@feral-femme.co) with the entry, the passage, and the basis for the correction. We would rather be corrected than quoted incorrectly.
 
 ## Record
 

@@ -118,7 +118,7 @@ export function renderFieldNote({ site, entry, all }) {
       <div class="prose">${entry.html}</div>
       ${note(
         'Attribution',
-        `<p class="mb-0">This note summarises reporting that already exists in the public record and credits the original publisher. If any statement here is inaccurate, write to <a href="mailto:${esc(site.correctionsEmail)}">${esc(site.correctionsEmail)}</a> — substantive corrections are published in full at <a href="/corrections/">/corrections/</a>.</p>`
+        `<p class="mb-0">This note summarises reporting that already exists in the public record and credits the original publisher. If any statement here is inaccurate, write to <a href="mailto:${esc(site.email)}">${esc(site.email)}</a> — substantive corrections are published in full at <a href="/corrections/">/corrections/</a>.</p>`
       )}
     </div>
   </div>

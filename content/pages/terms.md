@@ -18,7 +18,7 @@ Field notes summarise reporting that already exists in the public record. Where 
 
 The [Record Checker](/tools/record/) and the field notes name companies in connection with documented regulatory actions, court rulings, and formal findings, each tied to a named public source.
 
-These entries describe matters of public record. They are not allegations made by this platform. Where a company disputes an entry, or where a matter has been overturned, withdrawn, or superseded, write to [corrections@feral-femme.co](mailto:corrections@feral-femme.co) and we will review it and, where warranted, correct or remove it and record the change at [/corrections/](/corrections/).
+These entries describe matters of public record. They are not allegations made by this platform. Where a company disputes an entry, or where a matter has been overturned, withdrawn, or superseded, write to [info@feral-femme.co](mailto:info@feral-femme.co) and we will review it and, where warranted, correct or remove it and record the change at [/corrections/](/corrections/).
 
 Absence from the record is not evidence of good practice, and is not presented as such anywhere on this platform.
 

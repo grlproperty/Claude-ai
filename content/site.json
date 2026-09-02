@@ -15,15 +15,18 @@
   "founder": {
     "name": "Ayden Rosemary Brown",
     "role": "Founder & Editorial Director",
-    "email": "ayden@feral-femme.co"
+    "email": "info@feral-femme.co"
   },
 
   "email": "info@feral-femme.co",
-  "correctionsEmail": "corrections@feral-femme.co",
 
   "social": {
     "instagram": "https://www.instagram.com/feralfemme.co",
-    "instagramHandle": "@feralfemme.co"
+    "instagramHandle": "@feralfemme.co",
+    "note": "`profiles` drives the Find us page and the footer. Add an entry per platform; nothing else needs changing.",
+    "profiles": [
+      { "name": "Instagram", "handle": "@feralfemme.co", "url": "https://www.instagram.com/feralfemme.co", "what": "The visual essays, published first and in full." }
+    ]
   },
 
   "positioning": {
@@ -36,7 +39,8 @@
     { "label": "Field Notes", "href": "/field-notes/" },
     { "label": "Archive", "href": "/archive/" },
     { "label": "Tools", "href": "/tools/" },
-    { "label": "About", "href": "/about/" }
+    { "label": "About", "href": "/about/" },
+    { "label": "Find Us", "href": "/find-us/" }
   ],
 
   "method": [
@@ -100,7 +104,8 @@
         { "label": "Editorial Standards", "href": "/editorial-standards/" },
         { "label": "Corrections", "href": "/corrections/" },
         { "label": "Sources", "href": "/sources/" },
-        { "label": "Contact", "href": "/contact/" }
+        { "label": "Contact", "href": "/contact/" },
+        { "label": "Find Us", "href": "/find-us/" }
       ]
     },
     {

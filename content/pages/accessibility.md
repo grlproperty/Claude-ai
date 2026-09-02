@@ -36,4 +36,4 @@ The hero on the home page renders a WebGL animation. It is decorative, hidden fr
 
 ## Reporting a barrier
 
-If any part of this platform is difficult or impossible to use, write to [hello@feral-femme.co](mailto:hello@feral-femme.co) describing the barrier and the assistive technology in use. We treat access barriers as defects and prioritise them accordingly.
+If any part of this platform is difficult or impossible to use, write to [info@feral-femme.co](mailto:info@feral-femme.co) describing the barrier and the assistive technology in use. We treat access barriers as defects and prioritise them accordingly.

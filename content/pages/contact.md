@@ -1,26 +1,24 @@
 ---
 title: Contact
-summary: Two addresses cover everything — general enquiries, and direct contact with the founder.
+summary: One address covers everything — tips, corrections, press, partnerships, and the founder directly.
 order: 4
 ---
 
-Tips, corrections, press, partnerships — everything starts at one of these two inboxes.
+Everything reaches the same inbox, and it is read by the person who writes the site.
 
-## General · Support · Press · Tips
+## info@feral-femme.co
 
 **[info@feral-femme.co](mailto:info@feral-femme.co)**
 
-For source tips and factual corrections, press and speaking requests, partnerships, syndication, and anything else.
+Source tips. Factual corrections. Press and speaking requests. Partnerships and syndication. Editorial direction and commissioning. Anything that needs to reach **Ayden Rosemary Brown** directly.
 
-## Founder · Direct
-
-**Ayden Rosemary Brown** — [ayden@feral-femme.co](mailto:ayden@feral-femme.co)
-
-For editorial direction, commissioning, and anything that needs to reach the founder directly.
+There is no switchboard and nothing is triaged by anyone else.
 
 ## Corrections
 
-Factual corrections can also go straight to **[corrections@feral-femme.co](mailto:corrections@feral-femme.co)**. Include the entry, the passage, and the basis for the correction. Substantive corrections are published in full at [/corrections/](/corrections/).
+Corrections go to the same address. Include the entry, the passage, and the basis for the correction — a link to the primary source is worth more than an argument.
+
+Substantive corrections are published in full at [/corrections/](/corrections/), with what was said, what was wrong, and when it changed. We would rather be corrected than quoted incorrectly.
 
 ## What we cannot do
 

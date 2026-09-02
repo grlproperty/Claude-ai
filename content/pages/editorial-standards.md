@@ -46,7 +46,7 @@ We correct errors of fact promptly and visibly.
 
 **We do not silently delete.** A withdrawn note is marked as withdrawn with an explanation, and its URL continues to resolve.
 
-To report an error, write to [corrections@feral-femme.co](mailto:corrections@feral-femme.co) with the entry, the passage, and the basis for the correction.
+To report an error, write to [info@feral-femme.co](mailto:info@feral-femme.co) with the entry, the passage, and the basis for the correction.
 
 ## Independence
 
