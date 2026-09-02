@@ -720,6 +720,89 @@ code {
   color: var(--crimson);
 }
 
+/* The hero plate. The photograph is opaque, so where it overlaps the cage the
+   lattice is hidden and only its outer bars remain visible around the frame —
+   the cage reads as enclosing the image rather than printed across it. */
+.hero__inner--plated {
+  display: grid;
+  gap: clamp(2.5rem, 5vw, 4.5rem);
+  align-items: center;
+}
+
+/* The plate only sits beside the type once there is room for both to breathe.
+   Below that it stacks under the actions, full width. */
+@media (min-width: 68rem) {
+  .hero__inner--plated {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  }
+}
+
+.hero__type {
+  min-width: 0;
+}
+
+.hero__plate {
+  margin: 0;
+  min-width: 0;
+  max-width: 30rem;
+  position: relative;
+}
+
+@media (min-width: 68rem) {
+  .hero__plate {
+    max-width: none;
+  }
+}
+
+.hero__plate img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border: 1px solid var(--rule-strong);
+  box-shadow: var(--lift-3);
+}
+
+/* A crimson corner rule, set behind the frame and offset, so the plate sits in
+   depth against the lattice rather than flat on it. */
+.hero__plate::before {
+  content: '';
+  position: absolute;
+  inset: auto -0.75rem -0.75rem auto;
+  width: 42%;
+  height: 42%;
+  border-right: 1px solid var(--crimson);
+  border-bottom: 1px solid var(--crimson);
+  opacity: 0.45;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.hero__plate figcaption {
+  font-family: var(--ui);
+  font-size: 0.6875rem;
+  line-height: 1.6;
+  color: var(--ink-muted);
+  margin-top: 0.9rem;
+  max-width: 42ch;
+}
+
+.hero__plate figcaption .is-crimson {
+  color: var(--crimson);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.6rem;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.hero__plate-note {
+  display: block;
+  color: var(--ink-faint);
+  margin-top: 0.35rem;
+}
+
 /* ------------------------------------------------------------ statistics */
 
 .stat-band {
@@ -1740,6 +1823,18 @@ code {
   display: grid;
   gap: var(--s4);
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+}
+
+/* The homepage strip shows a fixed eight, so the columns are fixed too: an
+   auto-fill track leaves a ragged last row at most desktop widths. */
+.gallery--strip {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 48rem) {
+  .gallery--strip {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 .shot {

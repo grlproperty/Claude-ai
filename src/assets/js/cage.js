@@ -124,6 +124,13 @@
   var HEIGHT = 2.5;
   var RADIUS = 1.15;
 
+  // How far back the camera sits. Wide screens pull in close, so the cage
+  // overruns the hero plate on every side and reads as enclosing it. Narrow
+  // screens sit further back: there the cage is centred behind the type, and a
+  // near camera drags bars across the running text.
+  var DEPTH_WIDE = 3.9;
+  var DEPTH_NARROW = 5.6;
+
   // Profile, from base (t = 0) to apex (t = 1): near-straight sides with a
   // slight barrel through the body, then a dome that closes to a point where
   // the chain attaches. A pure sine bow reads as a globe; a birdcage has walls.
@@ -250,9 +257,8 @@
   gl.clearColor(0, 0, 0, 0);
   gl.uniform3f(uColor, 0.557, 0.043, 0.078); // #8E0B14
   gl.uniform1f(uAlpha, 0.68);
-  // Camera sits 5.1 units back and the cage is ~2.3 across, so the near and far
-  // faces land either side of that.
-  gl.uniform2f(uRange, 4.0, 6.4);
+  // The near and far faces of the cage land either side of the camera distance,
+  // which changes with the breakpoint, so the fade range is set per frame.
 
   var pointerX = 0;
   var pointerY = 0;
@@ -284,16 +290,24 @@
     var spin = t * 0.11 + pointerX * 0.42;
     var tilt = -0.12 + pointerY * 0.16;
 
-    // The cage sits right of centre on wide screens, behind the type; on
-    // narrow ones it centres, because there is no column to sit beside.
     var aspect = width / height;
     var proj = perspective(0.86, aspect, 0.1, 40);
 
-    // The cage sits right of centre beside the masthead on wide screens, and
-    // centres on narrow ones where there is no column to sit beside.
-    var offsetX = aspect > 1.15 ? 1.55 : 0;
+    // On wide screens the cage sits right of centre, concentric with the hero
+    // plate and drawn large enough that its bars carry on past every edge of
+    // the photograph — the lattice encloses the frame rather than being hidden
+    // behind it. On narrow ones it centres, because the plate stacks below the
+    // type and there is no column to sit beside.
+    // Matched to the 68rem breakpoint at which the hero plate moves beside the
+    // type. Keyed to viewport width, not canvas aspect: the hero grows taller
+    // when the plate stacks, which would otherwise flip this on its own.
+    var wide = window.innerWidth >= 1088;
+    var offsetX = wide ? 1.1 : 0;
+    var depth = wide ? DEPTH_WIDE : DEPTH_NARROW;
+    gl.uniform2f(uRange, depth - 1.25, depth + 1.4);
+
     var drift = reduced ? 0 : Math.sin(t * 0.5) * 0.045;
-    var mv = multiply(translate(offsetX, drift, -5.1), multiply(rotateY(spin), rotateX(tilt)));
+    var mv = multiply(translate(offsetX, drift, -depth), multiply(rotateY(spin), rotateX(tilt)));
 
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.uniformMatrix4fv(uMVP, false, new Float32Array(multiply(proj, mv)));

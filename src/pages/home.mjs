@@ -4,11 +4,19 @@ import { esc, typo, slugify } from '../lib/util.mjs';
 
 export function renderHome({ site, notes, data }) {
   const recent = notes.slice(0, 3);
+  const shots = data.instagram?.posts ?? [];
+
+  // The hero plate. A fixed frame rather than the newest post: the hero is the
+  // brand's face and should not change shape every time the pull runs. The
+  // photograph is opaque, so the cage behind it is only visible around its
+  // edges, which reads as the lattice enclosing the frame.
+  const hero = shots.find((p) => p.shortcode === 'DYfHUz6O8e3') ?? null;
 
   const body = `
 <section class="hero">
   <div class="hero__cage" data-cage aria-hidden="true"></div>
-  <div class="wrap hero__inner">
+  <div class="wrap hero__inner${hero ? ' hero__inner--plated' : ''}">
+   <div class="hero__type">
     <div class="hero__meta">
       <span class="is-crimson">${esc(site.descriptor)}</span>
       <span>Est. ${site.established}</span>
@@ -27,6 +35,22 @@ export function renderHome({ site, notes, data }) {
       <a class="btn" href="/field-notes/">Read the field notes</a>
       <a class="btn btn--ghost" href="/tools/">Free tools</a>
     </div>
+   </div>
+
+    ${
+      hero
+        ? `<figure class="hero__plate">
+      <img src="${esc(hero.image)}" alt="${esc(hero.title)}" width="${hero.width ?? 2096}" height="${
+            hero.height ?? 2795
+          }" fetchpriority="high" decoding="async">
+      <figcaption>
+        <span class="is-crimson">${esc(data.instagram.handle)}</span>
+        ${typo(hero.title)}
+        <span class="hero__plate-note">AI-directed editorial work by ${esc(site.founder.name)}.</span>
+      </figcaption>
+    </figure>`
+        : ''
+    }
   </div>
 </section>
 
@@ -137,6 +161,39 @@ export function renderHome({ site, notes, data }) {
     </div>
   </div>
 </section>
+
+${
+  shots.length
+    ? `<section class="section on-pale">
+  <div class="wrap">
+    ${sectionHead({
+      eyebrow: `The visual essays · ${esc(data.instagram.handle)}`,
+      title: 'One case per frame',
+      lede: 'Each image in the series carries a single documented case. The archive files them in full, with the caption and the note behind it.',
+      wide: true,
+    })}
+    <div class="gallery gallery--strip">
+      ${shots
+        .slice(0, 8)
+        .map(
+          (post) => `<figure class="shot reveal">
+            <a href="${esc(post.permalink)}" target="_blank" rel="noopener noreferrer">
+              <img src="${esc(post.thumb)}" alt="${esc(post.title)}" loading="lazy" decoding="async"${
+                post.width && post.height ? ` width="${post.width}" height="${post.height}"` : ''
+              }>
+            </a>
+            <figcaption>${typo(post.title)}</figcaption>
+          </figure>`
+        )
+        .join('')}
+    </div>
+    <p style="margin-top:3rem;"><a class="arrow" href="/archive/">The full archive — ${
+      data.archive.entries.length
+    } entries</a></p>
+  </div>
+</section>`
+    : ''
+}
 
 ${supportBanner(site)}
 `;
