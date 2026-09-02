@@ -265,30 +265,48 @@ Everything commercial is configured in `content/site.json`, not in code.
 
 ## The briefing sends itself
 
-Subscribers receive each field note in full on the day it is published. Nothing
-here sends the mail: the provider does, by watching `/feed.xml`. There is no
-scheduled job to maintain, no API key in the repository, and no separate edition
-to write — publishing the note *is* sending it.
+Subscribers receive each field note in full on the day it is published, and
+publishing the note is the act of sending it. There is no separate edition to
+write.
 
-The feed carries the whole note in `content:encoded`, with every root-relative
-link rewritten to an absolute one, so what lands in an inbox is the article
-rather than a teaser. Items are ordered by `date`, newest first.
+MailerLite has no RSS-driven campaign — not in the API and not in the product —
+so the feed cannot send itself and the repository does it instead.
+`.github/workflows/briefing.yml` runs `scripts/send-briefing.mjs` after Deploy
+has succeeded on `main`, never before: the email links straight to the note, and
+mailing a link to a page that is not live yet is worse than sending nothing.
 
-To connect it:
+Two properties are worth keeping when changing any of this.
 
-1. Create the list at your provider and verify the sending domain (SPF and
-   DKIM). Skipping this is what puts the mail in spam.
-2. Create an RSS-driven campaign pointed at `https://feral-femme.co/feed.xml`.
-3. **Set its start date to now.** The entire launch set shares one publication
-   date, so a campaign that treats the back catalogue as new will mail all
-   eighteen notes at once. Every provider has this control; find it before
-   enabling the campaign, not after.
-4. Copy the provider's subscribe endpoint into `newsletter.action`.
+**Nothing tracks sent state in this repository.** MailerLite is the record. A
+campaign is named `Field note — <slug>`, and a note whose campaign already
+exists is skipped. Re-running the workflow is therefore safe, and there is no
+state file that can drift out of step with what subscribers actually received.
 
-The claims the site makes about this are on `/briefing/` and `/privacy/`: the
-note in full, every claim sourced, no schedule, nothing else, and a one-click
-unsubscribe in every issue. The provider supplies the unsubscribe. If the
-sending arrangement changes, those two pages change with it.
+**The back catalogue can never be mailed.** Every launch note shares one
+publication date, so `newsletter.automationStart` in `content/site.json` is a
+cutover: only notes dated strictly *after* it are ever eligible. Nothing
+downstream — a bad filter, a re-run, a restored backup — can put eighteen emails
+in anyone's inbox.
+
+Run it by hand to see what would go out. A dry run is the default and creates
+nothing:
+
+```bash
+MAILERLITE_API_KEY=... npm run briefing            # list what would be sent
+MAILERLITE_API_KEY=... npm run briefing -- --send  # create and send
+```
+
+To enable it, add `MAILERLITE_API_KEY` to the repository secrets. **Issue a
+separate key for this.** A key restricted to an IP allowlist — the right setting
+for one used from a fixed machine — cannot work from a CI runner, which never
+has a fixed address; the script detects that specific refusal and says so rather
+than failing obscurely. Without the secret the workflow logs a notice and exits
+cleanly, so a fork or a clone never tries to mail anyone.
+
+The claims the site makes about all this are on `/briefing/` and `/privacy/`:
+the note in full, every claim sourced, no schedule, nothing else, and a
+one-click unsubscribe in every issue. MailerLite appends the unsubscribe link
+itself. If the sending arrangement changes, those two pages change with it.
 
 ## Deployment
 

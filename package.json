@@ -14,7 +14,8 @@
     "social": "node scripts/social-kit.mjs",
     "check": "node scripts/check.mjs",
     "ci": "npm run build && npm run check",
-    "instagram": "node scripts/pull-instagram.mjs"
+    "instagram": "node scripts/pull-instagram.mjs",
+    "briefing": "node scripts/send-briefing.mjs"
   },
   "devDependencies": {
     "gray-matter": "^4.0.3",

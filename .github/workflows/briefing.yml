@@ -1,0 +1,64 @@
+# Sends each newly published field note to subscribers.
+#
+# MailerLite has no RSS-driven campaign, so the feed cannot send itself. This
+# runs only after Deploy has succeeded on main: the email links straight to the
+# note, and mailing a link to a page that is not live yet is worse than sending
+# nothing.
+#
+# What has already gone out is not tracked here. MailerLite is the record — a
+# campaign is named after the note's slug and an existing one is skipped — so a
+# re-run is safe and there is no state file to drift.
+name: Briefing
+
+on:
+  workflow_run:
+    workflows: [Deploy]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: List what would be sent without sending it
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: briefing
+  cancel-in-progress: false
+
+jobs:
+  send:
+    # Never mail on the back of a failed deploy. A manual run is always allowed.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Send anything newly published
+        env:
+          MAILERLITE_API_KEY: ${{ secrets.MAILERLITE_API_KEY }}
+        run: |
+          if [ -z "$MAILERLITE_API_KEY" ]; then
+            echo "::notice::MAILERLITE_API_KEY is not set — skipping. Add it to repository secrets to enable sending."
+            exit 0
+          fi
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            npm run briefing
+          else
+            npm run briefing -- --send
+          fi

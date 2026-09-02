@@ -160,6 +160,36 @@ ${items}
 `;
 }
 
+/**
+ * The same items the feed carries, as JSON.
+ *
+ * MailerLite has no RSS-driven campaign — not in the API and not in the
+ * product — so the feed cannot send itself and the repository has to. This is
+ * what scripts/send-briefing.mjs reads: identical content to content:encoded,
+ * without asking a shell script to parse XML.
+ */
+function buildBriefingIndex(site, entries) {
+  return JSON.stringify(
+    {
+      generated: new Date().toISOString(),
+      site: site.name,
+      notes: [...entries]
+        .sort((a, b) => new Date(b.date ?? 0) - new Date(a.date ?? 0) || (b.order ?? 0) - (a.order ?? 0))
+        .map((e) => ({
+          slug: e.slug,
+          title: e.title,
+          summary: e.summary,
+          topic: e.topic ?? '',
+          date: e.date ? isoDate(e.date) : '',
+          url: new URL(e.url, site.url).href,
+          html: absolutise(e.html, site.url),
+        })),
+    },
+    null,
+    2
+  );
+}
+
 function buildSitemap(site, routes) {
   const urls = routes
     .map(
@@ -274,6 +304,7 @@ async function main() {
 
   // ---- generated files
   await writeFileAt('/feed.xml', buildFeed(site, notes));
+  await writeFileAt('/briefing.json', buildBriefingIndex(site, notes));
   await writeFileAt('/sitemap.xml', buildSitemap(site, routes));
   await writeFileAt(
     '/robots.txt',
