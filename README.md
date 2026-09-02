@@ -320,19 +320,29 @@ itself. If the sending arrangement changes, those two pages change with it.
 
 ## Deployment
 
-`.github/workflows/deploy.yml` builds, verifies, and publishes to GitHub Pages
-on every push to `main`. To use a custom domain, add `public/CNAME` containing
-`feral-femme.co` and point the DNS at GitHub Pages.
+The build writes a directory of static files. Any host that serves files will
+serve it, and the site depends on none of them in particular.
 
-The output is a plain directory, so Netlify, Cloudflare Pages, Vercel, or any
-static host works equally well — build command `npm run build`, output `dist`.
+- **Build command** — `npm run build && npm run check`
+- **Publish directory** — `dist`
+- **Node** — 22
 
-**One deployment caveat.** Every asset and link is an absolute path (`/assets/…`,
-`/field-notes/…`), which assumes the site is served from the root of a domain. That
-is correct for `feral-femme.co` and for a `*.github.io` user site, but a GitHub
-Pages *project* site serves from a subpath (`/<repo>/`) and every path would
-break. Use a custom domain, or a user/organisation site, rather than a project
-path.
+`netlify.toml` carries those values for Netlify. Cloudflare Pages takes the
+same two in its dashboard. Nothing else is needed: `dist/404.html` is picked up
+for unknown paths, and `dist/_redirects` is honoured natively by both, so the
+legacy `/rss.xml`, `/feed` and `/research/` addresses resolve.
+
+To publish without connecting a repository at all, run `npm run build` and drop
+the `dist` folder onto https://app.netlify.com/drop.
+
+**One deployment caveat.** Every asset and link is an absolute path
+(`/assets/…`, `/field-notes/…`), which assumes the site is served from the root
+of a domain. That is correct for `feral-femme.co` and for the address a host
+assigns you, but a subpath deployment would break every path.
+
+For a custom domain, add `public/CNAME` containing the domain **only if the
+host reads it** — Netlify and Cloudflare take the domain in their dashboard
+instead, and the file is ignored.
 
 ## Licence
 
