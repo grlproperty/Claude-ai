@@ -137,8 +137,8 @@ export function renderCertifications({ site, data }) {
       </div>
       <p class="entry__runby">Run by ${esc(s.runby)}</p>
       <div class="detail-grid">
-        <div class="panel"><h4>What it verifies</h4><p>${typo(s.verifies)}</p></div>
-        <div class="panel panel--warn"><h4>What it does not guarantee</h4><p>${typo(s.notguarantee)}</p></div>
+        <div class="panel"><h3>What it verifies</h3><p>${typo(s.verifies)}</p></div>
+        <div class="panel panel--warn"><h3>What it does not guarantee</h3><p>${typo(s.notguarantee)}</p></div>
       </div>
       <p class="src-note">Source — ${typo(s.src)}</p>`
     ),
@@ -167,8 +167,8 @@ export function renderGreenwashing({ site, data }) {
         <span class="tag">${esc(t.cat)}</span>
       </div>
       <div class="detail-grid">
-        <div class="panel panel--warn"><h4>What brands imply</h4><p>${typo(t.claim)}</p></div>
-        <div class="panel"><h4>What it actually means</h4><p>${typo(t.actual)}</p></div>
+        <div class="panel panel--warn"><h3>What brands imply</h3><p>${typo(t.claim)}</p></div>
+        <div class="panel"><h3>What it actually means</h3><p>${typo(t.actual)}</p></div>
       </div>
       ${t.src ? `<p class="src-note">Source — ${typo(t.src)}</p>` : ''}`
     ),
@@ -198,10 +198,10 @@ export function renderMaterials({ site, data }) {
       </div>
       <p class="entry__runby">${typo(m.what)}</p>
       <div class="detail-grid">
-        <div class="panel panel--warn"><h4>Animal welfare</h4><p>${typo(m.welfare)}</p></div>
-        <div class="panel"><h4>Environment</h4><p>${typo(m.environment)}</p></div>
+        <div class="panel panel--warn"><h3>Animal welfare</h3><p>${typo(m.welfare)}</p></div>
+        <div class="panel"><h3>Environment</h3><p>${typo(m.environment)}</p></div>
       </div>
-      ${m.alternatives ? `<div class="panel" style="margin-top:1.5rem;"><h4>Alternatives</h4><p>${typo(m.alternatives)}</p></div>` : ''}
+      ${m.alternatives ? `<div class="panel" style="margin-top:1.5rem;"><h3>Alternatives</h3><p>${typo(m.alternatives)}</p></div>` : ''}
       ${m.src ? `<p class="src-note">Source — ${typo(m.src)}</p>` : ''}`
     ),
   }));
@@ -228,7 +228,7 @@ export function renderRecord({ site, data }) {
         <h2 class="entry__name">${typo(f.name)}</h2>
         <span class="tag">${esc(f.sector)}</span>
       </div>
-      <div class="panel"><h4>Documented finding</h4><p>${typo(f.finding)}</p></div>
+      <div class="panel"><h3>Documented finding</h3><p>${typo(f.finding)}</p></div>
       <p class="src-note">Source — ${typo(f.src)}${
         f.url ? ` · <a href="${esc(f.url)}" target="_blank" rel="noopener noreferrer">Open the record</a>` : ''
       }</p>`
@@ -320,7 +320,7 @@ export function renderArchive({ site, data, instagram }) {
         ${e.badge ? `<span class="tag">${esc(e.badge)}</span>` : ''}
       </div>
       ${e.caption ? `<p style="font-size:.9375rem;line-height:1.7;color:var(--ink-muted);max-width:74ch;">${typo(e.caption)}</p>` : ''}
-      ${e.lore ? `<div class="panel" style="margin-top:1.25rem;"><h4>The note behind it</h4><p>${typo(e.lore)}</p></div>` : ''}
+      ${e.lore ? `<div class="panel" style="margin-top:1.25rem;"><h3>The note behind it</h3><p>${typo(e.lore)}</p></div>` : ''}
     </article>`,
   }));
 
@@ -383,7 +383,7 @@ export function renderSources({ site, data }) {
       ${data.authorities
         .map(
           (a) => `<div class="row row--aside">
-            <div><h3 class="row__title" style="font-size:1.15rem;">${typo(a.name)}</h3></div>
+            <div><h2 class="row__title" style="font-size:1.15rem;">${typo(a.name)}</h2></div>
             <div class="row__aside"><a href="${esc(a.url)}" target="_blank" rel="noopener noreferrer">Visit</a></div>
           </div>`
         )

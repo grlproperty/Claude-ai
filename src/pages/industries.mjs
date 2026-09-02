@@ -28,7 +28,7 @@ export function renderIndustries({ site, data }) {
 
           <div class="detail-grid">
             <div class="panel">
-              <h4>Standing reference</h4>
+              <h3>Standing reference</h3>
               <p class="row__index" style="margin-bottom:.6rem;">${esc(ind.resource.publisher)}</p>
               <h3 style="font-size:1.25rem;margin-bottom:.75rem;">${typo(ind.resource.title)}</h3>
               <p>${typo(ind.resource.body)}</p>
@@ -37,7 +37,7 @@ export function renderIndustries({ site, data }) {
               </p>
             </div>
             <div class="panel panel--warn">
-              <h4>Also worth reading</h4>
+              <h3>Also worth reading</h3>
               <p>${typo(ind.also.title)}</p>
               <p style="margin-top:1rem;">
                 <a class="arrow" href="${esc(ind.also.url)}" target="_blank" rel="noopener noreferrer">Open</a>

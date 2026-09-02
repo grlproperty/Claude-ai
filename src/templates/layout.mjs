@@ -30,7 +30,7 @@ function colophon(site) {
   const columns = site.footerNav
     .map(
       (col) => `<div>
-        <h4>${esc(col.title)}</h4>
+        <h2>${esc(col.title)}</h2>
         <ul>${col.links.map((l) => `<li><a href="${esc(l.href)}">${esc(l.label)}</a></li>`).join('')}</ul>
       </div>`
     )

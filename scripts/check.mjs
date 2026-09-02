@@ -5,6 +5,7 @@
  *   - internal links pointing at routes that were never generated
  *   - images referenced but not built, or missing alt attributes
  *   - pages missing a title, description, canonical, or h1
+ *   - heading levels that skip, which breaks the screen-reader outline
  *   - brand colour pairs falling below WCAG AA contrast
  *   - datasets past their declared review cycle (warning, not failure)
  *
@@ -158,6 +159,16 @@ async function checkHtml(files) {
     if (!/<meta name="description" content="[^"]{20,}"/.test(html)) fail(`${page}: missing description`);
     if (!/<link rel="canonical"/.test(html)) fail(`${page}: missing canonical link`);
     if ((html.match(/<h1[\s>]/g) ?? []).length !== 1) fail(`${page}: expected exactly one <h1>`);
+
+    // Heading levels must not skip. A screen reader user navigates by this
+    // outline, and an h2 followed by an h4 tells them a section was missed.
+    const levels = [...html.matchAll(/<h([1-6])[\s>]/g)].map((m) => Number(m[1]));
+    for (let i = 1; i < levels.length; i += 1) {
+      if (levels[i] - levels[i - 1] > 1) {
+        fail(`${page}: heading level jumps from h${levels[i - 1]} to h${levels[i]}`);
+        break;
+      }
+    }
     if (!/<main id="main">/.test(html)) fail(`${page}: missing main landmark`);
     if (/<html lang="/.test(html) === false) fail(`${page}: missing lang attribute`);
 

@@ -38,7 +38,7 @@ export function entryRow(entry, index) {
   return `<article class="row">
     <div class="row__index">${String(index + 1).padStart(2, '0')} — ${esc(entry.topic || 'Field note')}</div>
     <div>
-      <h3 class="row__title"><a href="${esc(entry.url)}">${typo(entry.title)}</a></h3>
+      <h2 class="row__title"><a href="${esc(entry.url)}">${typo(entry.title)}</a></h2>
       <p class="row__summary">${typo(entry.summary)}</p>
     </div>
     <div class="row__aside">

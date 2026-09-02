@@ -40,9 +40,9 @@ export function renderHome({ site, notes, data }) {
     ${
       hero
         ? `<figure class="hero__plate">
-      <img src="${esc(hero.image)}" alt="${esc(hero.title)}" width="${hero.width ?? 2096}" height="${
-            hero.height ?? 2795
-          }" fetchpriority="high" decoding="async">
+      <img src="${esc(hero.image)}" srcset="${esc(hero.thumb)} 640w, ${esc(hero.image)} 1200w" sizes="(min-width: 68rem) 40vw, (min-width: 30rem) 30rem, 100vw" alt="${esc(
+            hero.title
+          )}" width="${hero.width ?? 2096}" height="${hero.height ?? 2795}" fetchpriority="high" decoding="async">
       <figcaption>
         <span class="is-crimson">${esc(data.instagram.handle)}</span>
         ${typo(hero.title)}

@@ -1454,7 +1454,7 @@ code {
   border-color: var(--rule);
 }
 
-.panel h4 {
+.panel h3 {
   font-family: var(--ui);
   font-size: 0.56rem;
   font-weight: 500;
@@ -1724,7 +1724,7 @@ code {
   }
 }
 
-.colophon h4 {
+.colophon h2 {
   font-family: var(--ui);
   font-size: 0.56rem;
   font-weight: 500;
