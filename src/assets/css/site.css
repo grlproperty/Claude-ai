@@ -1904,6 +1904,82 @@ code {
   }
 }
 
+/* ---------------------------------------------------------------- intro */
+
+/* The hero arrives in sequence rather than all at once: the standfirst, then
+   the wordmark, then the claim, the paragraph, the actions, and the plate
+   last. Each piece is only a short rise and a fade — the sequence does the
+   work, not the distance travelled. `backwards` holds them at the start of
+   the animation during the delay, so nothing flashes into place first. */
+@keyframes intro-rise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes intro-plate {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hero__meta,
+.hero__title,
+.hero__claim,
+.hero__body,
+.hero__actions {
+  animation: intro-rise 0.85s var(--ease-out) backwards;
+}
+
+.hero__meta {
+  animation-delay: 0.05s;
+}
+.hero__title {
+  animation-delay: 0.16s;
+}
+.hero__claim {
+  animation-delay: 0.34s;
+}
+.hero__body {
+  animation-delay: 0.46s;
+}
+.hero__actions {
+  animation-delay: 0.56s;
+}
+
+.hero__plate {
+  animation: intro-plate 1.1s var(--ease-out) 0.3s backwards;
+}
+
+/* The wordmark's two words come in a beat apart, which is the only place the
+   sequence is allowed to draw attention to itself. */
+.hero__title .is-crimson {
+  display: inline-block;
+  animation: intro-rise 0.9s var(--ease-out) 0.16s backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__meta,
+  .hero__title,
+  .hero__claim,
+  .hero__body,
+  .hero__actions,
+  .hero__plate,
+  .hero__title .is-crimson {
+    animation: none;
+  }
+}
+
 /* ------------------------------------------------------------ entry page */
 
 .crumb {

@@ -74,6 +74,7 @@
     'attribute vec3 aPos;',
     'attribute vec3 aOther;',
     'attribute vec2 aSpec;', // x: side (-1/+1), y: base width in px
+    'attribute float aOrder;', // 0 at the base, 1 at the top of the hook
     'uniform mat4 uMVP;',
     'uniform vec2 uHalfRes;',
     // mediump explicitly. A uniform shared by both stages must match precision,
@@ -83,7 +84,9 @@
     'uniform mediump vec2 uRange;',
     'varying float vDist;',
     'varying float vSide;',
+    'varying float vOrder;',
     'void main(){',
+    '  vOrder = aOrder;',
     '  vec4 p = uMVP * vec4(aPos, 1.0);',
     '  vec4 q = uMVP * vec4(aOther, 1.0);',
     '  vDist = p.w;',
@@ -113,13 +116,20 @@
     'uniform vec3 uColor;',
     'uniform float uAlpha;',
     'uniform vec2 uRange;',
+    'uniform float uReveal;',
     'varying float vDist;',
     'varying float vSide;',
+    'varying float vOrder;',
     'void main(){',
+    // The cage assembles from its base upward on first paint. A hard cut at
+    // the threshold would look like a wipe, so the leading edge is feathered
+    // and briefly brighter — the part being drawn reads as the live one.
+    '  if (vOrder > uReveal) discard;',
+    '  float lead = 1.0 - smoothstep(0.0, 0.09, uReveal - vOrder);',
     '  float edge = 1.0 - smoothstep(0.35, 1.0, abs(vSide));',
     '  float near = 1.0 - smoothstep(uRange.x, uRange.y, vDist);',
     '  float depth = mix(0.22, 1.0, near);',
-    '  gl_FragColor = vec4(uColor, uAlpha * depth * edge);',
+    '  gl_FragColor = vec4(uColor + lead * 0.35, uAlpha * depth * edge * (1.0 + lead * 0.6));',
     '}',
   ].join('\n');
 
@@ -154,11 +164,13 @@
   var aPos = gl.getAttribLocation(prog, 'aPos');
   var aOther = gl.getAttribLocation(prog, 'aOther');
   var aSpec = gl.getAttribLocation(prog, 'aSpec');
+  var aOrder = gl.getAttribLocation(prog, 'aOrder');
   var uMVP = gl.getUniformLocation(prog, 'uMVP');
   var uColor = gl.getUniformLocation(prog, 'uColor');
   var uAlpha = gl.getUniformLocation(prog, 'uAlpha');
   var uRange = gl.getUniformLocation(prog, 'uRange');
   var uHalfRes = gl.getUniformLocation(prog, 'uHalfRes');
+  var uReveal = gl.getUniformLocation(prog, 'uReveal');
 
   // --------------------------------------------------------------- geometry
 
@@ -178,15 +190,20 @@
     return RADIUS * Math.cos(k * Math.PI * 0.5) * 0.96;
   }
 
+  // Vertical extent of everything drawn, hook included.
+  var LOW = -HEIGHT / 2 - 0.14;
+  var HIGH = HEIGHT / 2 + 0.42;
+
   var pos = [];
   var other = [];
   var spec = [];
+  var order = [];
 
   /** One segment becomes two triangles: six vertices, alternating sides. */
   function seg(x0, y0, z0, x1, y1, z1, width) {
     var a = [x0, y0, z0];
     var b = [x1, y1, z1];
-    var order = [
+    var corners = [
       [a, b, -1],
       [a, b, 1],
       [b, a, -1],
@@ -195,10 +212,14 @@
       [b, a, -1],
     ];
     for (var i = 0; i < 6; i++) {
-      var v = order[i];
+      var v = corners[i];
       pos.push(v[0][0], v[0][1], v[0][2]);
       other.push(v[1][0], v[1][1], v[1][2]);
       spec.push(v[2], width);
+      // Height, normalised across the whole object including the hook, so the
+      // build reads bottom to top rather than in the order the arrays happen
+      // to have been filled.
+      order.push((v[0][1] - LOW) / (HIGH - LOW));
     }
   }
 
@@ -274,6 +295,7 @@
   attrib(aPos, pos, 3);
   attrib(aOther, other, 3);
   attrib(aSpec, spec, 2);
+  attrib(aOrder, order, 1);
 
   var COUNT = pos.length / 3;
 
@@ -411,6 +433,11 @@
   var last = performance.now();
   var t0 = last;
 
+  // 0 to 1 over BUILD seconds on first paint, then held. Eased so it starts
+  // quickly and settles, rather than arriving at a constant rate.
+  var BUILD = 1.7;
+  var built = reduced ? 1 : 0;
+
   function draw(now) {
     resize();
     if (!width || !height) return;
@@ -444,7 +471,15 @@
     // ones do not — every position collides with running text — so there it
     // drops back to a texture behind the type rather than something competing
     // with it. Same geometry, different job.
-    gl.uniform1f(uAlpha, wide ? 0.72 : 0.3);
+    gl.uniform1f(uAlpha, wide ? 0.9 : 0.42);
+
+    if (built < 1) {
+      built = Math.min(1, (now - t0) / 1000 / BUILD);
+      // easeOutCubic
+      gl.uniform1f(uReveal, 1 - Math.pow(1 - built, 3));
+    } else {
+      gl.uniform1f(uReveal, 1);
+    }
 
     // Rotated about the hook, not the middle: a hung object pivots where it is
     // held. Translate the pivot to the origin, swing, and put it back.

@@ -30,17 +30,26 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = join(ROOT, 'dist');
 const OUT = join(ROOT, 'dist-single');
 
-/** Fonts carry this design; these are the faces the pages actually set. */
-const FACES = [
+/**
+ * Fonts carry this design, but they are also the heaviest thing in front of
+ * the first paint. The four the hero itself sets go in the document; the rest
+ * are attached once the page is up, and swap in under font-display: swap.
+ */
+const CRITICAL_FACES = [
   'bodoni-moda-500-normal-latin.woff2',
-  'bodoni-moda-400-normal-latin.woff2',
-  'cormorant-garamond-400-normal-latin.woff2',
   'cormorant-garamond-500-normal-latin.woff2',
-  'cormorant-garamond-600-normal-latin.woff2',
   'jost-300-normal-latin.woff2',
-  'jost-400-normal-latin.woff2',
   'jost-500-normal-latin.woff2',
 ];
+
+const DEFERRED_FACES = [
+  'bodoni-moda-400-normal-latin.woff2',
+  'cormorant-garamond-400-normal-latin.woff2',
+  'cormorant-garamond-600-normal-latin.woff2',
+  'jost-400-normal-latin.woff2',
+];
+
+const FACES = CRITICAL_FACES.concat(DEFERRED_FACES);
 
 async function walk(dir) {
   const out = [];
@@ -91,15 +100,20 @@ async function main() {
 
   const b64 = async (p, mime) => `data:${mime};base64,${(await readFile(p)).toString('base64')}`;
 
-  let fonts = await readFile(join(DIST, 'assets/css/fonts.css'), 'utf8');
-  fonts = fonts
-    .split('@font-face')
-    .filter((b) => FACES.some((f) => b.includes(f)))
-    .map((b) => '@font-face' + b)
-    .join('');
-  for (const f of FACES) {
-    fonts = fonts.replace(`url('../fonts/${f}')`, `url('${await b64(join(DIST, 'assets/fonts', f), 'font/woff2')}')`);
-  }
+  const fontCss = await readFile(join(DIST, 'assets/css/fonts.css'), 'utf8');
+  const facesFor = async (list) => {
+    let out = fontCss
+      .split('@font-face')
+      .filter((b) => list.some((f) => b.includes(f)))
+      .map((b) => '@font-face' + b)
+      .join('');
+    for (const f of list) {
+      out = out.replace(`url('../fonts/${f}')`, `url('${await b64(join(DIST, 'assets/fonts', f), 'font/woff2')}')`);
+    }
+    return out;
+  };
+  const criticalFonts = await facesFor(CRITICAL_FACES);
+  const deferredFonts = await facesFor(DEFERRED_FACES);
 
   const css = await readFile(join(DIST, 'assets/css/site.css'), 'utf8');
   const js = [];
@@ -147,7 +161,7 @@ async function main() {
   const head = `<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${routes.find((r) => r.path === '/').title}</title>
 <meta name="description" content="${(/<meta name="description" content="([^"]*)"/.exec(shell) || [, ''])[1]}">
-<style>${fonts}\n${css}
+<style>${criticalFonts}\n${css}
 /* Links to addresses that do not exist inside a single file keep their words
    without pretending to be clickable. */
 .was-link{color:inherit;text-decoration:none;border:0;cursor:default}
@@ -161,16 +175,25 @@ async function main() {
   // in one file there is nothing at those addresses to fetch.
   const stripScripts = (html) => html.replace(/<script[^>]*\bsrc=[^>]*><\/script>/g, '');
 
+  const home = routes.find((r) => r.path === '/');
+
   const shellBody =
     stripScripts(rewrite(inlineImages(body.slice(0, mainOpenEnd)))) +
+    rewrite(inlineImages(home.html)) +
     stripScripts(rewrite(inlineImages(body.slice(mainEnd))));
 
-  const templates = routes
+  // Pages are held as inert text, not as <template>. A template's contents are
+  // still parsed into a document fragment while the page loads, and building
+  // 141 of those before anything can be shown is most of what made the
+  // single-file version slow to open. A script of type text/html is never
+  // looked at until the router reads it.
+  const views = routes
     .map(
       (r) =>
-        `<template data-route="${r.path}" data-title="${r.title.replace(/"/g, '&quot;')}">${rewrite(
-          inlineImages(r.html)
-        )}</template>`
+        `<script type="text/html" data-route="${r.path}" data-title="${r.title.replace(
+          /"/g,
+          '&quot;'
+        )}">${rewrite(inlineImages(r.html)).replace(/<\/script/gi, '<\\/script')}</script>`
     )
     .join('\n');
 
@@ -180,13 +203,10 @@ async function main() {
   var main = document.getElementById('main');
   var miss = ${JSON.stringify(rewrite(notFound))};
   var views = {};
-  Array.prototype.forEach.call(document.querySelectorAll('template[data-route]'), function (t) {
-    views[t.getAttribute('data-route')] = t;
-  });
 
   function render(path) {
     var t = views[path];
-    main.innerHTML = t ? t.innerHTML : miss;
+    main.innerHTML = t ? t.textContent.replace(/<\\\/script/gi, '</script') : miss;
     document.title = t ? t.getAttribute('data-title') : 'Page not found';
     var nav = document.getElementById('nav');
     if (nav) nav.setAttribute('data-open', 'false');
@@ -205,7 +225,8 @@ async function main() {
     return h.indexOf('#/') === 0 ? h.slice(1) : null;
   }
 
-  var showing = null;
+  // Rendered by the document itself, so the first pass has nothing to do.
+  var showing = (location.hash.indexOf('#/') === 0 ? location.hash.slice(1) : '/') === '/' ? '/' : null;
   function apply(scroll) {
     var path = current() || '/';
     if (path !== showing) {
@@ -219,13 +240,39 @@ async function main() {
   }
 
   window.addEventListener('hashchange', function () { apply(true); });
-  apply(false);
+
+  // The scripts sit ahead of the page data so the cage and the opening
+  // sequence can start while the rest of the document is still arriving. That
+  // means the views are not in the DOM yet at this point, so collecting them
+  // waits for the parser to finish.
+  function start() {
+    Array.prototype.forEach.call(document.querySelectorAll('script[data-route]'), function (t) {
+      views[t.getAttribute('data-route')] = t;
+    });
+    apply(false);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
+})();`;
+
+  // Fonts the hero does not need are attached after the page is up, so their
+  // bytes never sit in front of the first paint.
+  const lateFonts = `
+(function () {
+  function add() {
+    var s = document.createElement('style');
+    s.textContent = ${JSON.stringify(deferredFonts)};
+    document.head.appendChild(s);
+  }
+  if ('requestIdleCallback' in window) requestIdleCallback(add, { timeout: 2000 });
+  else setTimeout(add, 400);
 })();`;
 
   await mkdir(OUT, { recursive: true });
-  const doc = `<!doctype html>\n<html lang="en">\n<head>\n${head}\n</head>\n<body>\n${shellBody}\n${templates}\n<script>${js.join(
+  const doc = `<!doctype html>\n<html lang="en">\n<head>\n${head}\n</head>\n<body>\n${shellBody}\n<script>${js.join(
     '\n;\n'
-  )}\n${router}\n</script>\n</body>\n</html>\n`;
+  )}\n${router}\n${lateFonts}\n</script>\n${views}\n</body>\n</html>\n`;
   await writeFile(join(OUT, 'index.html'), doc);
 
   console.log(`Packed ${routes.length} pages into one file`);
