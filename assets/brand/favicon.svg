@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <rect width="64" height="64" fill="#F6DFE2"/>
+  <circle cx="32" cy="32" r="24" fill="none" stroke="#8E0B14" stroke-width="0.896"/>
+  <text x="32" y="39.36" text-anchor="middle" font-family="Bodoni Moda"
+        font-size="20.48" font-weight="500" letter-spacing="1.28" fill="#8E0B14">FF</text>
+</svg>

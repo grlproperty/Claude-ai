@@ -1,0 +1,49 @@
+# Apache configuration for shared hosting (cPanel, Plesk, most paid hosts).
+#
+# The site is plain HTML in real directories, so it serves correctly with no
+# configuration at all. Everything here is an improvement on that baseline
+# rather than a requirement, except the error document.
+
+# Without this a mistyped address gets the host's default error page instead
+# of the site's own.
+ErrorDocument 404 /404.html
+
+# Some older servers do not know these and send them as plain text, which
+# means no images and no fonts.
+<IfModule mod_mime.c>
+  AddType image/webp                     .webp
+  AddType font/woff2                     .woff2
+  AddType application/manifest+json      .webmanifest
+  AddType application/rss+xml            .xml
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/json application/xml
+  AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# Images and fonts are content-addressed in practice — a changed image gets a
+# changed name — so they can be held for a long time. HTML must not be.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/webp               "access plus 1 year"
+  ExpiresByType image/png                "access plus 1 year"
+  ExpiresByType image/svg+xml            "access plus 1 year"
+  ExpiresByType font/woff2               "access plus 1 year"
+  ExpiresByType text/css                 "access plus 7 days"
+  ExpiresByType application/javascript   "access plus 7 days"
+  ExpiresByType text/html                "access plus 10 minutes"
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# If the host does not already force HTTPS, uncomment these three lines.
+# <IfModule mod_rewrite.c>
+#   RewriteEngine On
+#   RewriteCond %{HTTPS} !=on
+#   RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+# </IfModule>
