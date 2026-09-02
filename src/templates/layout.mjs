@@ -49,7 +49,7 @@ function colophon(site) {
       ${columns}
     </div>
     <div class="colophon__base">
-      <span>© ${site.established}–${year} ${esc(site.name)}</span>
+      <span>© ${String(site.established) === String(year) ? year : `${site.established}\u2013${year}`} ${esc(site.name)}</span>
       <span>Est. ${site.established} · ${esc(site.location)} · ${esc(site.funding)}</span>
       ${(site.social.profiles ?? [])
         .map(

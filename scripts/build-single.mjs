@@ -141,19 +141,46 @@ async function main() {
       .replace(/src="(\/assets\/img\/[^"]+)"/g, (m, p) => (images.has(p) ? `src="${images.get(p)}"` : m));
 
   /**
-   * Internal links become routes. Anything internal that is not a page — the
-   * feed, the manifest — has no address here at all, so it keeps its words and
-   * stops being a link rather than becoming a dead one.
+   * Internal links become routes.
+   *
+   * Three cases, and the order matters:
+   *
+   * 1. A page. /field-notes/ becomes #/field-notes/. An in-page fragment is
+   *    matched on its path alone — /industries/#beauty routes to the page and
+   *    drops the anchor, because the address bar's fragment is what the router
+   *    reads and it cannot hold two. Getting the reader to the right page
+   *    beats not linking at all.
+   * 2. A file shipped next to this one — the feed, the manifest. Those really
+   *    are at that address on the server, so they stay ordinary links.
+   * 3. Anything else stops being a link.
+   *
+   * Case 3 used to replace the anchor with a bare <span class="was-link">,
+   * which threw away whatever the anchor was wearing. The ten industry cards
+   * on the home page are <a class="plate tilt reveal">, and .plate is the
+   * positioned box their absolute 01-10 numeral hangs off; stripped of the
+   * class, every numeral escaped to the enclosing <section> and all ten
+   * stacked in one corner on top of the heading. So the attributes come
+   * across, and was-link is appended to the class rather than replacing it.
    */
+  const COMPANION_FILE = /\.(xml|webmanifest|txt|json)$/;
+
   const rewrite = (html) =>
     html.replace(
       /<a\b([^>]*?)href="(\/[^"]*)"([^>]*?)>([\s\S]*?)<\/a>/g,
-      (m, pre, href, post, text) =>
-        known.has(href)
-          ? `<a${pre}href="#${href}"${post}>${text}</a>`
-          : // Both tags are replaced together. Swapping only the opening one
-            // leaves a stray </a> for the parser to guess at.
-            `<span class="was-link">${text}</span>`
+      (m, pre, href, post, text) => {
+        const path = href.split('#')[0];
+        if (known.has(href)) return `<a${pre}href="#${href}"${post}>${text}</a>`;
+        if (known.has(path)) return `<a${pre}href="#${path}"${post}>${text}</a>`;
+        if (COMPANION_FILE.test(path)) return m;
+
+        // Both tags are replaced together. Swapping only the opening one
+        // leaves a stray </a> for the parser to guess at.
+        const attrs = (pre + post).replace(/\s(?:target|rel|download)="[^"]*"/g, '');
+        const kept = /class="([^"]*)"/.test(attrs)
+          ? attrs.replace(/class="([^"]*)"/, (_, c) => `class="${c} was-link"`)
+          : `${attrs} class="was-link"`;
+        return `<span${kept}>${text}</span>`;
+      }
     );
 
   // ---- assemble ------------------------------------------------------------
@@ -181,7 +208,7 @@ async function main() {
   const mainStyles = `<style>${criticalFonts}\n${css}
 /* Links to addresses that do not exist inside a single file keep their words
    without pretending to be clickable. */
-.was-link{color:inherit;text-decoration:none;border:0;cursor:default}
+.was-link{text-decoration:none;cursor:default}
 </style>`;
 
   const body = between(shell, '<body', '</body>');
@@ -331,8 +358,74 @@ async function main() {
   )}\n${router}\n${lateFonts}\n</script>\n${views}\n</body>\n</html>\n`;
   await writeFile(join(OUT, 'index.html'), doc);
 
+  // The footer links /feed.xml and the newsletter automation reads it, so the
+  // feed has to exist on the server even when the pages do not. robots.txt and
+  // the server config are the same kind of thing: small files that are not
+  // routes and cannot be packed into the document.
+  //
+  // No sitemap.xml. A sitemap lists addresses a crawler can fetch, and in this
+  // build every page lives behind a #/ fragment of one address — a fragment is
+  // not a separate URL to a crawler, so a sitemap here would list one entry
+  // 142 times over. Publishing dist/ instead is what earns a real sitemap.
+  const COMPANIONS = ['feed.xml', 'rss.xml', 'site.webmanifest'];
+  const copied = [];
+  for (const name of COMPANIONS) {
+    const from = join(DIST, name);
+    if (!existsSync(from)) continue;
+    await writeFile(join(OUT, name), await readFile(from));
+    copied.push(name);
+  }
+
+  // dist/robots.txt points at a sitemap this build does not produce, and a
+  // Sitemap: line for a file that 404s is worse than no line at all.
+  await writeFile(join(OUT, 'robots.txt'), 'User-agent: *\nAllow: /\n');
+  copied.push('robots.txt');
+
+  // dist/404.html loads /assets/css/site.css, which does not exist next to a
+  // single-file deploy — it would arrive unstyled. This one carries its own.
+  await writeFile(
+    join(OUT, '404.html'),
+    `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Page not found — FERAL FEMME</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center;
+         background: #100c0d; color: #fdfcfc; text-align: center; padding: 2rem;
+         font: 400 1rem/1.6 Jost, "Helvetica Neue", Arial, sans-serif; }
+  h1 { font-size: clamp(2rem, 7vw, 3.4rem); font-weight: 500; letter-spacing: .04em;
+       margin: 0 0 .6rem; }
+  p { color: rgba(253,252,252,.68); max-width: 46ch; margin: 0 auto 2rem; }
+  a { display: inline-block; min-height: 24px; padding: .85rem 1.6rem;
+      border: 1px solid #b80f1d; color: #fdfcfc; text-decoration: none;
+      letter-spacing: .16em; text-transform: uppercase; font-size: .7rem; }
+  a:hover, a:focus-visible { background: #b80f1d; }
+</style>
+</head>
+<body>
+  <main>
+    <h1>Page not found</h1>
+    <p>That address does not exist here. Everything FERAL FEMME publishes is reachable from the front page.</p>
+    <a href="/">Back to the front page</a>
+  </main>
+</body>
+</html>
+`
+  );
+  copied.push('404.html');
+  const htaccess = join(ROOT, 'public', '.htaccess');
+  if (existsSync(htaccess)) {
+    await writeFile(join(OUT, '.htaccess'), await readFile(htaccess));
+    copied.push('.htaccess');
+  }
+
   console.log(`Packed ${routes.length} pages into one file`);
   console.log(`  ${(doc.length / 1024 / 1024).toFixed(2)} MB  →  dist-single/index.html`);
+  if (copied.length) console.log(`  alongside it: ${copied.join(', ')}`);
 }
 
 main().catch((e) => {

@@ -416,6 +416,13 @@ code {
   line-height: 1;
   color: var(--ink);
   white-space: nowrap;
+  /* WCAG 2.2 target size: the wordmark is a standalone link, not one sitting
+     inside a sentence, so the inline exception does not cover it. inline-block
+     rather than inline-flex — a flex container drops the whitespace between
+     its items, and that whitespace is the space in FERAL FEMME. */
+  display: inline-block;
+  min-height: 24px;
+  padding-block: 6px;
 }
 
 .wordmark:hover {
@@ -602,6 +609,7 @@ code {
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--crimson);
+  padding-block: 4px;
 }
 
 .arrow::after {
@@ -1743,13 +1751,15 @@ code {
 }
 
 .colophon li + li {
-  margin-top: 0.6rem;
+  margin-top: 0.35rem;
 }
 
 .colophon a {
   font-family: var(--ui);
   font-size: 0.8125rem;
   color: var(--on-dark);
+  display: inline-block;
+  padding-block: 3px;
 }
 
 .colophon a:hover {
@@ -1787,6 +1797,9 @@ code {
 .colophon__base a {
   font-size: inherit;
   letter-spacing: inherit;
+  display: inline-block;
+  padding-block: 6px;
+  margin-block: -6px;
 }
 
 /* ------------------------------------------------------------- utilities */
