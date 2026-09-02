@@ -81,18 +81,44 @@ export function reviewStamp(dataset) {
   return `<p class="label label--dim" style="margin-top:2rem;">${esc(text)}</p>`;
 }
 
-export function newsletterForm(site, { dark = false } = {}) {
+/**
+ * The subscribe form. `newsletter.action` in content/site.json is whatever
+ * endpoint collects the address — the site is static, so something off it has
+ * to receive the POST. Until that is set the form degrades to a mailto:, which
+ * still reaches a human rather than shipping a control that silently discards
+ * what a reader typed.
+ *
+ * With JavaScript the submit is intercepted so the reader stays on the page
+ * and gets an inline confirmation; without it the browser posts natively to
+ * the provider's own thank-you page. Both paths work.
+ *
+ * `note: false` drops the standing note, for pages that already say the same
+ * thing in their own copy.
+ */
+export function newsletterForm(site, { dark = false, note = true } = {}) {
   const n = site.newsletter;
   const action = n.action || `mailto:${site.email}?subject=${encodeURIComponent(`Subscribe: ${n.name}`)}`;
   const isMailto = !n.action;
+  const id = dark ? 'd' : 'l';
 
   return `<form class="form" action="${esc(action)}" method="${isMailto ? 'get' : 'post'}"${
-    isMailto ? '' : ' target="_blank"'
+    isMailto ? '' : ' target="_blank" data-subscribe'
   }>
-    <label class="visually-hidden" for="nl-email-${dark ? 'd' : 'l'}">Email address</label>
-    <input id="nl-email-${dark ? 'd' : 'l'}" type="email" name="email" required placeholder="you@example.com" autocomplete="email">
+    <label class="visually-hidden" for="nl-email-${id}">Email address</label>
+    <input id="nl-email-${id}" type="email" name="email" required placeholder="you@example.com" autocomplete="email">
+    ${
+      isMailto
+        ? ''
+        : `<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="visually-hidden">
+    <input type="hidden" name="_subject" value="${esc(`Subscribe: ${n.name}`)}">`
+    }
     <button class="btn" type="submit">Subscribe</button>
-    <p class="form__note">${esc(typo(n.summary))}</p>
+    ${
+      note
+        ? `<p class="form__note">${esc(typo(n.summary))} <a href="/privacy/">What we do with your address</a>.</p>`
+        : ''
+    }
+    <p class="form__status" role="status" aria-live="polite" hidden></p>
   </form>`;
 }
 

@@ -3,6 +3,30 @@ import { label, sectionHead, note, newsletterForm } from '../templates/component
 import { esc, typo } from '../lib/util.mjs';
 
 /**
+ * Build the URL that opens PayPal with an amount already filled in.
+ *
+ * The two shapes PayPal hands out take the amount completely differently, and
+ * appending to the wrong one produces a link that opens a blank donation form:
+ *
+ *   paypal.me/handle          → /25USD as a path segment
+ *   paypal.com/donate?...     → &amount=25&currency_code=USD as query params
+ *
+ * Anything else is treated as a query-string processor, which is the safer of
+ * the two guesses: a stray parameter is ignored, a stray path segment 404s.
+ */
+function donateUrl(d, amount) {
+  const link = d.link.replace(/\/+$/, '');
+  const currency = d.currency || 'USD';
+
+  if (/(^|\/\/)(www\.)?paypal\.me\//i.test(link)) return `${link}/${amount}${currency}`;
+
+  const url = new URL(link);
+  url.searchParams.set('amount', String(amount));
+  url.searchParams.set('currency_code', currency);
+  return url.href;
+}
+
+/**
  * The donation link is configured in content/site.json. Where it is not set,
  * the button degrades to an enquiry mailto: rather than shipping a dead
  * control — the page is publishable before the processor is connected.
@@ -11,8 +35,9 @@ function donateAction(site, amount, featured) {
   const d = site.donate;
   const cls = `btn${featured ? '' : ' btn--ghost'}`;
   if (d.link) {
-    const sep = d.link.includes('?') ? '&' : '/';
-    return `<a class="${cls}" href="${esc(d.link)}${sep}${amount}" rel="noopener">Give ${esc(d.currencySymbol)}${amount}</a>`;
+    return `<a class="${cls}" href="${esc(donateUrl(d, amount))}" rel="noopener" target="_blank">Give ${esc(
+      d.currencySymbol
+    )}${amount}</a>`;
   }
   const subject = encodeURIComponent(`Donation — ${d.currencySymbol}${amount}`);
   return `<a class="${cls}" href="mailto:${esc(site.email)}?subject=${subject}">Give ${esc(d.currencySymbol)}${amount}</a>`;
@@ -116,7 +141,7 @@ export function renderBriefing({ site }) {
     <h1 class="display" style="font-size:clamp(2.6rem,7vw,4.5rem);text-transform:uppercase;">${esc(n.name)}</h1>
     <p class="lede">${typo(n.summary)}</p>
     <div style="display:flex;justify-content:center;margin-top:2.5rem;">
-      ${newsletterForm(site)}
+      ${newsletterForm(site, { note: false })}
     </div>
   </div>
 </section>

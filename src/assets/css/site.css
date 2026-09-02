@@ -1604,6 +1604,33 @@ code {
   color: var(--on-dark-dim);
 }
 
+/* Only revealed once the form has actually been submitted, so the reader is
+   never told anything before there is something to tell them. */
+.form__status {
+  flex-basis: 100%;
+  text-align: left;
+  font-family: var(--ui);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  margin: var(--s2) 0 0;
+  padding-left: 0.9rem;
+  border-left: 2px solid var(--crimson);
+  color: var(--ink-secondary);
+}
+
+.form__status[data-state='ok'] {
+  border-left-color: var(--crimson);
+}
+
+.form__status[data-state='error'] {
+  border-left-color: var(--ink-faint);
+}
+
+.on-dark .form__status {
+  color: var(--on-dark);
+  border-left-color: var(--blush);
+}
+
 /* ---------------------------------------------------------------- search */
 
 .search {

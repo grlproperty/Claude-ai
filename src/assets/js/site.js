@@ -95,6 +95,51 @@
     }
   }
 
+  // ---- subscribe form ----------------------------------------------------
+  // Posts in the background so the reader stays on the page. Without this the
+  // browser still submits natively to the provider, which is why the form is
+  // marked up as a working form first and enhanced second.
+  var subscribeForms = document.querySelectorAll('form[data-subscribe]');
+
+  Array.prototype.forEach.call(subscribeForms, function (form) {
+    var status = form.querySelector('.form__status');
+    var button = form.querySelector('button[type="submit"]');
+    if (!status || !window.fetch || !window.FormData) return;
+
+    var say = function (message, ok) {
+      status.textContent = message;
+      status.setAttribute('data-state', ok ? 'ok' : 'error');
+      status.hidden = false;
+    };
+
+    form.addEventListener('submit', function (e) {
+      if (!form.checkValidity()) return;
+      e.preventDefault();
+
+      button.disabled = true;
+      status.hidden = true;
+
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' },
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error(String(res.status));
+          form.reset();
+          say('Thank you — you are on the list.', true);
+        })
+        .catch(function () {
+          // Never claim a subscription that did not happen: send them to a
+          // route that reaches a person instead.
+          say('That did not go through. Email info@feral-femme.co and we will add you.', false);
+        })
+        .then(function () {
+          button.disabled = false;
+        });
+    });
+  });
+
   // ---- table of contents -------------------------------------------------
   var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.toc a[href^="#"]'));
 
