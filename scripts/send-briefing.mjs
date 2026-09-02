@@ -1,8 +1,9 @@
 /**
  * Sends each newly published field note to subscribers as its own campaign.
  *
- * MailerLite has no RSS-driven campaign — not in the API, not in the product —
- * so the feed cannot send itself and this does it instead. Run after a deploy:
+ * MailerLite's API exposes no RSS-driven campaign — no campaign type and no
+ * automation trigger watches a feed — so the feed cannot send itself and this
+ * does it instead. Run after a deploy:
  * anything published since the last run goes out, and publishing the note is
  * therefore the act of sending it.
  *

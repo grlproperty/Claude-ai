@@ -269,8 +269,11 @@ Subscribers receive each field note in full on the day it is published, and
 publishing the note is the act of sending it. There is no separate edition to
 write.
 
-MailerLite has no RSS-driven campaign — not in the API and not in the product —
-so the feed cannot send itself and the repository does it instead.
+MailerLite's API exposes no RSS-driven campaign — campaigns come in `regular`,
+`ab`, `resend` and `multivariate` only, and no automation trigger watches a feed
+— so the feed cannot send itself and the repository does it instead. Whether
+the dashboard offers one on some plan was not established; this path needs no
+such feature and does not depend on the answer.
 `.github/workflows/briefing.yml` runs `scripts/send-briefing.mjs` after Deploy
 has succeeded on `main`, never before: the email links straight to the note, and
 mailing a link to a page that is not live yet is worse than sending nothing.
