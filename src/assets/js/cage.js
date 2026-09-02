@@ -85,6 +85,7 @@
     'varying float vDist;',
     'varying float vSide;',
     'varying float vOrder;',
+    'varying vec2 vNrm;',
     'void main(){',
     '  vOrder = aOrder;',
     '  vec4 p = uMVP * vec4(aPos, 1.0);',
@@ -104,6 +105,7 @@
     '  float w = aSpec.y * mix(1.0, 0.5, k);',
     '  p.xy += (nrm * aSpec.x * w / uHalfRes) * p.w;',
     '  vSide = aSpec.x;',
+    '  vNrm = nrm;',
     '  gl_Position = p;',
     '}',
   ].join('\n');
@@ -111,25 +113,44 @@
   // Two fades. Across the quad, so the bar has soft edges of its own rather
   // than relying on multisampling. Into depth, so the far side of the cage
   // falls back — which is what makes a wireframe legible as a volume.
+  // Each bar is a flat ribbon, but it is shaded as though it were round: the
+  // across-the-width coordinate is exactly a cylinder's cross-section, so a
+  // normal can be rebuilt from it and lit. That is what separates a drawn line
+  // from a bar of metal, and it costs one square root.
   var FRAG = [
     'precision mediump float;',
-    'uniform vec3 uColor;',
+    'uniform vec3 uMetal;',
+    'uniform vec3 uRim;',
     'uniform float uAlpha;',
     'uniform vec2 uRange;',
     'uniform float uReveal;',
     'varying float vDist;',
     'varying float vSide;',
     'varying float vOrder;',
+    'varying vec2 vNrm;',
     'void main(){',
-    // The cage assembles from its base upward on first paint. A hard cut at
-    // the threshold would look like a wipe, so the leading edge is feathered
-    // and briefly brighter — the part being drawn reads as the live one.
     '  if (vOrder > uReveal) discard;',
     '  float lead = 1.0 - smoothstep(0.0, 0.09, uReveal - vOrder);',
-    '  float edge = 1.0 - smoothstep(0.35, 1.0, abs(vSide));',
+    // Cylinder normal across the ribbon. z is the part facing the viewer.
+    '  float face = sqrt(max(0.0, 1.0 - vSide * vSide));',
+    '  vec3 N = normalize(vec3(vNrm * vSide, face));',
+    '  vec3 L = normalize(vec3(-0.45, 0.72, 0.53));',
+    '  float diff = max(dot(N, L), 0.0);',
+    // A hard, narrow highlight is what reads as metal; a broad one reads as
+    // plastic. The rim term picks out the turning edges of every bar, which is
+    // where a wire cage catches light in the photograph beside it.
+    '  float spec = pow(max(dot(reflect(-L, N), vec3(0.0, 0.0, 1.0)), 0.0), 42.0);',
+    '  float rim = pow(1.0 - face, 2.4);',
+    '  vec3 col = uMetal * (0.30 + 0.70 * diff) + uRim * rim * 0.55 + vec3(spec) * 0.65;',
+    '  col += lead * 0.5;',
+    // The far side of the cage falls back rather than disappearing, which is
+    // what lets a see-through object still read as having volume.
     '  float near = 1.0 - smoothstep(uRange.x, uRange.y, vDist);',
-    '  float depth = mix(0.22, 1.0, near);',
-    '  gl_FragColor = vec4(uColor + lead * 0.35, uAlpha * depth * edge * (1.0 + lead * 0.6));',
+    '  float depth = mix(0.42, 1.0, near);',
+    // Antialias the ribbon's own edges; multisampling will not do it here
+    // because the geometry is a quad, not a line.
+    '  float edge = 1.0 - smoothstep(0.78, 1.0, abs(vSide));',
+    '  gl_FragColor = vec4(col, uAlpha * depth * edge * (1.0 + lead * 0.5));',
     '}',
   ].join('\n');
 
@@ -166,7 +187,8 @@
   var aSpec = gl.getAttribLocation(prog, 'aSpec');
   var aOrder = gl.getAttribLocation(prog, 'aOrder');
   var uMVP = gl.getUniformLocation(prog, 'uMVP');
-  var uColor = gl.getUniformLocation(prog, 'uColor');
+  var uMetal = gl.getUniformLocation(prog, 'uMetal');
+  var uRim = gl.getUniformLocation(prog, 'uRim');
   var uAlpha = gl.getUniformLocation(prog, 'uAlpha');
   var uRange = gl.getUniformLocation(prog, 'uRange');
   var uHalfRes = gl.getUniformLocation(prog, 'uHalfRes');
@@ -174,8 +196,8 @@
 
   // --------------------------------------------------------------- geometry
 
-  var BARS = 16;
-  var STEPS = 18;
+  var BARS = 26;
+  var STEPS = 20;
   var HEIGHT = 2.25;
   var RADIUS = 0.95;
 
@@ -199,8 +221,14 @@
   var spec = [];
   var order = [];
 
+  // Bar widths are authored in relative terms and scaled here. Below about two
+  // pixels a round bar has nowhere to put its highlight, and the shading that
+  // makes it read as metal degrades into noise.
+  var WIDTH_SCALE = 1.75;
+
   /** One segment becomes two triangles: six vertices, alternating sides. */
   function seg(x0, y0, z0, x1, y1, z1, width) {
+    width *= WIDTH_SCALE;
     var a = [x0, y0, z0];
     var b = [x1, y1, z1];
     var corners = [
@@ -237,39 +265,69 @@
     var ang = (b / BARS) * Math.PI * 2;
     var c = Math.cos(ang);
     var s = Math.sin(ang);
+    // Every other bar stops at the shoulder. A real cage does not carry every
+    // upright over the dome — they would collide at the finial — and the
+    // alternation is most of what makes the crown read as built rather than
+    // extruded.
+    var full = b % 2 === 0;
     for (var st = 0; st < STEPS; st++) {
       var t0 = st / STEPS;
       var t1 = (st + 1) / STEPS;
+      if (!full && t0 >= BODY) break;
       var r0 = radiusAt(t0);
       var r1 = radiusAt(t1);
-      seg(c * r0, -HEIGHT / 2 + HEIGHT * t0, s * r0, c * r1, -HEIGHT / 2 + HEIGHT * t1, s * r1, 1.5);
+      // Tapered: heavier at the base where the load is, finer into the dome.
+      var w = 1.9 - 0.8 * t0;
+      seg(c * r0, -HEIGHT / 2 + HEIGHT * t0, s * r0, c * r1, -HEIGHT / 2 + HEIGHT * t1, s * r1, w);
     }
   }
 
   // Rings up the body, then the base: a floor ring and the lip below it, which
   // is what stops the bars reading as trailing off into nothing.
-  for (var k = 0; k < 4; k++) {
-    var tk = 0.12 + k * 0.19;
-    ring(-HEIGHT / 2 + HEIGHT * tk, radiusAt(tk), 1.1, 56);
+  for (var k = 0; k < 6; k++) {
+    var tk = 0.09 + k * 0.115;
+    ring(-HEIGHT / 2 + HEIGHT * tk, radiusAt(tk), 1.05, 108);
   }
-  ring(-HEIGHT / 2, radiusAt(0), 1.6, 56);
-  ring(-HEIGHT / 2 - 0.07, radiusAt(0) * 0.92, 1.3, 56);
-  ring(-HEIGHT / 2 - 0.14, radiusAt(0) * 0.72, 1.1, 40);
+  // The base: a heavy floor ring, then the moulding stepping in underneath it.
+  ring(-HEIGHT / 2, radiusAt(0), 2.1, 108);
+  ring(-HEIGHT / 2 - 0.05, radiusAt(0) * 1.02, 1.5, 108);
+  ring(-HEIGHT / 2 - 0.11, radiusAt(0) * 0.94, 1.4, 108);
+  ring(-HEIGHT / 2 - 0.17, radiusAt(0) * 0.78, 1.2, 88);
+  ring(-HEIGHT / 2 - 0.22, radiusAt(0) * 0.55, 1.1, 72);
+
+  // Cross-bracing under the floor, which is how a cage of this shape is
+  // actually held together and reads as having a bottom rather than an edge.
+  for (var x = 0; x < 4; x++) {
+    var xa = (x / 4) * Math.PI;
+    var xr = radiusAt(0) * 0.94;
+    seg(Math.cos(xa) * xr, -HEIGHT / 2 - 0.11, Math.sin(xa) * xr, -Math.cos(xa) * xr, -HEIGHT / 2 - 0.11, -Math.sin(xa) * xr, 1.0);
+  }
 
   // The shoulder, where the wall becomes the dome.
-  ring(-HEIGHT / 2 + HEIGHT * BODY, radiusAt(BODY), 1.4, 56);
+  ring(-HEIGHT / 2 + HEIGHT * BODY, radiusAt(BODY), 1.9, 108);
+  ring(-HEIGHT / 2 + HEIGHT * (BODY + 0.015), radiusAt(BODY) * 0.985, 1.2, 108);
+
+  // Two rings up the dome, so the crown has structure instead of being a fan
+  // of unbroken curves.
+  ring(-HEIGHT / 2 + HEIGHT * (BODY + (1 - BODY) * 0.34), radiusAt(BODY + (1 - BODY) * 0.34), 1.0, 96);
+  ring(-HEIGHT / 2 + HEIGHT * (BODY + (1 - BODY) * 0.66), radiusAt(BODY + (1 - BODY) * 0.66), 0.95, 88);
 
   // The perch. One horizontal bar across the middle, and the detail that makes
   // this a birdcage rather than a lantern.
   var perchY = -HEIGHT / 2 + HEIGHT * 0.34;
-  seg(-radiusAt(0.34) * 0.98, perchY, 0, radiusAt(0.34) * 0.98, perchY, 0, 1.7);
+  seg(-radiusAt(0.34) * 0.98, perchY, 0, radiusAt(0.34) * 0.98, perchY, 0, 2.2);
+  // The collars where the perch meets the wall.
+  for (var pc = -1; pc <= 1; pc += 2) {
+    var px = radiusAt(0.34) * 0.98 * pc;
+    seg(px, perchY - 0.05, 0, px, perchY + 0.05, 0, 1.6);
+  }
 
   // Finial and hook above the crown, so it reads as hung rather than floating.
   var crown = HEIGHT / 2;
   // The rod runs the whole way to the centre of the hook's arc. Stopping it at
   // the knob leaves the hook floating unattached above the cage.
   seg(0, crown - 0.02, 0, 0, crown + 0.3, 0, 1.8);
-  ring(crown + 0.16, 0.075, 1.4, 24);
+  ring(crown + 0.16, 0.075, 1.4, 40);
   for (var h = 0; h < 12; h++) {
     var ha = Math.PI * (0.15 + (h / 12) * 0.9);
     var hb = Math.PI * (0.15 + ((h + 1) / 12) * 0.9);
@@ -354,7 +412,10 @@
 
   // ----------------------------------------------------------------- render
 
-  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  // Capped below the display's own ratio. The cage is thin geometry over a
+  // large area, so the cost is in pixels shaded rather than vertices, and at
+  // 1.5 the difference is invisible while the fill cost is halved against 2.
+  var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
   var width = 0;
   var height = 0;
 
@@ -374,8 +435,19 @@
 
   gl.enable(gl.BLEND);
   gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  // Depth testing, now that the bars are opaque metal rather than a
+  // transparent lattice. It does two things: a bar in front hides the one
+  // behind it, which is most of what makes a see-through object read as solid;
+  // and it stops the ends of adjacent ring segments blending over each other,
+  // which was showing up as a bead along every hoop.
+  gl.enable(gl.DEPTH_TEST);
+  gl.depthFunc(gl.LEQUAL);
   gl.clearColor(0, 0, 0, 0);
-  gl.uniform3f(uColor, 0.557, 0.043, 0.078); // #8E0B14
+  // Dark iron, with the brand's crimson only on the turning edges. The cage in
+  // the photograph beside this is black metal; a pink wireframe next to it
+  // reads as a diagram of a cage rather than one.
+  gl.uniform3f(uMetal, 0.085, 0.072, 0.078);
+  gl.uniform3f(uRim, 0.62, 0.07, 0.11);
 
   // ------------------------------------------------------------- suspension
 
@@ -491,7 +563,7 @@
     var model = multiply(translate(0, pivot, 0), hang);
     var mv = multiply(translate(offsetX, offsetY, -depth), multiply(rotateX(-0.06), model));
 
-    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.uniformMatrix4fv(uMVP, false, new Float32Array(multiply(proj, mv)));
     gl.drawArrays(gl.TRIANGLES, 0, COUNT);
   }
