@@ -33,12 +33,32 @@ ErrorDocument 404 /404.html
   ExpiresByType font/woff2               "access plus 1 year"
   ExpiresByType text/css                 "access plus 7 days"
   ExpiresByType application/javascript   "access plus 7 days"
-  ExpiresByType text/html                "access plus 10 minutes"
+  # text/html is deliberately absent — Cache-Control below owns it.
 </IfModule>
 
 <IfModule mod_headers.c>
   Header set X-Content-Type-Options "nosniff"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # The page itself must never be served from a cache without asking first.
+  #
+  # Without this the server sends no Cache-Control at all, only Last-Modified,
+  # and a browser is then free to guess a lifetime from it — the usual guess is
+  # a tenth of the file's age, which for a file edited a week ago is most of a
+  # day. That is how a site that has just been re-uploaded keeps showing the
+  # old one, with no way for the reader to know.
+  #
+  # no-cache does not mean do not store. It means store it, but revalidate
+  # every time — so an unchanged page still comes back as a 304 with no body,
+  # and a changed one arrives immediately.
+  <FilesMatch "\.(html|xml|json|webmanifest|txt)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+
+  # Assets are versioned by name, so they can be held indefinitely.
+  <FilesMatch "\.(webp|png|jpg|jpeg|svg|woff2|css|js)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
 </IfModule>
 
 # If the host does not already force HTTPS, uncomment these three lines.
