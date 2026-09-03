@@ -136,3 +136,99 @@ export function renderShop({ site, rates }) {
     body,
   });
 }
+
+// ------------------------------------------------------------ /claim-check/
+
+/**
+ * One service, one price.
+ *
+ * This was a four-tier ladder and is deliberately not one any more. A single
+ * low-friction offer converts better than a menu — a buyer choosing between
+ * four unfamiliar services mostly chooses none of them — and anything larger
+ * than one page is a conversation rather than a published rate, which is also
+ * the honest position for a practice this size.
+ *
+ * Priced in rand rather than dollars because it is invoiced directly, not sold
+ * through a checkout. That is a different transaction from the PDFs and it
+ * should look like one.
+ */
+export function renderClaimCheck({ site }) {
+  const sv = site.services;
+  const price = `${sv.currencySymbol}${Number(sv.price).toLocaleString('en-US')}`;
+
+  const body = `
+<section class="section--tight" style="padding-top:clamp(2.5rem,6vw,5rem);">
+  <div class="wrap">
+    ${sectionHead({
+      eyebrow: 'Research service',
+      title: sv.headline,
+      lede: sv.summary,
+      wide: true,
+      level: 1,
+    })}
+  </div>
+</section>
+
+<section class="section--tight">
+  <div class="wrap">
+    <div class="offer">
+      <div class="offer__price">
+        <p class="offer__figure display">${esc(price)}</p>
+        <p class="offer__meta">${esc(sv.turnaround)}</p>
+      </div>
+      <div class="offer__body">
+        <h2 class="offer__name">One claim, or one product page</h2>
+        <p>${typo(sv.detail)}</p>
+        <p class="mb-0"><a class="btn" href="mailto:${esc(site.email)}?subject=${encodeURIComponent(
+          'Claim check'
+        )}">Send us the page</a></p>
+      </div>
+    </div>
+    <p class="figure-note" style="margin-top:1.5rem;">${typo(sv.beyond)}</p>
+    <p class="figure-note">${typo(sv.invoiceNote)} Excludes VAT, which does not currently apply. Nothing is invoiced until you have agreed the scope.</p>
+  </div>
+</section>
+
+<section class="section on-white">
+  <div class="wrap">
+    ${sectionHead({ eyebrow: 'What we check against', title: 'Four published rulebooks', wide: true })}
+    <div class="rows" style="border-top-color:var(--rule-strong);max-width:var(--measure);">
+      ${sv.checks
+        .map(
+          (c, i) => `<div class="row row--label-16">
+            <div class="row__index">${String(i + 1).padStart(2, '0')}</div>
+            <p class="row__summary">${typo(c)}</p>
+          </div>`
+        )
+        .join('')}
+    </div>
+  </div>
+</section>
+
+<section class="section--tight">
+  <div class="wrap">
+    ${sectionHead({ eyebrow: 'Read this part', title: 'What this is not' })}
+    <p class="prose">It is not legal advice, and it is not a certification. It is the same research published free on this site, pointed at your page instead of somebody else's, done by the person who wrote the tools.</p>
+    <p class="prose">We will not tell you your product is ethical, and we do not sell endorsements &mdash; there is nothing you can buy that appears on this site as praise. If we find something serious, we will tell you plainly. That is what you are paying for.</p>
+    <p class="prose">Nothing we find is ever published without your agreement. What we will not do is take money from a company that already appears in the <a href="/tools/record/">Record Checker</a>, in any form. The reasoning, and everything else about where the money comes from, is on the <a href="/funding/">funding and conflicts page</a>.</p>
+  </div>
+</section>
+
+<section class="section on-pale">
+  <div class="wrap">
+    ${sectionHead({ eyebrow: 'Or do it yourself', title: 'The method is published' })}
+    <p class="prose">Nothing about this is secret. The <a href="/tools/certifications/">Certification Decoder</a> and the <a href="/tools/greenwashing/">Greenwashing Decoder</a> are the same reference we use, free and searchable, and <a href="/shop/">The Claims Compliance Pack</a> is the whole method in one document.</p>
+    <p class="prose mb-0">Plenty of brands will read those and never need us. That is fine &mdash; a claim fixed is the point, not who fixed it.</p>
+  </div>
+</section>
+`;
+
+  return layout({
+    site,
+    title: 'Claim check',
+    description:
+      'We read one claim or one product page and tell you which parts hold, which do not, and what to say instead — with the rule behind each answer and a source you can check yourself.',
+    path: '/claim-check/',
+    body,
+  });
+}
