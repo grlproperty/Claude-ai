@@ -144,10 +144,20 @@ audits failed. It is that they did what they were built to do, and that the
 certificate never claimed what its readers believed it claimed.
 
 ### 9. What the logo does not cover
-Twenty-two certification schemes, and the gap between what each verifies and
-what its logo implies. Leaping Bunny does not mean vegan. The Responsible Wool
-Standard does not cover slaughter. GOTS does not cover farm labour. The chapter
-is structured as the gap, scheme by scheme, because the gap is the finding.
+**Written — see `CHAPTER-09.md`.** Twenty-two certification schemes, and the gap
+between what each verifies and what its logo implies.
+
+The chapter was outlined as a scheme-by-scheme walk. Writing it turned up
+something better: the gaps have **shapes**, six of them, and naming the shape
+lets a reader predict where a scheme they have never seen will turn out to be
+narrower than it looks. *The adjacent virtue* (Leaping Bunny certifies testing,
+not ingredients). *The mixing* (mass balance and credits, where the certified
+material and the sold material need never have met). *The threshold* (GRS needs
+20% recycled content to carry the logo). *The wrong subject* (B Corp certifies
+a company, ROC certifies a farm, neither certifies your purchase). *The
+evidence* (PETA's base mark is a signed pledge; Leaping Bunny is audited). And
+*the gap that cannot be closed* — welfare has always meant the conditions of a
+life, not the absence of an ending.
 
 *Draws on:* `certifications.json` (all 22, with `notguarantee` as the spine).
 
@@ -232,6 +242,12 @@ September 2026 and three claims were wrong. That will happen again over a
 manuscript this size, and the answer is a claims file for the book itself —
 the same procedure sold in the compliance pack, applied to this.
 
+**Keeping the six shapes doing work.** Chapter 9's taxonomy is the most reusable
+thing in the book, and chapters 10 and 11 should lean on it rather than
+re-deriving it. Offsets are shape two with a different commodity; ESG scores are
+shape four. If those chapters restate the argument instead of applying it, the
+taxonomy was decoration.
+
 **Not writing the reassurance apparatus as conspiracy.** Chapter 11 is where
 this book either becomes serious or becomes a polemic. Nobody in the audit
 industry is a villain; the incentives are ordinary and that is the whole point.
@@ -246,11 +262,14 @@ arrangement, the chapter has failed.
    counterintuitive chapter, it sits at the centre of the argument, and it is
    built on documented cases rather than on interpretation. If it does not work,
    the book does not.
-2. **Chapters 9 and 11.** The rest of Part Three. These three chapters are the
-   proposal: they are what an agent or a publisher would need to see.
-3. **Chapter 1.** Written after Part Three, not before — the thesis is easier to
+2. **Chapter 9** — written. Together with 8 it establishes the argument of Part
+   Three from two directions: the audit that was scoped not to find, and the
+   logo that is narrower than it reads.
+3. **Chapter 11.** The economics underneath both. With 8 and 9 it completes the
+   proposal — the three chapters an agent or a publisher would need to see.
+4. **Chapter 1.** Written after Part Three, not before — the thesis is easier to
    state once the strongest evidence for it exists on paper.
-4. **Everything else,** in the order the research is already strongest:
+5. **Everything else,** in the order the research is already strongest:
    4, 7, 10, 2, 3, 12, 13, 5, 6, 14.
 
 At roughly 5,500 words a chapter, and one chapter a fortnight alongside
