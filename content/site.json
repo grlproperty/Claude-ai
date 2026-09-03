@@ -78,48 +78,6 @@
     ]
   },
 
-  "services": {
-    "headline": "Claims review",
-    "summary": "If you sell something and say it is better, someone will eventually ask you to prove it. Increasingly that someone is a regulator.",
-    "currency": "ZAR",
-    "currencySymbol": "R",
-    "tiers": [
-      {
-        "name": "Claim Check",
-        "price": 3500,
-        "turnaround": "Two working days",
-        "detail": "One claim, or one product page. A short verdict with the regulatory basis behind it. The low-risk way to see the work before committing to more."
-      },
-      {
-        "name": "Claims Review",
-        "price": 12000,
-        "turnaround": "Five working days",
-        "detail": "Full website and packaging copy for one brand. Every claim marked defensible, needs substantiation, or do not use — with the rule it runs into and wording that survives.",
-        "featured": true
-      },
-      {
-        "name": "Certification & Supply Audit",
-        "price": 25000,
-        "turnaround": "Two to three weeks",
-        "detail": "What your certifications actually cover against what they imply, plus supplier-tier risk. Drawn from the same database that powers the public decoders."
-      },
-      {
-        "name": "Standing retainer",
-        "price": 8000,
-        "per": "month",
-        "turnaround": "Ongoing",
-        "detail": "Campaign copy reviewed before it ships rather than after a regulator does. Capped at a set number of reviews a month."
-      }
-    ],
-    "invoiceNote": "Quoted and invoiced in rand, because the work is invoiced directly rather than sold through a checkout. Clients outside South Africa are quoted the equivalent in their own currency on request — ask before you assume the rand figure is the whole answer.",
-    "checks": [
-      "The EU Green Claims Directive and the Empowering Consumers Directive.",
-      "The UK Competition and Markets Authority's Green Claims Code.",
-      "The published scope of any certification you cite — which is usually narrower than the logo implies.",
-      "The documented record of the suppliers and parent companies behind the product."
-    ]
-  },
-
   "positioning": {
     "lede": "We investigate every industry built on a body that could not agree to it — and we hold animals and women at equal weight. Neither is a metaphor for the other. Both are literal.",
     "body": "The cruelty is rarely called cruelty. It is called tradition, testing, farming, research, wellness, self-care. We translate the vocabulary, cite the source, and file the receipt — across fashion, food, beauty, wildlife, medicine, tech, and the advertising that obscures all of it."
@@ -193,7 +151,6 @@
       "title": "Paid work",
       "links": [
         { "label": "Published", "href": "/shop/" },
-        { "label": "Claims Review", "href": "/claims-review/" },
         { "label": "Funding & Conflicts", "href": "/funding/" },
         { "label": "Donate", "href": "/donate/" }
       ]

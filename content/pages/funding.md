@@ -13,29 +13,27 @@ This page exists because we now sell things, and a research site that sells thin
 
 **Two documents.** [The Claims Compliance Pack and The Greenwashing Field Guide](/shop/). Both are assembled from the same reviewed datasets that power the free tools on this site. Nothing in either is withheld from the free version.
 
-**Claims review.** [Paid research](/claims-review/) for brands: we read their packaging and copy and tell them which claims hold. This is the same work published here, pointed at one product instead of the industry.
-
 **Reader support.** [Donations](/donate/), which fund research time and hosting and buy nothing else.
 
 **Commissioned research**, where an organisation funds a specific investigation. Where this happens, the funder is named on the piece, and we retain the right to publish what we find. If we have not published anything under this heading yet, it is because nobody has commissioned anything yet.
 
 ## Who we will not work with
 
-We will not take paid work from any company documented in the [Record Checker](/tools/record/), for any fee, ever. Twenty-one companies are named there against specific allegations. A fee from any of them would make every entry on this site negotiable.
+We will not take money from any company documented in the [Record Checker](/tools/record/), in any form, ever. Twenty-one companies are named there against specific allegations. A payment from any of them — a commission, a sponsorship, a bulk order of the guides — would make every entry on this site negotiable.
 
-We do not sell endorsements. There is nothing you can buy that appears here as praise. A brand that pays for a claims review gets an honest answer, which is frequently not the answer they hoped for — that is the product.
+We do not sell endorsements. There is nothing a company can buy that appears here as praise — not a mention, not a favourable entry, not the removal of an unfavourable one.
 
 We do not run affiliate links. If we earned a commission on a product we had assessed, every assessment here would be worthless, including the honest ones and including the ones written years earlier. There is no fee that makes this worth doing.
 
 We do not publish sponsored posts, and we do not accept payment to cover a subject or to leave one alone.
 
-## The wall between the two
+## The wall
 
-Nothing learned in a paid review is published without the client's agreement. That is a normal confidentiality term and clients are entitled to it.
+**Buying something from us does not buy any influence over what is published here.** A company that has bought the compliance pack, funded a piece of research, or donated cannot have a field note changed, an entry softened, a certification's scope described more generously, or its own record removed.
 
-The reverse also holds, and matters more: **paying us does not buy any influence over what is published here.** A client cannot have a field note changed, an entry softened, a certification's scope described more generously, or their own record removed. If a client's conduct becomes newsworthy, we will report it, and the existence of a commercial relationship will be disclosed in the piece.
+If a funder's conduct becomes newsworthy, we will report it, and the funding will be disclosed in the piece.
 
-If those two commitments ever conflict — if we cannot report something because of what we learned under confidentiality — we will say that a conflict exists and decline to cover the subject rather than cover it partially. Silence dressed as editorial judgement is the thing this whole site is about.
+If commissioned research ever puts us in a position where we cannot report something — because of what we agreed in order to do the work — we will say that a conflict exists and decline to cover the subject rather than cover it partially. Silence dressed as editorial judgement is the thing this whole site is about.
 
 ## Corrections
 
