@@ -200,6 +200,7 @@ export function renderClaimsReview({ site }) {
         .join('')}
     </div>
     <p class="figure-note" style="margin-top:1.5rem;">Prices exclude VAT, which does not currently apply. A quote is confirmed in writing before any work starts, and nothing is invoiced until you have agreed the scope.</p>
+    <p class="figure-note">${typo(sv.invoiceNote)}</p>
   </div>
 </section>
 

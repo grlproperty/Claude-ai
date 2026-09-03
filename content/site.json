@@ -34,16 +34,16 @@
 
   "shop": {
     "note": "`buy` is a PayPal no-code checkout link, created the same way as the donate ones — one per product, with the price fixed on PayPal's side. Leave it empty and the button falls back to an enquiry email, so the page is publishable before the links exist.",
-    "currency": "ZAR",
-    "currencySymbol": "R",
+    "currency": "USD",
+    "currencySymbol": "$",
     "processor": "PayPal",
-    "processorNote": "PayPal charges in the currency the payment link was created in. Your bank sets the final rate.",
+    "processorNote": "Priced and charged in US dollars, which is what the PayPal links are issued in. Your bank sets the rate on the day.",
     "delivery": "The file is emailed to the address on your PayPal receipt, usually within a few hours and always within one working day. It is sent by a person, not a robot, which is also how you get told when an edition changes.",
     "products": [
       {
         "name": "The Claims Compliance Pack",
         "for": "For brands and agencies",
-        "price": 2500,
+        "price": 145,
         "pages": 34,
         "summary": "Everything needed to check an environmental, welfare or sourcing claim before it ships — and the evidence you must be able to produce if you use it.",
         "contains": [
@@ -62,7 +62,7 @@
       {
         "name": "The Greenwashing Field Guide",
         "for": "For anyone who buys things",
-        "price": 250,
+        "price": 14,
         "pages": 24,
         "summary": "Thirty-six words that sound like a promise, twenty-two logos that are narrower than they look, and twenty-one materials — with what each one actually tells you.",
         "contains": [
@@ -111,6 +111,7 @@
         "detail": "Campaign copy reviewed before it ships rather than after a regulator does. Capped at a set number of reviews a month."
       }
     ],
+    "invoiceNote": "Quoted and invoiced in rand, because the work is invoiced directly rather than sold through a checkout. Clients outside South Africa are quoted the equivalent in their own currency on request — ask before you assume the rand figure is the whole answer.",
     "checks": [
       "The EU Green Claims Directive and the Empowering Consumers Directive.",
       "The UK Competition and Markets Authority's Green Claims Code.",
