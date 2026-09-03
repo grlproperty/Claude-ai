@@ -62,8 +62,24 @@ indices.
 
 ## Selling them
 
-Upload to a hosted storefront — Gumroad or Payhip — which takes the payment and
-delivers the file. Do not build a store. Both products carry their own licence
-and disclaimer pages, so nothing further is needed to put them on sale.
+Through PayPal, and by hand.
 
-Bump the edition line in `build.mjs` when the content changes materially.
+Create one PayPal no-code checkout link per product — the same way the donate
+tiers were made, with the price fixed on PayPal's side — and paste each into
+`shop.products[].buy` in `content/site.json`. With that field empty the buy
+button falls back to an enquiry email, so `/shop/` is publishable and can earn
+before the links exist.
+
+PayPal hands the buyer a receipt, not a file. Delivery is manual: the payment
+notification arrives, you email the PDF to the address on the receipt. At a
+handful of sales a month that is a few minutes, it is more reliable than a
+storefront, and it leaves you holding the buyer's address — which is how they
+get told when an edition changes. `/shop/` says all of this next to the button,
+because a buyer who is not told expects an instant download and reads the email
+as a failure.
+
+Both products carry their own licence and disclaimer pages, so nothing further
+is needed to put them on sale.
+
+Bump the edition line in `build.mjs` when the content changes materially, and
+email the new file to anyone who bought the previous one.

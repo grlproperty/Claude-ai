@@ -33,9 +33,12 @@
   },
 
   "shop": {
-    "note": "`buy` is the hosted checkout link (Gumroad, Payhip). Leave it empty and the button falls back to an enquiry email, so the page is publishable before the storefront exists.",
+    "note": "`buy` is a PayPal no-code checkout link, created the same way as the donate ones — one per product, with the price fixed on PayPal's side. Leave it empty and the button falls back to an enquiry email, so the page is publishable before the links exist.",
     "currency": "ZAR",
     "currencySymbol": "R",
+    "processor": "PayPal",
+    "processorNote": "PayPal charges in the currency the payment link was created in. Your bank sets the final rate.",
+    "delivery": "The file is emailed to the address on your PayPal receipt, usually within a few hours and always within one working day. It is sent by a person, not a robot, which is also how you get told when an edition changes.",
     "products": [
       {
         "name": "The Claims Compliance Pack",

@@ -1700,6 +1700,18 @@ code {
 
 .product__buy { margin-top: auto; }
 
+/* A PayPal checkout hands over a receipt, not a file. A buyer who is not told
+   that next to the button expects an instant download and reads the email as a
+   failure. */
+.product__delivery {
+  font-family: var(--ui);
+  font-size: 0.68rem;
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  margin: var(--s3) 0 0;
+}
+
 .prose {
   max-width: var(--measure);
 }

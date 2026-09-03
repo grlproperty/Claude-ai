@@ -19,12 +19,18 @@ import { esc, typo } from '../lib/util.mjs';
 const money = (symbol, value) => `${symbol}${Number(value).toLocaleString('en-US')}`;
 
 /**
- * A buy button degrades to an enquiry email when no storefront link is set.
+ * A buy button, or an enquiry email when no payment link is set yet.
  *
- * The alternative is shipping a dead control, which is worse than an extra
- * step: a button that goes nowhere reads as a broken site, whereas an email
- * link reads as a small operation. It also means these pages can go live
- * before Gumroad or Payhip is set up, and start earning immediately.
+ * `buy` is a PayPal no-code checkout link with the price fixed on PayPal's
+ * side, exactly like the donate tiers — which is why the price is never
+ * appended to the URL here. Appending one to an NCP link does nothing, and
+ * computing a price the checkout will then ignore is how a page ends up
+ * advertising one figure and charging another.
+ *
+ * With no link the button becomes a mailto rather than nothing. Shipping a
+ * dead control is worse than an extra step: a button that goes nowhere reads
+ * as a broken site, whereas an email reads as a small operation — and it means
+ * the page can go live and start earning before the links exist.
  */
 function buyAction(site, { name, price, symbol, featured, buy }) {
   const cls = `btn${featured ? '' : ' btn--ghost'}`;
@@ -73,6 +79,9 @@ export function renderShop({ site }) {
         </ul>
         <div class="product__buy">
           ${buyAction(site, { name: p.name, price: p.price, symbol: sym, featured: p.featured, buy: p.buy })}
+          <p class="product__delivery">${
+            p.buy ? `Paid by ${esc(s.processor)}. ` : ''
+          }Emailed, not downloaded &mdash; see below.</p>
         </div>
       </article>`
         )
@@ -82,6 +91,20 @@ export function renderShop({ site }) {
 </section>
 
 <section class="section on-white">
+  <div class="wrap">
+    ${sectionHead({ eyebrow: 'How it arrives', title: 'Bought through PayPal, sent by email' })}
+    <p class="prose">${typo(s.delivery)}</p>
+    <p class="prose">${typo(s.processorNote)}</p>
+    ${note(
+      'Why not an instant download',
+      `<p class="mb-0">Because at this size a person emailing a file is more reliable than a storefront, and because it means we have somewhere to send the next edition. If your copy has not arrived within a working day, email <a href="mailto:${esc(
+        site.email
+      )}">${esc(site.email)}</a> with your PayPal receipt and we will fix it.</p>`
+    )}
+  </div>
+</section>
+
+<section class="section--tight">
   <div class="wrap">
     ${sectionHead({ eyebrow: 'Before you buy', title: 'What these are not' })}
     <p class="prose">Neither is legal advice. Every entry in both documents cites a public source you can open and read yourself, and all of it is drawn from the reviewed datasets behind the <a href="/tools/">free tools</a>. Nothing here certifies compliance or approves a claim.</p>
