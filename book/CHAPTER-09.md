@@ -59,7 +59,26 @@ one virtue. The buyer hears that virtue *and its neighbour*.
   is an environmental management system, and it is a good one, and it is not an
   ethics-of-labour mark.
 
-Notice what these four have in common. Each is *rigorous* within its subject.
+And then there is **organic**, which deserves its own paragraph because it is
+the most widely misread word on any shelf. **USDA Organic** and the **EU
+Organic Leaf** are legally defined: no synthetic pesticides or fertilisers, no
+GMOs, and defined animal-welfare and feed rules for livestock. The **Soil
+Association**'s organic standard adds a separate and strict health-and-beauty
+certification covering ingredients, GM-free status and, for beauty, no animal
+testing. These are real, enforceable, legally protected schemes, and on food
+the word is one of the few on a pack that a regulator will defend.
+
+Organic is about *how something was grown or made*. It is not automatically
+free-range. It is not a guarantee of welfare beyond the baseline rules in the
+regulation. It is not a cruelty-free label and it is not a vegan one. And on
+livestock it does not address welfare outcomes, or the fact that the animal was
+killed at the end of it.
+
+The adjacent virtue people hear in "organic" is *kind* — to the soil, to the
+animal, to the person eating it. The standard covers the first of those
+directly, the second partially, and the third not at all.
+
+Notice what these six have in common. Each is *rigorous* within its subject.
 The gap is not slackness. The gap is that virtue in the buyer's mind is a
 single undifferentiated quality — *good* — and every certification scheme in
 existence has to pick one thing and verify that thing, because verifying
