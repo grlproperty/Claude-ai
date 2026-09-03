@@ -234,6 +234,12 @@ async function main() {
     instagram: existsSync(join(CONTENT, 'data/instagram.json'))
       ? await readJson(join(CONTENT, 'data/instagram.json'))
       : null,
+    // Written by `npm run rates`. Same treatment: without it the currency
+    // selector does not render and every price shows in dollars, which is what
+    // is charged anyway.
+    rates: existsSync(join(CONTENT, 'data/rates.json'))
+      ? await readJson(join(CONTENT, 'data/rates.json'))
+      : null,
   };
 
   const notes = await loadCollection(join(CONTENT, 'field-notes'), '/field-notes/');
@@ -319,7 +325,7 @@ async function main() {
   track('/sources/', { priority: '0.6' });
 
   // ---- funding and audience
-  await writePage('/donate/', renderDonate({ site }));
+  await writePage('/donate/', renderDonate({ site, rates: data.rates }));
   track('/donate/', { priority: '0.9' });
 
   await writePage('/briefing/', renderBriefing({ site }));
@@ -329,10 +335,10 @@ async function main() {
   track('/find-us/', { priority: '0.7' });
 
   // ---- what is sold
-  await writePage('/shop/', renderShop({ site }));
+  await writePage('/shop/', renderShop({ site, rates: data.rates }));
   track('/shop/', { priority: '0.8' });
 
-  await writePage('/claims-review/', renderClaimsReview({ site }));
+  await writePage('/claims-review/', renderClaimsReview({ site, rates: data.rates }));
   track('/claims-review/', { priority: '0.8' });
 
   // ---- markdown pages

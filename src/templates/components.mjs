@@ -156,3 +156,35 @@ export function supportBanner(site) {
     </div>
   </section>`;
 }
+
+/**
+ * The currency selector.
+ *
+ * The rate table is written into a data attribute rather than fetched, so the
+ * page converts on the first frame with no network round trip and no flash of
+ * the wrong number. It is small — twelve currencies — and the single-file
+ * build has no other way to carry it.
+ *
+ * Everything it converts is marked with data-usd. The dollar figure stays
+ * visible alongside the converted one, because the dollar figure is the only
+ * one that is true at the checkout.
+ */
+export function currencyPicker(rates, { note } = {}) {
+  if (!rates?.currencies?.length) return '';
+  const payload = esc(
+    JSON.stringify({
+      date: rates.date,
+      sourceUrl: rates.sourceUrl,
+      currencies: rates.currencies,
+    })
+  );
+
+  return `<div class="currency" data-currency="${payload}">
+  <label class="currency__label" for="currency-select">Show prices in</label>
+  <select class="currency__select" id="currency-select"></select>
+  <p class="currency__note">${
+    note ??
+    'Converted for guidance only. Every price is charged in US dollars — your bank sets the rate it actually applies.'
+  } Rates: European Central Bank, <span data-currency-date>&mdash;</span>.</p>
+</div>`;
+}

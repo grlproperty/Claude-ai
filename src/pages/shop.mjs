@@ -8,7 +8,7 @@
  * to publish the wrong one.
  */
 import { layout } from '../templates/layout.mjs';
-import { label, sectionHead, note, newsletterForm } from '../templates/components.mjs';
+import { label, sectionHead, note, newsletterForm, currencyPicker } from '../templates/components.mjs';
 import { esc, typo } from '../lib/util.mjs';
 
 /**
@@ -35,19 +35,19 @@ const money = (symbol, value) => `${symbol}${Number(value).toLocaleString('en-US
 function buyAction(site, { name, price, symbol, featured, buy }) {
   const cls = `btn${featured ? '' : ' btn--ghost'}`;
   if (buy) {
-    return `<a class="${cls}" href="${esc(buy)}" rel="noopener" target="_blank">Buy &mdash; ${esc(
-      money(symbol, price)
-    )}</a>`;
+    return `<a class="${cls}" href="${esc(buy)}" rel="noopener" target="_blank">Buy &mdash; <span data-usd="${esc(
+      String(price)
+    )}">${esc(money(symbol, price))}</span></a>`;
   }
   const subject = encodeURIComponent(`${name} — ${money(symbol, price)}`);
-  return `<a class="${cls}" href="mailto:${esc(site.email)}?subject=${subject}">Buy by email &mdash; ${esc(
-    money(symbol, price)
-  )}</a>`;
+  return `<a class="${cls}" href="mailto:${esc(site.email)}?subject=${subject}">Buy by email &mdash; <span data-usd="${esc(
+    String(price)
+  )}">${esc(money(symbol, price))}</span></a>`;
 }
 
 // ------------------------------------------------------------------- /shop/
 
-export function renderShop({ site }) {
+export function renderShop({ site, rates }) {
   const s = site.shop;
   const sym = s.currencySymbol;
 
@@ -66,6 +66,7 @@ export function renderShop({ site }) {
 
 <section class="section--tight">
   <div class="wrap">
+    ${currencyPicker(rates)}
     <div class="grid grid--2" style="gap:2.5rem;align-items:start;">
       ${s.products
         .map(
@@ -147,7 +148,7 @@ export function renderShop({ site }) {
 
 // ---------------------------------------------------------- /claims-review/
 
-export function renderClaimsReview({ site }) {
+export function renderClaimsReview({ site, rates }) {
   const sv = site.services;
   const sym = sv.currencySymbol;
 
@@ -231,7 +232,7 @@ export function renderClaimsReview({ site }) {
     ${sectionHead({ eyebrow: 'Or do it yourself', title: 'The method is published' })}
     <p class="prose">Nothing about this service is secret. The <a href="/tools/certifications/">Certification Decoder</a> and the <a href="/tools/greenwashing/">Greenwashing Decoder</a> are the same reference we use, free and searchable, and <a href="/shop/">The Claims Compliance Pack</a> is the whole method in one document for ${esc(
       money(site.shop.currencySymbol, site.shop.products[0].price)
-    )}.</p>
+    )}, converted into your currency on that page.</p>
     <p class="prose mb-0">Plenty of brands will read those and never need us. That is fine &mdash; a claim fixed is the point, not who fixed it.</p>
   </div>
 </section>

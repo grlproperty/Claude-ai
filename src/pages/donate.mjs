@@ -1,5 +1,5 @@
 import { layout } from '../templates/layout.mjs';
-import { label, sectionHead, note, newsletterForm } from '../templates/components.mjs';
+import { label, sectionHead, note, newsletterForm, currencyPicker } from '../templates/components.mjs';
 import { esc, typo } from '../lib/util.mjs';
 
 /**
@@ -52,7 +52,7 @@ function donateAction(site, { value, link, featured, text }) {
   return `<a class="${cls}" href="mailto:${esc(site.email)}?subject=${subject}">${esc(text)}</a>`;
 }
 
-export function renderDonate({ site }) {
+export function renderDonate({ site, rates }) {
   const d = site.donate;
 
   const body = `
@@ -64,11 +64,16 @@ export function renderDonate({ site }) {
 
 <section class="section--tight">
   <div class="wrap">
+    ${currencyPicker(rates, {
+      note: 'Converted for guidance only. PayPal charges in US dollars &mdash; your bank sets the rate it actually applies.',
+    })}
     <div class="amount-grid">
       ${d.amounts
         .map(
           (a) => `<div class="amount${a.featured ? ' amount--featured' : ''} tilt reveal">
-            <div class="amount__value display">${esc(d.currencySymbol)}${a.value}</div>
+            <div class="amount__value display" data-usd="${esc(String(a.value))}">${esc(
+              d.currencySymbol
+            )}${a.value}</div>
             <p class="amount__label">${typo(a.label)}</p>
             <p class="amount__detail">${typo(a.detail)}</p>
             ${donateAction(site, {

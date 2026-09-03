@@ -276,6 +276,10 @@ async function main() {
       if (FF.initContent) FF.initContent();
       if (FF.initFilters) FF.initFilters();
       if (FF.initCage) FF.initCage();
+      // The currency selector is inside <main>, so a swap replaces it with a
+      // fresh, unpopulated one — and the reader's chosen currency has to be
+      // read back out of storage and reapplied to the new prices.
+      if (FF.initCurrency) FF.initCurrency();
     }
   }
 

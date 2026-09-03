@@ -380,7 +380,130 @@
   }
   }
 
+  // ---- currency -----------------------------------------------------------
+  // Every price on the site is charged in US dollars, because that is what the
+  // PayPal links are issued in. This converts the *displayed* figure so a
+  // reader in Johannesburg or Berlin knows roughly what they are agreeing to
+  // before they reach a checkout that will only speak dollars to them.
+  //
+  // Three things this deliberately does not do. It does not change what is
+  // charged — it cannot, and the page says so. It does not hide the dollar
+  // figure, which stays alongside, because the dollar figure is the only one
+  // that is true at the till. And it does not silently use a stale rate: the
+  // date the rates were published is on the page, so an old number is visible
+  // rather than merely wrong.
+  function initCurrency() {
+    var root = document.querySelector('[data-currency]');
+    if (!root) return;
+
+    var data;
+    try {
+      data = JSON.parse(root.getAttribute('data-currency'));
+    } catch (e) {
+      return;
+    }
+    if (!data || !data.currencies) return;
+
+    var select = root.querySelector('select');
+    var stamp = root.querySelector('[data-currency-date]');
+    if (!select) return;
+
+    // Rebuilt on every call: in the single-file build initContent() runs again
+    // after a page swap, against a select that is new each time.
+    if (!select.options.length) {
+      var usd = document.createElement('option');
+      usd.value = 'USD';
+      usd.textContent = 'US dollar — as charged';
+      select.appendChild(usd);
+      data.currencies.forEach(function (c) {
+        var o = document.createElement('option');
+        o.value = c.code;
+        o.textContent = c.name + ' (' + c.code + ')';
+        select.appendChild(o);
+      });
+    }
+
+    function find(code) {
+      for (var i = 0; i < data.currencies.length; i++) {
+        if (data.currencies[i].code === code) return data.currencies[i];
+      }
+      return null;
+    }
+
+    // Round to something a person would say. Under ten, keep the cents;
+    // above, drop them — nobody needs R2,325.41 to decide whether to buy.
+    function show(c, usdValue) {
+      var v = usdValue * c.rate;
+      var decimals = v < 10 ? 2 : 0;
+      return (
+        c.symbol +
+        v.toLocaleString('en-US', {
+          minimumFractionDigits: decimals,
+          maximumFractionDigits: decimals,
+        })
+      );
+    }
+
+    // Both figures are rendered, but as two elements rather than one string.
+    // A 2.8rem display face cannot fit "R1,604 · $100" inside a card sized for
+    // "$100", and letting CSS place the dollar figure — under the converted one
+    // on a tier card, in brackets after it in a button — is the only way the
+    // same markup works in both.
+    function apply(code) {
+      var c = code === 'USD' ? null : find(code);
+      Array.prototype.forEach.call(document.querySelectorAll('[data-usd]'), function (el) {
+        var usdValue = parseFloat(el.getAttribute('data-usd'));
+        if (isNaN(usdValue)) return;
+        if (!el.hasAttribute('data-usd-text')) {
+          el.setAttribute('data-usd-text', el.textContent.trim());
+        }
+        var original = el.getAttribute('data-usd-text');
+
+        while (el.firstChild) el.removeChild(el.firstChild);
+        if (!c) {
+          el.appendChild(document.createTextNode(original));
+          el.removeAttribute('data-converted');
+          return;
+        }
+        el.appendChild(document.createTextNode(show(c, usdValue)));
+        var sub = document.createElement('span');
+        sub.className = 'conv-usd';
+        sub.textContent = original;
+        el.appendChild(sub);
+        el.setAttribute('data-converted', '');
+      });
+      root.setAttribute('data-currency-active', code);
+      try {
+        localStorage.setItem('ff-currency', code);
+      } catch (e) {}
+    }
+
+    var saved = 'USD';
+    try {
+      saved = localStorage.getItem('ff-currency') || 'USD';
+    } catch (e) {}
+    if (saved !== 'USD' && !find(saved)) saved = 'USD';
+
+    select.value = saved;
+    apply(saved);
+    if (stamp && data.date) stamp.textContent = data.date;
+
+    select.addEventListener('change', function () {
+      apply(select.value);
+    });
+
+    // No live refresh, deliberately. Fetching today's rate from an exchange
+    // API would disclose every visitor's IP address to that provider on every
+    // page view, and /privacy/ promises that every asset on every page is
+    // served from this domain. An indicative conversion does not need to be
+    // today's rate to do its job, so the rates baked in at build time are what
+    // renders — `npm run rates` refreshes them, and `npm run check` warns once
+    // they are more than thirty days old.
+  }
+
   initContent();
+  initCurrency();
   window.FF = window.FF || {};
   window.FF.initContent = initContent;
+  window.FF.initCurrency = initCurrency;
 })();

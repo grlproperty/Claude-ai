@@ -210,6 +210,25 @@ async function checkDatasets() {
   for (const file of await readdir(dir)) {
     if (!file.endsWith('.json')) continue;
     const data = JSON.parse(await readFile(join(dir, file), 'utf8'));
+
+    // A machine-written file is not reviewed by anybody, and giving it a
+    // `reviewed` date to quiet this check would be a small lie in a codebase
+    // whose whole argument is about traceable claims. What matters for these
+    // is staleness, so that is what is checked instead.
+    if (data.generated) {
+      const stamped = data.date ?? data.fetched;
+      if (!stamped) {
+        warn(`${file}: generated but carries no date — staleness cannot be checked`);
+        continue;
+      }
+      const old = Math.floor((Date.now() - new Date(stamped).getTime()) / 86400000);
+      const limit = data.staleAfterDays ?? 30;
+      if (old > limit) {
+        warn(`${file}: generated ${old} days ago, past its ${limit}-day limit — re-run its script`);
+      }
+      continue;
+    }
+
     if (!data.reviewed) {
       warn(`${file}: no \`reviewed\` date — the review stamp cannot be generated`);
       continue;

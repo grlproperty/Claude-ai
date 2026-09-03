@@ -20,6 +20,14 @@ This site is built as static files. It has no database, no user accounts, and no
 
 **No profiling**, no cross-site tracking, and no personal information sold or shared with anyone.
 
+## The one thing we do store
+
+If you choose a currency on the [Published](/shop/) or [Donate](/donate/) page, that choice is kept in your browser's local storage so the pages remember it. That is not a cookie and it is not sent anywhere — it never leaves your device, we cannot read it, and clearing your browser data removes it. It records one thing: three letters naming a currency.
+
+We mention it because "no cookies" is a narrower statement than "nothing is stored", and the difference between those two is exactly the kind of gap this site exists to point out in other people's writing.
+
+The exchange rates behind that conversion are built into the page. Nothing is requested from a rates provider when you load it, because doing so would disclose your IP address to that provider on every visit — the same reason the fonts are served from here.
+
 ## Analytics
 
 A previous version of this site loaded Google Analytics. **This build loads no analytics script at all.**

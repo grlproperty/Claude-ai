@@ -1716,6 +1716,94 @@ code {
   max-width: var(--measure);
 }
 
+/* ------------------------------------------------------------- currency */
+
+.currency {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  padding-bottom: var(--s4);
+  margin-bottom: var(--s5);
+  border-bottom: 1px solid var(--rule);
+}
+
+.currency__label {
+  font-family: var(--ui);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.currency__select {
+  font-family: var(--ui);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: var(--ink);
+  background: var(--white);
+  border: 1px solid var(--rule-strong);
+  border-radius: 0;
+  padding: 0.5rem 0.7rem;
+  /* 24px minimum target, and tall enough that a thumb can hit it. */
+  min-height: 2.5rem;
+  max-width: 100%;
+}
+
+.currency__select:focus-visible {
+  outline: 2px solid var(--crimson);
+  outline-offset: 2px;
+}
+
+.currency__note {
+  font-family: var(--ui);
+  font-size: 0.68rem;
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--ink-muted);
+  margin: 0;
+  flex: 1 1 20rem;
+  max-width: 58ch;
+}
+
+/* The dollar figure, kept beside the converted one because it is the only
+   figure that is true at the checkout. Where it sits is a per-context decision:
+   under the number on a tier card, in brackets after it in a button. */
+.conv-usd {
+  font-family: var(--ui);
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+}
+
+.amount__value .conv-usd {
+  display: block;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  margin-top: 0.55rem;
+}
+
+.amount__value .conv-usd::before { content: 'charged as '; }
+
+/* A converted figure is longer than a dollar one and the ladder is four cards
+   across, so the display size comes down when one is showing. */
+.amount__value[data-converted] {
+  font-size: clamp(1.7rem, 3.6vw, 2.4rem);
+}
+
+.btn .conv-usd,
+.product__buy .conv-usd {
+  font-size: 0.92em;
+  letter-spacing: inherit;
+  color: inherit;
+  opacity: 0.72;
+}
+
+.btn .conv-usd::before { content: ' ('; }
+.btn .conv-usd::after { content: ')'; }
+
 .figure-note {
   font-family: var(--ui);
   font-size: 0.72rem;

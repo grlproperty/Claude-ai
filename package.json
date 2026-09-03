@@ -15,6 +15,7 @@
     "check": "node scripts/check.mjs",
     "ci": "npm run build && npm run check",
     "instagram": "node scripts/pull-instagram.mjs",
+    "rates": "node scripts/pull-rates.mjs",
     "briefing": "node scripts/send-briefing.mjs",
     "single": "node src/build.mjs && node scripts/build-single.mjs",
     "products": "node src/build.mjs && node products/build.mjs"
