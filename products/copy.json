@@ -1,0 +1,89 @@
+{
+  "note": "Written content for the sellable PDFs. The reference tables are generated from content/data/*.json; everything here is the part that had to be written. `tests` is keyed by the term as it appears in greenwashing.json.",
+
+  "tests": {
+    "Natural": "No jurisdiction defines it, so the word carries nothing a regulator can check. Replace it with the fact you actually mean — \"87% plant-derived ingredients by weight\" — and be ready to show the calculation method.",
+    "Eco-friendly": "An unqualified absolute environmental claim. Both the CMA code and the EU Green Claims Directive treat these as requiring full life-cycle substantiation: raw material, manufacture, use, disposal. Almost no product has that evidence. Do not use the phrase.",
+    "Biodegradable": "The standard, the conditions and the timeframe, together: \"EN 13432, industrial composting, 90% within 180 days\". Unqualified, the word is not substantiable, because everything biodegrades eventually.",
+    "Compostable": "Which certification (EN 13432, ASTM D6400), and whether home or industrial — stated on the pack, not on a landing page. Industrial-only must say so, because most buyers will assume home.",
+    "Recyclable": "Evidence that collection actually exists for that material in that format in the market where you sell it. Technically recyclable is not recyclable. Mixed-material packaging almost never qualifies.",
+    "Cruelty-free": "A fixed cut-off date, coverage of ingredients as well as the finished product, signed supplier declarations, and third-party audit. Selling into a market that mandates animal testing contradicts the claim regardless of your own practice.",
+    "Vegan": "A full ingredient and processing-aid audit. The catches are carmine, lanolin, beeswax, shellac, keratin, and animal-derived filtering and clarifying agents that never appear on an ingredient list.",
+    "Sustainable": "Define what is being sustained, against what baseline, measured how. This is the single most challenged word in advertising regulation. If you cannot answer those three questions in one sentence each, the claim will not survive.",
+    "Carbon-neutral": "The emissions inventory across Scopes 1, 2 and 3; what was reduced as against what was offset; and the registry, project and vintage of every credit. Offset-based neutrality claims are specifically restricted under the EU Empowering Consumers Directive.",
+    "Net-zero": "A validated target — SBTi or equivalent — with a base year, an interim milestone, and Scope 3 included. Without Scope 3 the claim is not credible in any consumer-goods sector, because Scope 3 is where nearly all of the emissions are.",
+    "Plant-based": "What proportion, of what. Ingredients by weight, or the whole product? \"Plant-based\" on a product containing dairy or egg is live litigation, not a grey area.",
+    "Clean / Clean beauty": "A published exclusion list with CAS numbers. Even with one, the term implies the rest of the category is dirty, which is a disparagement claim as well as an unsubstantiated one. Naming the exclusions is stronger and safer.",
+    "Free-range": "The standard actually applied: space per animal, hours of outdoor access, and who audits it. The legal minimum in most markets is well below what a buyer pictures, and the gap is the risk.",
+    "Organic": "The certification number and the certifying body. On food, \"organic\" is legally protected in most markets. On cosmetics it usually is not — which makes an uncertified cosmetic claim riskier, not safer, because nothing constrains what a buyer infers.",
+    "Fair trade": "Which scheme, and what proportion of the ingredients it covers. Mass balance is not segregated sourcing, and a buyer reading the label will assume segregated.",
+    "Locally sourced": "A defined radius or region, and which stage it applies to — grown, processed, or merely packed. \"Locally packed\" described as \"locally sourced\" is a straightforward misrepresentation.",
+    "Non-toxic": "At what dose, by what route, for whom. Toxicity is dose-dependent, so an unqualified claim cannot be substantiated, and regulators read it as an absolute safety claim about the whole product.",
+    "Greener / More sustainable": "The baseline. Greener than what — your previous formulation, the category average, a named competitor? A comparative claim with no stated comparator fails on its face, and this is the most common single failure in the CMA's casework.",
+    "Made with renewable energy": "Which sites, what proportion, and the mechanism: on-site generation, a power purchase agreement, or unbundled certificates. The last is the weakest and has to be described as what it is.",
+    "Conscious / Mindful": "Nothing. There is no test, because the words have no content. This is the vocabulary named in the H&M class action. Replace with the specific fact or delete.",
+    "Ethically sourced": "What \"ethical\" covers in your written policy — wages, hours, freedom of association, grievance mechanisms — how far down the supply chain it is verified, and by whom. Tier 1 only, described as \"our supply chain\", is the usual overreach.",
+    "Responsibly sourced": "The same evidence as \"ethically sourced\", and regulators treat the two as interchangeable. The published policy, plus audit evidence to a named supplier tier.",
+    "Reef-safe": "Which UV filters you have excluded and the studies you rely on. There is no legal definition and no agreed test. \"Formulated without oxybenzone and octinoxate\" is a fact; \"reef-safe\" is a conclusion you are not in a position to draw.",
+    "Ocean-bound plastic": "The definition you are using — usually a stated distance from a shoreline — the chain of custody, and the proportion of the product it accounts for.",
+    "Made with recycled materials": "The percentage, whether it is post-consumer or pre-consumer, and which component it applies to: the product, the packaging, or one part of either. Pre-consumer recycled content is manufacturing scrap and buyers do not read it that way.",
+    "Chemical-free": "Nothing can substantiate this. Water is a chemical. Name the specific exclusion instead — there is no version of this phrase that survives scrutiny.",
+    "Dermatologist-tested": "How many dermatologists, how many subjects, under what protocol, and what the result was. \"Tested\" says nothing about the outcome, which is exactly why it is used, and exactly why it is challenged.",
+    "Hypoallergenic": "The criteria you applied. No standard exists; the FTC requires reliable scientific evidence that the product causes fewer allergic reactions than comparable products, which means you need the comparison too.",
+    "Grass-fed": "What proportion of lifetime diet, and whether the animal was grass-fed or grass-finished. The two are routinely conflated and mean materially different things.",
+    "Cage-free": "The housing system, described. Cage-free is a statement about one variable only: it says nothing about stocking density, beak treatment, air quality, or outdoor access.",
+    "Humanely raised": "Which third-party standard, and who audits against it. Self-declared \"humane\" is a claim about your own opinion of your own practice, and is treated as such.",
+    "No nasties": "A published definition of \"nasties\". Undefined, it is both unsubstantiated and a disparagement of everything else on the shelf.",
+    "Tree-free": "The actual fibre source and its own footprint. Tree-free is not automatically lower impact, and FSC-certified wood fibre often performs better than the alternative.",
+    "Climate positive / Climate neutral": "Everything required for carbon-neutral, plus a defensible basis for claiming a net benefit rather than a net zero. These are currently the highest-risk climate claims in the market and several have already been withdrawn under regulatory pressure.",
+    "Palm-oil free": "A check against the full list of palm derivatives, not just \"palm oil\" on the INCI list. Sodium lauryl sulfate, stearic acid, glyceryl stearate and several hundred others are palm-derived and appear under names that do not mention palm.",
+    "Small-batch / Artisan": "A stated batch size or production volume. Undefined, this is puffery — lower risk than the claims above, but also worth nothing to the buyer."
+  },
+
+  "procedure": [
+    {
+      "title": "Inventory every claim",
+      "body": "Not the ones you think matter. Every adjective on the pack, the product pages, the ads, the founder's story, and the FAQ. Put them in a single list. Most brands are surprised by the length, and the surprise is the point — the claim you have forgotten about is the one that gets challenged."
+    },
+    {
+      "title": "Classify each one",
+      "body": "Absolute (\"sustainable\", \"eco-friendly\"), comparative (\"greener\", \"better for the planet\"), or factual (\"80% recycled content\"). Absolutes need life-cycle evidence. Comparatives need a stated baseline. Factual claims need a source and a method. The classification tells you which evidence to go and find."
+    },
+    {
+      "title": "Write down the evidence you would hand a regulator",
+      "body": "For each claim, one line: what document proves it. Not \"our supplier says so\" — the document. If you cannot name it, the claim fails and there is nothing more to discuss. This step is where most of the work is, and it is the step that makes the rest defensible."
+    },
+    {
+      "title": "Check every certification against its published scope",
+      "body": "The scope is almost always narrower than the logo implies, and the gap between the two is where claims break. The reference section of this pack lists what each of twenty-two schemes verifies and — the part that matters — what it explicitly does not."
+    },
+    {
+      "title": "Check the implied claim, not just the words",
+      "body": "A green leaf, a photograph of a forest, an earth-tone palette, and the word \"pure\" are all environmental claims in regulatory terms, whether or not you intended them as such. Read the page as a buyer sees it and ask what they now believe. That belief is the claim you have to substantiate."
+    },
+    {
+      "title": "Record the decision and the date",
+      "body": "A dated claims file — claim, verdict, evidence, who approved it — is what turns a regulatory challenge from a crisis into a conversation. It is also the thing that stops the same argument being had again in six months when the packaging is redesigned."
+    }
+  ],
+
+  "rewrites": [
+    { "was": "Eco-friendly packaging",       "why": "Absolute claim, no life-cycle evidence.",                                  "now": "Packaging is 80% post-consumer recycled board and is accepted in kerbside collection in the UK and South Africa." },
+    { "was": "Sustainable cotton",           "why": "Undefined absolute; no baseline, no measure.",                              "now": "Cotton is certified organic to GOTS (licence number on request). GOTS covers fibre and processing; it does not cover farm labour conditions." },
+    { "was": "Carbon neutral delivery",      "why": "Offset-based neutrality, restricted in the EU.",                            "now": "We calculate delivery emissions per shipment and purchase Gold Standard credits (2024 vintage) to match. This offsets those emissions; it does not reduce them." },
+    { "was": "Cruelty-free and vegan",       "why": "Two claims, each needing separate evidence.",                              "now": "Not tested on animals at any stage, including ingredients, with a fixed cut-off of 1 January 2023 and annual supplier audits. Contains no animal-derived ingredients." },
+    { "was": "Clean beauty",                 "why": "No definition; disparages the category.",                                  "now": "Formulated without parabens, phthalates, SLS and synthetic fragrance. The full exclusion list, with CAS numbers, is on the ingredients page." },
+    { "was": "Non-toxic, no nasties",        "why": "Absolute safety claim; undefined term.",                                   "now": "Free from the 26 fragrance allergens listed in EU Regulation 1223/2009 Annex III. Safety-assessed under that Regulation." },
+    { "was": "Reef-safe sunscreen",          "why": "A conclusion presented as a fact; no agreed test.",                        "now": "Formulated without oxybenzone and octinoxate, the two filters restricted in Hawaii and Palau." },
+    { "was": "Responsibly sourced wool",     "why": "Undefined; implies more coverage than exists.",                            "now": "Wool is certified to the Responsible Wool Standard, which prohibits mulesing and sets land-management requirements. It does not cover the slaughter stage." }
+  ],
+
+  "consumerSteps": [
+    { "t": "Read the certification, not the colour", "b": "Green packaging, leaf motifs and kraft-paper texture are design choices, not evidence. Look for a named certification with a licence number. If the only green thing about it is the box, that is your answer." },
+    { "t": "Ask what the word excludes", "b": "\"Cage-free\" tells you about cages and nothing else. \"Cruelty-free\" says nothing about whether the product contains animal ingredients. Every one of these terms is narrow, and the value is in knowing exactly how narrow." },
+    { "t": "Look for a number", "b": "\"Made with recycled materials\" is a feeling. \"80% post-consumer recycled\" is a fact. Brands that have the number print the number. Brands that do not, do not." },
+    { "t": "Find the baseline in comparative claims", "b": "\"Greener\", \"better\", \"more sustainable\" — than what? If the comparison is not stated, there usually isn't one. This is the most common failure regulators find." },
+    { "t": "Check who says so", "b": "A brand's own \"we care\" page is a claim about itself. A third-party certification is an audited standard someone else can be held to. The two are not the same kind of statement." },
+    { "t": "Assume nothing about the parent company", "b": "A small ethical brand is often owned by a large group with a very different record. Ownership is public information and takes two minutes to check." }
+  ]
+}
