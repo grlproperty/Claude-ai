@@ -32,6 +32,90 @@
     ]
   },
 
+  "shop": {
+    "note": "`buy` is the hosted checkout link (Gumroad, Payhip). Leave it empty and the button falls back to an enquiry email, so the page is publishable before the storefront exists.",
+    "currency": "ZAR",
+    "currencySymbol": "R",
+    "products": [
+      {
+        "name": "The Claims Compliance Pack",
+        "for": "For brands and agencies",
+        "price": 2500,
+        "pages": 34,
+        "summary": "Everything needed to check an environmental, welfare or sourcing claim before it ships — and the evidence you must be able to produce if you use it.",
+        "contains": [
+          "The six-step claims review, in full",
+          "All 36 flagged terms, each with the substantiation it requires",
+          "All 22 certification scopes, with what each one does not cover",
+          "21 materials, with the welfare and environmental position on each",
+          "Eight real claims rewritten to be defensible",
+          "A printable pre-launch sign-off sheet",
+          "The 54 primary authorities everything traces back to"
+        ],
+        "licence": "Single-organisation licence. Circulate it internally as widely as you like.",
+        "buy": "",
+        "featured": true
+      },
+      {
+        "name": "The Greenwashing Field Guide",
+        "for": "For anyone who buys things",
+        "price": 250,
+        "pages": 24,
+        "summary": "Thirty-six words that sound like a promise, twenty-two logos that are narrower than they look, and twenty-one materials — with what each one actually tells you.",
+        "contains": [
+          "Six checks that take about a minute each",
+          "The 36 terms decoded, without the compliance framing",
+          "Which logos mean something, and how narrowly",
+          "What things are made of, and what exists instead",
+          "An honest section on what a guide like this cannot settle"
+        ],
+        "licence": "Personal use.",
+        "buy": ""
+      }
+    ]
+  },
+
+  "services": {
+    "headline": "Claims review",
+    "summary": "If you sell something and say it is better, someone will eventually ask you to prove it. Increasingly that someone is a regulator.",
+    "currency": "ZAR",
+    "currencySymbol": "R",
+    "tiers": [
+      {
+        "name": "Claim Check",
+        "price": 3500,
+        "turnaround": "Two working days",
+        "detail": "One claim, or one product page. A short verdict with the regulatory basis behind it. The low-risk way to see the work before committing to more."
+      },
+      {
+        "name": "Claims Review",
+        "price": 12000,
+        "turnaround": "Five working days",
+        "detail": "Full website and packaging copy for one brand. Every claim marked defensible, needs substantiation, or do not use — with the rule it runs into and wording that survives.",
+        "featured": true
+      },
+      {
+        "name": "Certification & Supply Audit",
+        "price": 25000,
+        "turnaround": "Two to three weeks",
+        "detail": "What your certifications actually cover against what they imply, plus supplier-tier risk. Drawn from the same database that powers the public decoders."
+      },
+      {
+        "name": "Standing retainer",
+        "price": 8000,
+        "per": "month",
+        "turnaround": "Ongoing",
+        "detail": "Campaign copy reviewed before it ships rather than after a regulator does. Capped at a set number of reviews a month."
+      }
+    ],
+    "checks": [
+      "The EU Green Claims Directive and the Empowering Consumers Directive.",
+      "The UK Competition and Markets Authority's Green Claims Code.",
+      "The published scope of any certification you cite — which is usually narrower than the logo implies.",
+      "The documented record of the suppliers and parent companies behind the product."
+    ]
+  },
+
   "positioning": {
     "lede": "We investigate every industry built on a body that could not agree to it — and we hold animals and women at equal weight. Neither is a metaphor for the other. Both are literal.",
     "body": "The cruelty is rarely called cruelty. It is called tradition, testing, farming, research, wellness, self-care. We translate the vocabulary, cite the source, and file the receipt — across fashion, food, beauty, wildlife, medicine, tech, and the advertising that obscures all of it."
@@ -42,6 +126,7 @@
     { "label": "Field Notes", "href": "/field-notes/" },
     { "label": "Archive", "href": "/archive/" },
     { "label": "Tools", "href": "/tools/" },
+    { "label": "Published", "href": "/shop/" },
     { "label": "About", "href": "/about/" },
     { "label": "Find Us", "href": "/find-us/" }
   ],
@@ -98,6 +183,15 @@
         { "label": "Material Decoder", "href": "/tools/materials/" },
         { "label": "Record Checker", "href": "/tools/record/" },
         { "label": "Where to Act", "href": "/tools/act/" }
+      ]
+    },
+    {
+      "title": "Paid work",
+      "links": [
+        { "label": "Published", "href": "/shop/" },
+        { "label": "Claims Review", "href": "/claims-review/" },
+        { "label": "Funding & Conflicts", "href": "/funding/" },
+        { "label": "Donate", "href": "/donate/" }
       ]
     },
     {
