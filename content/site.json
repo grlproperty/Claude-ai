@@ -78,25 +78,6 @@
     ]
   },
 
-  "services": {
-    "note": "One service, one price. Deliberately not a ladder — a single low-friction offer converts better than four, and everything above it is a conversation rather than a published rate.",
-    "headline": "Claim check",
-    "summary": "If you sell something and say it is better, someone will eventually ask you to prove it. Increasingly that someone is a regulator.",
-    "currency": "ZAR",
-    "currencySymbol": "R",
-    "price": 3500,
-    "turnaround": "Two working days",
-    "detail": "Send us a product page or a single line of copy. Every claim on it comes back listed and marked defensible, needs substantiation, or do not use — with the rule it runs into, a source you can check yourself, and wording that says the same true thing safely.",
-    "beyond": "Bigger than one page — a full brand, a supply-chain audit, a standing arrangement — is a conversation rather than a published rate. Say what you need and we will quote it.",
-    "invoiceNote": "Quoted and invoiced in rand, because the work is invoiced directly rather than sold through a checkout. Clients outside South Africa are quoted the equivalent in their own currency on request.",
-    "checks": [
-      "The EU Green Claims Directive and the Empowering Consumers Directive.",
-      "The UK Competition and Markets Authority's Green Claims Code.",
-      "The published scope of any certification you cite — which is usually narrower than the logo implies.",
-      "The documented record of the suppliers and parent companies behind the product."
-    ]
-  },
-
   "positioning": {
     "lede": "We investigate every industry built on a body that could not agree to it — and we hold animals and women at equal weight. Neither is a metaphor for the other. Both are literal.",
     "body": "The cruelty is rarely called cruelty. It is called tradition, testing, farming, research, wellness, self-care. We translate the vocabulary, cite the source, and file the receipt — across fashion, food, beauty, wildlife, medicine, tech, and the advertising that obscures all of it."
@@ -170,7 +151,6 @@
       "title": "Paid work",
       "links": [
         { "label": "Published", "href": "/shop/" },
-        { "label": "Claim Check", "href": "/claim-check/" },
         { "label": "Funding & Conflicts", "href": "/funding/" },
         { "label": "Donate", "href": "/donate/" }
       ]

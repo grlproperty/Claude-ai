@@ -32,7 +32,7 @@ import { ENTRY_TYPES, renderEntry } from './pages/entry.mjs';
 import { buildTermIndex, crosslink } from './lib/crosslink.mjs';
 import { renderPage, renderNotFound, renderRedirect } from './pages/simple.mjs';
 import { renderFindUs } from './pages/find-us.mjs';
-import { renderShop, renderClaimCheck } from './pages/shop.mjs';
+import { renderShop } from './pages/shop.mjs';
 import { buildOgImages, buildBrandAssets } from './lib/images.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -337,9 +337,6 @@ async function main() {
   // ---- what is sold
   await writePage('/shop/', renderShop({ site, rates: data.rates }));
   track('/shop/', { priority: '0.8' });
-
-  await writePage('/claim-check/', renderClaimCheck({ site }));
-  track('/claim-check/', { priority: '0.8' });
 
 
   // ---- markdown pages
