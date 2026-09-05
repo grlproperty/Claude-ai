@@ -8,8 +8,8 @@ export function renderHome({ site, notes, data }) {
 
   // The hero plate. A fixed frame rather than the newest post: the hero is the
   // brand's face and should not change shape every time the pull runs. The
-  // photograph is opaque, so the cage behind it is only visible around its
-  // edges, which reads as the lattice enclosing the frame.
+  // photograph sits under the wordmark rather than beside it, so the drawn
+  // cage and the photographed one read as the same object seen twice.
   const hero = shots.find((p) => p.shortcode === 'DYfHUz6O8e3') ?? null;
 
   const body = `
@@ -37,10 +37,15 @@ export function renderHome({ site, notes, data }) {
     </div>
    </div>
 
+    <!-- The cage's cell. Empty on purpose: it is a hole in the layout that the
+         renderer measures and hangs the object into, which is what keeps the
+         two from ever being written down as separate sets of numbers. -->
+    <div class="hero__slot" aria-hidden="true"></div>
+
     ${
       hero
         ? `<figure class="hero__plate">
-      <img src="${esc(hero.image)}" srcset="${esc(hero.thumb)} 640w, ${esc(hero.image)} 1200w" sizes="(min-width: 68rem) 40vw, (min-width: 30rem) 30rem, 100vw" alt="${esc(
+      <img src="${esc(hero.image)}" srcset="${esc(hero.thumb)} 640w, ${esc(hero.image)} 1200w" sizes="(min-width: 60rem) 42vw, (min-width: 34rem) 32rem, 100vw" alt="${esc(
             hero.title
           )}" width="${hero.width ?? 2096}" height="${hero.height ?? 2795}" fetchpriority="high" decoding="async">
       <figcaption>
@@ -51,17 +56,19 @@ export function renderHome({ site, notes, data }) {
     </figure>`
         : ''
     }
-  </div>
-</section>
 
-<section class="section--tight">
-  <div class="wrap">
-    ${statBand([
-      { figure: String(notes.length), label: 'Field notes' },
-      { figure: String(data.archive.entries.length), label: 'Archive entries' },
-      { figure: String(data.library.entries.length), label: 'Library entries' },
-      { figure: String(data.industries.industries.length), label: 'Industries covered' },
-    ])}
+    <!-- The counts stand beside the photograph rather than in a band of their
+         own below it. Moving the plate out of the top row left a column of
+         nothing next to it, and what the site has actually got in it is a
+         better thing to put there than air. -->
+    <div class="hero__stats">
+      ${statBand([
+        { figure: String(notes.length), label: 'Field notes' },
+        { figure: String(data.archive.entries.length), label: 'Archive entries' },
+        { figure: String(data.library.entries.length), label: 'Library entries' },
+        { figure: String(data.industries.industries.length), label: 'Industries covered' },
+      ])}
+    </div>
   </div>
 </section>
 

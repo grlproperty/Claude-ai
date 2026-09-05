@@ -221,6 +221,15 @@
   var spec = [];
   var order = [];
 
+  // The cage builds over the first 62% of the wipe; the chain climbs out of
+  // the hook over the rest. Anything higher than the chain's reveal span — the
+  // length that only exists to run off the top of a tall viewport — arrives
+  // with the last link that is actually on screen rather than never.
+  var CHAIN_REVEAL = 3.2;
+  var orderOf = function (y) {
+    return ((y - LOW) / (HIGH - LOW)) * 0.62;
+  };
+
   // Bar widths are authored in relative terms and scaled here. Below about two
   // pixels a round bar has nowhere to put its highlight, and the shading that
   // makes it read as metal degrades into noise.
@@ -244,10 +253,10 @@
       pos.push(v[0][0], v[0][1], v[0][2]);
       other.push(v[1][0], v[1][1], v[1][2]);
       spec.push(v[2], width);
-      // Height, normalised across the whole object including the hook, so the
-      // build reads bottom to top rather than in the order the arrays happen
-      // to have been filled.
-      order.push((v[0][1] - LOW) / (HIGH - LOW));
+      // Height, normalised so the build reads bottom to top rather than in the
+      // order the arrays happen to have been filled. The mapping is swapped
+      // between the cage and the chain so each gets its own share of the wipe.
+      order.push(orderOf(v[0][1]));
     }
   }
 
@@ -342,6 +351,56 @@
     );
   }
 
+  // Everything up to here is the cage, and it swings on its hook. The chain
+  // above it does not — it is fixed to the top of the page — so the two are
+  // drawn with different matrices, and the split is recorded here.
+  var CAGE_VERTS = pos.length / 3;
+
+  // ----------------------------------------------------------------- chain
+  //
+  // The cage hangs from the top of the site rather than floating in the middle
+  // of it. A run of interlocking links climbs from the hook and off the top of
+  // the frame, passing behind the masthead, so the eye reads a fixing point
+  // somewhere above the page.
+  //
+  // Links alternate plane — one across, the next through — which is what makes
+  // a chain read as a chain instead of a stack of rings. Each is an ellipse,
+  // not a stadium; at the size these are drawn the difference is a pixel.
+  //
+  // The run is longer than any viewport needs, so the chain reaches the top of
+  // the screen without the geometry being rebuilt every time the window
+  // changes size. Not much longer, though: measured across the layouts, the
+  // hungriest asks for about three world units of chain, and this is six.
+  // Every link past that is fill a software renderer still pays for before
+  // clipping throws it away.
+  var LINK_H = 0.115;
+  var LINK_W = 0.058;
+  var LINK_PITCH = LINK_H * 1.5;
+  var LINKS = 34;
+  var LINK_SEGS = 14;
+  var chainBase = HEIGHT / 2 + 0.3 + LINK_H;
+
+  orderOf = function (y) {
+    return 0.62 + Math.min(1, (y - HIGH) / CHAIN_REVEAL) * 0.38;
+  };
+
+  for (var ci = 0; ci < LINKS; ci++) {
+    var cy = chainBase + ci * LINK_PITCH;
+    // The first link has to pass through the hook's arc, which lies in the
+    // x/y plane, so it is set in the other one.
+    var across = ci % 2 === 1;
+    for (var cs = 0; cs < LINK_SEGS; cs++) {
+      var ca0 = (cs / LINK_SEGS) * Math.PI * 2;
+      var ca1 = ((cs + 1) / LINK_SEGS) * Math.PI * 2;
+      var lu0 = Math.cos(ca0) * LINK_W;
+      var lv0 = Math.sin(ca0) * LINK_H;
+      var lu1 = Math.cos(ca1) * LINK_W;
+      var lv1 = Math.sin(ca1) * LINK_H;
+      if (across) seg(lu0, cy + lv0, 0, lu1, cy + lv1, 0, 1.7);
+      else seg(0, cy + lv0, lu0, 0, cy + lv1, lu1, 1.7);
+    }
+  }
+
   function attrib(loc, data, size) {
     var buf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
@@ -421,100 +480,43 @@
 
   // How far the cage reaches from its own centre, in world units, at the size
   // it is built. Measured off the drawn geometry rather than guessed, so the
-  // placements solved below stay true if the cage is ever rebuilt.
+  // fit solved below stays true if the cage is ever rebuilt.
   var CAGE_HALF = 1.05;
   var CAGE_TALL = 2.8;
-  // Clear space between the last letterform and the nearest bar.
-  var CLEAR = 26;
   // Half the vertical field of view, as used by the projection below.
   var TAN_HALF_FOV = Math.tan(0.4);
 
-  // The wide hero is type on the left and an opaque photograph on the right,
-  // with a column of blush between them. That column is where the cage hangs.
-  // Its width is not a constant — the headline is set in vw and the plate is a
-  // fraction of the row — so the position is solved from what is actually on
-  // screen instead of from numbers that were true at one viewport. The rule it
-  // enforces: no bar ever crosses a letter. The photograph may cut the cage,
-  // and does; type may not.
+  // The hero reserves an empty cell for the cage — beside the wordmark on a
+  // wide screen, above it on a narrow one — and the renderer fits the object
+  // into whatever that cell turns out to be. Nothing about the position is
+  // written down twice: the layout decides, in CSS, and this reads the answer.
+  // It is also why no bar can ever cross a letter. The cell is empty.
   var placed = null;
 
-  // The display face lands after first paint and the headline gets wider when
-  // it does. Re-solve then, or the cage is placed against a fallback's metrics.
+  // The display face lands after first paint and the hero reflows when it
+  // does. Re-solve then, or the cage is fitted to a fallback's metrics.
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(function () {
       placed = null;
     });
   }
 
-  function textRight() {
-    var type = document.querySelector('.hero__type');
-    if (!type || !document.createRange) return null;
-    // Element boxes are as wide as the column, so they say nothing about where
-    // the words stop. A range over each child's contents returns its line
-    // boxes, which is the real ink.
-    var right = 0;
-    var kids = type.children;
-    for (var i = 0; i < kids.length; i++) {
-      var r = document.createRange();
-      r.selectNodeContents(kids[i]);
-      var b = r.getBoundingClientRect();
-      r.detach && r.detach();
-      if (b.width && b.right > right) right = b.right;
-    }
-    return right || null;
-  }
-
-  function solveX(depth) {
-    var host_ = host.getBoundingClientRect();
-    var plate = document.querySelector('.hero__plate');
-    var right = textRight();
-    if (!plate || !right) return null;
-    var pr = plate.getBoundingClientRect();
-    // Stacked layout: the plate sits under the type, not beside it, and there
-    // is no column to solve for.
-    if (pr.left < right) return null;
-    // Pixels per world unit at the hanging depth, from the same projection the
-    // renderer uses: half the frustum height is tan(fovy / 2) * depth.
-    var ppu = host_.height / (2 * TAN_HALF_FOV * depth);
-    var centre = host_.left + host_.width / 2;
-    var minLeft = right + CLEAR;
-    // Centre it in the column, then push right if that would still touch a
-    // letter. Never pulled left of centre: the photograph is allowed to crop
-    // the cage, so there is nothing to gain from crowding the words.
-    var wanted = (right + pr.left) / 2;
-    var leftEdge = wanted - CAGE_HALF * ppu;
-    if (leftEdge < minLeft) wanted += minLeft - leftEdge;
-    return (wanted - centre) / ppu;
-  }
-
-  // Narrow layout. The hero stacks — type, then a reserved band, then the
-  // photograph — and the cage is drawn whole inside that band. There is no
-  // width on a phone where a bar can pass a letter and still look deliberate,
-  // so it gets a room of its own rather than a corner of someone else's.
-  // Returns the depth and vertical offset that centre it in the band at a size
-  // that fills it, both solved from where the band actually landed.
-  function solveBand() {
-    var type = document.querySelector('.hero__type');
-    var plate = document.querySelector('.hero__plate');
-    if (!type || !plate) return null;
+  function solveSlot() {
+    var slot = document.querySelector('.hero__slot');
+    if (!slot) return null;
     var h = host.getBoundingClientRect();
-    var top = type.getBoundingClientRect().bottom;
-    var bottom = plate.getBoundingClientRect().top;
-    var band = bottom - top;
-    if (band < 140) return null;
-    // Fill the band to 78%, leaving air above the hook and below the base.
-    var depth = (CAGE_TALL * h.height) / (2 * TAN_HALF_FOV * 0.78 * band);
-    var ppu = h.height / (2 * TAN_HALF_FOV * depth);
-    var centreX = h.left + h.width / 2;
-    var pr = plate.getBoundingClientRect();
-    // Over the photograph's axis, not the viewport's: on a tablet the column
-    // is narrower than the screen, and a cage centred on the screen hangs off
-    // the side of everything it belongs to.
+    var r = slot.getBoundingClientRect();
+    if (r.width < 40 || r.height < 90 || h.height < 1) return null;
+    // Pixels per world unit: fit to the cell on whichever axis binds first,
+    // leaving the cage short of the cell's top so there is chain to see.
+    var ppu = Math.min((r.height * 0.72) / CAGE_TALL, (r.width * 0.9) / (CAGE_HALF * 2));
     return {
-      depth: depth,
-      offsetX: ((pr.left + pr.right) / 2 - centreX) / ppu,
-      // World y runs up, screen y runs down.
-      offsetY: (h.top + h.height / 2 - (top + bottom) / 2) / ppu,
+      // The projection's half-height at distance d is tan(fovy / 2) * d, so
+      // the distance that yields the wanted scale falls straight out of it.
+      depth: h.height / (2 * TAN_HALF_FOV * ppu),
+      offsetX: (r.left + r.width / 2 - (h.left + h.width / 2)) / ppu,
+      // Hung low in its cell, world y up against screen y down.
+      offsetY: (h.top + h.height / 2 - (r.top + r.height * 0.6)) / ppu,
     };
   }
 
@@ -630,39 +632,29 @@
     // A slow idle breath, so it is never perfectly still even at rest.
     var idle = reduced ? 0 : Math.sin(elapsed * 0.62) * 0.022;
 
-    var wide = window.innerWidth >= 1088;
+    // Where the cage hangs is solved from the hero as laid out — see
+    // solveSlot. These are the fallback for a hero without the cell to
+    // measure: centred, and far enough back to sit clear of the type.
+    var depth = 10.5;
+    var offsetX = 0;
+    var offsetY = -0.4;
 
-    // Where the cage hangs is solved from the hero as laid out, not written
-    // down here — see solveX and solveBand. These are the fallback that draws
-    // if the solve cannot run: no Range support, or a hero missing the parts
-    // it measures against. They are the last values that were tuned by hand,
-    // and they are deliberately conservative rather than optimal.
-    var depth = wide ? 8.6 : 16;
-    var offsetX = wide ? 0.16 : 1.5;
-    var offsetY = wide ? -0.62 : 4.6;
-
-    if (placed === null) placed = (wide ? solveX(depth) : solveBand()) || false;
+    if (placed === null) placed = solveSlot() || false;
     if (placed) {
-      if (wide) {
-        offsetX = placed;
-      } else {
-        depth = placed.depth;
-        offsetX = placed.offsetX;
-        offsetY = placed.offsetY;
-      }
+      depth = placed.depth;
+      offsetX = placed.offsetX;
+      offsetY = placed.offsetY;
     }
 
     var aspect = width / height;
     var proj = perspective(0.8, aspect, 0.1, 40);
     gl.uniform2f(uRange, depth - 1.1, depth + 1.3);
     gl.uniform2f(uHalfRes, canvas.width / 2, canvas.height / 2);
-    // Wide screens have a column to hang it in, so it can be an object. Narrow
-    // ones do not — every position collides with running text — so there it
-    // drops back to a texture behind the type rather than something competing
-    // with it. Same geometry, different job.
-    // The same object on both. It used to drop to a third of its weight on a
-    // phone, which is most of why the two did not feel like the same site.
-    gl.uniform1f(uAlpha, wide ? 0.9 : 0.82);
+    // The same object at the same weight on every screen. It has a cell of its
+    // own now rather than a corner of the type's, so there is no reason for a
+    // phone to get a fainter one — and that difference was most of why the two
+    // did not feel like the same site.
+    gl.uniform1f(uAlpha, 0.9);
 
     if (built < 1) {
       built = Math.min(1, (now - t0) / 1000 / BUILD);
@@ -684,11 +676,19 @@
       )
     );
     var model = multiply(translate(0, pivot, 0), hang);
-    var mv = multiply(translate(offsetX, offsetY, -depth), multiply(rotateX(-0.06), model));
+    var place = translate(offsetX, offsetY, -depth);
+    var tilt = rotateX(-0.06);
+    var mv = multiply(place, multiply(tilt, model));
+    // The chain is fixed to whatever is above the page. It takes the same
+    // placement and tilt but none of the swing, so the hook stays where the
+    // last link holds it however far the cage below has swung.
+    var mvChain = multiply(place, tilt);
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.uniformMatrix4fv(uMVP, false, new Float32Array(multiply(proj, mv)));
-    gl.drawArrays(gl.TRIANGLES, 0, COUNT);
+    gl.drawArrays(gl.TRIANGLES, 0, CAGE_VERTS);
+    gl.uniformMatrix4fv(uMVP, false, new Float32Array(multiply(proj, mvChain)));
+    gl.drawArrays(gl.TRIANGLES, CAGE_VERTS, COUNT - CAGE_VERTS);
   }
 
   var running = false;

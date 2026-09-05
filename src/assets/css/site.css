@@ -547,7 +547,10 @@ code {
   isolation: isolate;
   top: 0;
   z-index: 100;
-  background: rgba(246, 223, 226, 0);
+  /* Opaque from the first pixel. At rest this is the page's own colour, so it
+     reads exactly as it did when it was transparent — but the chain behind it
+     is hidden rather than running through the navigation. */
+  background: var(--blush);
   transition: background 0.3s var(--ease), border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
   border-bottom: 1px solid transparent;
 }
@@ -814,17 +817,27 @@ code {
 
 .hero {
   position: relative;
-  padding-block: clamp(4rem, 12vw, 9rem) clamp(3rem, 7vw, 5.5rem);
-  overflow: hidden;
+  padding-block: clamp(3rem, 9vw, 6.5rem) clamp(3rem, 7vw, 5.5rem);
   isolation: isolate;
 }
 
-/* The cage lattice. Drawn to a WebGL canvas, sat behind the type at low
-   opacity so it reads as structure rather than illustration. */
+/* The cage. Drawn to a WebGL canvas that covers the hero; the object itself is
+   hung into the empty cell the layout reserves for it, so it stands beside the
+   type rather than behind it and no bar ever crosses a letter.
+   The canvas reaches above the hero and up behind the masthead, so the chain
+   arrives from the top of the page rather than starting somewhere inside it.
+   The bar is painted an opaque blush at every scroll position — the same
+   colour the page already is, so it looks no different at rest — and the chain
+   simply disappears under it instead of crossing the navigation.
+   Clipping moved here from .hero, which now has to let this overflow. */
 .hero__cage {
   position: absolute;
-  inset: 0;
+  top: -4.4rem;
+  right: 0;
+  bottom: 0;
+  left: 0;
   z-index: -1;
+  overflow: hidden;
   pointer-events: none;
 }
 
@@ -911,31 +924,57 @@ code {
   color: var(--crimson);
 }
 
-/* The hero plate. The photograph is opaque, so where it overlaps the cage the
-   lattice is hidden and only its outer bars remain visible around the frame —
-   the cage reads as enclosing the image rather than printed across it. */
+/* The hero is three parts: the type, an empty cell the cage is hung into, and
+   the photograph. The photograph sits under both rather than beside the type —
+   a portrait plate next to a display headline gives you two things competing
+   to be looked at first, and the wordmark should win that.
+   The cell carries no content. Its only job is to be measured. */
 .hero__inner--plated {
   display: grid;
-  gap: clamp(2.5rem, 5vw, 4.5rem);
+  gap: clamp(2rem, 4vw, 3.5rem) clamp(2.5rem, 5vw, 4.5rem);
   align-items: center;
 }
 
-/* Stacked, the row gap is not a gap — it is the room the cage is drawn in.
-   The renderer measures it and fits the object to what it finds, so this is
-   the one number that decides how large the cage reads on a phone. */
-@media (max-width: 67.99rem) {
-  .hero__inner--plated {
-    row-gap: clamp(17rem, 62vw, 22rem);
+/* Stacked: the cage comes first, hanging from the top of the screen, and the
+   wordmark is read out from under it. There is no width on a phone where a
+   bar can pass a letter and still look deliberate, so the cage is given a
+   whole row instead of a corner of someone else's. */
+@media (max-width: 59.99rem) {
+  .hero__slot {
+    order: -1;
+    min-height: clamp(12rem, 30vh, 17rem);
   }
 }
 
-/* The plate only sits beside the type once there is room for both to breathe.
-   Below that it stacks under the actions, full width. */
-@media (min-width: 68rem) {
+@media (min-width: 60rem) {
   .hero__inner--plated {
-    /* The plate gives back a little width so the blush column between type and
-       photograph is wide enough to hang a whole object in. */
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.82fr);
+    grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
+  }
+
+  .hero__type {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .hero__slot {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: stretch;
+    min-height: 22rem;
+  }
+
+  .hero__plate {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .hero__stats {
+    grid-column: 2;
+    grid-row: 2;
+    /* Top of the row, so the right column reads straight down — cage, then
+       what the site has in it — instead of leaving a hole under the cage and
+       hanging the numbers off the bottom of a very tall photograph. */
+    align-self: start;
   }
 }
 
@@ -943,17 +982,30 @@ code {
   min-width: 0;
 }
 
+/* Under the type, the photograph and the counts share a row: the plate at a
+   readable width on the left, the numbers in the column the cage came down. */
 .hero__plate {
   margin: 0;
   min-width: 0;
-  max-width: 30rem;
   position: relative;
 }
 
-@media (min-width: 68rem) {
-  .hero__plate {
+/* Stacked, the column can be a whole tablet wide, and a 3:4 plate at that
+   width is a thousand pixels of scroll before the page has said anything. */
+.hero__plate img {
+  max-width: 32rem;
+}
+
+@media (min-width: 60rem) {
+  .hero__plate img {
     max-width: none;
   }
+}
+
+.hero__stats .stat-band {
+  /* Two across in a column this wide. Four would give each figure less room
+     than the word underneath it needs. */
+  grid-template-columns: repeat(2, 1fr);
 }
 
 .hero__plate img {
@@ -966,36 +1018,13 @@ code {
   box-shadow: var(--lift-3);
 }
 
-/* A crimson corner rule, set behind the frame and offset, so the plate sits in
-   depth against the lattice rather than flat on it. */
-.hero__plate::before {
-  content: '';
-  position: absolute;
-  inset: auto -0.75rem -0.75rem auto;
-  width: 42%;
-  height: 42%;
-  border-right: 1px solid var(--crimson);
-  border-bottom: 1px solid var(--crimson);
-  opacity: 0.45;
-  z-index: -1;
-  pointer-events: none;
-}
-
-/* Stacked, the plate is the full column and the rule hangs past the gutter as
-   a stray mark with nothing behind it to sit against. */
-@media (max-width: 67.99rem) {
-  .hero__plate::before {
-    display: none;
-  }
-}
-
 .hero__plate figcaption {
   font-family: var(--ui);
-  font-size: 0.6875rem;
-  line-height: 1.6;
+  font-size: 0.75rem;
+  line-height: 1.7;
   color: var(--ink-muted);
+  max-width: 46ch;
   margin-top: 0.9rem;
-  max-width: 42ch;
 }
 
 .hero__plate figcaption .is-crimson {
