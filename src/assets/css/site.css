@@ -267,8 +267,70 @@ code {
 }
 
 .section {
-  padding-block: clamp(3.5rem, 8vw, var(--s8));
+  /* The lower bound is the phone figure and it used to be 3.5rem. Eight
+     sections at that spacing is most of a screen height spent on gaps. */
+  padding-block: clamp(2.6rem, 8vw, var(--s8));
   position: relative;
+}
+
+/* ---------------------------------------------------------- the rail
+ *
+ * On a wide screen a section splits in two: the eyebrow and heading pin
+ * themselves in a narrow column on the left and stay there while the content
+ * scrolls past on the right.
+ *
+ * This is the one change that stops every section being the same shape. The
+ * page was eight stacked blocks of heading-then-content, which is the layout
+ * every site arrives at by default and the reason it read as templated rather
+ * than designed. A held heading also does something useful: on a long list of
+ * field notes or certifications you can always see what you are inside.
+ *
+ * Selected with :has() so it applies wherever the pattern already exists and
+ * no markup changes. Browsers without :has() get exactly what they got before,
+ * which is a working page — this is a layout upgrade, not a dependency.
+ */
+@media (min-width: 1000px) {
+  .section:has(> .wrap > .section-head + .grid) > .wrap,
+  .section:has(> .wrap > .section-head + .rows) > .wrap,
+  .section:has(> .wrap > .section-head + .scroller) > .wrap {
+    display: grid;
+    grid-template-columns: minmax(13rem, 17rem) minmax(0, 1fr);
+    gap: var(--s5) clamp(2.5rem, 5vw, 5rem);
+    align-items: start;
+  }
+
+  .section:has(> .wrap > .section-head + .grid) > .wrap > .section-head,
+  .section:has(> .wrap > .section-head + .rows) > .wrap > .section-head,
+  .section:has(> .wrap > .section-head + .scroller) > .wrap > .section-head {
+    position: sticky;
+    /* Below the masthead, which is sticky itself. */
+    top: 6.5rem;
+    margin-bottom: 0;
+    max-width: none;
+    /* The spine: a crimson hairline down the held column, which is what ties
+       one section to the next as you scroll the length of the page. */
+    border-left: 1px solid var(--crimson);
+    padding-left: var(--s4);
+  }
+
+  /* The lede is a caption in this column, not a standfirst across the page. */
+  .section:has(> .wrap > .section-head + .grid) > .wrap > .section-head .lede,
+  .section:has(> .wrap > .section-head + .rows) > .wrap > .section-head .lede,
+  .section:has(> .wrap > .section-head + .scroller) > .wrap > .section-head .lede {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    font-family: var(--ui);
+    font-weight: 300;
+  }
+
+  /* A wide head asked to span the page keeps doing that. */
+  .section > .wrap > .section-head--wide {
+    grid-column: 1 / -1;
+    position: static;
+    border-left: 0;
+    padding-left: 0;
+    margin-bottom: var(--s5);
+  }
 }
 
 .section--tight {
@@ -328,6 +390,14 @@ code {
   margin-bottom: var(--s6);
 }
 
+/* The rail's content column is narrower than the old full-width one, so card
+   headings now break over three or four lines. Balancing evens them out. */
+.card h3,
+.card__title,
+.entry-card h3 {
+  text-wrap: balance;
+}
+
 .section-head--wide {
   max-width: 88ch;
 }
@@ -361,6 +431,79 @@ code {
 @media (max-width: 560px) {
   .grid--4 {
     grid-template-columns: 1fr;
+  }
+}
+
+/* -------------------------------------------------------- rails on a phone
+ *
+ * Below the two-column breakpoint a grid of cards becomes a horizontal rail
+ * you swipe, not a stack you scroll past.
+ *
+ * The home page was thirteen thousand pixels tall on a phone, most of it card
+ * stacks — fifteen screens of thumb, and every collection read as an
+ * unfinished list because you could only ever see one of it. A rail shows the
+ * edge of the next card, which is what tells a reader there is a set here and
+ * how big it is, and it takes the page down to a length somebody will actually
+ * reach the end of.
+ *
+ * Snap points on the cards, padding carried by a pseudo-element rather than
+ * the container, because padding-right on a scroll container is dropped by
+ * every engine at the end of the scroll.
+ *
+ * Only grid--3 and grid--4, which are the card collections. grid--2 carries
+ * prose and definition lists — put those on a rail and the second column is
+ * simply cut off at the screen edge.
+ */
+@media (max-width: 720px) {
+  .grid--3,
+  .grid--4 {
+    display: flex;
+    grid-template-columns: none;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: var(--s3);
+    /* Out to the screen edges, so the rail reads as running off the page
+       rather than sitting in a box. */
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    padding-bottom: var(--s3);
+  }
+
+  .grid--3::-webkit-scrollbar,
+  .grid--4::-webkit-scrollbar {
+    display: none;
+  }
+
+  .grid--3 > *,
+  .grid--4 > * {
+    flex: 0 0 78%;
+    scroll-snap-align: start;
+  }
+
+  /* The last card needs the gutter after it, and a scroll container will not
+     honour padding-inline-end. */
+  .grid--3::after,
+  .grid--4::after {
+    content: '';
+    flex: 0 0 calc(var(--gutter) - var(--s3));
+  }
+
+  /* A rail is a horizontal region: say so, and give it a tab stop, or it is
+     unreachable to anyone not using a finger. */
+  .grid--3,
+  .grid--4 {
+    scroll-padding-inline: var(--gutter);
+  }
+}
+
+/* Someone who has asked for less motion still gets the rail — it is layout,
+   not animation — but nothing about it moves on its own. */
+@media (max-width: 720px) and (prefers-reduced-motion: no-preference) {
+  .grid--3,
+  .grid--4 {
+    scroll-behavior: smooth;
   }
 }
 
