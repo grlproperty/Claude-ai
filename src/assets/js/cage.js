@@ -419,11 +419,113 @@
   var width = 0;
   var height = 0;
 
+  // How far the cage reaches from its own centre, in world units, at the size
+  // it is built. Measured off the drawn geometry rather than guessed, so the
+  // placements solved below stay true if the cage is ever rebuilt.
+  var CAGE_HALF = 1.05;
+  var CAGE_TALL = 2.8;
+  // Clear space between the last letterform and the nearest bar.
+  var CLEAR = 26;
+  // Half the vertical field of view, as used by the projection below.
+  var TAN_HALF_FOV = Math.tan(0.4);
+
+  // The wide hero is type on the left and an opaque photograph on the right,
+  // with a column of blush between them. That column is where the cage hangs.
+  // Its width is not a constant — the headline is set in vw and the plate is a
+  // fraction of the row — so the position is solved from what is actually on
+  // screen instead of from numbers that were true at one viewport. The rule it
+  // enforces: no bar ever crosses a letter. The photograph may cut the cage,
+  // and does; type may not.
+  var placed = null;
+
+  // The display face lands after first paint and the headline gets wider when
+  // it does. Re-solve then, or the cage is placed against a fallback's metrics.
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () {
+      placed = null;
+    });
+  }
+
+  function textRight() {
+    var type = document.querySelector('.hero__type');
+    if (!type || !document.createRange) return null;
+    // Element boxes are as wide as the column, so they say nothing about where
+    // the words stop. A range over each child's contents returns its line
+    // boxes, which is the real ink.
+    var right = 0;
+    var kids = type.children;
+    for (var i = 0; i < kids.length; i++) {
+      var r = document.createRange();
+      r.selectNodeContents(kids[i]);
+      var b = r.getBoundingClientRect();
+      r.detach && r.detach();
+      if (b.width && b.right > right) right = b.right;
+    }
+    return right || null;
+  }
+
+  function solveX(depth) {
+    var host_ = host.getBoundingClientRect();
+    var plate = document.querySelector('.hero__plate');
+    var right = textRight();
+    if (!plate || !right) return null;
+    var pr = plate.getBoundingClientRect();
+    // Stacked layout: the plate sits under the type, not beside it, and there
+    // is no column to solve for.
+    if (pr.left < right) return null;
+    // Pixels per world unit at the hanging depth, from the same projection the
+    // renderer uses: half the frustum height is tan(fovy / 2) * depth.
+    var ppu = host_.height / (2 * TAN_HALF_FOV * depth);
+    var centre = host_.left + host_.width / 2;
+    var minLeft = right + CLEAR;
+    // Centre it in the column, then push right if that would still touch a
+    // letter. Never pulled left of centre: the photograph is allowed to crop
+    // the cage, so there is nothing to gain from crowding the words.
+    var wanted = (right + pr.left) / 2;
+    var leftEdge = wanted - CAGE_HALF * ppu;
+    if (leftEdge < minLeft) wanted += minLeft - leftEdge;
+    return (wanted - centre) / ppu;
+  }
+
+  // Narrow layout. The hero stacks — type, then a reserved band, then the
+  // photograph — and the cage is drawn whole inside that band. There is no
+  // width on a phone where a bar can pass a letter and still look deliberate,
+  // so it gets a room of its own rather than a corner of someone else's.
+  // Returns the depth and vertical offset that centre it in the band at a size
+  // that fills it, both solved from where the band actually landed.
+  function solveBand() {
+    var type = document.querySelector('.hero__type');
+    var plate = document.querySelector('.hero__plate');
+    if (!type || !plate) return null;
+    var h = host.getBoundingClientRect();
+    var top = type.getBoundingClientRect().bottom;
+    var bottom = plate.getBoundingClientRect().top;
+    var band = bottom - top;
+    if (band < 140) return null;
+    // Fill the band to 78%, leaving air above the hook and below the base.
+    var depth = (CAGE_TALL * h.height) / (2 * TAN_HALF_FOV * 0.78 * band);
+    var ppu = h.height / (2 * TAN_HALF_FOV * depth);
+    var centreX = h.left + h.width / 2;
+    var pr = plate.getBoundingClientRect();
+    // Over the photograph's axis, not the viewport's: on a tablet the column
+    // is narrower than the screen, and a cage centred on the screen hangs off
+    // the side of everything it belongs to.
+    return {
+      depth: depth,
+      offsetX: ((pr.left + pr.right) / 2 - centreX) / ppu,
+      // World y runs up, screen y runs down.
+      offsetY: (h.top + h.height / 2 - (top + bottom) / 2) / ppu,
+    };
+  }
+
   function resize() {
     var rect = host.getBoundingClientRect();
     var w = Math.max(1, Math.round(rect.width));
     var h = Math.max(1, Math.round(rect.height));
     if (w === width && h === height) return;
+    // Solved once per size, not per frame: the solve reads layout, and reading
+    // layout inside the render loop is how a smooth canvas turns into a stutter.
+    placed = null;
     width = w;
     height = h;
     canvas.width = Math.round(w * dpr);
@@ -530,22 +632,25 @@
 
     var wide = window.innerWidth >= 1088;
 
-    // Sized to be seen whole. The earlier version was drawn large enough that
-    // the photograph cut it in half, which loses the one thing a cage has to
-    // read as: a closed shape. It now hangs at a distance where hook, dome,
-    // body and base all sit inside the column between the type and the plate.
-    // On a narrow screen the canvas is the full height of a stacked hero, so
-    // the camera sits much further back to bring the object down to the size
-    // of the gap beside the wordmark. These numbers were solved from that
-    // gap's position on screen rather than found by eye.
+    // Where the cage hangs is solved from the hero as laid out, not written
+    // down here — see solveX and solveBand. These are the fallback that draws
+    // if the solve cannot run: no Range support, or a hero missing the parts
+    // it measures against. They are the last values that were tuned by hand,
+    // and they are deliberately conservative rather than optimal.
     var depth = wide ? 8.6 : 16;
     var offsetX = wide ? 0.16 : 1.5;
-    // Hung below the wordmark rather than across it. Crossing the letterforms
-    // costs the one piece of type the whole page is built around.
-    // High on a phone: the clear column to the right of the wordmark, above
-    // the paragraph, which is the only place on that layout where a whole
-    // object fits without sitting on running text.
     var offsetY = wide ? -0.62 : 4.6;
+
+    if (placed === null) placed = (wide ? solveX(depth) : solveBand()) || false;
+    if (placed) {
+      if (wide) {
+        offsetX = placed;
+      } else {
+        depth = placed.depth;
+        offsetX = placed.offsetX;
+        offsetY = placed.offsetY;
+      }
+    }
 
     var aspect = width / height;
     var proj = perspective(0.8, aspect, 0.1, 40);

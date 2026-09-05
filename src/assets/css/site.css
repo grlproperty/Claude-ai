@@ -290,18 +290,18 @@ code {
  * which is a working page — this is a layout upgrade, not a dependency.
  */
 @media (min-width: 1000px) {
-  .section:has(> .wrap > .section-head + .grid) > .wrap,
-  .section:has(> .wrap > .section-head + .rows) > .wrap,
-  .section:has(> .wrap > .section-head + .scroller) > .wrap {
+  .section:has(> .wrap > .section-head:not(.section-head--wide) + .grid) > .wrap,
+  .section:has(> .wrap > .section-head:not(.section-head--wide) + .rows) > .wrap,
+  .section:has(> .wrap > .section-head:not(.section-head--wide) + .scroller) > .wrap {
     display: grid;
     grid-template-columns: minmax(13rem, 17rem) minmax(0, 1fr);
     gap: var(--s5) clamp(2.5rem, 5vw, 5rem);
     align-items: start;
   }
 
-  .section:has(> .wrap > .section-head + .grid) > .wrap > .section-head,
-  .section:has(> .wrap > .section-head + .rows) > .wrap > .section-head,
-  .section:has(> .wrap > .section-head + .scroller) > .wrap > .section-head {
+  .section:has(> .wrap > .section-head:not(.section-head--wide) + .grid) > .wrap > .section-head,
+  .section:has(> .wrap > .section-head:not(.section-head--wide) + .rows) > .wrap > .section-head,
+  .section:has(> .wrap > .section-head:not(.section-head--wide) + .scroller) > .wrap > .section-head {
     position: sticky;
     /* Below the masthead, which is sticky itself. */
     top: 6.5rem;
@@ -314,22 +314,21 @@ code {
   }
 
   /* The lede is a caption in this column, not a standfirst across the page. */
-  .section:has(> .wrap > .section-head + .grid) > .wrap > .section-head .lede,
-  .section:has(> .wrap > .section-head + .rows) > .wrap > .section-head .lede,
-  .section:has(> .wrap > .section-head + .scroller) > .wrap > .section-head .lede {
+  .section:has(> .wrap > .section-head:not(.section-head--wide) + .grid) > .wrap > .section-head .lede,
+  .section:has(> .wrap > .section-head:not(.section-head--wide) + .rows) > .wrap > .section-head .lede,
+  .section:has(> .wrap > .section-head:not(.section-head--wide) + .scroller) > .wrap > .section-head .lede {
     font-size: 0.95rem;
     line-height: 1.65;
     font-family: var(--ui);
     font-weight: 300;
   }
 
-  /* A wide head asked to span the page keeps doing that. */
-  .section > .wrap > .section-head--wide {
-    grid-column: 1 / -1;
-    position: static;
-    border-left: 0;
-    padding-left: 0;
-    margin-bottom: var(--s5);
+  /* A two-up where one column is a statement and the other a long list left
+     nine hundred pixels of empty ink below the statement. Holding the short
+     column keeps the claim in view for as long as the evidence beside it runs. */
+  .grid--held > .grid__hold {
+    position: sticky;
+    top: 6.5rem;
   }
 }
 
@@ -400,6 +399,23 @@ code {
 
 .section-head--wide {
   max-width: 88ch;
+}
+
+/* A head with nothing under it inside its own wrap was paying three times for
+   the same gap: its own bottom margin, its section's bottom padding, and the
+   next section's top padding. Roughly a hundred and eighty dead pixels under
+   the title of every page on the site. */
+.wrap > .section-head:last-child {
+  margin-bottom: 0;
+}
+
+/* The spine. The held heading in a section rail already stands against a
+   crimson hairline; page titles take the same mark, so the structure a reader
+   learns on the home page is the structure they meet on all hundred and forty
+   others. Not on a centred head, which has no left edge to stand against. */
+.section-head--wide:not(.center) {
+  border-left: 1px solid var(--crimson);
+  padding-left: clamp(1.1rem, 2.4vw, 2rem);
 }
 
 .grid {
@@ -537,9 +553,32 @@ code {
 }
 
 .masthead[data-scrolled='true'] {
-  background: rgba(246, 223, 226, 0.94);
+  background: var(--blush);
   backdrop-filter: saturate(150%) blur(14px);
   border-bottom-color: var(--rule);
+}
+
+/* Over a dark section the bar inverts rather than laying a pink slab across
+   the ink. Set from script, which tracks which band is under the bar. */
+.masthead[data-scrolled='true'][data-over='dark'] {
+  background: var(--ink);
+  border-bottom-color: rgba(253, 252, 252, 0.16);
+}
+
+.masthead[data-over='dark'] .wordmark,
+.masthead[data-over='dark'] .nav a,
+.masthead[data-over='dark'] .nav-toggle {
+  color: var(--blush);
+}
+
+/* Crimson on ink is unreadable, so FERAL takes the blush the colophon uses. */
+.masthead[data-over='dark'] .wordmark .is-crimson {
+  color: var(--white);
+}
+
+.masthead[data-over='dark'] .nav a:hover,
+.masthead[data-over='dark'] .nav a[aria-current='page'] {
+  color: var(--white);
 }
 
 .masthead__inner {
@@ -881,11 +920,22 @@ code {
   align-items: center;
 }
 
+/* Stacked, the row gap is not a gap — it is the room the cage is drawn in.
+   The renderer measures it and fits the object to what it finds, so this is
+   the one number that decides how large the cage reads on a phone. */
+@media (max-width: 67.99rem) {
+  .hero__inner--plated {
+    row-gap: clamp(17rem, 62vw, 22rem);
+  }
+}
+
 /* The plate only sits beside the type once there is room for both to breathe.
    Below that it stacks under the actions, full width. */
 @media (min-width: 68rem) {
   .hero__inner--plated {
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    /* The plate gives back a little width so the blush column between type and
+       photograph is wide enough to hang a whole object in. */
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.82fr);
   }
 }
 
@@ -929,6 +979,14 @@ code {
   opacity: 0.45;
   z-index: -1;
   pointer-events: none;
+}
+
+/* Stacked, the plate is the full column and the rule hangs past the gutter as
+   a stray mark with nothing behind it to sit against. */
+@media (max-width: 67.99rem) {
+  .hero__plate::before {
+    display: none;
+  }
 }
 
 .hero__plate figcaption {
@@ -1023,20 +1081,23 @@ code {
   }
 }
 
-/* Scroll reveal: content rises into place once, then stays. */
-.reveal {
+/* Scroll reveal: content rises into place once, then stays. Scoped to .js —
+   the class is set by an inline script in <head>, so with scripting off the
+   observer that would reveal these never runs and the content simply starts
+   where it ends up. Nothing on this site is ever invisible waiting on JS. */
+.js .reveal {
   opacity: 0;
   transform: translateY(18px);
   transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
 }
 
-.reveal[data-shown='true'] {
+.js .reveal[data-shown='true'] {
   opacity: 1;
   transform: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal {
+  .js .reveal {
     opacity: 1;
     transform: none;
   }
@@ -1140,24 +1201,29 @@ code {
   transform: scaleY(1);
 }
 
+/* The figure sits in the flow above the name rather than floated into the
+   plate's top corner. Cornered, it was cleared with a padding reservation on
+   the name — which holds only while the plate is wide enough that the name
+   wraps inside what is left. In a narrower column a long single word
+   (Accountability) has nowhere to break and runs straight under the numeral.
+   In flow there is no width at which the two can meet. Ten industries really
+   are a numbered series, so the figure is carrying information, not decorating. */
 .plate__number {
   font-family: var(--display);
-  font-size: 3.2rem;
+  font-size: 2.4rem;
   line-height: 1;
   color: var(--crimson);
-  opacity: 0.22;
-  position: absolute;
-  top: var(--s4);
-  right: var(--s4);
+  opacity: 0.3;
+  margin-bottom: var(--s3);
   pointer-events: none;
 }
 
 .plate__name {
   font-family: var(--editorial);
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   font-weight: 600;
   margin: 0 0 var(--s2);
-  padding-right: 3.5rem;
+  text-wrap: balance;
 }
 
 .tags {

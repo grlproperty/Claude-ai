@@ -16,13 +16,45 @@
   // second copy of every window listener.
 
   // ---- masthead ----------------------------------------------------------
+  var mastheadRepaint = null;
   var masthead = document.querySelector('.masthead');
   if (masthead) {
-    var setScrolled = function () {
+    // The bar is opaque, so it has to answer for what it covers: a pink slab
+    // laid across an ink section looks like a mistake. Read which band sits
+    // under the bar's lower edge and let the bar take that band's colours.
+    // Rects are read once per frame, never per scroll event.
+    var queued = false;
+
+    var paint = function () {
+      queued = false;
       masthead.setAttribute('data-scrolled', String(window.scrollY > 24));
+
+      var edge = masthead.getBoundingClientRect().bottom - 1;
+      var dark = false;
+      var bands = document.querySelectorAll('.on-dark, .colophon');
+      for (var i = 0; i < bands.length; i++) {
+        var r = bands[i].getBoundingClientRect();
+        if (r.top <= edge && r.bottom >= edge) {
+          dark = true;
+          break;
+        }
+      }
+      if (dark) masthead.setAttribute('data-over', 'dark');
+      else masthead.removeAttribute('data-over');
     };
-    setScrolled();
-    window.addEventListener('scroll', setScrolled, { passive: true });
+
+    var onScroll = function () {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(paint);
+    };
+
+    paint();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    // The single-file build swaps <main> under a masthead that survives, so the
+    // bands the bar has to answer for change without a scroll happening.
+    mastheadRepaint = paint;
   }
 
   // ---- mobile navigation -------------------------------------------------
@@ -115,6 +147,7 @@
   // Re-runnable. Called once now, and again by the router in the
   // single-file build after it swaps the contents of <main>.
   function initContent() {
+    if (mastheadRepaint) mastheadRepaint();
   // ---- pointer tilt ------------------------------------------------------
   // Cards rotate a few degrees toward the pointer. Capped low deliberately:
   // this is an editorial platform, and a card that swings is a toy.

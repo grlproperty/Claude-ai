@@ -104,6 +104,7 @@ export function layout({
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.className+=' js'</script>
 <title>${esc(fullTitle)}</title>
 ${head}
 <meta name="description" content="${esc(desc)}">

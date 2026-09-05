@@ -67,8 +67,8 @@ export function renderHome({ site, notes, data }) {
 
 <section class="section on-dark" id="about">
   <div class="wrap">
-    <div class="grid grid--2" style="gap:4rem;align-items:start;">
-      <div class="reveal">
+    <div class="grid grid--2 grid--held" style="gap:4rem;align-items:start;">
+      <div class="reveal grid__hold">
         ${label('The subject')}
         <h2>${typo('Two subjects. One machine.')}</h2>
         <p class="lede">${typo(site.positioning.body)}</p>
@@ -116,7 +116,6 @@ export function renderHome({ site, notes, data }) {
       eyebrow: 'The remit',
       title: 'Industries we document',
       lede: data.industries.summary,
-      wide: true,
     })}
     <div class="grid grid--4">
       ${data.industries.industries
@@ -139,7 +138,6 @@ export function renderHome({ site, notes, data }) {
       eyebrow: 'Free tools',
       title: 'Awareness, made usable',
       lede: 'Nine interactive tools that turn reading into practice. All free — no account, no sign-up, no payment.',
-      wide: true,
     })}
     <div class="grid grid--3">
       ${[
