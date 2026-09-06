@@ -122,16 +122,33 @@ async function main() {
   // Images are re-encoded down: at a data URI every byte is paid for on the
   // first load whether the image is ever scrolled to or not.
   const images = new Map();
-  for (const f of await readdir(join(DIST, 'assets/img/instagram'))) {
-    if (!f.endsWith('-640.webp')) continue;
-    const src = join(DIST, 'assets/img/instagram', f);
-    const hero = f.startsWith('dyfhuz6o8e3');
-    const buf = await sharp(src)
-      .resize({ width: hero ? 760 : 300 })
-      .webp({ quality: hero ? 74 : 58, effort: 6 })
+
+  /** Re-encode one -640 file and point both of its URLs at the result. */
+  const inline = async (dir, urlBase, file, width, quality) => {
+    const buf = await sharp(join(dir, file))
+      .resize({ width })
+      .webp({ quality, effort: 6 })
       .toBuffer();
-    images.set('/assets/img/instagram/' + f, `data:image/webp;base64,${buf.toString('base64')}`);
-    images.set('/assets/img/instagram/' + f.replace('-640', '-1200'), `data:image/webp;base64,${buf.toString('base64')}`);
+    const uri = `data:image/webp;base64,${buf.toString('base64')}`;
+    images.set(urlBase + file, uri);
+    images.set(urlBase + file.replace('-640', '-1200'), uri);
+  };
+
+  const IG = join(DIST, 'assets/img/instagram');
+  for (const f of await readdir(IG)) {
+    if (!f.endsWith('-640.webp')) continue;
+    // The fallback hero — the frame used when content/images/ holds nothing.
+    const isHero = f.startsWith('dyfhuz6o8e3');
+    await inline(IG, '/assets/img/instagram/', f, isHero ? 880 : 300, isHero ? 76 : 58);
+  }
+
+  // The supplied hero, which the build writes a folder up from the pull. This
+  // loop used to read the pull's folder and nothing else, so a hero coming
+  // from content/images/ was the one image on the page left pointing at a file
+  // the single build does not carry — a broken picture under the wordmark on
+  // any host that was sent index.html on its own.
+  if (existsSync(join(DIST, 'assets/img/hero-640.webp'))) {
+    await inline(join(DIST, 'assets/img'), '/assets/img/', 'hero-640.webp', 880, 76);
   }
 
   const inlineImages = (html) =>

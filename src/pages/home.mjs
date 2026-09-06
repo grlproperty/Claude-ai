@@ -37,6 +37,18 @@ export function renderHome({ site, notes, data }) {
     </h1>
 
     <p class="hero__claim">${typo(site.tagline)}</p>
+   </div>
+
+    <!-- The cage's cell. Empty on purpose: it is a hole in the layout that the
+         renderer measures and hangs the object into, which is what keeps the
+         two from ever being written down as separate sets of numbers. It sits
+         beside the wordmark at every width, which is why the paragraph and the
+         buttons are a block of their own below rather than part of the column
+         the cage stands next to — at 393px a column narrow enough to leave
+         room for the cage is too narrow to set running text in. -->
+    <div class="hero__slot" aria-hidden="true"></div>
+
+   <div class="hero__say">
     <p class="hero__body">${typo(site.positioning.lede)}</p>
 
     <div class="hero__actions">
@@ -44,11 +56,6 @@ export function renderHome({ site, notes, data }) {
       <a class="btn btn--ghost" href="/tools/">Free tools</a>
     </div>
    </div>
-
-    <!-- The cage's cell. Empty on purpose: it is a hole in the layout that the
-         renderer measures and hangs the object into, which is what keeps the
-         two from ever being written down as separate sets of numbers. -->
-    <div class="hero__slot" aria-hidden="true"></div>
 
     ${
       hero

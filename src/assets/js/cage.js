@@ -504,9 +504,12 @@
     });
   }
 
-  // The least chain that still reads as one, in pixels. The cage is never hung
-  // so high that it appears to start at the top of the frame by itself.
-  var MIN_CHAIN = 130;
+  // The least chain that still reads as one. Proportional to the object, or a
+  // small cage in a narrow column gets a run of links longer than itself.
+  function minChain(half) {
+    var want = half * 1.1;
+    return want < 55 ? 55 : want > 130 ? 130 : want;
+  }
 
   function solveSlot() {
     var slot = document.querySelector('.hero__slot');
@@ -534,7 +537,7 @@
     }
     // Kept clear of the top of the frame, and inside the cell at the bottom.
     var lowest = r.bottom - half;
-    var highest = h.top + MIN_CHAIN + half;
+    var highest = h.top + minChain(half) + half;
     if (centre > lowest) centre = lowest;
     if (centre < highest) centre = highest;
 

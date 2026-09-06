@@ -960,14 +960,31 @@ code {
   align-items: center;
 }
 
-/* Stacked: the cage comes first, hanging from the top of the screen, and the
-   wordmark is read out from under it. There is no width on a phone where a
-   bar can pass a letter and still look deliberate, so the cage is given a
-   whole row instead of a corner of someone else's. */
+/* Narrow: the cage stands beside the wordmark, and the paragraph and buttons
+   run the full width underneath. A single column wide enough to set running
+   text in has no room left for the cage; splitting the two is what lets the
+   cage sit next to the name at 393px as well as at 1440. */
 @media (max-width: 59.99rem) {
+  .hero__inner--plated {
+    grid-template-columns: minmax(0, 1fr) minmax(88px, 36%);
+    column-gap: clamp(0.6rem, 2.5vw, 1.5rem);
+  }
+
+  .hero__type {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
   .hero__slot {
-    order: -1;
-    min-height: clamp(12rem, 30vh, 17rem);
+    grid-column: 2;
+    grid-row: 1;
+    align-self: stretch;
+  }
+
+  .hero__say,
+  .hero__plate,
+  .hero__stats {
+    grid-column: 1 / -1;
   }
 }
 
@@ -981,21 +998,28 @@ code {
     grid-row: 1;
   }
 
+  .hero__say {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  /* Down both rows of type, so the object has the height of the whole column
+     to hang in even though it is only standing next to the top of it. */
   .hero__slot {
     grid-column: 2;
-    grid-row: 1;
+    grid-row: 1 / span 2;
     align-self: stretch;
     min-height: 22rem;
   }
 
   .hero__plate {
     grid-column: 1;
-    grid-row: 2;
+    grid-row: 3;
   }
 
   .hero__stats {
     grid-column: 2;
-    grid-row: 2;
+    grid-row: 3;
     /* Top of the row, so the right column reads straight down — cage, then
        what the site has in it — instead of leaving a hole under the cage and
        hanging the numbers off the bottom of a very tall photograph. */
