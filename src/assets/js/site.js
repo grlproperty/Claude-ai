@@ -143,11 +143,105 @@
   }
 
 
+  // ---- parallax ----------------------------------------------------------
+  // The photograph drifts inside its frame as the plate crosses the screen.
+  // Offsets are a percentage of the element's own height, so one number is
+  // right at every size, and they are written to a custom property rather than
+  // to `transform` — the transform also carries the scale that gives the drift
+  // somewhere to go, and JS should not have to know about that.
+  var drifters = [];
+
+  function paintDrift() {
+    var h = window.innerHeight || 1;
+    for (var i = 0; i < drifters.length; i++) {
+      var el = drifters[i];
+      var r = el.getBoundingClientRect();
+      // Nothing off screen needs a value; it will get one before it arrives.
+      if (r.bottom < -240 || r.top > h + 240) continue;
+      var k = ((h / 2 - (r.top + r.height / 2)) / h) * 2;
+      if (k < -1) k = -1;
+      else if (k > 1) k = 1;
+      el.style.setProperty('--drift', (k * 4.2).toFixed(2) + '%');
+    }
+  }
+
+
+  // ---- spine ---------------------------------------------------------------
+  // The held heading's hairline fills as you move through its section. Which
+  // headings are held is decided in CSS, by a :has() rule that only applies
+  // above a breakpoint — so rather than duplicate that condition here, ask the
+  // browser which ones actually came out sticky.
+  var spines = [];
+  var frameQueued = false;
+
+  function paintSpine() {
+    for (var i = 0; i < spines.length; i++) {
+      var head = spines[i].el;
+      // The offset the head is held at, read once from the stylesheet — not
+      // the head's live position. A sticky element releases when its container
+      // runs out from under it, and from then on its measured top tracks the
+      // section instead of the screen, which drives the ratio below back
+      // towards nothing exactly when the section is finished.
+      var hold = spines[i].top;
+      var r = spines[i].section.getBoundingClientRect();
+      // Zero when the section's top reaches the held position, one when its
+      // bottom does. Measured against the section's own height rather than the
+      // part of it that scrolls past a stuck heading — on a section barely
+      // taller than the window that second figure is a couple of dozen pixels,
+      // and the line snaps from empty to full inside one wheel click.
+      var span = r.height;
+      var k = span > 8 ? (hold - r.top) / span : 0;
+      if (k < 0) k = 0;
+      else if (k > 1) k = 1;
+      head.style.setProperty('--spine', (k * 100).toFixed(1) + '%');
+    }
+  }
+
+  // Both jobs read layout, so both belong in the same frame: one subscription,
+  // one rAF, one pass over the geometry per scroll rather than two.
+  function onScrollFrame() {
+    frameQueued = false;
+    paintDrift();
+    paintSpine();
+  }
+
+  function queueFrame() {
+    if (frameQueued) return;
+    frameQueued = true;
+    requestAnimationFrame(onScrollFrame);
+  }
+
+  window.addEventListener('scroll', queueFrame, { passive: true });
+  window.addEventListener('resize', function () {
+    collectSpines();
+    queueFrame();
+  }, { passive: true });
+
+  function collectSpines() {
+    spines = [];
+    var heads = document.querySelectorAll('.section > .wrap > .section-head');
+    Array.prototype.forEach.call(heads, function (el) {
+      var cs = getComputedStyle(el);
+      var section = el.parentNode && el.parentNode.parentNode;
+      if (cs.position !== 'sticky' || !section) {
+        el.style.removeProperty('--spine');
+        return;
+      }
+      spines.push({ el: el, section: section, top: parseFloat(cs.top) || 0 });
+    });
+  }
+
   // ------------------------------------------------ content-scoped
   // Re-runnable. Called once now, and again by the router in the
   // single-file build after it swaps the contents of <main>.
   function initContent() {
     if (mastheadRepaint) mastheadRepaint();
+    if (!reduced) {
+      drifters = Array.prototype.slice.call(document.querySelectorAll('[data-drift]'));
+      paintDrift();
+    }
+    collectSpines();
+    paintSpine();
   // ---- pointer tilt ------------------------------------------------------
   // Cards rotate a few degrees toward the pointer. Capped low deliberately:
   // this is an editorial platform, and a card that swings is a toy.

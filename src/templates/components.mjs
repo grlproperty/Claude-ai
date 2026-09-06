@@ -10,7 +10,7 @@ export const label = (text, extra = '') =>
  */
 export function sectionHead({ eyebrow, title, lede, wide = false, centered = false, level = 2 }) {
   const h = `h${level}`;
-  return `<div class="section-head${wide ? ' section-head--wide' : ''}${centered ? ' center' : ''}">
+  return `<div class="section-head reveal${wide ? ' section-head--wide' : ''}${centered ? ' center' : ''}">
     ${eyebrow ? label(eyebrow) : ''}
     ${title ? `<${h}>${typo(title)}</${h}>` : ''}
     ${lede ? `<p class="lede mb-0">${typo(lede)}</p>` : ''}

@@ -384,6 +384,9 @@
     return 0.62 + Math.min(1, (y - HIGH) / CHAIN_REVEAL) * 0.38;
   };
 
+  // The fixing point above the page. The whole assembly swings from here.
+  var CHAIN_TOP = chainBase + (LINKS - 1) * LINK_PITCH + LINK_H;
+
   for (var ci = 0; ci < LINKS; ci++) {
     var cy = chainBase + ci * LINK_PITCH;
     // The first link has to pass through the hook's arc, which lies in the
@@ -560,6 +563,30 @@
   var swing = { x: 0, vx: 0, z: 0, vz: 0, spin: 0, vspin: 0 };
   var STIFF = 5.2;
   var DAMP = 0.86;
+  // How much of the cage's swing the chain above it takes up. Small, because
+  // the arm is six units where the cage's is one and a half: the same angle
+  // would throw the whole object out of the cell it hangs in.
+  var CHAIN_FOLLOW = 0.2;
+  var LEAN_LIMIT = 0.042;
+
+  function clampAngle(a) {
+    return a < -LEAN_LIMIT ? -LEAN_LIMIT : a > LEAN_LIMIT ? LEAN_LIMIT : a;
+  }
+
+  // How far the cage may swing on its own hook.
+  var SWING_LIMIT = 0.16;
+
+  function capSwing(o, a, v) {
+    if (o[a] > SWING_LIMIT) {
+      if (o[v] > 0) o[v] = 0;
+      return SWING_LIMIT;
+    }
+    if (o[a] < -SWING_LIMIT) {
+      if (o[v] < 0) o[v] = 0;
+      return -SWING_LIMIT;
+    }
+    return o[a];
+  }
 
   var pointerX = 0;
   var pointerY = 0;
@@ -576,8 +603,8 @@
       function (e) {
         var nx = (e.clientX / window.innerWidth - 0.5) * 2;
         var ny = (e.clientY / window.innerHeight - 0.5) * 2;
-        swing.vz += (nx - pointerX) * 1.5;
-        swing.vx += (ny - pointerY) * 1.1;
+        swing.vz += (nx - pointerX) * 0.85;
+        swing.vx += (ny - pointerY) * 0.62;
         pointerX = nx;
         pointerY = ny;
       },
@@ -604,6 +631,14 @@
     swing.vz *= Math.pow(DAMP, dt * 60 * 0.016);
     swing.x += swing.vx * dt;
     swing.z += swing.vz * dt;
+
+    // Stopped at the angle a chain of this length would allow. Past it the
+    // hook rotates far enough inside the link to come out of it, and a hard
+    // flick of the pointer could reach that in one frame. Hitting the limit
+    // kills the velocity into it rather than reflecting: this is a chain going
+    // taut, not a ball bouncing.
+    swing.x = capSwing(swing, 'x', 'vx');
+    swing.z = capSwing(swing, 'z', 'vz');
 
     // The spin has no spring: it drifts to a stop and stays where it lands, so
     // the cage is never caught in the same pose twice.
@@ -664,25 +699,45 @@
       gl.uniform1f(uReveal, 1);
     }
 
-    // Rotated about the hook, not the middle: a hung object pivots where it is
-    // held. Translate the pivot to the origin, swing, and put it back.
-    var pivot = HEIGHT / 2 + 0.3;
+    // Rotated where it is actually held: the top of the hook's arc, which is
+    // the point the first link bears on — not the arc's centre, which is a
+    // centimetre lower and lets the hook walk out of the link as it turns.
+    var pivot = HEIGHT / 2 + 0.41;
     scrollTurn += (scrollTurnTarget - scrollTurn) * Math.min(1, dt * 4);
-    var hang = multiply(
-      translate(0, -pivot, 0),
-      multiply(
-        rotateZ(swing.z + idle),
-        multiply(rotateX(swing.x), rotateY(swing.spin + scrollTurn + elapsed * 0.05))
-      )
+    // Rotate about a point, not the origin: translate the pivot to the origin
+    // FIRST, then rotate, then put it back. multiply(a, b) applies b then a, so
+    // the inward translation has to be the innermost term. It used to be the
+    // outer one, which pairs with the outward translation and cancels — the
+    // cage was turning about its own middle for as long as this has existed.
+    // Invisible until something was attached to the hook.
+    var spin = multiply(
+      rotateZ(swing.z + idle),
+      multiply(rotateX(swing.x), rotateY(swing.spin + scrollTurn + elapsed * 0.05))
     );
-    var model = multiply(translate(0, pivot, 0), hang);
+    var hang = multiply(spin, translate(0, -pivot, 0));
+
+    // Two pendulums, not one. The chain leans from its fixing above the page —
+    // a long arm, so a small angle and a slow, wide arc — and the cage adds a
+    // second, faster swing on its own hook. A chain that stayed rigid while
+    // the thing hanging off it moved was the one part of this that read as a
+    // drawing rather than an object.
+    //
+    // Both are the same rotation about the same point, so the cage cannot come
+    // off the hook however far either swings: the chain's transform is applied
+    // to the cage as well, and the hook travels with the last link.
+    var lean = reduced ? 0 : Math.sin(elapsed * 0.31 + 0.9) * 0.009;
+    var leanZ = clampAngle(swing.z * CHAIN_FOLLOW + lean);
+    var leanX = clampAngle(swing.x * CHAIN_FOLLOW);
+    var ceiling = multiply(
+      translate(0, CHAIN_TOP, 0),
+      multiply(rotateZ(leanZ), multiply(rotateX(leanX), translate(0, -CHAIN_TOP, 0)))
+    );
+
+    var model = multiply(ceiling, multiply(translate(0, pivot, 0), hang));
     var place = translate(offsetX, offsetY, -depth);
     var tilt = rotateX(-0.06);
     var mv = multiply(place, multiply(tilt, model));
-    // The chain is fixed to whatever is above the page. It takes the same
-    // placement and tilt but none of the swing, so the hook stays where the
-    // last link holds it however far the cage below has swung.
-    var mvChain = multiply(place, tilt);
+    var mvChain = multiply(place, multiply(tilt, ceiling));
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.uniformMatrix4fv(uMVP, false, new Float32Array(multiply(proj, mv)));

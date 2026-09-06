@@ -302,15 +302,40 @@ code {
   .section:has(> .wrap > .section-head:not(.section-head--wide) + .grid) > .wrap > .section-head,
   .section:has(> .wrap > .section-head:not(.section-head--wide) + .rows) > .wrap > .section-head,
   .section:has(> .wrap > .section-head:not(.section-head--wide) + .scroller) > .wrap > .section-head {
+    position: relative;
     position: sticky;
     /* Below the masthead, which is sticky itself. */
     top: 6.5rem;
     margin-bottom: 0;
     max-width: none;
-    /* The spine: a crimson hairline down the held column, which is what ties
-       one section to the next as you scroll the length of the page. */
-    border-left: 1px solid var(--crimson);
+    /* The spine: a hairline down the held column, which is what ties one
+       section to the next as you scroll the length of the page. It is a track
+       and a fill — the crimson runs down it as you move through the section,
+       so the held heading says not only what you are inside but how far. */
+    border-left: 1px solid var(--rule);
     padding-left: var(--s4);
+  }
+
+  .section:has(> .wrap > .section-head:not(.section-head--wide) + .grid) > .wrap > .section-head::before,
+  .section:has(> .wrap > .section-head:not(.section-head--wide) + .rows) > .wrap > .section-head::before,
+  .section:has(> .wrap > .section-head:not(.section-head--wide) + .scroller) > .wrap > .section-head::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: 0;
+    width: 1px;
+    height: var(--spine, 0%);
+    background: var(--crimson);
+    /* Follows the scroll rather than easing behind it; a transition here reads
+       as lag, not smoothing. Short enough to take the step out of a wheel
+       click without trailing the page. */
+    transition: height 0.12s linear;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section > .wrap > .section-head::before {
+      transition: none;
+    }
   }
 
   /* The lede is a caption in this column, not a standfirst across the page. */
@@ -991,13 +1016,15 @@ code {
 }
 
 /* Stacked, the column can be a whole tablet wide, and a 3:4 plate at that
-   width is a thousand pixels of scroll before the page has said anything. */
-.hero__plate img {
+   width is a thousand pixels of scroll before the page has said anything.
+   Capped on the frame, not the image: the frame carries the border, and a
+   border wider than the picture inside it is not a frame. */
+.hero__frame {
   max-width: 32rem;
 }
 
 @media (min-width: 60rem) {
-  .hero__plate img {
+  .hero__frame {
     max-width: none;
   }
 }
@@ -1008,14 +1035,30 @@ code {
   grid-template-columns: repeat(2, 1fr);
 }
 
+/* The frame holds the edge; the photograph moves inside it. Drawn a little
+   larger than the opening so there is somewhere for it to go — at rest it is
+   already off-centre, and it settles as the plate crosses the middle of the
+   screen. */
+.hero__frame {
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--rule-strong);
+  box-shadow: var(--lift-3);
+}
+
 .hero__plate img {
   display: block;
   width: 100%;
   height: auto;
   aspect-ratio: 3 / 4;
   object-fit: cover;
-  border: 1px solid var(--rule-strong);
-  box-shadow: var(--lift-3);
+  transform: scale(1.11) translate3d(0, var(--drift, 0%), 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__plate img {
+    transform: none;
+  }
 }
 
 .hero__plate figcaption {
@@ -1123,6 +1166,25 @@ code {
 .js .reveal[data-shown='true'] {
   opacity: 1;
   transform: none;
+}
+
+/* The rule beside a label is drawn rather than switched on. It rides the
+   reveal it sits inside, a beat behind the text it belongs to. */
+.js .reveal .label::before {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.55s var(--ease-out) 0.18s;
+}
+
+.js .reveal[data-shown='true'] .label::before {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal .label::before {
+    transform: none;
+    transition: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
