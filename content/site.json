@@ -80,6 +80,55 @@
         "featured": true
       },
       {
+        "name": "The Conscious Wardrobe",
+        "for": "For anyone who buys clothes",
+        "price": 31,
+        "pages": 26,
+        "summary": "Six animal materials decoded under the names the label actually uses, the plant and recycled alternatives that replace each, and 80+ brands checked — with what is available in South Africa marked.",
+        "contains": [
+          "Six materials decoded — leather, wool, silk, down, fur and shearling, exotics",
+          "The material map: the plant, synthetic or recycled alternative for each",
+          "80+ verified brands across luxury, mid-range and high street",
+          "South African availability marked — Woolworths, Cotton On, Mr Price, Superbalist",
+          "The wardrobe audit: a four-step method for every garment you own, with the worksheet",
+          "Eight pre-written messages to brands, retailers and the ARB"
+        ],
+        "licence": "Personal use.",
+        "buy": ""
+      },
+      {
+        "name": "The Conscious Home Kit",
+        "for": "For everything else on the shelf",
+        "price": 31,
+        "pages": 26,
+        "summary": "Five categories of animal material hiding in an ordinary house — cleaning, candles, bedding, furniture, pet supplies — decoded, with 70+ verified brands and a room-by-room walkthrough.",
+        "contains": [
+          "Five categories decoded — cleaning, candles, bedding, furniture, pet supplies",
+          "The home material map: the plant-based or recycled alternative for each",
+          "70+ verified brands, with South African availability marked",
+          "The room-by-room audit: kitchen, bathroom, bedroom, lounge, pet area",
+          "Eight pre-written messages to brands, retailers, the ARB and pet retailers"
+        ],
+        "licence": "Personal use.",
+        "buy": ""
+      },
+      {
+        "name": "The 30-Day Re-Wilding Journal",
+        "for": "For the part that is not shopping",
+        "price": 31,
+        "pages": 27,
+        "summary": "Thirty days of prompts in your own handwriting. Not a guide, and nothing in it to buy — half an hour a day of paying attention to what the industry took, and finding what is underneath.",
+        "contains": [
+          "One prompt a day for thirty days, built as an arc rather than a list",
+          "Day zero: the starting line, so there is something to measure against",
+          "Four practices — refusal, investigation, replacement, action",
+          "Made to be printed and written in by hand",
+          "Cross-referenced to the volumes above, and self-contained without them"
+        ],
+        "licence": "Personal use.",
+        "buy": ""
+      },
+      {
         "name": "The Greenwashing Field Guide",
         "for": "For anyone who buys things",
         "price": 14,
@@ -94,6 +143,35 @@
         ],
         "licence": "Personal use.",
         "buy": "https://www.paypal.com/ncp/payment/ZGWKATME8GCWJ"
+      }
+    ],
+    "freeNote": "The two pocket cards are the printable sections of the volumes they come from, published on their own and free. No email, no account, no payment — the link is the file.",
+    "free": [
+      {
+        "name": "The Pocket Wardrobe Card",
+        "for": "From The Conscious Wardrobe",
+        "file": "/downloads/feral-femme-pocket-wardrobe-card.pdf",
+        "bytes": 493924,
+        "summary": "A wallet-sized 60-second check for a clothing label. Print it at 100%, cut along the dashed line, fold once.",
+        "contains": [
+          "Six fibres to recognise, by the names the label uses",
+          "Five certifications worth trusting, and what each covers",
+          "Three traps — including why “faux” and “natural” are not answers",
+          "Five questions to ask before the till"
+        ]
+      },
+      {
+        "name": "The Pocket Home Card",
+        "for": "From The Conscious Home Kit",
+        "file": "/downloads/feral-femme-pocket-home-card.pdf",
+        "bytes": 488135,
+        "summary": "The same check for everything else you buy — soap, candles, bedding, pet supplies.",
+        "contains": [
+          "Six ingredients to refuse, under their industry names",
+          "Five certifications worth trusting, including BWC SA",
+          "Three traps — including what “fine bone china” is made of",
+          "Five questions to ask before the till"
+        ]
       }
     ]
   },

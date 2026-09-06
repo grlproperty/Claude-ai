@@ -167,8 +167,12 @@ async function main() {
    *    drops the anchor, because the address bar's fragment is what the router
    *    reads and it cannot hold two. Getting the reader to the right page
    *    beats not linking at all.
-   * 2. A file shipped next to this one — the feed, the manifest. Those really
-   *    are at that address on the server, so they stay ordinary links.
+   * 2. A file shipped next to this one — the feed, the manifest, the two free
+   *    pocket cards in downloads/. Those really are at that address on the
+   *    server, so they stay ordinary links. A type missing from this list is
+   *    not a broken link but a dead one: case 3 turns it into a span that
+   *    still looks like whatever it was wearing, so a download button keeps
+   *    its border and its label and quietly does nothing.
    * 3. Anything else stops being a link.
    *
    * Case 3 used to replace the anchor with a bare <span class="was-link">,
@@ -179,7 +183,7 @@ async function main() {
    * stacked in one corner on top of the heading. So the attributes come
    * across, and was-link is appended to the class rather than replacing it.
    */
-  const COMPANION_FILE = /\.(xml|webmanifest|txt|json)$/;
+  const COMPANION_FILE = /\.(xml|webmanifest|txt|json|pdf)$/;
 
   const rewrite = (html) =>
     html.replace(
@@ -445,6 +449,20 @@ async function main() {
     if (!existsSync(from)) continue;
     await writeFile(join(OUT, name), await readFile(from));
     copied.push(name);
+  }
+
+  // The free pocket cards are linked from /shop/ and are the one thing on the
+  // site a reader is invited to take away rather than read. A megabyte of PDF
+  // is not going into a data URI on a page that has to load before anything is
+  // visible, so they travel as files — which means they have to be uploaded
+  // alongside index.html or the two download buttons 404.
+  const DOWNLOADS = join(DIST, 'downloads');
+  if (existsSync(DOWNLOADS)) {
+    await mkdir(join(OUT, 'downloads'), { recursive: true });
+    for (const name of await readdir(DOWNLOADS)) {
+      await writeFile(join(OUT, 'downloads', name), await readFile(join(DOWNLOADS, name)));
+      copied.push('downloads/' + name);
+    }
   }
 
   // dist/robots.txt points at a sitemap this build does not produce, and a

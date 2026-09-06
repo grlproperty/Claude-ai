@@ -1962,6 +1962,12 @@ code {
   box-shadow: var(--lift-2, var(--lift-1));
 }
 
+/* A free card is not a lesser product, but it is a different offer: the crimson
+   spine marks it without giving it the featured card's weight. */
+.product--free {
+  border-left: 2px solid var(--crimson);
+}
+
 .product__for {
   font-family: var(--ui);
   font-size: 0.58rem;

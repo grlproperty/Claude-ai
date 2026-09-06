@@ -17,6 +17,9 @@ import { esc, typo } from '../lib/util.mjs';
  */
 const money = (symbol, value) => `${symbol}${Number(value).toLocaleString('en-US')}`;
 
+/** A download link should say how big the thing behind it is. */
+const kb = (bytes) => `${Math.round(Number(bytes) / 1024)} KB`;
+
 /**
  * A buy button, or an enquiry email when no payment link is set yet.
  *
@@ -55,16 +58,54 @@ export function renderShop({ site, rates }) {
   <div class="wrap">
     ${sectionHead({
       eyebrow: 'Published',
-      title: 'Two things worth paying for',
-      lede: 'Everything on this site is free and stays free. These are the two documents that took long enough to assemble that they are sold instead — the reference sections are generated from the same reviewed datasets the free tools run on, so a change to a certification reaches the PDF rather than leaving a stale file in circulation.',
+      title: 'Printed, and worth printing',
+      lede: 'Everything on this site is free and stays free. These are the documents that took long enough to assemble that they are sold instead — plus two pocket cards that are not, because a card you can carry is worth more in circulation than it is behind a payment.',
       wide: true,
       level: 1,
     })}
   </div>
 </section>
 
+${
+  s.free && s.free.length
+    ? `<section class="section--tight">
+  <div class="wrap">
+    ${sectionHead({
+      eyebrow: 'Free to download',
+      title: 'The two pocket cards',
+      lede: s.freeNote,
+    })}
+    <div class="grid grid--2" style="gap:2.5rem;align-items:start;">
+      ${s.free
+        .map(
+          (f) => `<article class="product product--free tilt reveal">
+        <p class="product__for">${esc(f.for)}</p>
+        <h2 class="product__name">${typo(f.name)}</h2>
+        <p class="product__meta">1 page &middot; PDF &middot; ${kb(f.bytes)} &middot; Free</p>
+        <p class="product__summary">${typo(f.summary)}</p>
+        <ul class="product__contains">
+          ${f.contains.map((c) => `<li>${typo(c)}</li>`).join('')}
+        </ul>
+        <div class="product__buy">
+          <a class="btn" href="${esc(f.file)}" download>Download the PDF</a>
+          <p class="product__delivery">Straight down, no email asked for.</p>
+        </div>
+      </article>`
+        )
+        .join('')}
+    </div>
+  </div>
+</section>`
+    : ''
+}
+
 <section class="section--tight">
   <div class="wrap">
+    ${sectionHead({
+      eyebrow: 'Published',
+      title: 'The documents',
+      lede: 'Priced in US dollars, which is what the payment links are issued in. Use the selector to read them in another currency — your bank sets the rate it actually applies.',
+    })}
     ${currencyPicker(rates)}
     <div class="grid grid--2" style="gap:2.5rem;align-items:start;">
       ${s.products
@@ -107,9 +148,10 @@ export function renderShop({ site, rates }) {
 <section class="section--tight">
   <div class="wrap">
     ${sectionHead({ eyebrow: 'Before you buy', title: 'What these are not' })}
-    <p class="prose">Neither is legal advice. Every entry in both documents cites a public source you can open and read yourself, and all of it is drawn from the reviewed datasets behind the <a href="/tools/">free tools</a>. Nothing here certifies compliance or approves a claim.</p>
+    <p class="prose">None of it is legal advice. Nothing here certifies compliance or approves a claim.</p>
+    <p class="prose">The Claims Compliance Pack and the Greenwashing Field Guide are generated from the same reviewed datasets the <a href="/tools/">free tools</a> run on, so a change to a certification reaches the PDF rather than leaving a stale file in circulation. The Conscious volumes and the journal are written documents rather than generated ones &mdash; every brand and material entry cites a source you can open and read, but they are revised on their own schedule and the edition date on the cover is the one that matters.</p>
     <p class="prose">Where an entry says a claim requires substantiation, that is a statement about what the published guidance asks for &mdash; not an opinion on your liability. For that, take advice from a qualified attorney on your specific product and market.</p>
-    <p class="prose">If you want the reference material and not the document, it is all on this site, searchable and always current. The PDFs exist because a printed reference you can take into a meeting is a different thing from a website, not because the website is missing anything.</p>
+    <p class="prose">If you want the reference material and not the document, the decoders and the record are all on this site, searchable and always current. The PDFs exist because a printed reference you can take into a shop or a meeting is a different thing from a website, not because the website is missing anything. The two pocket cards above are the clearest case of that, which is why they are free.</p>
     ${note(
       'If something in them is wrong',
       `<p class="mb-0">Tell us: <a href="mailto:${esc(site.email)}">${esc(
@@ -131,7 +173,7 @@ export function renderShop({ site, rates }) {
     site,
     title: 'Published',
     description:
-      'Two documents drawn from the same reviewed datasets as the free tools: a claims-compliance reference for brands and agencies, and a field guide for readers.',
+      'Five documents and two free pocket cards: a claims-compliance reference for brands, the Conscious Wardrobe and Home Kit, a thirty-day journal, and a field guide for readers.',
     path: '/shop/',
     body,
   });

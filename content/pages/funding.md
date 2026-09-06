@@ -11,7 +11,9 @@ This page exists because we now sell things, and a research site that sells thin
 
 ## What we sell
 
-**Two documents.** [The Claims Compliance Pack and The Greenwashing Field Guide](/shop/). Both are assembled from the same reviewed datasets that power the free tools on this site. Nothing in either is withheld from the free version.
+**Five documents.** [Listed in full on the Published page](/shop/). The Claims Compliance Pack and The Greenwashing Field Guide are assembled from the same reviewed datasets that power the free tools on this site; The Conscious Wardrobe, The Conscious Home Kit and The 30-Day Re-Wilding Journal are written documents. Nothing in any of them is withheld from the free version of the reference material.
+
+**Two pocket cards, given away.** The printable card from each Conscious volume is [free to download](/shop/) with no email and no account. They are the most useful pages in those volumes, and a card in a wallet does more good in circulation than behind a payment.
 
 **Reader support.** [Donations](/donate/), which fund research time and hosting and buy nothing else.
 
