@@ -10,7 +10,15 @@ export function renderHome({ site, notes, data }) {
   // brand's face and should not change shape every time the pull runs. The
   // photograph sits under the wordmark rather than beside it, so the drawn
   // cage and the photographed one read as the same object seen twice.
-  const hero = shots.find((p) => p.shortcode === 'DYfHUz6O8e3') ?? null;
+  //
+  // A file in content/images/ wins if there is one — see the README there. The
+  // pulled frames carry a burnt-in wordmark, which is a duplicate on a page
+  // already headed FERAL FEMME, so the override exists to hold a clean
+  // original. Falls back to the pull, so removing the file undoes it.
+  const pulled = shots.find((p) => p.shortcode === 'DYfHUz6O8e3') ?? null;
+  const hero = data.hero
+    ? { ...data.hero, title: pulled?.title ?? site.tagline }
+    : pulled;
 
   const body = `
 <section class="hero">
@@ -48,10 +56,11 @@ export function renderHome({ site, notes, data }) {
       <span class="hero__frame"><img data-drift src="${esc(hero.image)}" srcset="${esc(hero.thumb)} 640w, ${esc(hero.image)} 1200w" sizes="(min-width: 60rem) 42vw, (min-width: 34rem) 32rem, 100vw" alt="${esc(
             hero.title
           )}" width="${hero.width ?? 2096}" height="${hero.height ?? 2795}" fetchpriority="high" decoding="async"></span>
-      <figcaption>
-        <span class="is-crimson">${esc(data.instagram.handle)}</span>
+      <figcaption>${
+        data.instagram ? `
+        <span class="is-crimson">${esc(data.instagram.handle)}</span>` : ''
+      }
         ${typo(hero.title)}
-        <span class="hero__plate-note">AI-directed editorial work by ${esc(site.founder.name)}.</span>
       </figcaption>
     </figure>`
         : ''

@@ -504,6 +504,10 @@
     });
   }
 
+  // The least chain that still reads as one, in pixels. The cage is never hung
+  // so high that it appears to start at the top of the frame by itself.
+  var MIN_CHAIN = 130;
+
   function solveSlot() {
     var slot = document.querySelector('.hero__slot');
     if (!slot) return null;
@@ -513,13 +517,34 @@
     // Pixels per world unit: fit to the cell on whichever axis binds first,
     // leaving the cage short of the cell's top so there is chain to see.
     var ppu = Math.min((r.height * 0.72) / CAGE_TALL, (r.width * 0.9) / (CAGE_HALF * 2));
+    var half = (CAGE_TALL * ppu) / 2;
+
+    // Where it hangs to. The cell runs the height of the whole type column —
+    // eyebrow down to the buttons — and centring in that puts the cage level
+    // with the running text rather than with the wordmark, which is the thing
+    // it is meant to be standing next to. Hung on the wordmark's baseline
+    // instead, so its upper half sits beside the heading.
+    var centre = r.top + r.height * 0.6;
+    var title = document.querySelector('.hero__title');
+    if (title) {
+      var t = title.getBoundingClientRect();
+      // Only when the two are actually side by side. Stacked, the wordmark is
+      // below the cell and anchoring to it would drop the cage onto the type.
+      if (t.right <= r.left + 8) centre = t.bottom;
+    }
+    // Kept clear of the top of the frame, and inside the cell at the bottom.
+    var lowest = r.bottom - half;
+    var highest = h.top + MIN_CHAIN + half;
+    if (centre > lowest) centre = lowest;
+    if (centre < highest) centre = highest;
+
     return {
       // The projection's half-height at distance d is tan(fovy / 2) * d, so
       // the distance that yields the wanted scale falls straight out of it.
       depth: h.height / (2 * TAN_HALF_FOV * ppu),
       offsetX: (r.left + r.width / 2 - (h.left + h.width / 2)) / ppu,
-      // Hung low in its cell, world y up against screen y down.
-      offsetY: (h.top + h.height / 2 - (r.top + r.height * 0.6)) / ppu,
+      // World y up against screen y down.
+      offsetY: (h.top + h.height / 2 - centre) / ppu,
     };
   }
 

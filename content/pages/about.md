@@ -32,7 +32,7 @@ That independence is the reason the [Record Checker](/tools/record/) can name co
 
 ## On the imagery
 
-The archive's visual essays are created using AI image generation, directed by Ayden Rosemary Brown. Each image is a deliberate frame — conceptual editorial work, not documentary photography — and that is disclosed wherever it appears.
+The archive's visual essays are created using AI image generation, directed by Ayden Rosemary Brown. Each image is a deliberate frame — conceptual editorial work, not documentary photography. The full statement is at [/disclosures/](/disclosures/), which is linked from the foot of every page on this site.
 
 We state this plainly because a platform that documents misleading claims cannot itself be ambiguous about how its own material is made.
 

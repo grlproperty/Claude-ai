@@ -7,7 +7,7 @@
  * cards silently fall back to a system sans-serif, which looks approximately
  * right in a thumbnail and is off-brand everywhere it matters.
  */
-import { writeFile, mkdir } from 'node:fs/promises';
+import { writeFile, mkdir, readdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -184,4 +184,46 @@ export async function buildOgImages({ dist, site, entries }) {
   }
 
   console.log(`  Social cards: ${entries.length + 1}${ok ? '' : ' (fallback face)'}`);
+}
+
+/**
+ * The hero photograph, taken from content/images/ rather than from the
+ * Instagram pull.
+ *
+ * The pulled frames carry a burnt-in FERAL FEMME wordmark, which is right on a
+ * feed and wrong directly under a page already headed FERAL FEMME. So the hero
+ * can be overridden with a clean original: put a file named hero.jpg, .jpeg,
+ * .png or .webp in content/images/ and it wins. Remove it and the pulled frame
+ * comes back, so there is nothing to undo.
+ *
+ * Processed the same way the pull processes its own images — the same two
+ * widths, the same slight desaturation and lift — so a dropped-in file sits in
+ * the same grade as everything around it.
+ */
+export async function buildHeroImage({ dist, dir }) {
+  if (!existsSync(dir)) return null;
+  const named = (await readdir(dir)).filter((f) => /^hero\.(jpe?g|png|webp)$/i.test(f));
+  if (!named.length) return null;
+
+  const src = join(dir, named[0]);
+  const meta = await sharp(src).metadata();
+  const out = join(dist, 'assets/img');
+  await mkdir(out, { recursive: true });
+
+  for (const width of [640, 1200]) {
+    await sharp(src)
+      .resize({ width, withoutEnlargement: true })
+      .modulate({ saturation: 0.88 })
+      .linear(1.02, -4)
+      .webp({ quality: 82, effort: 5 })
+      .toFile(join(out, `hero-${width}.webp`));
+  }
+
+  console.log(`  Hero image: ${named[0]} (${meta.width}x${meta.height})`);
+  return {
+    thumb: '/assets/img/hero-640.webp',
+    image: '/assets/img/hero-1200.webp',
+    width: meta.width ?? null,
+    height: meta.height ?? null,
+  };
 }

@@ -33,7 +33,7 @@ import { buildTermIndex, crosslink } from './lib/crosslink.mjs';
 import { renderPage, renderNotFound, renderRedirect } from './pages/simple.mjs';
 import { renderFindUs } from './pages/find-us.mjs';
 import { renderShop } from './pages/shop.mjs';
-import { buildOgImages, buildBrandAssets } from './lib/images.mjs';
+import { buildOgImages, buildBrandAssets, buildHeroImage } from './lib/images.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const CONTENT = join(ROOT, 'content');
@@ -263,6 +263,14 @@ async function main() {
   await cp(ASSETS, join(DIST, 'assets'), { recursive: true });
   if (existsSync(PUBLIC)) await cp(PUBLIC, DIST, { recursive: true });
   await buildBrandAssets({ dist: DIST, site });
+  // The hero photograph, if one has been put in content/images/. Everything
+  // else on the page comes from the Instagram pull, and the frames there carry
+  // a burnt-in wordmark that a page already headed FERAL FEMME does not need a
+  // second copy of. Drop a file called hero.jpg (or .png / .webp) in that
+  // folder and it takes the hero; take it out and the pulled frame returns.
+  // After dist is emptied and the static assets are in, or its output is one
+  // of the things the wipe takes with it.
+  data.hero = await buildHeroImage({ dist: DIST, dir: join(CONTENT, 'images') });
 
   const routes = [];
   const track = (path, opts = {}) => routes.push({ path, ...opts });

@@ -28,7 +28,7 @@ The [tools](/tools/) carry the same discipline. The Record Checker holds only wh
 
 ## Imagery
 
-The archive's visual essays are AI-generated, directed by the founder, and conceptual rather than documentary. This is disclosed on the archive and in the About page.
+The archive's visual essays are AI-generated, directed by the founder, and conceptual rather than documentary. The full statement is at [/disclosures/](/disclosures/).
 
 No image on this platform is presented as photographic evidence of a specific event, and none should be read as such.
 
