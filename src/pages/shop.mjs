@@ -20,6 +20,16 @@ const money = (symbol, value) => `${symbol}${Number(value).toLocaleString('en-US
 /** A download link should say how big the thing behind it is. */
 const kb = (bytes) => `${Math.round(Number(bytes) / 1024)} KB`;
 
+/*
+ * The `download` attribute is given its filename rather than left bare.
+ *
+ * A bare `download` tells the browser to save rather than navigate, and leaves
+ * the name to the URL's last segment — which works until the URL is a data:
+ * URI, as it is in the single-file build, where there is no last segment and
+ * both cards save as "download.pdf". The second then collides with the first
+ * in the reader's downloads folder.
+ */
+
 /**
  * A buy button, or an enquiry email when no payment link is set yet.
  *
@@ -87,7 +97,7 @@ ${
           ${f.contains.map((c) => `<li>${typo(c)}</li>`).join('')}
         </ul>
         <div class="product__buy">
-          <a class="btn" href="${esc(f.file)}" download>Download the PDF</a>
+          <a class="btn" href="${esc(f.file)}" download="${esc(f.file.split('/').pop())}">Download the PDF</a>
           <p class="product__delivery">Straight down, no email asked for.</p>
         </div>
       </article>`

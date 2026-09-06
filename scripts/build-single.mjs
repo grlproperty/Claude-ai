@@ -134,6 +134,7 @@ async function main() {
     images.set(urlBase + file.replace('-640', '-1200'), uri);
   };
 
+  const DOWNLOADS_DIR = join(DIST, 'downloads');
   const IG = join(DIST, 'assets/img/instagram');
   for (const f of await readdir(IG)) {
     if (!f.endsWith('-640.webp')) continue;
@@ -151,11 +152,34 @@ async function main() {
     await inline(join(DIST, 'assets/img'), '/assets/img/', 'hero-640.webp', 880, 76);
   }
 
+  // The free pocket cards, carried inside the document rather than beside it.
+  //
+  // This is the one place the single build pays a real price for being one
+  // file: two PDFs of half a megabyte each become about 1.3MB of base64, which
+  // is most of the difference between a 2.8MB document and a 4.1MB one. They
+  // are worth it. A download button that 404s because the folder next to
+  // index.html was not uploaded is worse than a slower first load, and the
+  // whole point of this build is that there is nothing next to index.html.
+  //
+  // They live in the packed view for /shop/, at the end of the document, so
+  // they are not in front of anything that has to paint.
+  const pdfs = new Map();
+  if (existsSync(DOWNLOADS_DIR)) {
+    for (const name of await readdir(DOWNLOADS_DIR)) {
+      if (!name.endsWith('.pdf')) continue;
+      const buf = await readFile(join(DOWNLOADS_DIR, name));
+      pdfs.set('/downloads/' + name, `data:application/pdf;base64,${buf.toString('base64')}`);
+    }
+  }
+
   const inlineImages = (html) =>
     html
       .replace(/srcset="[^"]*"/g, '')
       .replace(/sizes="[^"]*"/g, '')
-      .replace(/src="(\/assets\/img\/[^"]+)"/g, (m, p) => (images.has(p) ? `src="${images.get(p)}"` : m));
+      .replace(/src="(\/assets\/img\/[^"]+)"/g, (m, p) => (images.has(p) ? `src="${images.get(p)}"` : m))
+      // Before rewrite() runs, which only looks at hrefs beginning with "/".
+      // Once this is a data: URI it is no longer a candidate for routing.
+      .replace(/href="(\/downloads\/[^"]+)"/g, (m, p) => (pdfs.has(p) ? `href="${pdfs.get(p)}"` : m));
 
   /**
    * Internal links become routes.
@@ -451,16 +475,13 @@ async function main() {
     copied.push(name);
   }
 
-  // The free pocket cards are linked from /shop/ and are the one thing on the
-  // site a reader is invited to take away rather than read. A megabyte of PDF
-  // is not going into a data URI on a page that has to load before anything is
-  // visible, so they travel as files — which means they have to be uploaded
-  // alongside index.html or the two download buttons 404.
-  const DOWNLOADS = join(DIST, 'downloads');
-  if (existsSync(DOWNLOADS)) {
+  // Also written out as plain files. The document does not need them — the
+  // buttons inside it carry the bytes — but they cost nothing here and they
+  // are what you would publish if you ever served dist/ instead.
+  if (existsSync(DOWNLOADS_DIR)) {
     await mkdir(join(OUT, 'downloads'), { recursive: true });
-    for (const name of await readdir(DOWNLOADS)) {
-      await writeFile(join(OUT, 'downloads', name), await readFile(join(DOWNLOADS, name)));
+    for (const name of await readdir(DOWNLOADS_DIR)) {
+      await writeFile(join(OUT, 'downloads', name), await readFile(join(DOWNLOADS_DIR, name)));
       copied.push('downloads/' + name);
     }
   }
