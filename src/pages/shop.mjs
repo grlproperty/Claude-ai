@@ -147,6 +147,13 @@ ${
     <p class="prose">${typo(s.delivery)}</p>
     <p class="prose">${typo(s.processorNote)}</p>
     ${note(
+      s.refundsTitle,
+      `<p>${typo(s.refunds)}</p>
+      <p class="mb-0">We will always put right a transaction that did not deliver what it promised:</p>
+      <ul class="product__contains">${s.refundsExceptions.map((e) => `<li>${typo(e)}</li>`).join('')}</ul>
+      <p class="mb-0">${typo(s.refundsRights)} The full statement is in the <a href="/terms/">terms</a>.</p>`
+    )}
+    ${note(
       'Why not an instant download',
       `<p class="mb-0">Because at this size a person emailing a file is more reliable than a storefront, and because it means we have somewhere to send the next edition. If your copy has not arrived within a working day, email <a href="mailto:${esc(
         site.email

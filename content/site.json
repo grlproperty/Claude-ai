@@ -173,7 +173,16 @@
           "Five questions to ask before the till"
         ]
       }
-    ]
+    ],
+    "refundsTitle": "Digital files are not refundable",
+    "refunds": "A delivered file cannot be un-received, so payment for one is final. Every document is described in full above — page count, contents, and what it is not — and the two pocket cards are free precisely so you can read the work before paying for any of it.",
+    "refundsExceptions": [
+      "It never arrives. Tell us and we send it, or refund it in full.",
+      "The wrong file arrives. We send the right one.",
+      "The file will not open, or arrives damaged. We replace it, or refund it.",
+      "You paid twice, or paid by accident. Refunded in full, no questions."
+    ],
+    "refundsRights": "None of this removes a right the law gives you. Where a statutory right to cancel applies to a purchase, it applies whatever this page says. PayPal's own buyer protection is separate from this policy and is not affected by it."
   },
   "positioning": {
     "lede": "We investigate every industry built on a body that could not agree to it — and we hold animals and women at equal weight. Neither is a metaphor for the other. Both are literal.",

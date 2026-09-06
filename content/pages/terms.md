@@ -4,7 +4,7 @@ summary: The terms on which this platform is published, and how its work may be 
 order: 6
 ---
 
-*Last updated: 31 August 2026*
+*Last updated: 6 September 2026*
 
 ## Nature of the content
 
@@ -43,6 +43,25 @@ Quotation from published reporting and official documents is for the purpose of 
 ## Links to this site
 
 Links to any page are welcome and require no permission. Framing pages so as to misrepresent authorship, or presenting our work as endorsing a product or company, is not permitted.
+
+## Payment and refunds
+
+The documents on the [Published](/shop/) page are digital files, delivered by email after payment through PayPal. Prices are charged in US dollars; your bank sets the rate it applies.
+
+**A delivered file is not refundable.** It cannot be un-received, and there is no version of returning it. Each document is described in full before purchase — its page count, its contents, and what it is not — and the two pocket cards are published free so that the work can be read before any of it is paid for.
+
+That said, we will always put right a transaction that did not deliver what it promised:
+
+- **It never arrived.** Tell us and we send it, or refund it in full.
+- **The wrong file arrived.** We send the right one.
+- **The file will not open, or arrived damaged.** We replace it, or refund it.
+- **You paid twice, or paid by accident.** Refunded in full, no questions asked.
+
+Write to [info@feral-femme.co](mailto:info@feral-femme.co) with the PayPal receipt.
+
+Corrections are a separate matter from refunds. Substantive corrections to a document are published at [/corrections/](/corrections/) and sent to buyers of the current edition at no charge — a corrected edition is not a new purchase.
+
+None of this removes a right the law gives you. Where a statutory right to cancel applies to a purchase, it applies whatever this page says. PayPal's own buyer protection operates independently of this policy and is not affected by it.
 
 ## Liability
 
