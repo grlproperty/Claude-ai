@@ -196,9 +196,10 @@ export async function buildOgImages({ dist, site, entries }) {
  * .png or .webp in content/images/ and it wins. Remove it and the pulled frame
  * comes back, so there is nothing to undo.
  *
- * Processed the same way the pull processes its own images — the same two
- * widths, the same slight desaturation and lift — so a dropped-in file sits in
- * the same grade as everything around it.
+ * Resized and encoded, and nothing else. The pull desaturates and lifts what
+ * it fetches, to bring a feed of images shot on different days into one
+ * palette; a hero chosen by hand has already been graded by the person who
+ * chose it, and putting it through that a second time flattens it.
  */
 export async function buildHeroImage({ dist, dir }) {
   if (!existsSync(dir)) return null;
@@ -213,9 +214,7 @@ export async function buildHeroImage({ dist, dir }) {
   for (const width of [640, 1200]) {
     await sharp(src)
       .resize({ width, withoutEnlargement: true })
-      .modulate({ saturation: 0.88 })
-      .linear(1.02, -4)
-      .webp({ quality: 82, effort: 5 })
+      .webp({ quality: 86, effort: 5 })
       .toFile(join(out, `hero-${width}.webp`));
   }
 

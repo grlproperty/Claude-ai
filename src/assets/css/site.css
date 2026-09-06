@@ -1052,7 +1052,7 @@ code {
   height: auto;
   aspect-ratio: 3 / 4;
   object-fit: cover;
-  transform: scale(1.11) translate3d(0, var(--drift, 0%), 0);
+  transform: scale(1.07) translate3d(0, var(--drift, 0%), 0);
 }
 
 @media (prefers-reduced-motion: reduce) {

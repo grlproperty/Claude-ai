@@ -161,7 +161,7 @@
       var k = ((h / 2 - (r.top + r.height / 2)) / h) * 2;
       if (k < -1) k = -1;
       else if (k > 1) k = 1;
-      el.style.setProperty('--drift', (k * 4.2).toFixed(2) + '%');
+      el.style.setProperty('--drift', (k * 2.8).toFixed(2) + '%');
     }
   }
 
