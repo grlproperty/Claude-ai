@@ -1946,6 +1946,12 @@ code {
 /* Two products rather than four tiers, so these are wider and carry a list.
    They are cards in the full sense — a thing you buy is a discrete object,
    which is the one place a border, a fill and a lift are all earned. */
+/* Sized to its contents, not to its neighbour.
+   These cards used to be height: 100%, which matched every card in a row to
+   the tallest — right while they all held the same kind of thing, and wrong
+   the moment some carry a cover and some do not. A card three hundred pixels
+   taller than its content has a hole in the middle of it, and a hole reads as
+   a fault. Ragged bottoms are the cheaper price. */
 .product {
   background: var(--white);
   border: 1px solid var(--rule-soft);
@@ -1953,13 +1959,47 @@ code {
   padding: var(--s5);
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
 
 .product--featured {
   border-color: var(--crimson);
   border-width: 1.5px;
   box-shadow: var(--lift-2, var(--lift-1));
+}
+
+/* The cover sits at the head of the card, full bleed to its padding, so the
+   first thing on a product card is the product. Bordered rather than shadowed:
+   the card already carries the shadow, and a second one reads as two objects. */
+.product__cover {
+  margin: calc(var(--s5) * -1) calc(var(--s5) * -1) var(--s4);
+  border-bottom: 1px solid var(--rule-soft);
+  background: var(--blush-pale);
+  overflow: hidden;
+}
+
+.product__cover img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Cropped to a letterbox of the top of the page. The masthead and the title
+     are what identify a volume; the lower two-thirds of an A4 cover at card
+     width is unreadable detail. */
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: 50% 0;
+  transition: transform 0.5s var(--ease);
+}
+
+.product:hover .product__cover img,
+.product:focus-within .product__cover img {
+  transform: scale(1.03);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product__cover img {
+    transition: none;
+    transform: none !important;
+  }
 }
 
 /* A free card is not a lesser product, but it is a different offer: the crimson

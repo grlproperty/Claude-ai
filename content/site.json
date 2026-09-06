@@ -58,7 +58,7 @@
     "currencySymbol": "$",
     "processor": "PayPal",
     "processorNote": "Priced and charged in US dollars, which is what the PayPal links are issued in. Your bank sets the rate on the day.",
-    "delivery": "The file is emailed to the address on your PayPal receipt, usually within a few hours and always within one working day. It is sent by a person, not a robot, which is also how you get told when an edition changes.",
+    "delivery": "The file is emailed to you — it is not downloaded from this site. PayPal asks for your email address at checkout, and that is the address it goes to, so use one you can actually receive at. It is sent by a person, usually within a few hours and always within one working day, which is also how you get told when an edition changes.",
     "products": [
       {
         "name": "The Claims Compliance Pack",
@@ -182,7 +182,8 @@
       "The file will not open, or arrives damaged. We replace it, or refund it.",
       "You paid twice, or paid by accident. Refunded in full, no questions."
     ],
-    "refundsRights": "None of this removes a right the law gives you. Where a statutory right to cancel applies to a purchase, it applies whatever this page says. PayPal's own buyer protection is separate from this policy and is not affected by it."
+    "refundsRights": "None of this removes a right the law gives you. Where a statutory right to cancel applies to a purchase, it applies whatever this page says. PayPal's own buyer protection is separate from this policy and is not affected by it.",
+    "deliveryNote": "Bought it and want it sent somewhere else? Reply to the PayPal receipt, or write to us with it. Nothing arrives automatically, so a wrong address is fixable rather than lost."
   },
   "positioning": {
     "lede": "We investigate every industry built on a body that could not agree to it — and we hold animals and women at equal weight. Neither is a metaphor for the other. Both are literal.",

@@ -8,7 +8,7 @@
  */
 import { layout } from '../templates/layout.mjs';
 import { label, sectionHead, note, newsletterForm, currencyPicker } from '../templates/components.mjs';
-import { esc, typo } from '../lib/util.mjs';
+import { esc, typo, slugify as slug } from '../lib/util.mjs';
 
 /**
  * R12,000, not R12000 and not R12 000. Prices are read at a glance or not at
@@ -16,6 +16,24 @@ import { esc, typo } from '../lib/util.mjs';
  * separate numbers.
  */
 const money = (symbol, value) => `${symbol}${Number(value).toLocaleString('en-US')}`;
+
+/**
+ * The cover of the thing being sold, where there is one.
+ *
+ * It is the first page of the PDF itself rather than a mock-up, which is the
+ * only version of a cover worth showing: a buyer who has seen it has seen
+ * something true about the document. Products whose source PDF is not in this
+ * repository render without one, and the card is designed to work either way.
+ */
+function cover(covers, name) {
+  const c = covers[slug(name)];
+  if (!c) return '';
+  return `<div class="product__cover"><img src="${esc(c.image)}" srcset="${esc(c.thumb)} 420w, ${esc(
+    c.image
+  )} 840w" sizes="(min-width: 60rem) 22vw, 40vw" alt="Cover of ${esc(name)}" width="${c.width ?? 911}" height="${
+    c.height ?? 1287
+  }" loading="lazy" decoding="async"></div>`;
+}
 
 /** A download link should say how big the thing behind it is. */
 const kb = (bytes) => `${Math.round(Number(bytes) / 1024)} KB`;
@@ -59,7 +77,7 @@ function buyAction(site, { name, price, symbol, featured, buy }) {
 
 // ------------------------------------------------------------------- /shop/
 
-export function renderShop({ site, rates }) {
+export function renderShop({ site, rates, covers = {} }) {
   const s = site.shop;
   const sym = s.currencySymbol;
 
@@ -89,6 +107,7 @@ ${
       ${s.free
         .map(
           (f) => `<article class="product product--free tilt reveal">
+        ${cover(covers, f.name)}
         <p class="product__for">${esc(f.for)}</p>
         <h2 class="product__name">${typo(f.name)}</h2>
         <p class="product__meta">1 page &middot; PDF &middot; ${kb(f.bytes)} &middot; Free</p>
@@ -121,6 +140,7 @@ ${
       ${s.products
         .map(
           (p) => `<article class="product${p.featured ? ' product--featured' : ''} tilt reveal">
+        ${cover(covers, p.name)}
         <p class="product__for">${esc(p.for)}</p>
         <h2 class="product__name">${typo(p.name)}</h2>
         <p class="product__meta">${p.pages} pages &middot; PDF &middot; ${esc(p.licence)}</p>
@@ -132,7 +152,7 @@ ${
           ${buyAction(site, { name: p.name, price: p.price, symbol: sym, featured: p.featured, buy: p.buy })}
           <p class="product__delivery">${
             p.buy ? `Paid by ${esc(s.processor)}. ` : ''
-          }Emailed, not downloaded &mdash; see below.</p>
+          }Emailed to the address you give at checkout &mdash; not downloaded.</p>
         </div>
       </article>`
         )
@@ -145,6 +165,7 @@ ${
   <div class="wrap">
     ${sectionHead({ eyebrow: 'How it arrives', title: 'Bought through PayPal, sent by email' })}
     <p class="prose">${typo(s.delivery)}</p>
+    <p class="prose">${typo(s.deliveryNote)}</p>
     <p class="prose">${typo(s.processorNote)}</p>
     ${note(
       s.refundsTitle,

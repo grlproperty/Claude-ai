@@ -226,3 +226,43 @@ export async function buildHeroImage({ dist, dir }) {
     height: meta.height ?? null,
   };
 }
+
+/**
+ * Product covers: the first page of each PDF, shown on its card in the shop.
+ *
+ * A cover is the one piece of a document a buyer can see before paying, so it
+ * does the work the description cannot — it shows the thing is made, and made
+ * to a standard. Sources live in content/images/covers/, named for the product
+ * slug; anything without a file there simply renders without a cover, which is
+ * what the two documents whose PDFs are not in this repository do.
+ *
+ * Emitted at two widths for the same reason every other image here is: the
+ * card is about 340px wide on a phone and 500 on a desktop, and a retina
+ * screen wants twice that.
+ */
+export async function buildCovers({ dist, dir }) {
+  if (!existsSync(dir)) return {};
+  const out = join(dist, 'assets/img/covers');
+  await mkdir(out, { recursive: true });
+
+  const covers = {};
+  for (const file of (await readdir(dir)).filter((f) => /\.(jpe?g|png|webp)$/i.test(f))) {
+    const slug = file.replace(/\.[^.]+$/, '');
+    const meta = await sharp(join(dir, file)).metadata();
+    for (const width of [420, 840]) {
+      await sharp(join(dir, file))
+        .resize({ width, withoutEnlargement: true })
+        .webp({ quality: 78, effort: 6 })
+        .toFile(join(out, `${slug}-${width}.webp`));
+    }
+    covers[slug] = {
+      thumb: `/assets/img/covers/${slug}-420.webp`,
+      image: `/assets/img/covers/${slug}-840.webp`,
+      width: meta.width ?? null,
+      height: meta.height ?? null,
+    };
+  }
+  const n = Object.keys(covers).length;
+  if (n) console.log(`  Product covers: ${n}`);
+  return covers;
+}

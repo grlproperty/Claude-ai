@@ -143,6 +143,20 @@ async function main() {
     await inline(IG, '/assets/img/instagram/', f, isHero ? 880 : 300, isHero ? 76 : 58);
   }
 
+  // Product covers. Small — they are card thumbnails, not plates — but there
+  // are five of them, and a cover that does not load is a product card with a
+  // hole in it.
+  const COVERS = join(DIST, 'assets/img/covers');
+  if (existsSync(COVERS)) {
+    for (const f of await readdir(COVERS)) {
+      if (!f.endsWith('-420.webp')) continue;
+      const buf = await sharp(join(COVERS, f)).resize({ width: 420 }).webp({ quality: 72, effort: 6 }).toBuffer();
+      const uri = `data:image/webp;base64,${buf.toString('base64')}`;
+      images.set('/assets/img/covers/' + f, uri);
+      images.set('/assets/img/covers/' + f.replace('-420', '-840'), uri);
+    }
+  }
+
   // The supplied hero, which the build writes a folder up from the pull. This
   // loop used to read the pull's folder and nothing else, so a hero coming
   // from content/images/ was the one image on the page left pointing at a file

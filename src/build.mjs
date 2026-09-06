@@ -33,7 +33,7 @@ import { buildTermIndex, crosslink } from './lib/crosslink.mjs';
 import { renderPage, renderNotFound, renderRedirect } from './pages/simple.mjs';
 import { renderFindUs } from './pages/find-us.mjs';
 import { renderShop } from './pages/shop.mjs';
-import { buildOgImages, buildBrandAssets, buildHeroImage } from './lib/images.mjs';
+import { buildOgImages, buildBrandAssets, buildHeroImage, buildCovers } from './lib/images.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const CONTENT = join(ROOT, 'content');
@@ -271,6 +271,7 @@ async function main() {
   // After dist is emptied and the static assets are in, or its output is one
   // of the things the wipe takes with it.
   data.hero = await buildHeroImage({ dist: DIST, dir: join(CONTENT, 'images') });
+  data.covers = await buildCovers({ dist: DIST, dir: join(CONTENT, 'images/covers') });
 
   const routes = [];
   const track = (path, opts = {}) => routes.push({ path, ...opts });
@@ -343,7 +344,7 @@ async function main() {
   track('/find-us/', { priority: '0.7' });
 
   // ---- what is sold
-  await writePage('/shop/', renderShop({ site, rates: data.rates }));
+  await writePage('/shop/', renderShop({ site, rates: data.rates, covers: data.covers }));
   track('/shop/', { priority: '0.8' });
 
 
