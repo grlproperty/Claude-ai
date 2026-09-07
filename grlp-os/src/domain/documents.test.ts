@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   SupersededTemplateError,
+  UnapprovedTemplateError,
   findUnmappedPlaceholders,
   prepareDocument,
   readPath,
@@ -12,6 +13,7 @@ const otpTemplate: TemplateVersionSpec = {
   version: 3,
   requiredApproval: 'SIGNATURE',
   signatoryRoles: ['buyer', 'seller', 'agent'],
+  approvedAt: new Date('2026-01-15'),
   body: [
     'OFFER TO PURCHASE',
     'The Purchaser, {{buyerFullName}} (ID {{buyerIdNumber}}), offers to purchase',
@@ -114,6 +116,12 @@ describe('preparing an offer to purchase', () => {
 });
 
 describe('template integrity', () => {
+  it('refuses to produce a document from wording nobody has approved', () => {
+    expect(() => prepareDocument({ template: { ...otpTemplate, approvedAt: null }, sources: goodSources })).toThrow(
+      UnapprovedTemplateError,
+    );
+  });
+
   it('refuses to prepare from a superseded template version', () => {
     expect(() =>
       prepareDocument({ template: { ...otpTemplate, supersededAt: new Date('2026-01-01') }, sources: goodSources }),

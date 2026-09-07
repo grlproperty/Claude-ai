@@ -37,6 +37,12 @@ export interface TemplateVersionSpec {
   requiredApproval: ApprovalLevel;
   signatoryRoles: string[];
   supersededAt?: Date | null;
+  /**
+   * When an authorised person approved this wording. A version that has not been
+   * approved may not be used to produce a real document — the system will not
+   * put unreviewed wording in front of a client.
+   */
+  approvedAt?: Date | null;
 }
 
 export interface ResolvedField {
@@ -62,6 +68,16 @@ export interface PreparedDocument {
   signatoryRoles: string[];
   /** Human-readable summary for the approval card. */
   summary: string;
+}
+
+export class UnapprovedTemplateError extends Error {
+  constructor(templateKey: string, version: number) {
+    super(
+      `Template ${templateKey} v${version} has not been approved. Its wording must be reviewed and approved by an ` +
+        'authorised person before any document is produced from it.',
+    );
+    this.name = 'UnapprovedTemplateError';
+  }
 }
 
 export class SupersededTemplateError extends Error {
@@ -212,6 +228,7 @@ export interface PrepareInput {
 
 export function prepareDocument({ template, sources, overrides = {}, checkSet }: PrepareInput): PreparedDocument {
   if (template.supersededAt) throw new SupersededTemplateError(template.templateKey, template.version);
+  if (!template.approvedAt) throw new UnapprovedTemplateError(template.templateKey, template.version);
 
   const fields: ResolvedField[] = [];
   const values: Record<string, string | null> = {};
