@@ -196,24 +196,48 @@
 
   // --------------------------------------------------------------- geometry
 
-  var BARS = 26;
-  var STEPS = 20;
-  var HEIGHT = 2.25;
-  var RADIUS = 0.95;
+  // Sixteen bars, not twenty-six. The old cage was a Victorian aviary — a squat
+  // barrel, bars every fourteen degrees, five rings of moulding stacked under
+  // the floor — and at any size it read as heavy ironwork. This one is drawn
+  // as a cloche: taller than it is wide by more than three to one, fewer bars
+  // with more air between them, and every line finer.
+  var BARS = 16;
+  var STEPS = 22;
+  var HEIGHT = 2.5;
+  // The radius at the floor, which is now the widest point.
+  var RADIUS = 0.85;
 
-  // Profile from base (t=0) to crown (t=1): a straight wall with the faintest
-  // barrel, then a dome that closes to the finial. A sine bow reads as a
-  // globe; a birdcage has walls and a shoulder where they stop.
-  var BODY = 0.7;
+  // Profile from base (t=0) to crown (t=1).
+  //
+  // A bell. Widest where it meets the floor, drawing in as it rises, closing
+  // in a dome — the line of a skirt rather than of a barrel, which is the one
+  // move that separates a cage in a bedroom from a cage in a barn. It is also
+  // the shape in the photograph directly below it on the page: the cage the
+  // model is wearing is a crinoline, wide at the hem and narrow at the waist,
+  // and the drawn one now rhymes with it instead of arguing.
+  //
+  // The exponent decides where the flare lives, and it has to be below one.
+  // At one the profile is a straight cone. Above one the sides stay wide and
+  // turn in near the top, which is a lampshade. Below one the radius falls
+  // away quickly and then levels off, so the width is spent in the last
+  // quarter before the floor — the line opens at the hem, which is what makes
+  // it a skirt rather than a funnel.
+  //
+  // BODY is where the wall stops, and it sets how round the crown is: the dome
+  // is (1 - BODY) of the height tall against the shoulder radius, and the two
+  // want to be close or the crown comes out as a beehive.
+  var BODY = 0.8;
+  var FLARE = 0.42;
+  var SHOULDER = 1 - FLARE;
 
   function radiusAt(t) {
-    if (t <= BODY) return RADIUS * (0.96 + 0.04 * Math.sin((t / BODY) * Math.PI));
+    if (t <= BODY) return RADIUS * (1 - FLARE * Math.pow(t / BODY, 0.7));
     var k = (t - BODY) / (1 - BODY);
-    return RADIUS * Math.cos(k * Math.PI * 0.5) * 0.96;
+    return RADIUS * SHOULDER * Math.cos(k * Math.PI * 0.5);
   }
 
   // Vertical extent of everything drawn, hook included.
-  var LOW = -HEIGHT / 2 - 0.14;
+  var LOW = -HEIGHT / 2 - 0.09;
   var HIGH = HEIGHT / 2 + 0.42;
 
   var pos = [];
@@ -274,69 +298,56 @@
     var ang = (b / BARS) * Math.PI * 2;
     var c = Math.cos(ang);
     var s = Math.sin(ang);
-    // Every other bar stops at the shoulder. A real cage does not carry every
-    // upright over the dome — they would collide at the finial — and the
-    // alternation is most of what makes the crown read as built rather than
-    // extruded.
-    var full = b % 2 === 0;
+    // Every bar runs the whole way. With sixteen of them there is room at the
+    // finial for all sixteen to meet, and stopping half of them at the
+    // shoulder — which the denser cage had to do — leaves the dome looking
+    // thinner than the body it sits on.
     for (var st = 0; st < STEPS; st++) {
       var t0 = st / STEPS;
       var t1 = (st + 1) / STEPS;
-      if (!full && t0 >= BODY) break;
       var r0 = radiusAt(t0);
       var r1 = radiusAt(t1);
-      // Tapered: heavier at the base where the load is, finer into the dome.
-      var w = 1.9 - 0.8 * t0;
+      // Tapered, and fine: a hairline into the crown.
+      var w = 1.15 - 0.55 * t0;
       seg(c * r0, -HEIGHT / 2 + HEIGHT * t0, s * r0, c * r1, -HEIGHT / 2 + HEIGHT * t1, s * r1, w);
     }
   }
 
-  // Rings up the body, then the base: a floor ring and the lip below it, which
-  // is what stops the bars reading as trailing off into nothing.
-  for (var k = 0; k < 6; k++) {
-    var tk = 0.09 + k * 0.115;
-    ring(-HEIGHT / 2 + HEIGHT * tk, radiusAt(tk), 1.05, 108);
-  }
-  // The base: a heavy floor ring, then the moulding stepping in underneath it.
-  ring(-HEIGHT / 2, radiusAt(0), 2.1, 108);
-  ring(-HEIGHT / 2 - 0.05, radiusAt(0) * 1.02, 1.5, 108);
-  ring(-HEIGHT / 2 - 0.11, radiusAt(0) * 0.94, 1.4, 108);
-  ring(-HEIGHT / 2 - 0.17, radiusAt(0) * 0.78, 1.2, 88);
-  ring(-HEIGHT / 2 - 0.22, radiusAt(0) * 0.55, 1.1, 72);
-
-  // Cross-bracing under the floor, which is how a cage of this shape is
-  // actually held together and reads as having a bottom rather than an edge.
-  for (var x = 0; x < 4; x++) {
-    var xa = (x / 4) * Math.PI;
-    var xr = radiusAt(0) * 0.94;
-    seg(Math.cos(xa) * xr, -HEIGHT / 2 - 0.11, Math.sin(xa) * xr, -Math.cos(xa) * xr, -HEIGHT / 2 - 0.11, -Math.sin(xa) * xr, 1.0);
+  // Three rings up the body where there were six, set where the profile is
+  // doing something — through the swell, at its widest, and as it draws in.
+  // A ring every ninth of the height is a grid; three is a proportion.
+  var BODY_RINGS = [0.16, 0.36, 0.56];
+  for (var k = 0; k < BODY_RINGS.length; k++) {
+    ring(-HEIGHT / 2 + HEIGHT * BODY_RINGS[k], radiusAt(BODY_RINGS[k]), 0.62, 112);
   }
 
-  // The shoulder, where the wall becomes the dome.
-  ring(-HEIGHT / 2 + HEIGHT * BODY, radiusAt(BODY), 1.9, 108);
-  ring(-HEIGHT / 2 + HEIGHT * (BODY + 0.015), radiusAt(BODY) * 0.985, 1.2, 108);
+  // The base: a floor ring and one fine lip beneath it. The five stacked
+  // mouldings and the cross-bracing they sat on were the heaviest thing in the
+  // drawing and the least of what a cage needs to read as closed.
+  ring(-HEIGHT / 2, radiusAt(0), 1.2, 112);
+  ring(-HEIGHT / 2 - 0.07, radiusAt(0) * 0.93, 0.7, 96);
 
-  // Two rings up the dome, so the crown has structure instead of being a fan
-  // of unbroken curves.
-  ring(-HEIGHT / 2 + HEIGHT * (BODY + (1 - BODY) * 0.34), radiusAt(BODY + (1 - BODY) * 0.34), 1.0, 96);
-  ring(-HEIGHT / 2 + HEIGHT * (BODY + (1 - BODY) * 0.66), radiusAt(BODY + (1 - BODY) * 0.66), 0.95, 88);
+  // The shoulder, where the wall becomes the dome. One ring, not two — the
+  // second was a highlight under the first, and at this weight it only
+  // thickened the line.
+  ring(-HEIGHT / 2 + HEIGHT * BODY, radiusAt(BODY), 0.95, 112);
 
-  // The perch. One horizontal bar across the middle, and the detail that makes
-  // this a birdcage rather than a lantern.
+  // One ring up the dome. Two divided a crown this size into slices.
+  var domeT = BODY + (1 - BODY) * 0.45;
+  ring(-HEIGHT / 2 + HEIGHT * domeT, radiusAt(domeT), 0.6, 96);
+
+  // The perch. One fine bar across, and the detail that makes this a birdcage
+  // rather than a lantern. The collars where it met the wall are gone: two
+  // stubs either side of a hairline is detail that only reads as noise.
   var perchY = -HEIGHT / 2 + HEIGHT * 0.34;
-  seg(-radiusAt(0.34) * 0.98, perchY, 0, radiusAt(0.34) * 0.98, perchY, 0, 2.2);
-  // The collars where the perch meets the wall.
-  for (var pc = -1; pc <= 1; pc += 2) {
-    var px = radiusAt(0.34) * 0.98 * pc;
-    seg(px, perchY - 0.05, 0, px, perchY + 0.05, 0, 1.6);
-  }
+  seg(-radiusAt(0.34) * 0.98, perchY, 0, radiusAt(0.34) * 0.98, perchY, 0, 0.95);
 
   // Finial and hook above the crown, so it reads as hung rather than floating.
   var crown = HEIGHT / 2;
   // The rod runs the whole way to the centre of the hook's arc. Stopping it at
   // the knob leaves the hook floating unattached above the cage.
-  seg(0, crown - 0.02, 0, 0, crown + 0.3, 0, 1.8);
-  ring(crown + 0.16, 0.075, 1.4, 40);
+  seg(0, crown - 0.02, 0, 0, crown + 0.3, 0, 1.05);
+  ring(crown + 0.16, 0.062, 0.8, 40);
   for (var h = 0; h < 12; h++) {
     var ha = Math.PI * (0.15 + (h / 12) * 0.9);
     var hb = Math.PI * (0.15 + ((h + 1) / 12) * 0.9);
@@ -347,7 +358,7 @@
       Math.cos(hb) * 0.11,
       crown + 0.3 + Math.sin(hb) * 0.11,
       0,
-      1.5
+      0.95
     );
   }
 
@@ -373,8 +384,8 @@
   // hungriest asks for about three world units of chain, and this is six.
   // Every link past that is fill a software renderer still pays for before
   // clipping throws it away.
-  var LINK_H = 0.115;
-  var LINK_W = 0.058;
+  var LINK_H = 0.098;
+  var LINK_W = 0.046;
   var LINK_PITCH = LINK_H * 1.5;
   var LINKS = 34;
   var LINK_SEGS = 14;
@@ -399,8 +410,8 @@
       var lv0 = Math.sin(ca0) * LINK_H;
       var lu1 = Math.cos(ca1) * LINK_W;
       var lv1 = Math.sin(ca1) * LINK_H;
-      if (across) seg(lu0, cy + lv0, 0, lu1, cy + lv1, 0, 1.7);
-      else seg(0, cy + lv0, lu0, 0, cy + lv1, lu1, 1.7);
+      if (across) seg(lu0, cy + lv0, 0, lu1, cy + lv1, 0, 1.15);
+      else seg(0, cy + lv0, lu0, 0, cy + lv1, lu1, 1.15);
     }
   }
 
@@ -481,11 +492,20 @@
   var width = 0;
   var height = 0;
 
-  // How far the cage reaches from its own centre, in world units, at the size
-  // it is built. Measured off the drawn geometry rather than guessed, so the
-  // fit solved below stays true if the cage is ever rebuilt.
-  var CAGE_HALF = 1.05;
-  var CAGE_TALL = 2.8;
+  // How far the cage reaches from its own centre, in world units. Taken off the
+  // vertices that were actually pushed rather than written down beside the
+  // profile — these were 1.05 and 2.8, correct for a barrel of radius 0.95, and
+  // silently wrong the moment the cage was redrawn as something narrower and
+  // taller. The fit solved below reads them, so a stale figure is a cage that
+  // no longer fills the cell it is given.
+  var CAGE_HALF = 0;
+  for (var mi = 0; mi < CAGE_VERTS * 3; mi += 3) {
+    var mx = Math.abs(pos[mi]);
+    var mz = Math.abs(pos[mi + 2]);
+    if (mx > CAGE_HALF) CAGE_HALF = mx;
+    if (mz > CAGE_HALF) CAGE_HALF = mz;
+  }
+  var CAGE_TALL = HIGH - LOW;
   // Half the vertical field of view, as used by the projection below.
   var TAN_HALF_FOV = Math.tan(0.4);
 
