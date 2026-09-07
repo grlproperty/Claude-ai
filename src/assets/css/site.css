@@ -35,9 +35,9 @@
   --on-dark: rgba(253, 252, 252, 0.8);
   --on-dark-dim: rgba(253, 252, 252, 0.62);
 
-  --rule: rgba(142, 11, 20, 0.18);
-  --rule-soft: rgba(18, 16, 15, 0.08);
-  --rule-strong: rgba(18, 16, 15, 0.16);
+  --rule: rgba(142, 11, 20, 0.32);
+  --rule-soft: rgba(18, 16, 15, 0.14);
+  --rule-strong: rgba(18, 16, 15, 0.3);
 
   /* Type */
   --display: 'Bodoni Moda', 'Didot', 'Times New Roman', serif;
@@ -63,9 +63,16 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 
   /* Depth. A single elevation ramp keeps every raised surface in one space. */
-  --lift-1: 0 1px 2px rgba(18, 16, 15, 0.04), 0 4px 12px rgba(18, 16, 15, 0.05);
-  --lift-2: 0 2px 4px rgba(18, 16, 15, 0.05), 0 12px 32px rgba(18, 16, 15, 0.09);
-  --lift-3: 0 4px 8px rgba(18, 16, 15, 0.06), 0 24px 64px rgba(18, 16, 15, 0.13);
+  /* Print, not paper.
+     These were three soft ambient blurs — the shadow of a card floating over a
+     surface, which is a screen idiom and a soft one. They are hard offsets
+     now, in crimson: the look of a second pass through a press that did not
+     quite line up. It is the same register as the documents this site sells,
+     which are stamped, taped and over-printed, and it is a single edit that
+     reaches every card on every page. */
+  --lift-1: 4px 4px 0 rgba(142, 11, 20, 0.13);
+  --lift-2: 7px 7px 0 rgba(142, 11, 20, 0.2);
+  --lift-3: 12px 12px 0 rgba(18, 16, 15, 0.14);
 }
 
 /* ---------------------------------------------------------------- reset */
@@ -401,6 +408,102 @@ code {
   background: rgba(253, 252, 252, 0.6);
 }
 
+/* A crimson field. The ink band was the only hard cut on a page otherwise made
+   of blush, and one cut is a pause rather than a rhythm. This is the second —
+   and it is the colour the covers of every document on this site are printed
+   in, so the band and the goods match. */
+.on-crimson {
+  background: var(--crimson);
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.on-crimson h1,
+.on-crimson h2,
+.on-crimson h3,
+.on-crimson h4,
+.on-crimson .lede,
+.on-crimson strong {
+  color: #fff;
+}
+
+.on-crimson .label,
+.on-crimson .label::before {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.on-crimson a {
+  color: #fff;
+}
+
+.on-crimson .btn {
+  background: #fff;
+  color: var(--crimson);
+  border-color: #fff;
+}
+
+.on-crimson .btn:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+.on-crimson .btn--quiet,
+.on-crimson .btn--ghost {
+  background: transparent;
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.on-crimson .btn--quiet:hover,
+.on-crimson .btn--ghost:hover {
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.on-crimson .rows,
+.on-crimson .row {
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+/* A phrase struck through with ink, the way the documents mark the line that
+   matters. Inline, so it wraps with the sentence it is inside. */
+.mark {
+  background: var(--crimson);
+  color: #fff;
+  padding: 0.06em 0.3em 0.14em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.on-crimson .mark,
+.on-dark .mark {
+  background: #fff;
+  color: var(--ink);
+}
+
+/* A case-file stamp: the mark the printed documents carry in their corner.
+   Rotated a degree and a half, because a stamp applied by hand never lands
+   square, and that is the whole of the effect. */
+.stamp {
+  display: inline-block;
+  font-family: var(--ui);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--crimson);
+  border: 1px solid var(--crimson);
+  padding: 0.42em 0.7em 0.36em;
+  transform: rotate(-1.5deg);
+  white-space: nowrap;
+}
+
+.on-dark .stamp,
+.on-crimson .stamp {
+  color: rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.55);
+}
+
 .on-white {
   background: var(--white);
 }
@@ -420,6 +523,28 @@ code {
 .card__title,
 .entry-card h3 {
   text-wrap: balance;
+}
+
+/* Section titles set the way the printed documents set theirs: the didone, in
+   caps, tracked tight. Cormorant in sentence case is a beautiful voice and a
+   soft one — it says essay, where every cover this site sells says CASE FILE.
+   Only the section heads take it. Article headings stay in the editorial face,
+   because a page of caps is a page nobody finishes. */
+.section-head h1,
+.section-head h2 {
+  font-family: var(--display);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: -0.005em;
+  line-height: 0.98;
+}
+
+.section-head h2 {
+  font-size: clamp(1.7rem, 3.1vw, 2.6rem);
+}
+
+.section-head__stamp {
+  margin-top: var(--s4);
 }
 
 .section-head--wide {
@@ -644,7 +769,21 @@ code {
 }
 
 .on-dark .wordmark,
+.on-crimson .wordmark,
 .colophon .wordmark {
+  color: var(--white);
+}
+
+/* The wordmark sets FERAL in crimson, which is 2:1 against the ink the footer
+   is printed on — unreadable, on every page. The masthead's dark state was
+   given this treatment when it was built; the footer, which has been dark
+   since the beginning, never was. */
+.on-dark .wordmark .is-crimson,
+.on-crimson .wordmark .is-crimson,
+.colophon .wordmark .is-crimson,
+.on-dark .wordmark .stop,
+.on-crimson .wordmark .stop,
+.colophon .wordmark .stop {
   color: var(--white);
 }
 
@@ -1325,10 +1464,13 @@ code {
    are a numbered series, so the figure is carrying information, not decorating. */
 .plate__number {
   font-family: var(--display);
-  font-size: 2.4rem;
+  font-size: 2.6rem;
   line-height: 1;
   color: var(--crimson);
-  opacity: 0.3;
+  /* Was 0.3, which on a white card is a watermark. These number a series that
+     the reader is meant to be able to count, and the printed contents pages
+     set the same figures solid. */
+  opacity: 0.92;
   margin-bottom: var(--s3);
   pointer-events: none;
 }
@@ -1572,7 +1714,8 @@ code {
   font-weight: 500;
 }
 
-.on-dark .note {
+.on-dark .note,
+.on-crimson .note {
   background: rgba(253, 252, 252, 0.06);
   color: var(--on-dark);
 }
@@ -2214,13 +2357,15 @@ code {
   outline: none;
 }
 
-.on-dark .form input[type='email'] {
+.on-dark .form input[type='email'],
+.on-crimson .form input[type='email'] {
   background: transparent;
   border-color: rgba(253, 252, 252, 0.38);
   color: var(--white);
 }
 
-.on-dark .form input::placeholder {
+.on-dark .form input::placeholder,
+.on-crimson .form input::placeholder {
   color: var(--on-dark-dim);
 }
 
@@ -2232,8 +2377,15 @@ code {
   flex-basis: 100%;
 }
 
-.on-dark .form__note {
+.on-dark .form__note,
+.on-crimson .form__note {
   color: var(--on-dark-dim);
+}
+
+/* Crimson is a lighter ground than ink, so the dim white that clears 4.5:1 on
+   one lands at 4.24 on the other. Measured, not guessed. */
+.on-crimson .form__note {
+  color: rgba(255, 255, 255, 0.79);
 }
 
 /* Only revealed once the form has actually been submitted, so the reader is
@@ -2258,7 +2410,8 @@ code {
   border-left-color: var(--ink-faint);
 }
 
-.on-dark .form__status {
+.on-dark .form__status,
+.on-crimson .form__status {
   color: var(--on-dark);
   border-left-color: var(--blush);
 }
@@ -2763,8 +2916,10 @@ code {
   border-bottom-color: currentColor;
 }
 
+/* --rule-strong is a border colour. Used as text it is a slash at 1.95:1,
+   which is a mark nobody can see between two links they can. */
 .crumb__sep {
-  color: var(--rule-strong);
+  color: var(--ink-muted);
 }
 
 /* The title on an index links to the entry's own page; it should not look

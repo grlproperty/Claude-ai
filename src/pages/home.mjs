@@ -36,7 +36,10 @@ export function renderHome({ site, notes, data }) {
       <span class="is-crimson">Feral</span><br>Femme<span class="stop">.</span>
     </h1>
 
-    <p class="hero__claim">${typo(site.tagline)}</p>
+    <p class="hero__claim">${typo(site.tagline).replace(
+      'Same refusal to consent.',
+      '<span class="mark">Same refusal to consent.</span>'
+    )}</p>
    </div>
 
     <!-- The cage's cell. Empty on purpose: it is a hole in the layout that the
@@ -139,6 +142,7 @@ export function renderHome({ site, notes, data }) {
       eyebrow: 'The remit',
       title: 'Industries we document',
       lede: data.industries.summary,
+      stamp: `${data.industries.industries.length} industries · open file`,
     })}
     <div class="grid grid--4">
       ${data.industries.industries

@@ -8,12 +8,13 @@ export const label = (text, extra = '') =>
  * exactly one h1; section heads within a page keep the default h2. The build
  * check fails if a page ends up with none or more than one.
  */
-export function sectionHead({ eyebrow, title, lede, wide = false, centered = false, level = 2 }) {
+export function sectionHead({ eyebrow, title, lede, wide = false, centered = false, level = 2, stamp = '' }) {
   const h = `h${level}`;
   return `<div class="section-head reveal${wide ? ' section-head--wide' : ''}${centered ? ' center' : ''}">
     ${eyebrow ? label(eyebrow) : ''}
     ${title ? `<${h}>${typo(title)}</${h}>` : ''}
     ${lede ? `<p class="lede mb-0">${typo(lede)}</p>` : ''}
+    ${stamp ? `<p class="section-head__stamp mb-0"><span class="stamp">${esc(stamp)}</span></p>` : ''}
   </div>`;
 }
 
@@ -135,7 +136,7 @@ export function newsletterForm(site, { dark = false, note = true } = {}) {
 
 /** Closing band: the funding position, and the briefing. */
 export function supportBanner(site) {
-  return `<section class="section on-dark">
+  return `<section class="section on-crimson">
     <div class="wrap">
       <div class="grid grid--2" style="align-items:start;gap:4rem;">
         <div>
