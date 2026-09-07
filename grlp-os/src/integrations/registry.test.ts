@@ -6,9 +6,10 @@ import {
   checkIntegration,
   isConfigured,
   requireIntegration,
+  type EnvLike,
 } from './registry';
 
-const NONE: NodeJS.ProcessEnv = {};
+const NONE: EnvLike = {};
 
 describe('the system does not claim integrations it does not have', () => {
   it('reports every integration as unconfigured on a bare environment', async () => {

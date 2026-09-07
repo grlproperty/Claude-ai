@@ -4,6 +4,7 @@ import { documentAgent } from './document-agent';
 import { marketAssessmentAgent } from './market-assessment-agent';
 import { riskAgent } from './risk-agent';
 import { aiAvailable } from './provider';
+import type { EnvLike } from '../integrations/registry';
 
 /**
  * The specialist agents (§33), under one executive system.
@@ -31,7 +32,7 @@ export interface AgentAvailability {
   note: string;
 }
 
-export function agentAvailability(env: NodeJS.ProcessEnv = process.env): AgentAvailability[] {
+export function agentAvailability(env: EnvLike = process.env): AgentAvailability[] {
   const model = aiAvailable(env);
   return Object.values(AGENTS).map((a) => ({
     key: a.key,

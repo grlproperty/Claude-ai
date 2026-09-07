@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { IntegrationNotConfiguredError, missingEnvFor, INTEGRATIONS } from '../integrations/registry';
+import { IntegrationNotConfiguredError, missingEnvFor, INTEGRATIONS, type EnvLike } from '../integrations/registry';
 
 /**
  * The language-model provider.
@@ -33,7 +33,7 @@ export const DEFAULT_MODEL = process.env.ANTHROPIC_MODEL ?? 'claude-opus-5';
 
 let client: Anthropic | null = null;
 
-export function aiAvailable(env: NodeJS.ProcessEnv = process.env): boolean {
+export function aiAvailable(env: EnvLike = process.env): boolean {
   return Boolean(env.ANTHROPIC_API_KEY?.trim());
 }
 

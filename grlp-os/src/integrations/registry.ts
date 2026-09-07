@@ -12,6 +12,9 @@
 
 export type IntegrationStatus = 'NOT_CONFIGURED' | 'CREDENTIALS_MISSING' | 'CONNECTED' | 'ERROR';
 
+/** Any environment-shaped map. Looser than NodeJS.ProcessEnv so tests can pass a bare object. */
+export type EnvLike = Record<string, string | undefined>;
+
 export interface IntegrationSpec {
   key: string;
   name: string;
@@ -23,7 +26,7 @@ export interface IntegrationSpec {
   capabilityWhenConnected: string;
   degradedBehaviour: string;
   /** Live check. Only called when every required env var is present. */
-  verify?: (env: NodeJS.ProcessEnv) => Promise<{ ok: boolean; detail?: string }>;
+  verify?: (env: EnvLike) => Promise<{ ok: boolean; detail?: string }>;
 }
 
 export class IntegrationNotConfiguredError extends Error {
@@ -113,7 +116,7 @@ export interface IntegrationState {
   checkedAt: Date;
 }
 
-export function missingEnvFor(spec: IntegrationSpec, env: NodeJS.ProcessEnv = process.env): string[] {
+export function missingEnvFor(spec: IntegrationSpec, env: EnvLike = process.env): string[] {
   return spec.requiredEnv.filter((k) => !env[k] || env[k]!.trim() === '');
 }
 
@@ -123,7 +126,7 @@ export function missingEnvFor(spec: IntegrationSpec, env: NodeJS.ProcessEnv = pr
  */
 export async function checkIntegration(
   spec: IntegrationSpec,
-  env: NodeJS.ProcessEnv = process.env,
+  env: EnvLike = process.env,
   { live = true }: { live?: boolean } = {},
 ): Promise<IntegrationState> {
   const missing = missingEnvFor(spec, env);
@@ -158,20 +161,20 @@ export async function checkIntegration(
 }
 
 export async function checkAll(
-  env: NodeJS.ProcessEnv = process.env,
+  env: EnvLike = process.env,
   opts: { live?: boolean } = {},
 ): Promise<IntegrationState[]> {
   return Promise.all(INTEGRATIONS.map((s) => checkIntegration(s, env, opts)));
 }
 
-export function requireIntegration(key: string, env: NodeJS.ProcessEnv = process.env): void {
+export function requireIntegration(key: string, env: EnvLike = process.env): void {
   const spec = INTEGRATIONS.find((s) => s.key === key);
   if (!spec) throw new Error(`Unknown integration "${key}".`);
   const missing = missingEnvFor(spec, env);
   if (missing.length) throw new IntegrationNotConfiguredError(key, missing);
 }
 
-export function isConfigured(key: string, env: NodeJS.ProcessEnv = process.env): boolean {
+export function isConfigured(key: string, env: EnvLike = process.env): boolean {
   const spec = INTEGRATIONS.find((s) => s.key === key);
   return spec ? missingEnvFor(spec, env).length === 0 : false;
 }
