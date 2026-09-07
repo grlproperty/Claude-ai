@@ -1,0 +1,1253 @@
+// GRLP AI Executive Operating System — data model
+// Design rules:
+//  - Every unit of work has an explicit owner, and "AI" / "AUTOMATION" are first-class owners.
+//  - Every AI action is auditable and carries provenance (fact vs inference vs recommendation).
+//  - Personal and business data are separated by `domain` and enforced in the access layer.
+//  - Approval boundaries are data, not code, so they cannot be silently bypassed.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────── people, roles, permissions
+
+enum Role {
+  CEO // Mandy — founder, manager, senior agent, professional oversight
+  SALES_AGENT
+  RENTALS
+  ACCOUNTS
+  MARKETING_ADMIN
+  OPERATIONS
+  SYSTEM // the AI/automation actor; never a login
+}
+
+enum Department {
+  EXECUTIVE
+  SALES
+  RENTALS
+  ACCOUNTS
+  MARKETING
+  OPERATIONS
+}
+
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  name         String
+  passwordHash String?
+  role         Role
+  department   Department
+  active       Boolean    @default(true)
+  isCeo        Boolean    @default(false)
+
+  // Capacity model — used by the delegation engine so work is not dumped on one person.
+  weeklyCapacityHours Float @default(40)
+  acceptsDelegation   Boolean @default(true)
+
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ownedTasks          Task[]           @relation("TaskOwner")
+  createdTasks        Task[]           @relation("TaskCreator")
+  ownedProperties     Property[]       @relation("PropertyAgent")
+  ownedLeads          Lead[]           @relation("LeadOwner")
+  approvals           Approval[]       @relation("ApprovalApprover")
+  notifications       Notification[]
+  escalations         Escalation[]     @relation("EscalationAssignee")
+  auditLogs           AuditLog[]
+  sessions            Session[]
+  absences            AbsencePeriod[]
+  meetings            MeetingAttendee[]
+  communications      Communication[]  @relation("CommunicationOwner")
+  documentsUploaded   Document[]       @relation("DocumentUploader")
+  signatures          Signature[]      @relation("SignatureSigner")
+  capacitySnapshots   CapacitySnapshot[]
+  preferences         Preference[]
+
+  @@index([role])
+  @@index([department])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  revokedAt DateTime?
+  userAgent String?
+  ip        String?
+
+  @@index([userId])
+}
+
+/// Per-user working preferences the system learns (§55). Learned entries stay
+/// `proposed` until an authorised human approves them — the system never
+/// silently changes a business rule.
+model Preference {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  key       String
+  value     Json
+  source    ProvenanceKind @default(INFERENCE)
+  approved  Boolean  @default(false)
+  approvedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, key])
+}
+
+// ─────────────────────────────────────────── CRM: contacts, properties, pipeline
+
+enum ContactKind {
+  LEAD
+  BUYER
+  SELLER
+  LANDLORD
+  TENANT
+  SUPPLIER
+  OTHER
+}
+
+model Contact {
+  id        String      @id @default(cuid())
+  kind      ContactKind
+  firstName String
+  lastName  String
+  email     String?
+  phone     String?
+  idNumber  String? // SA ID / registration number — required on mandates and OTPs
+  notes     String?
+  domain    DataDomain  @default(BUSINESS)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  leads          Lead[]
+  sellerMandates Mandate[]      @relation("MandateSeller")
+  buyerOffers    Offer[]        @relation("OfferBuyer")
+  sellerOffers   Offer[]        @relation("OfferSeller")
+  viewings       Viewing[]
+  communications Communication[]
+  documents      Document[]
+  tasks          Task[]
+
+  @@index([kind])
+  @@index([email])
+}
+
+enum PropertyStatus {
+  PROSPECT
+  APPRAISAL
+  MANDATE_PENDING
+  LISTED
+  UNDER_OFFER
+  SOLD
+  WITHDRAWN
+  RENTAL_ACTIVE
+}
+
+model Property {
+  id          String         @id @default(cuid())
+  reference   String         @unique
+  status      PropertyStatus @default(PROSPECT)
+  addressLine String
+  suburb      String?
+  town        String?
+  province    String         @default("Western Cape")
+
+  propertyType String? // house, smallholding, plot, sectional title …
+  bedrooms     Int?
+  bathrooms    Float?
+  garages      Int?
+  floorSizeSqm Float?
+  landSizeSqm  Float?
+  condition    String?
+  features     String[]      @default([])
+
+  askingPrice Decimal? @db.Decimal(14, 2)
+  soldPrice   Decimal? @db.Decimal(14, 2)
+
+  agentId String?
+  agent   User?   @relation("PropertyAgent", fields: [agentId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  mandates          Mandate[]
+  offers            Offer[]
+  viewings          Viewing[]
+  transactions      Transaction[]
+  documents         Document[]
+  tasks             Task[]
+  marketAssessments MarketAssessment[]
+  comparableOf      Comparable[]       @relation("ComparableSubject")
+  leads             Lead[]
+
+  @@index([status])
+  @@index([agentId])
+}
+
+enum LeadStage {
+  NEW
+  CONTACTED
+  QUALIFIED
+  VIEWING
+  OFFER
+  CONVERTED
+  LOST
+  STALLED
+}
+
+model Lead {
+  id        String    @id @default(cuid())
+  stage     LeadStage @default(NEW)
+  source    String? // portal, website, referral, walk-in …
+  contactId String
+  contact   Contact   @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  propertyId String?
+  property   Property? @relation(fields: [propertyId], references: [id])
+
+  ownerId String?
+  owner   User?   @relation("LeadOwner", fields: [ownerId], references: [id])
+
+  requirements   String?
+  budgetMin      Decimal? @db.Decimal(14, 2)
+  budgetMax      Decimal? @db.Decimal(14, 2)
+  lastContactAt  DateTime?
+  nextActionAt   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tasks    Task[]
+  viewings Viewing[]
+
+  @@index([stage])
+  @@index([ownerId])
+  @@index([lastContactAt])
+}
+
+model Viewing {
+  id         String   @id @default(cuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  contactId  String
+  contact    Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  leadId     String?
+  lead       Lead?    @relation(fields: [leadId], references: [id])
+
+  scheduledAt DateTime
+  completedAt DateTime?
+  feedback    String?
+  feedbackRequestedAt DateTime?
+  sellerUpdatedAt     DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([scheduledAt])
+  @@index([completedAt])
+}
+
+enum MandateType {
+  SOLE
+  OPEN
+  JOINT
+}
+
+enum MandateStatus {
+  REQUESTED
+  GATHERING
+  PREPARED
+  IN_REVIEW
+  APPROVED
+  SIGNED
+  ACTIVE
+  EXPIRED
+  DECLINED
+}
+
+model Mandate {
+  id         String        @id @default(cuid())
+  propertyId String
+  property   Property      @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  sellerId   String
+  seller     Contact       @relation("MandateSeller", fields: [sellerId], references: [id])
+  type       MandateType   @default(SOLE)
+  status     MandateStatus @default(REQUESTED)
+
+  requestedById String?
+  commissionPct Decimal? @db.Decimal(5, 2)
+  listPrice     Decimal? @db.Decimal(14, 2)
+  startDate     DateTime?
+  endDate       DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  documents Document[]
+  approvals Approval[]
+  tasks     Task[]
+
+  @@index([status])
+}
+
+enum OfferStatus {
+  RECEIVED
+  PREPARED
+  IN_REVIEW
+  PRESENTED
+  ACCEPTED
+  COUNTERED
+  DECLINED
+  LAPSED
+}
+
+/// Offer to Purchase. The system prepares and validates; an authorised human
+/// reviews and signs. No clause is ever generated outside an approved template.
+model Offer {
+  id         String      @id @default(cuid())
+  propertyId String
+  property   Property    @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  buyerId    String
+  buyer      Contact     @relation("OfferBuyer", fields: [buyerId], references: [id])
+  sellerId   String?
+  seller     Contact?    @relation("OfferSeller", fields: [sellerId], references: [id])
+  status     OfferStatus @default(RECEIVED)
+
+  amount           Decimal? @db.Decimal(14, 2)
+  depositAmount    Decimal? @db.Decimal(14, 2)
+  bondAmount       Decimal? @db.Decimal(14, 2)
+  bondApprovalDays Int?
+  occupationDate   DateTime?
+  suspensiveConditions String[] @default([])
+  expiresAt        DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  documents   Document[]
+  approvals   Approval[]
+  transaction Transaction?
+  tasks       Task[]
+
+  @@index([status])
+}
+
+enum TransactionStage {
+  OFFER_ACCEPTED
+  BOND_APPLICATION
+  BOND_GRANTED
+  CONVEYANCING
+  TRANSFER_LODGED
+  REGISTERED
+  COMMISSION_PAID
+  CLOSED
+  CANCELLED
+}
+
+model Transaction {
+  id         String           @id @default(cuid())
+  propertyId String
+  property   Property         @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  offerId    String?          @unique
+  offer      Offer?           @relation(fields: [offerId], references: [id])
+  stage      TransactionStage @default(OFFER_ACCEPTED)
+
+  attorneyName  String?
+  attorneyEmail String?
+  bondOriginator String?
+  expectedRegistrationDate DateTime?
+  lastMovementAt DateTime  @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  checklistItems TransactionChecklistItem[]
+  documents      Document[]
+  tasks          Task[]
+
+  @@index([stage])
+  @@index([lastMovementAt])
+}
+
+model TransactionChecklistItem {
+  id            String      @id @default(cuid())
+  transactionId String
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  label         String
+  stage         TransactionStage
+  required      Boolean     @default(true)
+  completedAt   DateTime?
+  dueAt         DateTime?
+  documentId    String?
+
+  @@index([transactionId])
+}
+
+// ─────────────────────────────────────────── market assessment / CMA
+
+enum AssessmentStatus {
+  DRAFT
+  PREPARED
+  NEEDS_INPUT
+  IN_REVIEW
+  APPROVED
+  ISSUED
+}
+
+model MarketAssessment {
+  id         String           @id @default(cuid())
+  propertyId String
+  property   Property         @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  status     AssessmentStatus @default(DRAFT)
+
+  recommendedLow  Decimal? @db.Decimal(14, 2)
+  recommendedHigh Decimal? @db.Decimal(14, 2)
+  pricePerSqm     Decimal? @db.Decimal(14, 2)
+
+  /// Every number shown to a human is traceable to the inputs that produced it.
+  workings        Json?
+  executiveSummary String?
+  missingInputs   String[] @default([])
+  flags           String[] @default([])
+
+  preparedByAi Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  comparables Comparable[]
+  approvals   Approval[]
+  documents   Document[]
+}
+
+model Comparable {
+  id           String            @id @default(cuid())
+  assessmentId String
+  assessment   MarketAssessment  @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  subjectId    String?
+  subject      Property?         @relation("ComparableSubject", fields: [subjectId], references: [id])
+
+  addressLine  String
+  price        Decimal  @db.Decimal(14, 2)
+  isSoldPrice  Boolean  @default(false)
+  floorSizeSqm Float?
+  landSizeSqm  Float?
+  bedrooms     Int?
+  bathrooms    Float?
+  distanceKm   Float?
+  saleDate     DateTime?
+  sourceName   String
+  sourceUrl    String?
+  /// Adjustment reasoning is stored so a human can audit the recommendation.
+  adjustments  Json?
+  excluded     Boolean  @default(false)
+  exclusionReason String?
+
+  @@index([assessmentId])
+}
+
+// ─────────────────────────────────────────── documents & templates
+
+enum DocumentKind {
+  MANDATE
+  OTP
+  MARKET_ASSESSMENT
+  FICA
+  TITLE_DEED
+  RATES_CLEARANCE
+  COMPLIANCE_CERTIFICATE
+  ID_DOCUMENT
+  LEASE
+  INSPECTION
+  COMMISSION
+  CORRESPONDENCE
+  OTHER
+}
+
+enum DocumentStatus {
+  UPLOADED
+  CLASSIFIED
+  EXTRACTED
+  GENERATED
+  IN_REVIEW
+  APPROVED
+  AWAITING_SIGNATURE
+  SIGNED
+  FILED
+  REJECTED
+}
+
+model Document {
+  id     String         @id @default(cuid())
+  kind   DocumentKind
+  status DocumentStatus @default(UPLOADED)
+  title  String
+  domain DataDomain     @default(BUSINESS)
+
+  storageProvider String? // dropbox | google_drive | onedrive | local
+  storageKey      String?
+  mimeType        String?
+  sizeBytes       Int?
+  checksum        String?
+
+  uploadedById String?
+  uploadedBy   User?   @relation("DocumentUploader", fields: [uploadedById], references: [id])
+
+  propertyId    String?
+  property      Property?    @relation(fields: [propertyId], references: [id])
+  contactId     String?
+  contact       Contact?     @relation(fields: [contactId], references: [id])
+  mandateId     String?
+  mandate       Mandate?     @relation(fields: [mandateId], references: [id])
+  offerId       String?
+  offer         Offer?       @relation(fields: [offerId], references: [id])
+  transactionId String?
+  transaction   Transaction? @relation(fields: [transactionId], references: [id])
+  assessmentId  String?
+  assessment    MarketAssessment? @relation(fields: [assessmentId], references: [id])
+
+  templateVersionId String?
+  templateVersion   TemplateVersion? @relation(fields: [templateVersionId], references: [id])
+
+  dueAt     DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  versions        DocumentVersion[]
+  extractedFields ExtractedField[]
+  approvals       Approval[]
+  signatures      Signature[]
+  tasks           Task[]
+
+  @@index([kind])
+  @@index([status])
+}
+
+model DocumentVersion {
+  id         String   @id @default(cuid())
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  version    Int
+  storageKey String?
+  createdById String?
+  createdByAi Boolean @default(false)
+  note       String?
+  createdAt  DateTime @default(now())
+
+  @@unique([documentId, version])
+}
+
+/// A value the system read out of a document. `confidence` and `provenance`
+/// are mandatory so an extraction is never presented as verified fact.
+model ExtractedField {
+  id         String   @id @default(cuid())
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  key        String
+  value      String?
+  confidence Float
+  provenance ProvenanceKind @default(INFERENCE)
+  verifiedById String?
+  verifiedAt   DateTime?
+  sourceExcerpt String?
+
+  @@index([documentId])
+}
+
+/// Versioned template library (§50). The generator always resolves the current
+/// approved version; superseded versions stay readable for audit.
+model Template {
+  id          String       @id @default(cuid())
+  key         String       @unique
+  name        String
+  kind        DocumentKind
+  ownerRole   Role         @default(CEO)
+  description String?
+  createdAt   DateTime     @default(now())
+
+  versions TemplateVersion[]
+}
+
+model TemplateVersion {
+  id         String   @id @default(cuid())
+  templateId String
+  template   Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  version    Int
+  /// Body with {{field}} placeholders. Legal wording is authored by humans and
+  /// stored here; the AI populates fields only, it never writes clauses.
+  body       String
+  effectiveFrom DateTime @default(now())
+  supersededAt  DateTime?
+  approvedById  String?
+  approvedAt    DateTime?
+  requiredApproval ApprovalLevel @default(APPROVAL)
+  signatoryRoles   String[]      @default([])
+
+  fields    TemplateField[]
+  documents Document[]
+
+  @@unique([templateId, version])
+}
+
+model TemplateField {
+  id       String  @id @default(cuid())
+  versionId String
+  version  TemplateVersion @relation(fields: [versionId], references: [id], onDelete: Cascade)
+  key      String
+  label    String
+  dataType String  @default("string") // string | number | date | currency | boolean | id_number
+  required Boolean @default(true)
+  /// Field is required only when this JSON-logic-ish condition holds.
+  conditionalOn Json?
+  /// Validation rule keys resolved by the validation engine (e.g. "sa_id", "positive").
+  validators String[] @default([])
+  sourcePath String? // where to pull the value from, e.g. "property.addressLine"
+  order      Int      @default(0)
+
+  @@unique([versionId, key])
+}
+
+// ─────────────────────────────────────────── work, ownership, escalation
+
+enum OwnerType {
+  AI
+  AUTOMATION
+  USER
+  EXTERNAL
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  BLOCKED
+  AWAITING_APPROVAL
+  DONE
+  CANCELLED
+}
+
+enum Priority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum EscalationLevel {
+  L1_STAFF
+  L2_MANAGEMENT
+  L3_CEO
+}
+
+enum DataDomain {
+  BUSINESS
+  PERSONAL
+}
+
+model Task {
+  id          String     @id @default(cuid())
+  title       String
+  detail      String?
+  status      TaskStatus @default(PENDING)
+  priority    Priority   @default(NORMAL)
+  domain      DataDomain @default(BUSINESS)
+
+  ownerType OwnerType @default(USER)
+  ownerId   String?
+  owner     User?     @relation("TaskOwner", fields: [ownerId], references: [id])
+  department Department?
+
+  createdById String?
+  createdBy   User?   @relation("TaskCreator", fields: [createdById], references: [id])
+  createdByAi Boolean @default(false)
+
+  source        String? // workflow key, "email", "viewing", "manual" …
+  nextAction    String?
+  dueAt         DateTime?
+  escalationLevel EscalationLevel @default(L1_STAFF)
+  requiredApproval ApprovalLevel  @default(AUTO)
+  estimatedMinutes Int?
+
+  /// Why the routing engine chose this owner — shown in the UI so delegation
+  /// decisions are explainable rather than opaque.
+  routingRationale String?
+
+  blockedByTaskId String?
+  blockedBy       Task?  @relation("TaskDeps", fields: [blockedByTaskId], references: [id])
+  dependents      Task[] @relation("TaskDeps")
+
+  propertyId    String?
+  property      Property?    @relation(fields: [propertyId], references: [id])
+  contactId     String?
+  contact       Contact?     @relation(fields: [contactId], references: [id])
+  leadId        String?
+  lead          Lead?        @relation(fields: [leadId], references: [id])
+  mandateId     String?
+  mandate       Mandate?     @relation(fields: [mandateId], references: [id])
+  offerId       String?
+  offer         Offer?       @relation(fields: [offerId], references: [id])
+  transactionId String?
+  transaction   Transaction? @relation(fields: [transactionId], references: [id])
+  documentId    String?
+  document      Document?    @relation(fields: [documentId], references: [id])
+  workflowRunId String?
+  workflowRun   WorkflowRun? @relation(fields: [workflowRunId], references: [id])
+
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  approvals   Approval[]
+  escalations Escalation[]
+
+  @@index([status, dueAt])
+  @@index([ownerId, status])
+  @@index([ownerType])
+}
+
+/// A matter raised to a level above the person who found it. The payload is
+/// mandatory and structured (§7) so the CEO never receives "there is a problem".
+model Escalation {
+  id      String          @id @default(cuid())
+  level   EscalationLevel
+  title   String
+
+  issue           String
+  context         String
+  actionsTaken    String[] @default([])
+  options         Json     @default("[]")
+  recommendation  String
+  recommendationReason String
+  decisionRequired String
+
+  financialImpact Decimal? @db.Decimal(14, 2)
+  clientImpact    String?
+  riskNote        String?
+  dueAt           DateTime?
+
+  assigneeId String?
+  assignee   User?   @relation("EscalationAssignee", fields: [assigneeId], references: [id])
+
+  taskId String?
+  task   Task?   @relation(fields: [taskId], references: [id])
+
+  resolvedAt     DateTime?
+  resolutionNote String?
+  outcome        String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([level, resolvedAt])
+}
+
+// ─────────────────────────────────────────── approvals & signatures
+
+enum ApprovalLevel {
+  AUTO // AI may execute
+  AUTO_WITH_RULES // AI executes only inside stored parameters
+  REVIEW // a human must look at it
+  APPROVAL // a named authorised person must approve
+  SIGNATURE // an authorised human signature is required
+  MANDY_ONLY // CEO authority
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CHANGES_REQUESTED
+  DELEGATED
+  DEFERRED
+  EXPIRED
+}
+
+model Approval {
+  id     String         @id @default(cuid())
+  level  ApprovalLevel
+  status ApprovalStatus @default(PENDING)
+  subject String
+  summary String
+
+  approverId String?
+  approver   User?   @relation("ApprovalApprover", fields: [approverId], references: [id])
+  approverRole Role?
+
+  taskId       String?
+  task         Task?     @relation(fields: [taskId], references: [id])
+  documentId   String?
+  document     Document? @relation(fields: [documentId], references: [id])
+  mandateId    String?
+  mandate      Mandate?  @relation(fields: [mandateId], references: [id])
+  offerId      String?
+  offer        Offer?    @relation(fields: [offerId], references: [id])
+  assessmentId String?
+  assessment   MarketAssessment? @relation(fields: [assessmentId], references: [id])
+  workflowRunId String?
+  workflowRun   WorkflowRun? @relation(fields: [workflowRunId], references: [id])
+
+  /// What the requester proposes to happen on approval, for the audit record.
+  proposedAction Json?
+  decisionNote   String?
+  decidedAt      DateTime?
+  dueAt          DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([status, level])
+}
+
+enum SignatureStatus {
+  REQUESTED
+  SENT
+  VIEWED
+  SIGNED
+  DECLINED
+  EXPIRED
+}
+
+/// Signature routing. The system never signs on a person's behalf; it records
+/// who must sign and tracks the outcome from the e-signature provider.
+model Signature {
+  id         String          @id @default(cuid())
+  documentId String
+  document   Document        @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  status     SignatureStatus @default(REQUESTED)
+
+  signerUserId    String?
+  signerUser      User?   @relation("SignatureSigner", fields: [signerUserId], references: [id])
+  signerContactId String?
+  signerName      String
+  signerEmail     String?
+  signerRole      String
+
+  provider        String? // set only when a real e-signature integration is connected
+  providerEnvelopeId String?
+  requestedAt     DateTime  @default(now())
+  signedAt        DateTime?
+  declinedReason  String?
+
+  @@index([documentId])
+  @@index([status])
+}
+
+// ─────────────────────────────────────────── workflow engine
+
+enum WorkflowRunStatus {
+  RUNNING
+  WAITING_APPROVAL
+  WAITING_INPUT
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+/// Declarative workflow definitions (§49) so GRLP can add processes without
+/// changing application code.
+model WorkflowDefinition {
+  id          String  @id @default(cuid())
+  key         String  @unique
+  name        String
+  description String?
+  trigger     Json // { type: "event" | "manual" | "schedule", event?: string, cron?: string }
+  steps       Json // ordered step descriptors resolved by the engine's step registry
+  enabled     Boolean @default(true)
+  version     Int     @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  runs WorkflowRun[]
+}
+
+model WorkflowRun {
+  id           String            @id @default(cuid())
+  definitionId String
+  definition   WorkflowDefinition @relation(fields: [definitionId], references: [id])
+  status       WorkflowRunStatus @default(RUNNING)
+  input        Json
+  state        Json              @default("{}")
+  currentStep  Int               @default(0)
+  error        String?
+  startedAt    DateTime          @default(now())
+  finishedAt   DateTime?
+
+  steps     WorkflowStepRun[]
+  tasks     Task[]
+  approvals Approval[]
+  aiActions AiAction[]
+
+  @@index([status])
+}
+
+model WorkflowStepRun {
+  id      String   @id @default(cuid())
+  runId   String
+  run     WorkflowRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  index   Int
+  stepKey String
+  status  String // pending | running | done | skipped | failed | waiting
+  output  Json?
+  error   String?
+  startedAt  DateTime @default(now())
+  finishedAt DateTime?
+
+  @@index([runId])
+}
+
+// ─────────────────────────────────────────── communications, meetings, calendar
+
+enum CommunicationChannel {
+  EMAIL
+  WHATSAPP
+  SMS
+  PHONE
+  PORTAL
+  INTERNAL
+}
+
+enum CommunicationDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum TriageDecision {
+  AI_HANDLE
+  AUTO_REPLY
+  DRAFT_FOR_REVIEW
+  DELEGATE
+  ESCALATE
+  ARCHIVE
+}
+
+enum CommunicationCategory {
+  URGENT
+  CLIENT
+  SALES
+  RENTAL
+  STAFF
+  FINANCE
+  MARKETING
+  PERSONAL
+  INFORMATIONAL
+  LOW_PRIORITY
+}
+
+model Communication {
+  id        String                 @id @default(cuid())
+  channel   CommunicationChannel
+  direction CommunicationDirection
+  domain    DataDomain             @default(BUSINESS)
+
+  externalId String? @unique // provider message id, for idempotent ingestion
+  subject    String?
+  body       String?
+  fromName   String?
+  fromAddress String?
+  toAddresses String[] @default([])
+  receivedAt DateTime
+  answeredAt DateTime?
+
+  category  CommunicationCategory?
+  triage    TriageDecision?
+  triageReason String?
+  urgencyScore Float?
+
+  ownerId String?
+  owner   User?   @relation("CommunicationOwner", fields: [ownerId], references: [id])
+
+  contactId String?
+  contact   Contact? @relation(fields: [contactId], references: [id])
+
+  draftReply    String?
+  draftApproved Boolean @default(false)
+  sentAt        DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([receivedAt])
+  @@index([triage])
+  @@index([ownerId, answeredAt])
+}
+
+model Meeting {
+  id       String   @id @default(cuid())
+  title    String
+  startsAt DateTime
+  endsAt   DateTime
+  location String?
+  domain   DataDomain @default(BUSINESS)
+
+  externalId  String?  @unique
+  agenda      String?
+  briefing    String?
+  talkingPoints String[] @default([])
+  notes       String?
+  decisions   String[] @default([])
+  preparedByAi Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  attendees MeetingAttendee[]
+
+  @@index([startsAt])
+}
+
+model MeetingAttendee {
+  id        String  @id @default(cuid())
+  meetingId String
+  meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  userId    String?
+  user      User?   @relation(fields: [userId], references: [id])
+  name      String
+  email     String?
+  external  Boolean @default(false)
+
+  @@index([meetingId])
+}
+
+// ─────────────────────────────────────────── notifications & risk
+
+enum NotificationTier {
+  INFORMATION
+  ATTENTION
+  DECISION
+  URGENT
+}
+
+model Notification {
+  id     String           @id @default(cuid())
+  userId String
+  user   User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tier   NotificationTier
+  title  String
+  body   String?
+  link   String?
+
+  /// Non-urgent notifications are grouped and released together (§53) rather
+  /// than interrupting the recipient one at a time.
+  batchKey    String?
+  batchedUntil DateTime?
+  deliveredAt DateTime?
+  readAt      DateTime?
+  createdAt   DateTime @default(now())
+
+  @@index([userId, readAt])
+  @@index([batchKey])
+}
+
+enum RiskKind {
+  FORGOTTEN_LEAD
+  OVERDUE_FOLLOW_UP
+  UNSIGNED_DOCUMENT
+  INCOMPLETE_FILE
+  MISSED_DEADLINE
+  STALLED_TRANSACTION
+  UNANSWERED_CLIENT
+  OVERDUE_STAFF_TASK
+  NEGLECTED_RENEWAL
+  MANDATE_EXPIRING
+  UNRESOLVED_ESCALATION
+}
+
+/// Output of the proactive monitor (§31). Findings are recomputed each sweep and
+/// carry a stable `fingerprint` so the same problem is not re-raised endlessly.
+model RiskFinding {
+  id          String   @id @default(cuid())
+  kind        RiskKind
+  fingerprint String   @unique
+  severity    Priority @default(NORMAL)
+  title       String
+  detail      String
+  subjectType String
+  subjectId   String
+  ownerId     String?
+  suggestedAction String?
+  autoResolvable  Boolean @default(false)
+
+  firstSeenAt DateTime  @default(now())
+  lastSeenAt  DateTime  @default(now())
+  resolvedAt  DateTime?
+  mutedUntil  DateTime?
+
+  @@index([kind, resolvedAt])
+}
+
+// ─────────────────────────────────────────── AI actions, memory, audit
+
+enum ProvenanceKind {
+  FACT // verified, sourced from a system of record
+  INFERENCE // the model's reading of available data
+  RECOMMENDATION // a suggested course of action
+  DECISION // a human-approved decision
+}
+
+enum AiActionStatus {
+  PLANNED
+  RUNNING
+  COMPLETED
+  BLOCKED_BY_APPROVAL
+  FAILED
+  REJECTED
+}
+
+/// One unit of work performed (or attempted) by an agent. Every row is a line in
+/// the audit trail (§37) and the source of the "hours recovered" metric (§48).
+model AiAction {
+  id        String         @id @default(cuid())
+  agent     String
+  action    String
+  status    AiActionStatus @default(PLANNED)
+  summary   String
+
+  initiatedById String?
+  initiatedBy   String  @default("system") // user id, "schedule", or "event:<name>"
+
+  inputRefs  Json    @default("{}")
+  outputRefs Json    @default("{}")
+  model      String?
+  promptTokens Int?
+  completionTokens Int?
+
+  /// Minutes of human work this action removed. Used only where the action
+  /// genuinely completed the work, never for suggestions.
+  minutesSaved Int     @default(0)
+  savedFor     String? // user id whose time was recovered
+
+  requiredApproval ApprovalLevel @default(AUTO)
+  blockedReason    String?
+
+  workflowRunId String?
+  workflowRun   WorkflowRun? @relation(fields: [workflowRunId], references: [id])
+
+  startedAt  DateTime  @default(now())
+  finishedAt DateTime?
+  error      String?
+
+  @@index([agent, status])
+  @@index([startedAt])
+}
+
+/// Structured memory (§34). Nothing is stored without provenance, so an
+/// inference can never be replayed to a human as a fact.
+model MemoryEntry {
+  id         String         @id @default(cuid())
+  scope      String // "client:<id>", "property:<id>", "company", "user:<id>" …
+  key        String
+  value      String
+  provenance ProvenanceKind
+  domain     DataDomain     @default(BUSINESS)
+  confidence Float          @default(1)
+  sourceType String?
+  sourceId   String?
+  supersededById String?
+  validUntil DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([scope, key])
+  @@index([scope])
+  @@index([provenance])
+}
+
+model AuditLog {
+  id       String   @id @default(cuid())
+  actorType OwnerType
+  actorId   String?
+  actor     User?    @relation(fields: [actorId], references: [id])
+  action    String
+  entity    String
+  entityId  String?
+  before    Json?
+  after     Json?
+  rationale String?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([entity, entityId])
+  @@index([createdAt])
+}
+
+// ─────────────────────────────────────────── capacity, absence, integrations
+
+/// Rolling measurement of the CEO's load (§28) and the time the system gave back.
+model CapacitySnapshot {
+  id     String   @id @default(cuid())
+  userId String
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date   DateTime @db.Date
+
+  meetingMinutes    Int @default(0)
+  openDecisions     Int @default(0)
+  openTasks         Int @default(0)
+  overdueTasks      Int @default(0)
+  interruptionCount Int @default(0)
+
+  aiCompletedMinutes  Int @default(0)
+  automatedMinutes    Int @default(0)
+  delegatedMinutes    Int @default(0)
+  humanRequiredMinutes Int @default(0)
+
+  loadScore Float @default(0)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, date])
+}
+
+model AbsencePeriod {
+  id     String   @id @default(cuid())
+  userId String
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reason String // holiday | illness | travel | personal | emergency
+  startsAt DateTime
+  endsAt   DateTime
+  /// Only matters at or above this level break through while away.
+  interruptThreshold NotificationTier @default(URGENT)
+  delegateId String?
+  returnBriefing String?
+  active   Boolean @default(true)
+  createdAt DateTime @default(now())
+
+  @@index([userId, active])
+}
+
+enum IntegrationStatus {
+  NOT_CONFIGURED
+  CREDENTIALS_MISSING
+  CONNECTED
+  ERROR
+}
+
+/// The registry that keeps the system honest about what is really connected
+/// (§40). Nothing claims to work until its credentials verify.
+model Integration {
+  id        String            @id @default(cuid())
+  key       String            @unique
+  name      String
+  category  String
+  status    IntegrationStatus @default(NOT_CONFIGURED)
+  requiredEnv String[]        @default([])
+  scopes    String[]          @default([])
+  lastCheckedAt DateTime?
+  lastError String?
+  notes     String?
+  updatedAt DateTime @updatedAt
+}
+
+model Setting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
