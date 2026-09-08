@@ -1,11 +1,38 @@
+import { revalidatePath } from 'next/cache';
 import { requireUser } from '../../server/session';
-import { checkAll } from '../../integrations/registry';
+import { checkAll, checkIntegration, INTEGRATIONS } from '../../integrations/registry';
+import { ingestMail } from '../../server/mail-ingest';
+import { require_ } from '../../server/permissions';
 import { agentAvailability } from '../../agents/registry';
 import { prisma } from '../../server/db';
 import { Shell } from '../../components/shell';
 import { Card, Notice } from '../../components/ui';
 
 export const dynamic = 'force-dynamic';
+
+/**
+ * Performs a real IMAP login against the configured mailbox. This is behind a
+ * button rather than run on page load, because logging in to a mail server every
+ * time somebody opens Settings is rude to the mail server and slow for the reader.
+ */
+async function testMailbox() {
+  'use server';
+  const user = await requireUser();
+  require_(user, 'manage:integrations');
+  const spec = INTEGRATIONS.find((i) => i.key === 'mailbox')!;
+  await checkIntegration(spec, process.env, { live: true });
+  revalidatePath('/settings');
+}
+
+/** Reads new mail, triages it and routes it. Sends nothing. */
+async function runIngest() {
+  'use server';
+  const user = await requireUser();
+  require_(user, 'manage:integrations');
+  await ingestMail();
+  revalidatePath('/settings');
+  revalidatePath('/');
+}
 
 const STATUS_LABEL: Record<string, string> = {
   CONNECTED: 'Connected',
@@ -21,10 +48,10 @@ const STATUS_LABEL: Record<string, string> = {
  */
 export default async function SettingsPage() {
   const user = await requireUser();
-  // A live credential check only runs where credentials exist, so an
-  // unconfigured system makes no outbound calls when this page loads.
+  // No live provider calls on page load: status is read from configuration, and
+  // a real connection test is an explicit action below.
   const [integrations, templates] = await Promise.all([
-    checkAll(process.env),
+    checkAll(process.env, { live: false }),
     prisma.template.findMany({ include: { versions: { orderBy: { version: 'desc' }, include: { fields: true } } } }),
   ]);
   const agents = agentAvailability();
@@ -34,7 +61,7 @@ export default async function SettingsPage() {
       user={user}
       current="/settings"
       title="Settings"
-      lede="What is connected, what is not, and what each one changes. Nothing here is simulated."
+      lede="What is connected, what is not, and what each one changes. Nothing here is simulated. Status is read from configuration; use Test connection for a real login."
     >
       <div className="space-y-5">
         <Card title="Integrations" count={integrations.length}>
@@ -62,6 +89,33 @@ export default async function SettingsPage() {
                 ) : null}
                 {i.missingEnv.length ? (
                   <p className="mt-1.5 font-mono text-xs text-ink-muted">{i.missingEnv.join('  ')}</p>
+                ) : null}
+                {i.key === 'mailbox' && i.status === 'CONNECTED' ? (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <form action={testMailbox}>
+                      <button
+                        type="submit"
+                        className="rounded border border-line px-3 py-1.5 text-sm font-medium transition hover:border-maroon hover:text-maroon"
+                      >
+                        Test connection
+                      </button>
+                    </form>
+                    <form action={runIngest}>
+                      <button
+                        type="submit"
+                        className="rounded bg-maroon px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-maroon-700"
+                      >
+                        Read new mail
+                      </button>
+                    </form>
+                  </div>
+                ) : null}
+                {i.key === 'mailbox' && i.status !== 'CONNECTED' ? (
+                  <p className="mt-2 text-[0.8125rem] leading-relaxed text-ink-soft">
+                    grproperty.co.za mail is hosted on rdsa-mail.com, not Google or Microsoft, so this is a username
+                    and password rather than an OAuth client. Verify from a machine that can reach port 993 with{' '}
+                    <span className="font-mono text-xs">npm run mail:test</span>.
+                  </p>
                 ) : null}
               </li>
             ))}

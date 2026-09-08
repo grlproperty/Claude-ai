@@ -61,6 +61,25 @@ export const INTEGRATIONS: IntegrationSpec[] = [
     },
   },
   {
+    key: 'mailbox',
+    name: 'GRLP mailbox (IMAP + SMTP)',
+    category: 'email',
+    requiredEnv: ['MAIL_IMAP_HOST', 'MAIL_SMTP_HOST', 'MAIL_USER', 'MAIL_PASSWORD'],
+    scopes: [],
+    capabilityWhenConnected:
+      'Reading the inbox, triaging real mail, and sending approved replies and follow-ups.',
+    degradedBehaviour:
+      'Triage, routing and deadline extraction still run on messages entered or imported into the system, but nothing is read from or sent to the live mailbox. The follow-up engine prepares messages and stops at sending.',
+    verify: async (env) => {
+      // Imported lazily: the mail libraries should not load on every request in
+      // an installation that does not use them.
+      const { createImapSmtpTransport, mailboxConfig } = await import('./mailbox');
+      const config = mailboxConfig(env);
+      if (!config) return { ok: false, detail: 'configuration incomplete' };
+      return createImapSmtpTransport(config).verify();
+    },
+  },
+  {
     key: 'google_workspace',
     name: 'Google Workspace (Gmail + Calendar)',
     category: 'email',
@@ -69,7 +88,8 @@ export const INTEGRATIONS: IntegrationSpec[] = [
       'https://www.googleapis.com/auth/gmail.modify',
       'https://www.googleapis.com/auth/calendar',
     ],
-    capabilityWhenConnected: 'Inbox triage on real mail, sending approved replies, and calendar intelligence.',
+    capabilityWhenConnected:
+      'Calendar intelligence and single sign-on, plus mail if GRLP ever moves off its own mail host.',
     degradedBehaviour:
       'Triage runs on messages entered or imported into the system, but nothing is read from or sent to a live mailbox.',
   },
@@ -79,7 +99,7 @@ export const INTEGRATIONS: IntegrationSpec[] = [
     category: 'email',
     requiredEnv: ['MS_CLIENT_ID', 'MS_CLIENT_SECRET', 'MS_TENANT_ID', 'MS_REDIRECT_URI'],
     scopes: ['Mail.ReadWrite', 'Mail.Send', 'Calendars.ReadWrite'],
-    capabilityWhenConnected: 'The same inbox and calendar work against Outlook instead of Gmail.',
+    capabilityWhenConnected: 'The same calendar and sign-on work against Microsoft instead of Google.',
     degradedBehaviour: 'No live Outlook mailbox or calendar access.',
   },
   {

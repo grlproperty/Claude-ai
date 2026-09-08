@@ -23,6 +23,17 @@ import { INTEGRATIONS, missingEnvFor } from '../src/integrations/registry';
 
 const prisma = new PrismaClient();
 
+/**
+ * The mail domain. Confirmed from GRLP's MX records: mail for grproperty.co.za is
+ * hosted on rdsa-mail.com (xneelo), not on Google Workspace or Microsoft 365.
+ *
+ * Only mandy@ has been confirmed by name. The other local-parts are the obvious
+ * first-name form and should be checked against the real mailboxes before the
+ * system starts routing to them — an address that does not exist fails silently
+ * at the mail server, which is the worst way to find out.
+ */
+const MAIL_DOMAIN = 'grproperty.co.za';
+
 const TEAM: Array<{
   email: string;
   name: string;
@@ -32,17 +43,17 @@ const TEAM: Array<{
   weeklyCapacityHours?: number;
   note: string;
 }> = [
-  { email: 'mandy@gardenroutelifestyleproperty.co.za', name: 'Mandy', role: 'CEO', department: 'EXECUTIVE', isCeo: true, weeklyCapacityHours: 45, note: 'Founder, manager, senior sales agent, professional oversight.' },
-  { email: 'kandy@gardenroutelifestyleproperty.co.za', name: 'Kandy', role: 'SALES_AGENT', department: 'SALES', note: 'Sales agent.' },
-  { email: 'jason@gardenroutelifestyleproperty.co.za', name: 'Jason', role: 'SALES_AGENT', department: 'SALES', note: 'Sales agent.' },
-  { email: 'angela@gardenroutelifestyleproperty.co.za', name: 'Angela', role: 'SALES_AGENT', department: 'SALES', note: 'Sales agent.' },
-  { email: 'laurel@gardenroutelifestyleproperty.co.za', name: 'Laurel', role: 'SALES_AGENT', department: 'SALES', note: 'Sales agent.' },
-  { email: 'melinda@gardenroutelifestyleproperty.co.za', name: 'Melinda', role: 'SALES_AGENT', department: 'SALES', note: 'Sales agent.' },
-  { email: 'kerin@gardenroutelifestyleproperty.co.za', name: 'Kerin', role: 'SALES_AGENT', department: 'SALES', note: 'Sales agent.' },
-  { email: 'rochelle@gardenroutelifestyleproperty.co.za', name: 'Rochelle', role: 'SALES_AGENT', department: 'SALES', note: 'Sales agent.' },
-  { email: 'linda@gardenroutelifestyleproperty.co.za', name: 'Linda', role: 'MARKETING_ADMIN', department: 'MARKETING', note: 'Social media, marketing, some administrative support.' },
-  { email: 'lisa@gardenroutelifestyleproperty.co.za', name: 'Lisa', role: 'RENTALS', department: 'RENTALS', note: 'Rental operations.' },
-  { email: 'marion@gardenroutelifestyleproperty.co.za', name: 'Marion', role: 'ACCOUNTS', department: 'ACCOUNTS', note: 'Accounts, rental administration, back office.' },
+  { email: `mandy@${MAIL_DOMAIN}`, name: 'Mandy', role: 'CEO', department: 'EXECUTIVE', isCeo: true, weeklyCapacityHours: 45, note: 'Founder, manager, senior sales agent, professional oversight.' },
+  { email: `kandy@${MAIL_DOMAIN}`, name: 'Kandy', role: 'SALES_AGENT', department: 'SALES', note: 'Sales agent.' },
+  { email: `jason@${MAIL_DOMAIN}`, name: 'Jason', role: 'SALES_AGENT', department: 'SALES', note: 'Sales agent.' },
+  { email: `angela@${MAIL_DOMAIN}`, name: 'Angela', role: 'SALES_AGENT', department: 'SALES', note: 'Sales agent.' },
+  { email: `laurel@${MAIL_DOMAIN}`, name: 'Laurel', role: 'SALES_AGENT', department: 'SALES', note: 'Sales agent.' },
+  { email: `melinda@${MAIL_DOMAIN}`, name: 'Melinda', role: 'SALES_AGENT', department: 'SALES', note: 'Sales agent.' },
+  { email: `kerin@${MAIL_DOMAIN}`, name: 'Kerin', role: 'SALES_AGENT', department: 'SALES', note: 'Sales agent.' },
+  { email: `rochelle@${MAIL_DOMAIN}`, name: 'Rochelle', role: 'SALES_AGENT', department: 'SALES', note: 'Sales agent.' },
+  { email: `linda@${MAIL_DOMAIN}`, name: 'Linda', role: 'MARKETING_ADMIN', department: 'MARKETING', note: 'Social media, marketing, some administrative support.' },
+  { email: `lisa@${MAIL_DOMAIN}`, name: 'Lisa', role: 'RENTALS', department: 'RENTALS', note: 'Rental operations.' },
+  { email: `marion@${MAIL_DOMAIN}`, name: 'Marion', role: 'ACCOUNTS', department: 'ACCOUNTS', note: 'Accounts, rental administration, back office.' },
 ];
 
 const UNAPPROVED_NOTICE = [
@@ -193,15 +204,16 @@ async function main() {
     const body =
       UNAPPROVED_NOTICE +
       t.fields.map((f) => `${f.label}: {{${f.key}}}`).join('\n') +
-      '\n\n[ Replace everything above with the approved GRLP wording, keeping the {{placeholders}}. ]';
+      '\n\n[ Replace everything above with the approved GRLP wording. Keep the double-brace ' +
+      'field markers exactly as they appear above — they are what the system fills in. ]';
 
-    const existing = await prisma.templateVersion.findUnique({
+    // Idempotent in two steps rather than one: a version that exists but has no
+    // fields is a half-finished seed, not a finished one, and skipping it would
+    // leave a template that silently produces an empty document.
+    const version = await prisma.templateVersion.upsert({
       where: { templateId_version: { templateId: template.id, version: 1 } },
-    });
-    if (existing) continue;
-
-    const version = await prisma.templateVersion.create({
-      data: {
+      update: {},
+      create: {
         templateId: template.id,
         version: 1,
         body,
@@ -213,19 +225,39 @@ async function main() {
       },
     });
 
-    await prisma.templateField.createMany({
-      data: t.fields.map((f, i) => ({
-        versionId: version.id,
-        key: f.key,
-        label: f.label,
-        dataType: f.dataType,
-        required: f.required ?? true,
-        validators: f.validators ?? [],
-        sourcePath: f.sourcePath ?? null,
-        conditionalOn: f.conditionalOn ?? Prisma.DbNull,
-        order: i,
-      })),
+    for (const [i, f] of t.fields.entries()) {
+      await prisma.templateField.upsert({
+        where: { versionId_key: { versionId: version.id, key: f.key } },
+        update: {
+          label: f.label,
+          dataType: f.dataType,
+          required: f.required ?? true,
+          validators: f.validators ?? [],
+          sourcePath: f.sourcePath ?? null,
+          conditionalOn: f.conditionalOn ?? Prisma.DbNull,
+          order: i,
+        },
+        create: {
+          versionId: version.id,
+          key: f.key,
+          label: f.label,
+          dataType: f.dataType,
+          required: f.required ?? true,
+          validators: f.validators ?? [],
+          sourcePath: f.sourcePath ?? null,
+          conditionalOn: f.conditionalOn ?? Prisma.DbNull,
+          order: i,
+        },
+      });
+    }
+  }
+  for (const t of templates) {
+    const count = await prisma.templateField.count({
+      where: { version: { template: { key: t.key }, version: 1 } },
     });
+    if (count !== t.fields.length) {
+      throw new Error(`Template "${t.key}" has ${count} fields, expected ${t.fields.length}. The seed did not complete.`);
+    }
   }
   console.log(`Seeded ${templates.length} templates (field definitions only — wording awaits approval).`);
 

@@ -23,7 +23,7 @@ await page.goto(`${BASE}/`, { waitUntil: 'networkidle' });
 console.log('redirected to:', new URL(page.url()).pathname);
 await page.screenshot({ path: `${OUT}/01-sign-in.png` });
 
-await page.fill('input[name=email]', 'mandy@gardenroutelifestyleproperty.co.za');
+await page.fill('input[name=email]', 'mandy@grproperty.co.za');
 await page.fill('input[name=password]', 'command-centre-dev-2026');
 await page.click('button[type=submit]');
 // The server action replies 303 and the client navigates, so wait for the URL

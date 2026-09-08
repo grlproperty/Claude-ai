@@ -33,8 +33,10 @@ let agentId: string;
 let propertyId: string;
 
 beforeAll(async () => {
-  const mandy = await prisma.user.findUniqueOrThrow({ where: { email: 'mandy@gardenroutelifestyleproperty.co.za' } });
-  const kandy = await prisma.user.findUniqueOrThrow({ where: { email: 'kandy@gardenroutelifestyleproperty.co.za' } });
+  // Looked up by role, not by address — the mail domain is configuration and
+  // may change; who is the CEO does not.
+  const mandy = await prisma.user.findFirstOrThrow({ where: { isCeo: true } });
+  const kandy = await prisma.user.findFirstOrThrow({ where: { name: 'Kandy' } });
   mandyId = mandy.id;
   agentId = kandy.id;
 

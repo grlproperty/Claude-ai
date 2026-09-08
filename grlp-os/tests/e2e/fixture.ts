@@ -15,8 +15,8 @@ const daysAgo = (d: number) => new Date(NOW.getTime() - d * 86_400_000);
 const hoursAgo = (h: number) => new Date(NOW.getTime() - h * 3_600_000);
 
 async function create() {
-  const kandy = await prisma.user.findUniqueOrThrow({ where: { email: 'kandy@gardenroutelifestyleproperty.co.za' } });
-  const mandy = await prisma.user.findUniqueOrThrow({ where: { email: 'mandy@gardenroutelifestyleproperty.co.za' } });
+  const kandy = await prisma.user.findFirstOrThrow({ where: { name: 'Kandy' } });
+  const mandy = await prisma.user.findFirstOrThrow({ where: { isCeo: true } });
 
   const seller = await prisma.contact.create({ data: { kind: 'SELLER', firstName: `${TAG}-M`, lastName: 'Botha', idNumber: '8001015009087' } });
   const buyer = await prisma.contact.create({ data: { kind: 'BUYER', firstName: `${TAG}-T`, lastName: 'Mokoena' } });

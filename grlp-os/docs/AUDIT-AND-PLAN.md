@@ -134,9 +134,13 @@ periods, integrations and settings.
 
 ## What remains, in priority order
 
-**1. Connect a mailbox.** Everything downstream of it — real triage, sending
-follow-ups, calendar intelligence, meeting briefs, single sign-on — is blocked on
-this one credential set. Highest value by a wide margin.
+**1. Connect the mailbox.** *Built on 8 September.* The MX records show
+`grproperty.co.za` is hosted on rdsa-mail.com (xneelo), not Google or Microsoft, so
+this is IMAP and SMTP with a username and password — no OAuth client, no admin
+console. Ingestion, triage, routing and approved sending are written and tested
+against a fake transport. What remains is putting the password in `.env` and running
+`npm run mail:test` from a machine that can reach port 993; the build environment
+allows HTTPS only, so the live login is unverified.
 
 **2. Wire the decision actions.** Approve, Reject, Delegate, Request information and
 Defer currently render disabled. Making them write decisions back to the escalation

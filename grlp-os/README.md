@@ -47,9 +47,10 @@ This matters more than a feature list, so it is stated plainly.
 | Executor | Complete. Performs what it can, records an audit line, reports what it cannot. |
 | Authentication, sessions, RBAC | Complete, including immediate revocation and personal/business separation. |
 | Command Centre, Decisions, Work, Staff, Settings | Built and wired to the database. |
+| Mail ingestion and sending | Built and tested against a fake transport. Live connection unverified — see below. |
 | Data model | 39 tables, migrated. |
 
-**192 tests**, including the full simulation of Mandy's day (§63) against real Postgres.
+**219 tests**, including the full simulation of Mandy's day (§63) against real Postgres.
 
 ### Built as a real interface, awaiting credentials
 
@@ -59,7 +60,8 @@ without it.
 | Integration | Needs | Without it |
 | --- | --- | --- |
 | Claude (AI) | `ANTHROPIC_API_KEY` | Everything above still runs. Only drafting and free-text summarising stop. |
-| Google Workspace | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI` | No live mailbox or calendar. Triage runs on imported messages. |
+| **GRLP mailbox** | `MAIL_IMAP_HOST`, `MAIL_SMTP_HOST`, `MAIL_USER`, `MAIL_PASSWORD` | Triage runs on imported messages, but nothing is read from or sent to the live mailbox. |
+| Google Workspace | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI` | No calendar or single sign-on. |
 | Microsoft 365 | `MS_CLIENT_ID`, `MS_CLIENT_SECRET`, `MS_TENANT_ID`, `MS_REDIRECT_URI` | As above. |
 | Dropbox | `DROPBOX_APP_KEY`, `DROPBOX_APP_SECRET`, `DROPBOX_REFRESH_TOKEN` | Documents stored in the database, not filed to Dropbox. |
 | E-signature | `ESIGN_PROVIDER`, `ESIGN_API_KEY` | Signature routing is tracked and chased, but sending is manual. No provider chosen yet. |
@@ -71,10 +73,44 @@ sequence.
 
 - Workflow **runner** (definitions are seeded; the step executor is not written)
 - Decision actions (Approve / Reject / Delegate render disabled, deliberately)
-- Email and calendar ingestion (blocked on the mailbox integration)
+- Calendar ingestion (blocked on Google or Microsoft credentials)
+- Scheduled ingestion — `npm run mail:ingest` is manual or cron-driven; there is no in-app scheduler
 - Meeting briefs, absence mode, weekly CEO review, personal assistant UI
 - Document ingestion and OCR
 - Natural-language command bar and voice
+
+### Connecting the mailbox
+
+`grproperty.co.za` mail is hosted on **rdsa-mail.com (xneelo)**, confirmed from the
+MX records — not Google Workspace and not Microsoft 365. So there is no OAuth client
+to create, no admin console and no app verification: it is plain IMAP and SMTP with a
+username and password.
+
+```bash
+# in .env
+MAIL_IMAP_HOST="mail.grproperty.co.za"
+MAIL_IMAP_PORT="993"          # implicit TLS
+MAIL_SMTP_HOST="mail.grproperty.co.za"
+MAIL_SMTP_PORT="587"          # STARTTLS
+MAIL_USER="mandy@grproperty.co.za"
+MAIL_PASSWORD="..."
+
+npm run mail:test             # performs a real IMAP login
+npm run mail:ingest           # reads new mail, triages it, routes it
+```
+
+Two things follow from password authentication rather than OAuth, and both matter:
+
+- **The password is a full mailbox credential, not a scoped token.** It belongs in
+  `.env` — never in the database, never in the repository. Where the host allows it,
+  use a mailbox created for this system rather than a person's own.
+- **"Connected" means one thing only:** a real IMAP login succeeded. `npm run mail:test`
+  performs that login. Run it where the application will run — a network that only
+  allows HTTPS cannot reach port 993, and will report a failure that says nothing
+  about whether the credentials are right.
+
+Ingestion never sends. Triage decides what *should* happen; a reply leaves the mailbox
+only after a person has approved that specific message.
 
 ---
 
@@ -100,7 +136,7 @@ npm install
 cp .env.example .env          # fill in DATABASE_URL and SESSION_SECRET
 npm run db:deploy             # apply migrations
 npm run seed                  # team, templates, workflows, integration registry
-npx tsx scripts/set-password.ts mandy@gardenroutelifestyleproperty.co.za '<password>'
+npx tsx scripts/set-password.ts mandy@grproperty.co.za '<password>'
 npm run dev
 ```
 

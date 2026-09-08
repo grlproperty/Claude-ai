@@ -5,7 +5,7 @@ const dir = readdirSync(root).filter((d) => d.startsWith('chromium-')).sort().po
 const b = await chromium.launch({ executablePath: `${root}/${dir}/chrome-linux/chrome` });
 const p = await b.newPage({ viewport: { width: 1360, height: 1100 } });
 await p.goto('http://localhost:4310/sign-in');
-await p.fill('input[name=email]', 'mandy@gardenroutelifestyleproperty.co.za');
+await p.fill('input[name=email]', 'mandy@grproperty.co.za');
 await p.fill('input[name=password]', 'command-centre-dev-2026');
 await p.click('button[type=submit]');
 await p.waitForURL('http://localhost:4310/');

@@ -1,6 +1,7 @@
 import { prisma } from './db';
 import { guard } from '../domain/approvals';
-import { isConfigured } from '../integrations/registry';
+import { isConfigured, type EnvLike } from '../integrations/registry';
+import { mailboxConfig } from '../integrations/mailbox';
 import type { PreparedItem } from './executive';
 
 /**
@@ -38,9 +39,15 @@ export interface ExecutionOutcome {
   detail: string;
 }
 
-/** True when either mailbox provider is fully configured. */
-function mailboxConnected(env = process.env): boolean {
-  return isConfigured('google_workspace', env) || isConfigured('microsoft_365', env);
+/**
+ * True when a mailbox the system can actually send through is configured.
+ * GRLP's own IMAP/SMTP mailbox is the primary route; the hosted providers are
+ * alternatives if the agency ever moves.
+ */
+export function mailboxConnected(env: EnvLike = process.env): boolean {
+  return (
+    mailboxConfig(env) != null || isConfigured('google_workspace', env) || isConfigured('microsoft_365', env)
+  );
 }
 
 export async function executePlan(items: PreparedItem[], forUserId: string, now = new Date()): Promise<ExecutionOutcome[]> {
@@ -113,11 +120,12 @@ export async function executePlan(items: PreparedItem[], forUserId: string, now 
 
     if (wanted.includes('send_email')) {
       if (mailboxConnected()) {
-        // A mailbox is connected, but sending is performed by the communication
-        // pipeline once a draft has been approved — never silently from here.
+        // Sending happens through the communication pipeline once a draft has
+        // been approved. It is never triggered silently from a sweep — a client
+        // hearing from GRLP is a deliberate act, not a side effect.
         blocked.push({
           effect: 'send_email',
-          reason: 'A mailbox is connected. The message is queued for drafting and approval before it is sent.',
+          reason: 'The mailbox is connected. The message is queued for drafting and approval before it is sent.',
         });
       } else {
         blocked.push({
