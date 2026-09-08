@@ -577,7 +577,16 @@ model Template {
   description String?
   createdAt   DateTime     @default(now())
 
+  /// Where this document sits in GRLP's own process: "SALES" or "RENTALS",
+  /// the stage key from the document catalogue, and the variant where the
+  /// document has several approved forms (residential, sectional title …).
+  process   String?
+  stageKey  String?
+  variant   String?
+
   versions TemplateVersion[]
+
+  @@index([process, stageKey])
 }
 
 model TemplateVersion {
@@ -594,6 +603,16 @@ model TemplateVersion {
   approvedAt    DateTime?
   requiredApproval ApprovalLevel @default(APPROVAL)
   signatoryRoles   String[]      @default([])
+
+  /// Provenance of the wording. The master copies live in Dropbox and are
+  /// edited there; `sourceRev` is Dropbox's content revision, so a re-import
+  /// can tell whether the master has changed since this version was taken.
+  sourceProvider   String?
+  sourcePath       String?
+  sourceRev        String?
+  sourceModifiedAt DateTime?
+  /// Set when the file was catalogued but its wording could not be extracted.
+  extractionNote   String?
 
   fields    TemplateField[]
   documents Document[]

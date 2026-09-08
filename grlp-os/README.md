@@ -48,9 +48,11 @@ This matters more than a feature list, so it is stated plainly.
 | Authentication, sessions, RBAC | Complete, including immediate revocation and personal/business separation. |
 | Command Centre, Decisions, Work, Staff, Settings | Built and wired to the database. |
 | Mail ingestion and sending | Built and tested against a fake transport. Live connection unverified — see below. |
+| Document catalogue and process maps | Complete. 58 documents across 14 stages, transcribed from GRLP's own checklists, with the real sign-off gates. |
+| Dropbox master-copy importer | Built and tested against a fake Dropbox. Live import needs credentials. |
 | Data model | 39 tables, migrated. |
 
-**219 tests**, including the full simulation of Mandy's day (§63) against real Postgres.
+**250 tests**, including the full simulation of Mandy's day (§63) against real Postgres.
 
 ### Built as a real interface, awaiting credentials
 
@@ -63,7 +65,7 @@ without it.
 | **GRLP mailbox** | `MAIL_IMAP_HOST`, `MAIL_SMTP_HOST`, `MAIL_USER`, `MAIL_PASSWORD` | Triage runs on imported messages, but nothing is read from or sent to the live mailbox. |
 | Google Workspace | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI` | No calendar or single sign-on. |
 | Microsoft 365 | `MS_CLIENT_ID`, `MS_CLIENT_SECRET`, `MS_TENANT_ID`, `MS_REDIRECT_URI` | As above. |
-| Dropbox | `DROPBOX_APP_KEY`, `DROPBOX_APP_SECRET`, `DROPBOX_REFRESH_TOKEN` | Documents stored in the database, not filed to Dropbox. |
+| Dropbox | `DROPBOX_APP_KEY`, `DROPBOX_APP_SECRET`, `DROPBOX_REFRESH_TOKEN` | Master copies cannot be imported; the catalogue and process are there, the wording is not. |
 | E-signature | `ESIGN_PROVIDER`, `ESIGN_API_KEY` | Signature routing is tracked and chased, but sending is manual. No provider chosen yet. |
 
 ### Not built yet
@@ -111,6 +113,44 @@ Two things follow from password authentication rather than OAuth, and both matte
 
 Ingestion never sends. Triage decides what *should* happen; a reply leaves the mailbox
 only after a person has approved that specific message.
+
+---
+
+## The document catalogue
+
+`src/domain/master-documents.ts` holds GRLP's two processes end to end — 31 sales
+documents across 8 stages, 27 rentals documents across 6 — transcribed from the
+agency's own **Rental Document checklist** and **after-sale checklist**, including
+the four "SIGNED OFF BY SUPERIOR" gates. A gated stage is not passed until a named
+person signs it, whatever the documents say.
+
+Browse it at `/documents`.
+
+### Importing the master copies
+
+```bash
+npm run import:masters -- --dry-run   # report what would be imported
+npm run import:masters                # import
+```
+
+The importer reads Dropbox, matches each file to a catalogue entry (including
+variants — five OTP forms, five lease forms, three FICA schedules), and records
+Dropbox's revision so a re-import skips unchanged masters and versions changed ones.
+
+Four rules it will not break:
+
+- **It reads only.** The masters are edited in Dropbox by the people responsible
+  for them; nothing is written back.
+- **Wording goes to the database, never to this repository** — which is public.
+- **Imported versions are unapproved.** Importing a master copy does not put it
+  into circulation; the document engine still refuses to generate until a person
+  approves the wording.
+- **An unrecognised file is reported, not guessed at.**
+
+Legacy `.doc` files cannot have their text extracted reliably. The importer
+catalogues them, says so plainly, and asks for them to be saved as `.docx`. For
+anything that cannot be converted, `npm run load:master <key> <file>` loads the
+wording from a local path you supply — again, never through the repository.
 
 ---
 

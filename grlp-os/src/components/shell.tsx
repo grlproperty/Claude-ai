@@ -7,6 +7,7 @@ const NAV = [
   { href: '/', label: 'Command Centre', permission: null },
   { href: '/decisions', label: 'Decisions', permission: null },
   { href: '/work', label: 'Work', permission: null },
+  { href: '/documents', label: 'Documents', permission: null },
   { href: '/staff', label: 'Staff', permission: 'view:department' as const },
   { href: '/settings', label: 'Settings', permission: null },
 ];
