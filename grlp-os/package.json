@@ -32,6 +32,7 @@
     "bcryptjs": "^2.4.3",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "docxtemplater": "^3.50.0",
     "imapflow": "^1.0.171",
     "jose": "^5.9.6",
     "mailparser": "^3.7.1",
@@ -39,6 +40,7 @@
     "next": "^15.5.4",
     "nodemailer": "^6.9.16",
     "pdf-parse": "^1.1.1",
+    "pizzip": "^3.1.7",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "zod": "^3.25.76"

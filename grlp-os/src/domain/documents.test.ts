@@ -111,7 +111,8 @@ describe('preparing an offer to purchase', () => {
       overrides: { offerAmount: '4300000' },
       checkSet: 'otp',
     });
-    expect(doc.body).toContain('4300000');
+    // Overrides are rendered the same way as sourced values: as a rand amount.
+    expect(doc.body).toContain('R4 300 000');
   });
 });
 

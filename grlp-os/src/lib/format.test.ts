@@ -2,8 +2,17 @@ import { describe, expect, it } from 'vitest';
 import { formatDuration, formatZar, formatZarCompact } from './format';
 
 describe('South African formatting', () => {
-  it('groups rand with a space, not a comma', () => {
-    expect(formatZar(250_000)).toMatch(/R\s?250\s000/);
+  it('writes rand the way the brand guide does: no gap after the R, spaces between groups', () => {
+    expect(formatZar(250_000)).toBe('R250 000');
+    expect(formatZar(4_250_000)).toBe('R4 250 000');
+  });
+
+  it('uses ordinary spaces, so the text survives being copied into Word', () => {
+    expect(formatZar(4_250_000)).not.toMatch(/\u00a0/);
+  });
+
+  it('shows cents when asked', () => {
+    expect(formatZar(1234.5, { decimals: true })).toBe('R1 234,50');
   });
 
   it('compacts millions for dashboard tiles', () => {
