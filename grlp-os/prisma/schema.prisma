@@ -1265,6 +1265,49 @@ model Integration {
   updatedAt DateTime @updatedAt
 }
 
+/// A document from GRLP's own knowledge base, imported from Dropbox so the
+/// system can answer from what the agency actually does rather than from
+/// generic estate-agency practice. Text is stored here, never in the
+/// repository — the repository is public.
+model KnowledgeDocument {
+  id        String   @id @default(cuid())
+  /// Stable key derived from the source path, so a re-import updates rather than duplicates.
+  key       String   @unique
+  title     String
+  category  KnowledgeCategory
+  /// SALES, RENTALS, BOTH or COMPANY.
+  appliesTo String   @default("BOTH")
+
+  sourceProvider   String   @default("dropbox")
+  sourcePath       String
+  sourceRev        String?
+  sourceModifiedAt DateTime?
+
+  /// Extracted plain text. Empty when the format could not be read.
+  text           String
+  extractionNote String?
+  wordCount      Int      @default(0)
+
+  /// Free-text tags for retrieval: "fica", "popi", "trust account", "tpn" …
+  tags String[] @default([])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+  @@index([appliesTo])
+}
+
+enum KnowledgeCategory {
+  SOP // how GRLP does something
+  POLICY // a rule staff must follow
+  COMPLIANCE // legislation, FICA, POPI, PPRA
+  TEMPLATE_GUIDE // how to complete a document
+  TRAINING
+  AREA_INFO // municipal, zoning, local knowledge
+  REFERENCE
+}
+
 model Setting {
   key       String   @id
   value     Json

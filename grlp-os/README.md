@@ -50,9 +50,10 @@ This matters more than a feature list, so it is stated plainly.
 | Mail ingestion and sending | Built and tested against a fake transport. Live connection unverified — see below. |
 | Document catalogue and process maps | Complete. 58 documents across 14 stages, transcribed from GRLP's own checklists, with the real sign-off gates. |
 | Dropbox master-copy importer | Built and tested against a fake Dropbox. Live import needs credentials. |
+| Knowledge base | Built and tested. 41 operating rules encoded from GRLP's SOPs; the importer needs Dropbox credentials for the rest. |
 | Data model | 39 tables, migrated. |
 
-**250 tests**, including the full simulation of Mandy's day (§63) against real Postgres.
+**305 tests**, including the full simulation of Mandy's day (§63) against real Postgres.
 
 ### Built as a real interface, awaiting credentials
 
@@ -113,6 +114,48 @@ Two things follow from password authentication rather than OAuth, and both matte
 
 Ingestion never sends. Triage decides what *should* happen; a reply leaves the mailbox
 only after a person has approved that specific message.
+
+---
+
+## What the system knows about GRLP
+
+`src/domain/operating-rules.ts` holds 41 rules read out of the agency's own
+standard operating procedures, each carrying the document it came from. This is
+what lets the system behave like GRLP rather than like a generic estate agency:
+
+- **The systems GRLP runs on** — PropCntrl for listings, syndication to Property24
+  and Private Property, TPN for tenant credit checks and rentbook invoicing,
+  Dropbox as the property file, the New Listings and Changes WhatsApp group.
+- **Filing conventions** — a listing folder named by erf and street address; a
+  relisted property's old listing moved into an OLD folder, not deleted.
+- **Statutory deadlines** — a deposit reconciliation within 7 days, refund within
+  14, interest belonging to the tenant, the R250 000 cooling-off threshold.
+- **Money rules** — everything through the trust account, never a personal one;
+  commission the first charge against the deposit; payments released only after
+  management authorises them.
+- **Approval points** — the four rentals gates, the landlord approving the tenant,
+  the landlord authorising maintenance before a contractor is instructed.
+- **Company facts** — registration number, VAT number, Fidelity Fund Certificate,
+  both office addresses, the 6.5% default commission.
+
+Commercially sensitive policies — commission negotiation, the listing versus
+selling agent split — are deliberately **not** transcribed into this repository,
+which is public. They import into the database like any other document.
+
+### Importing the knowledge base
+
+```bash
+npm run import:knowledge -- --dry-run
+npm run import:knowledge
+```
+
+Fifteen folders of procedures, compliance, checklists and area information. Text
+goes to the database, never to this repository. Superseded copies, per-employee
+signed acknowledgements and images are skipped. Unchanged documents are left
+alone; edited ones are updated.
+
+Once imported, the system can answer *what does GRLP do about X?* and cite the
+document — so an answer can always be checked against the procedure it came from.
 
 ---
 
