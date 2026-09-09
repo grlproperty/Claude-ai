@@ -3529,3 +3529,203 @@ code {
 .colophon .index-list > li > a {
   padding-block: 0.3rem;
 }
+
+/* ---------------------------------------------------------- social tiles
+ *
+ * From the brand kit: an extruded squircle with a blush glyph, lit from the
+ * top left, standing on its own cast shadow. Every colour comes from a custom
+ * property so one set of rules covers all three grounds the tiles appear on —
+ * onyx on the blush page, blush on the ink colophon, where an onyx tile would
+ * be a black square on a black field.
+ *
+ * `--tile` is the edge length; everything else is proportional to it, so the
+ * same component works at the footer's size and the Find us page's.
+ */
+.tiles {
+  --tile: 4.6rem;
+  --tile-lift: 0.055;
+  --tile-face: linear-gradient(155deg, #5e5354 0%, #262021 40%, #131011 76%, #0a0809 100%);
+  --tile-edge-1: #080606;
+  --tile-edge-2: #000;
+  --tile-cast: rgba(12, 8, 9, 0.42);
+  --tile-ink: #f2dddf;
+  --tile-ink-shade: rgba(0, 0, 0, 0.6);
+  --tile-inner-top: rgba(255, 255, 255, 0.3);
+  --tile-inner-bottom: rgba(0, 0, 0, 0.6);
+  --tile-rim: rgba(255, 255, 255, 0.14);
+
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--tile) * 0.28);
+  perspective: 900px;
+}
+
+/* On ink the onyx tile is a black square on a black field. The kit's pale face
+   is the same object under a different light, and it is the only one of the
+   three that holds its edge here. */
+.on-dark .tiles,
+.colophon .tiles,
+.on-crimson .tiles {
+  --tile-face: linear-gradient(155deg, #fff 0%, #f4dee0 42%, #e4c4c8 74%, #d7b0b6 100%);
+  --tile-edge-1: #c0989d;
+  --tile-edge-2: #a57c83;
+  --tile-cast: rgba(0, 0, 0, 0.45);
+  --tile-ink: #8e0b14;
+  --tile-ink-shade: rgba(150, 60, 66, 0.35);
+  --tile-inner-top: rgba(255, 255, 255, 0.85);
+  --tile-inner-bottom: rgba(150, 95, 102, 0.35);
+  --tile-rim: rgba(255, 255, 255, 0.6);
+}
+
+.tile {
+  /* The extrusion depth, tied to the tile so a small one is not a slab. */
+  --d: calc(var(--tile) * var(--tile-lift));
+  position: relative;
+  display: block;
+  width: var(--tile);
+  height: var(--tile);
+  border-radius: 27%;
+  background: var(--tile-face);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow:
+    inset 0 3px 6px var(--tile-inner-top),
+    inset 0 -9px 17px var(--tile-inner-bottom),
+    inset 0 0 0 1px var(--tile-rim),
+    0 var(--d) 0 var(--tile-edge-1),
+    0 calc(var(--d) * 2) 0 var(--tile-edge-2),
+    0 calc(var(--d) * 3.6) calc(var(--d) * 5) var(--tile-cast);
+  transition:
+    transform 0.34s cubic-bezier(0.2, 0.8, 0.3, 1),
+    box-shadow 0.34s cubic-bezier(0.2, 0.8, 0.3, 1);
+  transform: translate3d(0, 0, 0);
+}
+
+/* The gloss across the top face. */
+.tile::before {
+  content: '';
+  position: absolute;
+  left: 7%;
+  right: 7%;
+  top: 5%;
+  height: 46%;
+  border-radius: 22px 22px 42px 42px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 255, 255, 0.12) 55%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  pointer-events: none;
+}
+
+/* The light in the top-left corner, and the fall-off away from it. */
+.tile::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 80% at 22% 12%, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 46%),
+    radial-gradient(90% 70% at 82% 96%, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 55%);
+}
+
+.tile:hover {
+  transform: translate3d(0, calc(var(--d) * -1.4), 0) rotateX(9deg) rotateZ(-2deg);
+  box-shadow:
+    inset 0 3px 6px var(--tile-inner-top),
+    inset 0 -9px 17px var(--tile-inner-bottom),
+    inset 0 0 0 1px var(--tile-rim),
+    0 calc(var(--d) * 1.6) 0 var(--tile-edge-1),
+    0 calc(var(--d) * 3.2) 0 var(--tile-edge-2),
+    0 calc(var(--d) * 6) calc(var(--d) * 7) var(--tile-cast);
+}
+
+/* Pressed: the tile goes down onto its own shadow. Also the keyboard's active
+   state, so a tile operated with a space bar does the same thing. */
+.tile:active {
+  transform: translate3d(0, var(--d), 0);
+  box-shadow:
+    inset 0 3px 6px var(--tile-inner-top),
+    inset 0 -9px 17px var(--tile-inner-bottom),
+    inset 0 0 0 1px var(--tile-rim),
+    0 calc(var(--d) * 0.4) 0 var(--tile-edge-1),
+    0 calc(var(--d) * 0.8) 0 var(--tile-edge-2),
+    0 calc(var(--d) * 2) calc(var(--d) * 2.4) var(--tile-cast);
+}
+
+/* The kit has no focus state, and a tile is a link: without one it is
+   unreachable to anyone using a keyboard. Offset outward so it clears the
+   extrusion rather than sitting inside it. */
+.tile:focus-visible {
+  outline: 2px solid var(--crimson);
+  outline-offset: calc(var(--d) * 2 + 3px);
+}
+
+.on-dark .tile:focus-visible,
+.colophon .tile:focus-visible,
+.on-crimson .tile:focus-visible {
+  outline-color: var(--white);
+}
+
+.tile__glyph {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 50%;
+  height: 50%;
+  transform: translate(-50%, -50%);
+  fill: var(--tile-ink);
+  filter: drop-shadow(0 1px 0 var(--tile-ink-shade)) drop-shadow(0 4px 5px var(--tile-ink-shade));
+  pointer-events: none;
+}
+
+/* The Instagram mark is drawn as outlines rather than filled shapes, so the
+   stroke has to take the same colour the fill does. */
+.tile__glyph [stroke-width] {
+  stroke: var(--tile-ink);
+}
+
+/* A platform with no glyph drawn for it. Better a lettered tile than an empty
+   one, and it is visible enough in review that somebody draws the glyph. */
+.tile__initial {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--display);
+  font-size: calc(var(--tile) * 0.42);
+  line-height: 1;
+  color: var(--tile-ink);
+  pointer-events: none;
+}
+
+/* The lift and the press are the whole idea, so they stay — but they stop
+   moving for a reader who has asked for that, and the tile marks hover with
+   its own light instead. */
+@media (prefers-reduced-motion: reduce) {
+  .tile,
+  .tile:hover,
+  .tile:active {
+    transition: none;
+    transform: none;
+  }
+  .tile:hover {
+    filter: brightness(1.14);
+  }
+}
+
+/* Centred, for the pages that set their whole column that way. */
+.tiles--centred {
+  justify-content: center;
+}
+
+/* In the colophon the tiles sit under the description as the brand column's
+   mark, so they take the gap the paragraph above them left. */
+.colophon__brand .tiles {
+  margin-top: var(--s4);
+}

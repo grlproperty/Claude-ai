@@ -127,6 +127,56 @@ export function indexList(links) {
     .join('')}</ul>`;
 }
 
+/**
+ * The social tiles.
+ *
+ * Extruded squircles with a blush glyph, from the brand kit. They are drawn in
+ * CSS and inline SVG rather than shipped as images: at four platforms and three
+ * grounds that would be a dozen files to keep in step, and a raster tile cannot
+ * take the ground's colour or press when it is clicked.
+ *
+ * Driven by site.social.profiles, so adding a platform there adds a tile — and
+ * a platform with no glyph drawn for it gets its initial rather than an empty
+ * tile, which is the failure that would otherwise ship silently.
+ */
+const GLYPHS = {
+  instagram:
+    '<rect x="19" y="19" width="82" height="82" rx="25" fill="none" stroke-width="9"></rect>' +
+    '<circle cx="60" cy="60" r="19" fill="none" stroke-width="9"></circle>' +
+    '<circle cx="85" cy="35" r="6"></circle>',
+  tiktok:
+    '<path d="M72 16h18c2 13 11 22 24 23v18c-9 0-17-3-24-8v35c0 18-14 32-32 32s-32-14-32-32 14-32 32-32c2 0 4 0 6 1v19c-2-1-4-1-6-1-7 0-13 6-13 13s6 13 13 13 13-6 13-13Z"></path>',
+  linkedin:
+    '<circle cx="32" cy="30" r="10"></circle>' +
+    '<rect x="23" y="46" width="18" height="52" rx="2"></rect>' +
+    '<path d="M52 46h17v9c5-10 34-13 34 13v30H86V74c0-11-16-9-16 2v22H52z"></path>',
+  facebook:
+    '<path d="M78 22h-14c-14 0-23 9-23 24v14H27v20h14v40h20V80h15l3-20H61V48c0-4 2-6 7-6h10z"></path>',
+};
+
+export function socialTiles(profiles, { size = '4.6rem', className = '' } = {}) {
+  if (!profiles || !profiles.length) return '';
+  return (
+    `<ul class="tiles${className ? ` ${className}` : ''}" style="--tile: ${esc(size)};">` +
+    profiles
+      .map((p) => {
+        const key = String(p.name || '').toLowerCase().replace(/[^a-z]/g, '');
+        const glyph = GLYPHS[key];
+        // The tile is the link's whole target, and the platform's name is its
+        // accessible name — the glyph is decoration and says nothing.
+        return `<li><a class="tile" href="${esc(p.url)}" rel="me noopener noreferrer" target="_blank" aria-label="${esc(
+          p.name
+        )}${p.handle ? ` — ${esc(p.handle)}` : ''}">${
+          glyph
+            ? `<svg class="tile__glyph" viewBox="0 0 120 120" aria-hidden="true" focusable="false">${glyph}</svg>`
+            : `<span class="tile__initial" aria-hidden="true">${esc(String(p.name || '?').charAt(0))}</span>`
+        }</a></li>`;
+      })
+      .join('') +
+    '</ul>'
+  );
+}
+
 export function note(title, body) {
   return `<aside class="note">
     ${title ? `<p class="note__title">${esc(title)}</p>` : ''}

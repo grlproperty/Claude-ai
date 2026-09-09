@@ -1,4 +1,5 @@
 import { esc, typo } from '../lib/util.mjs';
+import { socialTiles } from './components.mjs';
 
 const wordmark = (site, classes = 'wordmark') =>
   `<a class="${classes}" href="/" aria-label="${esc(site.name)} — home">` +
@@ -51,18 +52,13 @@ function colophon(site) {
       <div class="colophon__brand">
         ${wordmark(site)}
         <p>${esc(typo(site.description))}</p>
+        ${socialTiles(site.social.profiles ?? [], { size: '2.9rem' })}
       </div>
       ${columns}
     </div>
     <div class="colophon__base">
       <span>© ${String(site.established) === String(year) ? year : `${site.established}\u2013${year}`} ${esc(site.name)}</span>
       <span>Est. ${site.established} · ${esc(site.location)} · ${esc(site.funding)}</span>
-      ${(site.social.profiles ?? [])
-        .map(
-          (p) =>
-            `<span><a href="${esc(p.url)}" rel="me noopener noreferrer" target="_blank">${esc(p.handle)}</a></span>`
-        )
-        .join('')}
       <span><a href="mailto:${esc(site.email)}">${esc(site.email)}</a></span>
       <span>${esc(site.motto)}</span>
     </div>

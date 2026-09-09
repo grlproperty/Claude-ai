@@ -7,7 +7,14 @@
  * because a reader clicks it before they read it.
  */
 import { layout } from '../templates/layout.mjs';
-import { label, sectionHead, note, supportBanner, newsletterForm } from '../templates/components.mjs';
+import {
+  label,
+  sectionHead,
+  note,
+  supportBanner,
+  newsletterForm,
+  socialTiles,
+} from '../templates/components.mjs';
 import { esc, typo } from '../lib/util.mjs';
 
 export function renderFindUs({ site }) {
@@ -54,6 +61,7 @@ export function renderFindUs({ site }) {
 
       <div>
         ${label(profiles.length === 1 ? 'On social' : 'On social platforms')}
+        ${socialTiles(profiles, { size: '4.4rem' })}
         <ul class="social-list">
           ${profiles
             .map(

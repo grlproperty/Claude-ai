@@ -1,5 +1,5 @@
 import { layout } from '../templates/layout.mjs';
-import { label, supportBanner } from '../templates/components.mjs';
+import { label, supportBanner, socialTiles } from '../templates/components.mjs';
 import { esc, typo } from '../lib/util.mjs';
 
 /** Markdown-backed institutional pages: about, funding, privacy, terms, and so on. */
@@ -102,12 +102,7 @@ export function renderNotFound({ site }) {
     <h2>Tell us what you were looking for</h2>
     <p class="lede">If you followed a link to get here, the link is our problem to fix. Send us the address and we will either restore the page or tell you where it went.</p>
     <p style="margin-top:var(--s4);"><a class="btn" href="mailto:${esc(site.email)}">${esc(site.email)}</a></p>
-    <p style="margin-top:var(--s5);">${(site.social.profiles ?? [])
-      .map(
-        (p) =>
-          `<a href="${esc(p.url)}" rel="me noopener noreferrer" target="_blank">${esc(p.name)}</a>`
-      )
-      .join(' &nbsp;·&nbsp; ')}</p>
+    ${socialTiles(site.social.profiles ?? [], { size: '3.6rem', className: 'tiles--centred' })}
     <p style="margin-top:var(--s4);"><a class="arrow" href="/find-us/">Every way to reach us</a></p>
   </div>
 </section>
