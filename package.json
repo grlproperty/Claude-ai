@@ -2,13 +2,14 @@
   "name": "feral-femme",
   "version": "1.0.0",
   "private": true,
-  "description": "FERAL FEMME — editorial, research, and free sustainability tools across ten industries.",
+  "description": "FERAL FEMME \u2014 editorial, research, and free sustainability tools across ten industries.",
   "type": "module",
   "engines": {
     "node": ">=20"
   },
   "scripts": {
     "build": "node src/build.mjs",
+    "cage": "node scripts/build-cage.mjs",
     "dev": "node scripts/dev-server.mjs",
     "new": "node scripts/new-entry.mjs",
     "social": "node scripts/social-kit.mjs",

@@ -255,6 +255,9 @@ ${supportBanner(site)}
     path: '/',
     body,
     schema,
-    scripts: ['/assets/js/cage.js'],
+    // The mesh first: cage.js reads it at module scope, and a deferred script
+    // that arrives second would find nothing there. Both are deferred, and
+    // deferred scripts run in document order, so ordering them here is enough.
+    scripts: ['/assets/js/cage-mesh.js', '/assets/js/cage.js'],
   });
 }

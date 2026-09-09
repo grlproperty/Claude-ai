@@ -121,7 +121,9 @@ async function main() {
 
   const css = await readFile(join(DIST, 'assets/css/site.css'), 'utf8');
   const js = [];
-  for (const f of ['site.js', 'filter.js', 'cage.js']) js.push(await readFile(join(DIST, 'assets/js', f), 'utf8'));
+  // cage-mesh.js declares the model cage.js reads, so it has to come first.
+  for (const f of ['site.js', 'filter.js', 'cage-mesh.js', 'cage.js'])
+    js.push(await readFile(join(DIST, 'assets/js', f), 'utf8'));
 
   // Images are re-encoded down: at a data URI every byte is paid for on the
   // first load whether the image is ever scrolled to or not.
