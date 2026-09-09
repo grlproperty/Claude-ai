@@ -25,14 +25,20 @@ const money = (symbol, value) => `${symbol}${Number(value).toLocaleString('en-US
  * something true about the document. Products whose source PDF is not in this
  * repository render without one, and the card is designed to work either way.
  */
-function cover(covers, name) {
+function cover(covers, name, tag = '') {
   const c = covers[slug(name)];
   if (!c) return '';
+  // The tag is the price or the word Free, printed on the cover itself. It is
+  // the one fact a reader scanning a wall of covers is actually looking for,
+  // and it is repeated verbatim in the card's own buy row below — so it is
+  // aria-hidden here rather than read out twice.
   return `<div class="product__cover"><img src="${esc(c.image)}" srcset="${esc(c.thumb)} 420w, ${esc(
     c.image
   )} 840w" sizes="(min-width: 60rem) 22vw, 40vw" alt="Cover of ${esc(name)}" width="${c.width ?? 911}" height="${
     c.height ?? 1287
-  }" loading="lazy" decoding="async"></div>`;
+  }" loading="lazy" decoding="async">${
+    tag ? `<span class="product__tag" aria-hidden="true">${esc(tag)}</span>` : ''
+  }</div>`;
 }
 
 /** A download link should say how big the thing behind it is. */
@@ -106,8 +112,8 @@ ${
     <div class="grid grid--2" style="gap:2.5rem;align-items:start;">
       ${s.free
         .map(
-          (f) => `<article class="product product--free tilt reveal">
-        ${cover(covers, f.name)}
+          (f) => `<article class="product product--free tilt reveal" data-pointer-label="Download">
+        ${cover(covers, f.name, 'Free')}
         <p class="product__for">${esc(f.for)}</p>
         <h2 class="product__name">${typo(f.name)}</h2>
         <p class="product__meta">1 page &middot; PDF &middot; ${kb(f.bytes)} &middot; Free</p>
@@ -140,7 +146,7 @@ ${
       ${s.products
         .map(
           (p) => `<article class="product${p.featured ? ' product--featured' : ''} tilt reveal">
-        ${cover(covers, p.name)}
+        ${cover(covers, p.name, `${sym}${p.price}`)}
         <p class="product__for">${esc(p.for)}</p>
         <h2 class="product__name">${typo(p.name)}</h2>
         <p class="product__meta">${p.pages} pages &middot; PDF &middot; ${esc(p.licence)}</p>

@@ -7,10 +7,29 @@ export const label = (text, extra = '') =>
  * `level` selects the heading rank. Index pages pass 1 so that every route has
  * exactly one h1; section heads within a page keep the default h2. The build
  * check fails if a page ends up with none or more than one.
+ *
+ * `split` opens the head across three columns on a wide screen — title, stamp,
+ * standfirst — instead of stacking them. It is opt-in because it only reads as
+ * a spread when all three parts are actually present.
  */
-export function sectionHead({ eyebrow, title, lede, wide = false, centered = false, level = 2, stamp = '' }) {
+export function sectionHead({
+  eyebrow,
+  title,
+  lede,
+  wide = false,
+  centered = false,
+  level = 2,
+  stamp = '',
+  split = false,
+}) {
   const h = `h${level}`;
-  return `<div class="section-head reveal${wide ? ' section-head--wide' : ''}${centered ? ' center' : ''}">
+  // A split head is a wide one by definition: it opens across the full measure,
+  // so it must also opt out of the section rail, which pins a narrow head into
+  // a 17rem column — three columns inside that is not a spread, it is a wreck.
+  const full = wide || split;
+  return `<div class="section-head reveal${full ? ' section-head--wide' : ''}${
+    split ? ' section-head--split' : ''
+  }${centered ? ' center' : ''}">
     ${eyebrow ? label(eyebrow) : ''}
     ${title ? `<${h}>${typo(title)}</${h}>` : ''}
     ${lede ? `<p class="lede mb-0">${typo(lede)}</p>` : ''}
@@ -27,7 +46,7 @@ export function entryCard(entry, { kind = 'Field note' } = {}) {
     .filter(Boolean)
     .join('');
 
-  return `<article class="card card--linked tilt reveal">
+  return `<article class="card card--linked tilt reveal" data-pointer-label="Read">
     <div class="card__meta">${meta}</div>
     <h3><a class="stretch" href="${esc(entry.url)}">${typo(entry.title)}</a></h3>
     <p>${typo(entry.summary)}</p>
@@ -60,6 +79,52 @@ export function statBand(stats) {
       )
       .join('')}
   </div>`;
+}
+
+/**
+ * The ticker. A crimson band running one list end to end under the hero.
+ *
+ * The run is printed twice into a single track and the track is translated by
+ * exactly half its width, so the list meets itself with no seam and no gap. The
+ * duplicate is `aria-hidden` — a screen reader gets the list once, and gets it
+ * as a list, because that is what it is; the movement is a CSS animation over
+ * the top of working markup and stops entirely under prefers-reduced-motion.
+ *
+ * `items` are `{ label, href }`; `href` is optional, and an item without one is
+ * printed as plain text rather than as a link that goes nowhere.
+ */
+export function ticker(items, { ariaLabel = 'Coverage' } = {}) {
+  const run = (hidden) =>
+    `<ul class="ticker__run"${hidden ? ' aria-hidden="true"' : ` aria-label="${esc(ariaLabel)}"`}>` +
+    items
+      .map((item) =>
+        item.href
+          ? `<li><a href="${esc(item.href)}"${hidden ? ' tabindex="-1"' : ''}>${esc(item.label)}</a></li>`
+          : `<li>${esc(item.label)}</li>`
+      )
+      .join('') +
+    '</ul>';
+
+  return `<div class="ticker" data-ticker>
+    <div class="ticker__track">${run(false)}${run(true)}</div>
+  </div>`;
+}
+
+/**
+ * A numbered index. The footer columns and the standing lists number their
+ * entries, and carry a count wherever one is real — a reader deciding whether
+ * to open a section is partly deciding on its size. The ordinals are a CSS
+ * counter, so this stays a plain list of links.
+ */
+export function indexList(links) {
+  return `<ul class="index-list">${links
+    .map(
+      (l) =>
+        `<li><a href="${esc(l.href)}">${esc(l.label)}${
+          l.count != null ? `<span class="count">${esc(String(l.count))}</span>` : ''
+        }</a></li>`
+    )
+    .join('')}</ul>`;
 }
 
 export function note(title, body) {

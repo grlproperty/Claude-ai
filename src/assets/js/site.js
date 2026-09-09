@@ -231,6 +231,62 @@
     });
   }
 
+  // ---- pointer label -----------------------------------------------------
+  // A tag that follows the pointer across anything worth opening and names what
+  // the click does — [ READ ], [ OPEN ], [ VIEW ]. Delegated from the document,
+  // so it needs no rescan when the single-file build swaps the page under it,
+  // and it is decorative by construction: the same word is in the link text
+  // underneath, and the whole thing is skipped on a touch screen or for a
+  // reader who has asked for less motion.
+  if (!reduced && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    var chip = document.createElement('div');
+    chip.className = 'pointer-label';
+    chip.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(chip);
+
+    var chipX = 0;
+    var chipY = 0;
+    var chipQueued = false;
+
+    function paintChip() {
+      chipQueued = false;
+      chip.style.transform =
+        'translate3d(' + chipX + 'px, ' + chipY + 'px, 0) translate(-50%, -50%) rotate(-9deg)';
+    }
+
+    document.addEventListener(
+      'pointermove',
+      function (e) {
+        if (e.pointerType !== 'mouse') return;
+        chipX = e.clientX;
+        chipY = e.clientY;
+        if (!chipQueued) {
+          chipQueued = true;
+          requestAnimationFrame(paintChip);
+        }
+
+        var host = e.target.closest ? e.target.closest('[data-pointer-label]') : null;
+        var word = host ? host.getAttribute('data-pointer-label') : '';
+        if (!word) {
+          chip.classList.remove('is-on');
+          return;
+        }
+        if (chip.textContent !== word) chip.textContent = word;
+        chip.classList.add('is-on');
+      },
+      { passive: true }
+    );
+
+    // Leaving the window entirely fires no move, so the tag would be left
+    // sitting at the edge of the screen until the pointer came back.
+    document.addEventListener('pointerleave', function () {
+      chip.classList.remove('is-on');
+    });
+    window.addEventListener('blur', function () {
+      chip.classList.remove('is-on');
+    });
+  }
+
   // ------------------------------------------------ content-scoped
   // Re-runnable. Called once now, and again by the router in the
   // single-file build after it swaps the contents of <main>.
@@ -505,6 +561,91 @@
       observer.observe(t);
     });
   }
+
+  // ---- rails -------------------------------------------------------------
+  // A horizontal run is already scrollable with a wheel, a touch or the arrow
+  // keys; this adds the gesture the strip looks like it wants, which is being
+  // dragged. The note is written from here rather than into the markup so it
+  // is never printed to a reader who cannot act on it — no script, no drag,
+  // no instruction claiming otherwise.
+  Array.prototype.forEach.call(document.querySelectorAll('[data-rail]'), function (rail) {
+    var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (fine && rail.scrollWidth > rail.clientWidth + 4) {
+      var note = document.createElement('p');
+      note.className = 'rail-note';
+      note.textContent = 'Drag to run the strip';
+      if (rail.parentNode) rail.parentNode.insertBefore(note, rail.nextSibling);
+    }
+    if (!fine) return;
+
+    var down = false;
+    var startX = 0;
+    var startScroll = 0;
+    var moved = 0;
+
+    rail.addEventListener('pointerdown', function (e) {
+      if (e.button !== 0) return;
+      down = true;
+      moved = 0;
+      startX = e.clientX;
+      startScroll = rail.scrollLeft;
+    });
+
+    rail.addEventListener('pointermove', function (e) {
+      if (!down) return;
+      var dx = e.clientX - startX;
+      // Below the threshold this is still a click on a photograph, so the
+      // links stay live and nothing is suppressed.
+      if (Math.abs(dx) > 4) {
+        moved = Math.abs(dx);
+        if (!rail.classList.contains('is-dragging')) {
+          rail.classList.add('is-dragging');
+          rail.setPointerCapture(e.pointerId);
+        }
+      }
+      if (moved) rail.scrollLeft = startScroll - dx;
+    });
+
+    function release(e) {
+      if (!down) return;
+      down = false;
+      rail.classList.remove('is-dragging');
+      if (e && e.pointerId != null && rail.hasPointerCapture && rail.hasPointerCapture(e.pointerId)) {
+        rail.releasePointerCapture(e.pointerId);
+      }
+    }
+
+    rail.addEventListener('pointerup', release);
+    rail.addEventListener('pointercancel', release);
+    rail.addEventListener('pointerleave', release);
+
+    // The click that ends a drag is swallowed here rather than by the
+    // pointer-events lock: that class comes off on pointerup, which is before
+    // the click, so it would let the photograph open under the reader's hand.
+    rail.addEventListener(
+      'click',
+      function (e) {
+        if (!moved) return;
+        moved = 0;
+        e.preventDefault();
+        e.stopPropagation();
+      },
+      true
+    );
+  });
+
+  // ---- ticker ------------------------------------------------------------
+  // Reading speed, not duration, is the constant: the track is timed from how
+  // far it actually has to travel so a band of eight items and a band of
+  // twenty run past the eye at the same rate.
+  Array.prototype.forEach.call(document.querySelectorAll('[data-ticker]'), function (band) {
+    var track = band.querySelector('.ticker__track');
+    var run = band.querySelector('.ticker__run');
+    if (!track || !run) return;
+    var seconds = Math.max(18, Math.round(run.scrollWidth / 42));
+    track.style.setProperty('--ticker-span', seconds + 's');
+  });
+
   }
 
   // ---- currency -----------------------------------------------------------

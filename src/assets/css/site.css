@@ -4,10 +4,11 @@
    FERAL FEMME — design system
    Editorial · Research · Tools
 
-   Three typefaces, each with one job: Bodoni Moda carries the wordmark and
+   Four typefaces, each with one job: Bodoni Moda carries the wordmark and
    display (a didone's extreme thick/thin is the whole visual signature),
    Cormorant Garamond carries editorial headings and long-form serif, Jost
-   carries labels, UI, and data.
+   carries UI and running sans, and Space Mono carries the docket layer —
+   bracketed eyebrows, indices, counts, stamps and tags.
 
    Depth is structural, not decorative. The cage lattice in the hero, the
    layered plate stacks, and the pointer-tilted cards are one system: flat
@@ -43,6 +44,11 @@
   --display: 'Bodoni Moda', 'Didot', 'Times New Roman', serif;
   --editorial: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --ui: 'Jost', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  /* The docket voice. Every micro-label on the site — eyebrows, indices,
+     counts, stamps, tags, captions — is set in it, bracketed, so the furniture
+     around the editorial type reads as case-file annotation rather than as UI
+     chrome. Monospace also lines counts and numbers up in a column for free. */
+  --mono: 'Space Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
 
   /* Rhythm */
   --s1: 0.5rem;
@@ -213,29 +219,43 @@ code {
   border: 1px solid var(--rule-soft);
 }
 
-/* The eyebrow: a short rule, then letterspaced caps. */
+/* The eyebrow. It was a short rule, then letterspaced caps — the eyebrow every
+   site has. It is bracketed mono now: the notation a catalogue uses to mark a
+   field that was filled in by hand. The brackets are drawn rather than typed so
+   they never enter the accessible name or a copied selection, and they hold a
+   thin space against the text so the pair reads as one tag. */
 .label {
-  font-family: var(--ui);
+  font-family: var(--mono);
   font-size: 0.625rem;
-  font-weight: 500;
-  letter-spacing: 0.2em;
+  font-weight: 400;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--crimson);
   margin: 0 0 var(--s3);
   display: flex;
-  align-items: center;
-  gap: 0.7rem;
+  align-items: baseline;
+  gap: 0.45em;
 }
 
 .label::before {
-  content: '';
-  width: 1.6rem;
-  height: 1px;
-  background: currentColor;
-  flex: none;
+  content: '[';
 }
 
-.label--plain::before {
+.label::after {
+  content: ']';
+}
+
+.label::before,
+.label::after {
+  font-weight: 700;
+  flex: none;
+  opacity: 0.65;
+}
+
+/* Where the tag would sit inside another bracketed thing, or where the row is
+   already dense enough, the brackets come off and the mono stays. */
+.label--plain::before,
+.label--plain::after {
   display: none;
 }
 
@@ -247,8 +267,9 @@ code {
   color: var(--blush);
 }
 
-.on-dark .label::before {
-  background: var(--crimson);
+.on-dark .label::before,
+.on-dark .label::after {
+  color: var(--crimson);
 }
 
 .lede {
@@ -404,8 +425,9 @@ code {
   color: rgba(253, 252, 252, 0.9);
 }
 
-.on-crimson .label::before {
-  background: rgba(253, 252, 252, 0.6);
+.on-crimson .label::before,
+.on-crimson .label::after {
+  color: rgba(253, 252, 252, 0.7);
 }
 
 /* A crimson field. The ink band was the only hard cut on a page otherwise made
@@ -427,7 +449,8 @@ code {
 }
 
 .on-crimson .label,
-.on-crimson .label::before {
+.on-crimson .label::before,
+.on-crimson .label::after {
   color: rgba(255, 255, 255, 0.78);
 }
 
@@ -486,10 +509,10 @@ code {
    square, and that is the whole of the effect. */
 .stamp {
   display: inline-block;
-  font-family: var(--ui);
+  font-family: var(--mono);
   font-size: 0.58rem;
-  font-weight: 500;
-  letter-spacing: 0.22em;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--crimson);
   border: 1px solid var(--crimson);
@@ -535,8 +558,11 @@ code {
   font-family: var(--display);
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: -0.005em;
-  line-height: 0.98;
+  letter-spacing: -0.015em;
+  /* Caps have no descenders, so the leading can close well under the em and
+     the lines interlock instead of stacking. This is the single change that
+     makes a two-line section title read as a masthead. */
+  line-height: 0.84;
 }
 
 .section-head h2 {
@@ -1081,9 +1107,9 @@ code {
   flex-wrap: wrap;
   gap: var(--s2) var(--s4);
   margin-bottom: var(--s5);
-  font-family: var(--ui);
+  font-family: var(--mono);
   font-size: 0.6rem;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-faint);
 }
@@ -1288,9 +1314,9 @@ code {
 }
 
 .stat__label {
-  font-family: var(--ui);
+  font-family: var(--mono);
   font-size: 0.6rem;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-muted);
 }
@@ -1335,21 +1361,33 @@ code {
   transform: none;
 }
 
-/* The rule beside a label is drawn rather than switched on. It rides the
-   reveal it sits inside, a beat behind the text it belongs to. */
+/* The brackets close around the label rather than being switched on with it.
+   They start a third of an em out and slide in to meet the text, a beat behind
+   it — the tag being applied, not drawn. Scaling them, which is what the old
+   hairline did, would flatten a glyph to nothing and back. */
 .js .reveal .label::before {
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform 0.55s var(--ease-out) 0.18s;
+  transform: translateX(-0.35em);
+  opacity: 0;
+  transition: transform 0.5s var(--ease-out) 0.18s, opacity 0.4s var(--ease) 0.18s;
 }
 
-.js .reveal[data-shown='true'] .label::before {
-  transform: scaleX(1);
+.js .reveal .label::after {
+  transform: translateX(0.35em);
+  opacity: 0;
+  transition: transform 0.5s var(--ease-out) 0.24s, opacity 0.4s var(--ease) 0.24s;
+}
+
+.js .reveal[data-shown='true'] .label::before,
+.js .reveal[data-shown='true'] .label::after {
+  transform: none;
+  opacity: 0.65;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .js .reveal .label::before {
+  .js .reveal .label::before,
+  .js .reveal .label::after {
     transform: none;
+    opacity: 0.65;
     transition: none;
   }
 }
@@ -1384,9 +1422,9 @@ code {
   flex-wrap: wrap;
   align-items: center;
   gap: 0.7rem;
-  font-family: var(--ui);
+  font-family: var(--mono);
   font-size: 0.56rem;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-faint);
   margin-bottom: var(--s3);
@@ -1495,9 +1533,9 @@ code {
 }
 
 .tag {
-  font-family: var(--ui);
+  font-family: var(--mono);
   font-size: 0.52rem;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   padding: 0.28rem 0.55rem;
   border: 1px solid var(--rule);
@@ -1541,9 +1579,9 @@ code {
 }
 
 .row__index {
-  font-family: var(--ui);
+  font-family: var(--mono);
   font-size: 0.56rem;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-faint);
 }
@@ -1575,9 +1613,9 @@ code {
 }
 
 .row__aside {
-  font-family: var(--ui);
+  font-family: var(--mono);
   font-size: 0.56rem;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-faint);
 }
@@ -1662,9 +1700,9 @@ code {
 }
 
 .prose figcaption {
-  font-family: var(--ui);
+  font-family: var(--mono);
   font-size: 0.65rem;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink-faint);
   margin-top: 0.75rem;
@@ -1745,9 +1783,9 @@ code {
   display: flex;
   flex-wrap: wrap;
   gap: var(--s4);
-  font-family: var(--ui);
+  font-family: var(--mono);
   font-size: 0.56rem;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-faint);
 }
@@ -1855,10 +1893,10 @@ code {
 }
 
 .chip {
-  font-family: var(--ui);
+  font-family: var(--mono);
   font-size: 0.56rem;
   font-weight: 500;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   padding: 0.5rem 0.9rem;
   border: 1px solid var(--rule);
@@ -1903,9 +1941,9 @@ code {
 }
 
 .entry__runby {
-  font-family: var(--ui);
+  font-family: var(--mono);
   font-size: 0.6rem;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-faint);
   margin: 0 0 var(--s4);
@@ -1936,10 +1974,10 @@ code {
 
 .panel h2,
 .panel h3 {
-  font-family: var(--ui);
+  font-family: var(--mono);
   font-size: 0.56rem;
   font-weight: 500;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--crimson);
   margin-bottom: var(--s3);
@@ -1969,9 +2007,9 @@ code {
 }
 
 .src-note {
-  font-family: var(--ui);
+  font-family: var(--mono);
   font-size: 0.6rem;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   color: var(--ink-faint);
   margin-top: var(--s3);
 }
@@ -2075,10 +2113,10 @@ code {
 }
 
 .amount__note {
-  font-family: var(--ui);
+  font-family: var(--mono);
   font-size: 0.6rem;
   font-weight: 500;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-muted);
   margin: auto 0 0;
@@ -2122,6 +2160,44 @@ code {
   border-bottom: 1px solid var(--rule-soft);
   background: var(--blush-pale);
   overflow: hidden;
+  position: relative;
+}
+
+/* The price, printed on the cover. A wall of covers is scanned before it is
+   read, and this is the fact being scanned for — so it sits on the artwork
+   rather than three lines down the card. It rests visible and lifts on hover:
+   a chip that only exists under a pointer is a chip half the readers of this
+   page will never see. */
+.product__tag {
+  position: absolute;
+  right: 0.7rem;
+  bottom: 0.7rem;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  /* A stuck-on price sticker, not a tint over the artwork. A crimson chip
+     disappears on a crimson cover, and half the covers on this page are
+     crimson — white ground with a crimson hairline holds on any of them. */
+  color: var(--crimson);
+  background: var(--white);
+  border: 1px solid var(--crimson);
+  padding: 0.34em 0.66em 0.28em;
+  transform: rotate(-1.5deg);
+  transition: transform 0.35s var(--ease-out);
+}
+
+.product:hover .product__tag,
+.product:focus-within .product__tag {
+  transform: rotate(-1.5deg) translateY(-3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product__tag {
+    transition: none;
+  }
 }
 
 .product__cover img {
@@ -2156,10 +2232,10 @@ code {
 }
 
 .product__for {
-  font-family: var(--ui);
+  font-family: var(--mono);
   font-size: 0.58rem;
   font-weight: 500;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--crimson);
   margin: 0 0 var(--s3);
@@ -2174,10 +2250,11 @@ code {
 }
 
 .product__meta {
-  font-family: var(--ui);
-  font-size: 0.68rem;
-  font-weight: 300;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.02em;
   line-height: 1.6;
+  font-variant-numeric: tabular-nums;
   color: var(--ink-muted);
   margin: 0 0 var(--s3);
 }
@@ -2246,10 +2323,10 @@ code {
 }
 
 .currency__label {
-  font-family: var(--ui);
+  font-family: var(--mono);
   font-size: 0.6rem;
   font-weight: 500;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-muted);
 }
@@ -2445,9 +2522,9 @@ code {
 }
 
 .search__count {
-  font-family: var(--ui);
+  font-family: var(--mono);
   font-size: 0.6rem;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-faint);
   margin-top: var(--s2);
@@ -2487,10 +2564,10 @@ code {
 }
 
 .colophon h2 {
-  font-family: var(--ui);
+  font-family: var(--mono);
   font-size: 0.56rem;
-  font-weight: 500;
-  letter-spacing: 0.18em;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: rgba(253, 252, 252, 0.62);
   margin-bottom: var(--s3);
@@ -2539,9 +2616,9 @@ code {
   gap: var(--s3) var(--s5);
   justify-content: space-between;
   padding-top: var(--s5);
-  font-family: var(--ui);
+  font-family: var(--mono);
   font-size: 0.56rem;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(253, 252, 252, 0.62);
 }
@@ -2715,9 +2792,9 @@ code {
 }
 
 .social-list__handle {
-  font-family: var(--ui);
+  font-family: var(--mono);
   font-size: 0.72rem;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--crimson);
 }
@@ -2898,9 +2975,9 @@ code {
 /* ------------------------------------------------------------ entry page */
 
 .crumb {
-  font-family: var(--ui);
-  font-size: 0.68rem;
-  letter-spacing: 0.08em;
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--ink-faint);
   display: flex;
@@ -3024,4 +3101,389 @@ code {
   line-height: 1.5;
   color: var(--ink-muted);
   margin-top: 0.7rem;
+}
+
+/* --------------------------------------------------------------- the ticker
+ *
+ * A crimson band under the hero running the ten industries end to end, the way
+ * a wire service runs a strap. It is the only element on the site that moves on
+ * its own, and it earns that by being the thesis in one line: these ten sectors,
+ * one after another, with no gap between them and no order of importance.
+ *
+ * The list is printed twice into one track and the track is translated by
+ * exactly half its width, so the seam never arrives. `--ticker-span` sets the
+ * duration from the item count rather than a fixed number of seconds, which
+ * keeps the reading speed the same whether there are eight items or twenty.
+ */
+.ticker {
+  background: var(--crimson);
+  color: var(--white);
+  border-block: 1px solid var(--crimson-deep);
+  overflow: hidden;
+  position: relative;
+  padding-block: 0.85rem;
+}
+
+.ticker__track {
+  display: flex;
+  width: max-content;
+  animation: ticker var(--ticker-span, 40s) linear infinite;
+}
+
+.ticker__run {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ticker li {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding-inline: 1.15rem;
+  display: flex;
+  align-items: center;
+  gap: 1.15rem;
+}
+
+/* The separator is a lozenge rather than a slash: a slash at this size reads as
+   a broken letterform, and the run needs a mark that survives being tiny. */
+.ticker li::after {
+  content: '';
+  width: 0.3rem;
+  height: 0.3rem;
+  background: currentColor;
+  transform: rotate(45deg);
+  opacity: 0.65;
+  flex: none;
+}
+
+.ticker li a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.ticker li a:hover,
+.ticker li a:focus-visible {
+  border-bottom-color: currentColor;
+  text-decoration: none;
+}
+
+/* Stop it while it is being read. */
+.ticker:hover .ticker__track,
+.ticker:focus-within .ticker__track {
+  animation-play-state: paused;
+}
+
+@keyframes ticker {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* Motion off: the band stays, and becomes a strip the reader scrolls. */
+@media (prefers-reduced-motion: reduce) {
+  .ticker {
+    overflow-x: auto;
+  }
+  .ticker__track {
+    animation: none;
+  }
+  .ticker__run + .ticker__run {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------ index list
+ *
+ * Numbered navigation. The footer columns and the standing indexes number their
+ * entries and carry a count where one is real — how many field notes, how many
+ * industries — because a reader deciding whether to open a section is deciding
+ * on its size. Ordinals come from a counter so the markup stays a plain list.
+ */
+.index-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: idx;
+}
+
+.index-list > li {
+  counter-increment: idx;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+.index-list > li:first-child {
+  border-top: 1px solid var(--rule-soft);
+}
+
+.index-list > li > a {
+  padding-block: 0.55rem;
+  display: block;
+}
+
+.index-list > li::after {
+  content: counter(idx, decimal-leading-zero);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* On an ink ground the rules come off. A hairline dark enough to be a boundary
+   under WCAG 1.4.11 is a much louder mark on black than the same line is on
+   blush, and these separate a list of links rather than bounding a control —
+   the ordinal already does the work of showing where one row ends. */
+.on-dark .index-list > li,
+.on-dark .index-list > li:first-child,
+.colophon .index-list > li,
+.colophon .index-list > li:first-child {
+  border-color: transparent;
+}
+
+.on-dark .index-list > li::after,
+.colophon .index-list > li::after {
+  color: var(--on-dark-dim);
+}
+
+/* A count, in the run of a heading or a link: INDUSTRIES 10. Tabular so a
+   column of them lines up, and never a link target of its own. */
+.count {
+  font-family: var(--mono);
+  font-size: 0.62em;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-faint);
+  vertical-align: 0.35em;
+  margin-left: 0.5em;
+  text-transform: none;
+}
+
+.on-dark .count,
+.on-crimson .count,
+.colophon .count {
+  color: var(--on-dark-dim);
+}
+
+/* --------------------------------------------------- the split section head
+ *
+ * Opt-in, and only above the breakpoint where three columns each still hold a
+ * readable measure. Title left, the stamp centred between them, the standfirst
+ * right — the head becomes a spread rather than a stack, and the eye crosses
+ * the page once before it starts reading down.
+ */
+@media (min-width: 1000px) {
+  .section-head--split {
+    max-width: none;
+    display: grid;
+    grid-template-columns: 1.85fr 1fr 1.85fr;
+    align-items: start;
+    column-gap: clamp(1.5rem, 3vw, 3rem);
+  }
+
+  .section-head--split > .label {
+    grid-column: 1 / -1;
+  }
+
+  .section-head--split > h1,
+  .section-head--split > h2 {
+    grid-column: 1;
+    margin-bottom: 0;
+    font-size: clamp(2.4rem, 4.4vw, 3.9rem);
+  }
+
+  .section-head--split > .lede {
+    grid-column: 3;
+    max-width: none;
+    margin-bottom: 0;
+    font-size: 1.15rem;
+  }
+
+  .section-head--split > .section-head__stamp {
+    grid-column: 2;
+    margin-top: 0.4rem;
+    text-align: center;
+  }
+}
+
+/* ----------------------------------------------------------------- the rail
+ *
+ * A horizontal run the reader drags. Eight frames fit a rail where a grid could
+ * only show four without leaving a ragged second row, and dragging a strip of
+ * images is the gesture the medium these images come from already taught. It
+ * is a scroll container first: it works with a wheel, a trackpad, a touch, and
+ * arrow keys before any script runs, and the drag is added on top.
+ */
+.rail {
+  display: grid;
+  grid-auto-flow: column;
+  /* A fixed track, not a minmax with a zero floor: a floor of zero lets the
+     grid shrink every column until the whole run fits the container, which is
+     the one thing a rail must not do. */
+  grid-auto-columns: calc((100% - var(--s4)) / 2.2);
+  gap: var(--s4);
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  /* `overflow-x: auto` makes the block axis clip too, so the run needs room
+     under it for the printed shadow the cards carry. Only under it: an inline
+     inset would push the first frame off the page's own left margin, and the
+     rail has to start on the same line as the heading above it. */
+  padding-bottom: 0.6rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+
+@media (min-width: 48rem) {
+  .rail {
+    grid-auto-columns: calc((100% - 3.4 * var(--s4)) / 4.4);
+  }
+}
+
+.rail > * {
+  scroll-snap-align: start;
+}
+
+.rail::-webkit-scrollbar {
+  height: 3px;
+}
+
+.rail::-webkit-scrollbar-thumb {
+  background: var(--rule);
+}
+
+.rail.is-dragging {
+  scroll-snap-type: none;
+  cursor: grabbing;
+  user-select: none;
+}
+
+.rail.is-dragging a {
+  pointer-events: none;
+}
+
+/* On a phone the rail joins the idiom the card grids already use below this
+   breakpoint: out to the screen edges, so it reads as running off the page
+   rather than sitting in a box, with the trailing gutter carried by a
+   pseudo-element because a scroll container drops padding-inline-end. */
+@media (max-width: 720px) {
+  .rail {
+    grid-auto-columns: 78%;
+    gap: var(--s3);
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+  }
+
+  .rail::-webkit-scrollbar {
+    display: none;
+  }
+
+  .rail::after {
+    content: '';
+    grid-row: 1;
+    width: calc(var(--gutter) - var(--s3));
+  }
+}
+
+/* The affordance, in the same bracketed voice as everything else. It is only
+   printed once the script that makes the rail draggable has run, and it names
+   the gesture that is actually available. */
+.rail-note {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: var(--s3) 0 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0.45em;
+}
+
+.rail-note::before {
+  content: '[';
+}
+
+.rail-note::after {
+  content: ']';
+}
+
+/* ---------------------------------------------------------------- pointer
+ *
+ * A label that follows the pointer across anything worth opening, naming what
+ * the click does. Two rules keep it from being a gimmick: it only exists on a
+ * device that has a real pointer and has not asked for less motion, and it only
+ * appears over regions that carry an explicit label, so it never covers reading
+ * matter. It is aria-hidden and drawn outside the flow — the same information
+ * is in the link text underneath it.
+ */
+.pointer-label {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  pointer-events: none;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--white);
+  background: var(--crimson);
+  padding: 0.55rem 0.75rem 0.5rem;
+  border-radius: 100%;
+  min-width: 5.2rem;
+  text-align: center;
+  /* The position is written to `transform` on every frame, so the growth on
+     arrival rides the independent `scale` property instead — otherwise each
+     paint would overwrite it. */
+  transform: translate3d(0, 0, 0) translate(-50%, -50%) rotate(-9deg);
+  scale: 0.4;
+  opacity: 0;
+  transition: opacity 0.18s var(--ease), scale 0.28s var(--ease-out);
+  will-change: transform;
+}
+
+.pointer-label.is-on {
+  opacity: 1;
+  scale: 1;
+}
+
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .pointer-label {
+    display: none;
+  }
+}
+
+/* Under the pointer label the card's own hover cursor would be a second, worse
+   answer to the same question — but the cursor only goes away where the label
+   actually appears. Hiding it under the conditions that suppress the label
+   would leave a reader with no pointer at all. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  [data-pointer-label] {
+    cursor: none;
+  }
+}
+
+/* The colophon's rows carry no rule, so the sibling gap that used to space
+   them stays — tightened, because each row is a padded link now. */
+.colophon .index-list > li + li {
+  margin-top: 0.1rem;
+}
+
+.colophon .index-list > li > a {
+  padding-block: 0.3rem;
 }

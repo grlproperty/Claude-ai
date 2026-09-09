@@ -32,14 +32,17 @@ const OUT = join(ROOT, 'dist-single');
 
 /**
  * Fonts carry this design, but they are also the heaviest thing in front of
- * the first paint. The four the hero itself sets go in the document; the rest
+ * the first paint. The five the hero itself sets go in the document; the rest
  * are attached once the page is up, and swap in under font-display: swap.
+ * Space Mono's regular is critical because the hero's own docket line is set
+ * in it; its bold, which draws the bracketed tags further down, is not.
  */
 const CRITICAL_FACES = [
   'bodoni-moda-500-normal-latin.woff2',
   'cormorant-garamond-500-normal-latin.woff2',
   'jost-300-normal-latin.woff2',
   'jost-500-normal-latin.woff2',
+  'space-mono-400-normal-latin.woff2',
 ];
 
 const DEFERRED_FACES = [
@@ -47,6 +50,7 @@ const DEFERRED_FACES = [
   'cormorant-garamond-400-normal-latin.woff2',
   'cormorant-garamond-600-normal-latin.woff2',
   'jost-400-normal-latin.woff2',
+  'space-mono-700-normal-latin.woff2',
 ];
 
 const FACES = CRITICAL_FACES.concat(DEFERRED_FACES);

@@ -1,5 +1,5 @@
 import { layout } from '../templates/layout.mjs';
-import { label, sectionHead, entryCard, statBand, supportBanner } from '../templates/components.mjs';
+import { label, sectionHead, entryCard, statBand, supportBanner, ticker } from '../templates/components.mjs';
 import { esc, typo, slugify } from '../lib/util.mjs';
 
 export function renderHome({ site, notes, data }) {
@@ -91,6 +91,14 @@ export function renderHome({ site, notes, data }) {
   </div>
 </section>
 
+${ticker(
+  data.industries.industries.map((ind) => ({
+    label: `${ind.number} ${ind.name}`,
+    href: `/industries/#${slugify(ind.name)}`,
+  })),
+  { ariaLabel: 'The ten industries this publication documents' }
+)}
+
 <section class="section on-dark" id="about">
   <div class="wrap">
     <div class="grid grid--2 grid--held" style="gap:4rem;align-items:start;">
@@ -143,11 +151,12 @@ export function renderHome({ site, notes, data }) {
       title: 'Industries we document',
       lede: data.industries.summary,
       stamp: `${data.industries.industries.length} industries · open file`,
+      split: true,
     })}
     <div class="grid grid--4">
       ${data.industries.industries
         .map(
-          (ind) => `<a class="plate tilt reveal" href="/industries/#${esc(slugify(ind.name))}" style="text-decoration:none;color:inherit;display:block;">
+          (ind) => `<a class="plate tilt reveal" data-pointer-label="Open file" href="/industries/#${esc(slugify(ind.name))}" style="text-decoration:none;color:inherit;display:block;">
             <div class="plate__number display">${esc(ind.number)}</div>
             <h3 class="plate__name">${typo(ind.name)}</h3>
             <div class="tags">${ind.tags.map((t) => `<span class="tag">${esc(t)}</span>`).join('')}</div>
@@ -176,7 +185,7 @@ export function renderHome({ site, notes, data }) {
         ['The Reading List', '/library/', `${data.library.entries.length} investigations and databases worth your time, each linked to the original.`],
       ]
         .map(
-          ([name, href, text]) => `<article class="card card--linked tilt reveal">
+          ([name, href, text]) => `<article class="card card--linked tilt reveal" data-pointer-label="Open">
             <h3><a class="stretch" href="${esc(href)}">${esc(name)}</a></h3>
             <p>${typo(text)}</p>
             <div class="card__foot"><span class="arrow">Open</span></div>
@@ -196,13 +205,15 @@ ${
       title: 'One case per frame',
       lede: 'Each image in the series carries a single documented case. The archive files them in full, with the caption and the note behind it.',
       wide: true,
+      split: true,
+      stamp: `${data.archive.entries.length} filed`,
     })}
-    <div class="gallery gallery--strip">
+    <div class="rail" data-rail>
       ${shots
-        .slice(0, 8)
+        .slice(0, 10)
         .map(
           (post) => `<figure class="shot reveal">
-            <a href="${esc(post.permalink)}" target="_blank" rel="noopener noreferrer">
+            <a data-pointer-label="View" href="${esc(post.permalink)}" target="_blank" rel="noopener noreferrer">
               <img src="${esc(post.thumb)}" alt="${esc(post.title)}" loading="lazy" decoding="async"${
                 post.width && post.height ? ` width="${post.width}" height="${post.height}"` : ''
               }>

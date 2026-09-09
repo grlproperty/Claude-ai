@@ -28,11 +28,17 @@ function masthead(site, current) {
 }
 
 function colophon(site) {
+  // The columns are numbered indexes, the way the printed contents pages are:
+  // an ordinal against every entry, counted per column so each one starts at
+  // 01. The ordinals are drawn by a CSS counter, so nothing here has to know
+  // how many links a column holds.
   const columns = site.footerNav
     .map(
       (col) => `<div>
-        <h2>${esc(col.title)}</h2>
-        <ul>${col.links.map((l) => `<li><a href="${esc(l.href)}">${esc(l.label)}</a></li>`).join('')}</ul>
+        <h2>${esc(col.title)}<span class="count">${String(col.links.length).padStart(2, '0')}</span></h2>
+        <ul class="index-list">${col.links
+          .map((l) => `<li><a href="${esc(l.href)}">${esc(l.label)}</a></li>`)
+          .join('')}</ul>
       </div>`
     )
     .join('');
@@ -133,6 +139,7 @@ ${noindex ? '<meta name="robots" content="noindex, follow">' : ''}
 <link rel="preload" href="/assets/fonts/bodoni-moda-500-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/jost-300-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/cormorant-garamond-600-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/space-mono-400-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css">
 ${jsonLd}
 ${analytics(site)}
