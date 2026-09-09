@@ -201,44 +201,47 @@
   // the floor — and at any size it read as heavy ironwork. This one is drawn
   // as a cloche: taller than it is wide by more than three to one, fewer bars
   // with more air between them, and every line finer.
-  var BARS = 16;
-  var STEPS = 22;
-  var HEIGHT = 2.5;
-  // The radius at the floor, which is now the widest point.
-  var RADIUS = 0.85;
+  // A birdcage, drawn as one: a straight-walled body, a shoulder, an onion
+  // crown, a stepped plinth, an arcade of arches around the foot, and a door
+  // with a latch on it.
+  //
+  // Two earlier attempts are worth recording, because both were wrong in ways
+  // that are easy to talk yourself into. A Victorian aviary — twenty-six bars,
+  // six rings, five mouldings — read as heavy ironwork. Stripping it back to
+  // sixteen bars and a flared hem read as a lampshade: the silhouette stopped
+  // being a cage at all, and there was nothing left in it to look at. Simple
+  // is not the same as plain, and a cage is recognised by its ornament.
+  var BARS = 24;
+  var STEPS = 20;
+  var HEIGHT = 2.35;
+  var RADIUS = 0.84;
 
-  // Profile from base (t=0) to crown (t=1).
+  // Profile from floor (t=0) to crown (t=1).
   //
-  // A bell. Widest where it meets the floor, drawing in as it rises, closing
-  // in a dome — the line of a skirt rather than of a barrel, which is the one
-  // move that separates a cage in a bedroom from a cage in a barn. It is also
-  // the shape in the photograph directly below it on the page: the cage the
-  // model is wearing is a crinoline, wide at the hem and narrow at the waist,
-  // and the drawn one now rhymes with it instead of arguing.
-  //
-  // The exponent decides where the flare lives, and it has to be below one.
-  // At one the profile is a straight cone. Above one the sides stay wide and
-  // turn in near the top, which is a lampshade. Below one the radius falls
-  // away quickly and then levels off, so the width is spent in the last
-  // quarter before the floor — the line opens at the hem, which is what makes
-  // it a skirt rather than a funnel.
-  //
-  // BODY is where the wall stops, and it sets how round the crown is: the dome
-  // is (1 - BODY) of the height tall against the shoulder radius, and the two
-  // want to be close or the crown comes out as a beehive.
-  var BODY = 0.8;
-  var FLARE = 0.42;
-  var SHOULDER = 1 - FLARE;
+  // The wall is a wall. It leans in by a twelfth over its height — enough that
+  // the cage does not read as a tin can, not enough to be a taper — and stops
+  // at a shoulder. Above it an onion: raised to a power below one, the cosine
+  // keeps its width up through the lower dome and then falls away quickly, so
+  // the crown swells before it closes instead of shrinking from the shoulder.
+  // That swell is the difference between a birdcage and a yurt.
+  var BODY = 0.68;
+  var LEAN = 0.085;
+  var SHOULDER = 1 - LEAN;
 
   function radiusAt(t) {
-    if (t <= BODY) return RADIUS * (1 - FLARE * Math.pow(t / BODY, 0.7));
+    if (t <= BODY) return RADIUS * (1 - LEAN * (t / BODY));
     var k = (t - BODY) / (1 - BODY);
-    return RADIUS * SHOULDER * Math.cos(k * Math.PI * 0.5);
+    return RADIUS * SHOULDER * Math.pow(Math.cos(k * Math.PI * 0.5), 0.68);
   }
 
-  // Vertical extent of everything drawn, hook included.
-  var LOW = -HEIGHT / 2 - 0.09;
-  var HIGH = HEIGHT / 2 + 0.42;
+  var floorY = -HEIGHT / 2;
+  var yAt = function (t) {
+    return floorY + HEIGHT * t;
+  };
+
+  // Vertical extent of everything drawn, plinth and hook included.
+  var LOW = floorY - 0.2;
+  var HIGH = HEIGHT / 2 + 0.46;
 
   var pos = [];
   var other = [];
@@ -292,73 +295,147 @@
     }
   }
 
-  // Vertical bars. Slightly heavier than the rings, as they are on a real
-  // cage: the bars carry the weight and the rings only hold them apart.
-  for (var b = 0; b < BARS; b++) {
-    var ang = (b / BARS) * Math.PI * 2;
-    var c = Math.cos(ang);
-    var s = Math.sin(ang);
-    // Every bar runs the whole way. With sixteen of them there is room at the
-    // finial for all sixteen to meet, and stopping half of them at the
-    // shoulder — which the denser cage had to do — leaves the dome looking
-    // thinner than the body it sits on.
-    for (var st = 0; st < STEPS; st++) {
-      var t0 = st / STEPS;
-      var t1 = (st + 1) / STEPS;
-      var r0 = radiusAt(t0);
-      var r1 = radiusAt(t1);
-      // Tapered, and fine: a hairline into the crown.
-      var w = 1.15 - 0.55 * t0;
-      seg(c * r0, -HEIGHT / 2 + HEIGHT * t0, s * r0, c * r1, -HEIGHT / 2 + HEIGHT * t1, s * r1, w);
+  /** A partial ring: the same as ring(), between two angles. */
+  function arc(y, r, a0, a1, width, n) {
+    for (var i = 0; i < n; i++) {
+      var b0 = a0 + ((a1 - a0) * i) / n;
+      var b1 = a0 + ((a1 - a0) * (i + 1)) / n;
+      seg(Math.cos(b0) * r, y, Math.sin(b0) * r, Math.cos(b1) * r, y, Math.sin(b1) * r, width);
     }
   }
 
-  // Three rings up the body where there were six, set where the profile is
-  // doing something — through the swell, at its widest, and as it draws in.
-  // A ring every ninth of the height is a grid; three is a proportion.
-  var BODY_RINGS = [0.16, 0.36, 0.56];
-  for (var k = 0; k < BODY_RINGS.length; k++) {
-    ring(-HEIGHT / 2 + HEIGHT * BODY_RINGS[k], radiusAt(BODY_RINGS[k]), 0.62, 112);
+  /** A bar of the cage, or part of one, following the profile. */
+  function upright(ang, t0, t1, w0, w1, n) {
+    var c = Math.cos(ang);
+    var sn = Math.sin(ang);
+    for (var i = 0; i < n; i++) {
+      var u0 = t0 + ((t1 - t0) * i) / n;
+      var u1 = t0 + ((t1 - t0) * (i + 1)) / n;
+      var r0 = radiusAt(u0);
+      var r1 = radiusAt(u1);
+      seg(c * r0, yAt(u0), sn * r0, c * r1, yAt(u1), sn * r1, w0 + (w1 - w0) * (i / n));
+    }
   }
 
-  // The base: a floor ring and one fine lip beneath it. The five stacked
-  // mouldings and the cross-bracing they sat on were the heaviest thing in the
-  // drawing and the least of what a cage needs to read as closed.
-  ring(-HEIGHT / 2, radiusAt(0), 1.2, 112);
-  ring(-HEIGHT / 2 - 0.07, radiusAt(0) * 0.93, 0.7, 96);
+  // ---- the body -----------------------------------------------------------
+  // Every other bar carries over the dome. Twenty-four uprights all meeting at
+  // the finial is a knot; twelve is a crown.
+  for (var b = 0; b < BARS; b++) {
+    var ang = (b / BARS) * Math.PI * 2;
+    var full = b % 2 === 0;
+    upright(ang, 0, full ? 1 : BODY, 1.5, full ? 0.6 : 1.0, full ? STEPS : Math.round(STEPS * BODY));
+  }
 
-  // The shoulder, where the wall becomes the dome. One ring, not two — the
-  // second was a highlight under the first, and at this weight it only
-  // thickened the line.
-  ring(-HEIGHT / 2 + HEIGHT * BODY, radiusAt(BODY), 0.95, 112);
+  // Rings up the wall.
+  var WALL_RINGS = [0.2, 0.4, 0.58];
+  for (var k = 0; k < WALL_RINGS.length; k++) {
+    ring(yAt(WALL_RINGS[k]), radiusAt(WALL_RINGS[k]), 0.8, 120);
+  }
 
-  // One ring up the dome. Two divided a crown this size into slices.
-  var domeT = BODY + (1 - BODY) * 0.45;
-  ring(-HEIGHT / 2 + HEIGHT * domeT, radiusAt(domeT), 0.6, 96);
+  // ---- the arcade ---------------------------------------------------------
+  // An arch between each pair of uprights, standing on the floor ring. This is
+  // the ornament that says birdcage before anything else in the drawing does —
+  // it is what a cage has and a lantern does not.
+  var ARCH_FOOT = 0.055;
+  var ARCH_RISE = 0.075;
+  for (var a = 0; a < BARS; a++) {
+    var a0 = (a / BARS) * Math.PI * 2;
+    var a1 = ((a + 1) / BARS) * Math.PI * 2;
+    var SEGS = 7;
+    for (var i = 0; i < SEGS; i++) {
+      var u0 = i / SEGS;
+      var u1 = (i + 1) / SEGS;
+      var b0 = a0 + (a1 - a0) * u0;
+      var b1 = a0 + (a1 - a0) * u1;
+      var t0 = ARCH_FOOT + ARCH_RISE * Math.sin(u0 * Math.PI);
+      var t1 = ARCH_FOOT + ARCH_RISE * Math.sin(u1 * Math.PI);
+      var r0 = radiusAt(t0);
+      var r1 = radiusAt(t1);
+      seg(Math.cos(b0) * r0, yAt(t0), Math.sin(b0) * r0, Math.cos(b1) * r1, yAt(t1), Math.sin(b1) * r1, 0.72);
+    }
+  }
 
-  // The perch. One fine bar across, and the detail that makes this a birdcage
-  // rather than a lantern. The collars where it met the wall are gone: two
-  // stubs either side of a hairline is detail that only reads as noise.
-  var perchY = -HEIGHT / 2 + HEIGHT * 0.34;
-  seg(-radiusAt(0.34) * 0.98, perchY, 0, radiusAt(0.34) * 0.98, perchY, 0, 0.95);
+  // ---- the plinth ---------------------------------------------------------
+  // A floor ring, a lip stepping out under it, and a foot stepping back in.
+  // Three courses, not five: enough to close the cage, short of a wedding cake.
+  ring(floorY, RADIUS, 1.5, 120);
+  ring(floorY - 0.06, RADIUS * 1.05, 1.0, 120);
+  ring(floorY - 0.14, RADIUS * 0.9, 0.85, 100);
 
-  // Finial and hook above the crown, so it reads as hung rather than floating.
-  var crown = HEIGHT / 2;
-  // The rod runs the whole way to the centre of the hook's arc. Stopping it at
-  // the knob leaves the hook floating unattached above the cage.
-  seg(0, crown - 0.02, 0, 0, crown + 0.3, 0, 1.05);
-  ring(crown + 0.16, 0.062, 0.8, 40);
-  for (var h = 0; h < 12; h++) {
-    var ha = Math.PI * (0.15 + (h / 12) * 0.9);
-    var hb = Math.PI * (0.15 + ((h + 1) / 12) * 0.9);
+  // ---- the shoulder and crown --------------------------------------------
+  ring(yAt(BODY), radiusAt(BODY), 1.4, 120);
+  ring(yAt(BODY + 0.02), radiusAt(BODY + 0.02), 0.7, 120);
+
+  var d1 = BODY + (1 - BODY) * 0.38;
+  var d2 = BODY + (1 - BODY) * 0.72;
+  ring(yAt(d1), radiusAt(d1), 0.75, 104);
+  ring(yAt(d2), radiusAt(d2), 0.65, 88);
+
+  // ---- the perch ----------------------------------------------------------
+  var perchT = 0.36;
+  var perchR = radiusAt(perchT) * 0.97;
+  seg(-perchR, yAt(perchT), 0, perchR, yAt(perchT), 0, 1.2);
+
+  // ---- the door -----------------------------------------------------------
+  // Four bars of the arc, framed, with a latch ring on the closing edge. A
+  // door is the one detail that cannot be read as anything but a cage, and it
+  // costs about forty segments.
+  var DOOR_BARS = 4;
+  var doorA0 = -((DOOR_BARS / 2) / BARS) * Math.PI * 2;
+  var doorA1 = ((DOOR_BARS / 2) / BARS) * Math.PI * 2;
+  var doorT0 = 0.24;
+  var doorT1 = 0.6;
+  arc(yAt(doorT0), radiusAt(doorT0) * 1.03, doorA0, doorA1, 1.15, 16);
+  arc(yAt(doorT1), radiusAt(doorT1) * 1.03, doorA0, doorA1, 1.15, 16);
+  upright(doorA0, doorT0, doorT1, 1.15, 1.15, 8);
+  upright(doorA1, doorT0, doorT1, 1.15, 1.15, 8);
+  // The latch: a small ring on the outside of the closing stile.
+  var latchT = (doorT0 + doorT1) / 2;
+  var latchR = radiusAt(latchT) * 1.03;
+  for (var l = 0; l < 14; l++) {
+    var l0 = (l / 14) * Math.PI * 2;
+    var l1 = ((l + 1) / 14) * Math.PI * 2;
+    var lr = 0.055;
     seg(
-      Math.cos(ha) * 0.11,
-      crown + 0.3 + Math.sin(ha) * 0.11,
+      Math.cos(doorA1) * (latchR + Math.cos(l0) * lr * 0.35),
+      yAt(latchT) + Math.sin(l0) * lr,
+      Math.sin(doorA1) * (latchR + Math.cos(l0) * lr * 0.35),
+      Math.cos(doorA1) * (latchR + Math.cos(l1) * lr * 0.35),
+      yAt(latchT) + Math.sin(l1) * lr,
+      Math.sin(doorA1) * (latchR + Math.cos(l1) * lr * 0.35),
+      0.8
+    );
+  }
+
+  // ---- finial and hook ----------------------------------------------------
+  var crown = HEIGHT / 2;
+  // Where the hook's arc sits, and how big it is. The chain's first link and
+  // the cage's swing pivot are both derived from these two rather than written
+  // down a second time — move the hook and they follow it. They did not once,
+  // and the cage hung off the end of a chain it was no longer attached to.
+  var HOOK_Y = crown + 0.34;
+  var HOOK_R = 0.115;
+  seg(0, crown - 0.04, 0, 0, HOOK_Y, 0, 1.3);
+  // A knop on the rod: two crossed rings, which at this size reads as a bead.
+  ring(crown + 0.06, 0.075, 1.0, 36);
+  for (var kn = 0; kn < 24; kn++) {
+    var k0 = (kn / 24) * Math.PI * 2;
+    var k1 = ((kn + 1) / 24) * Math.PI * 2;
+    seg(Math.cos(k0) * 0.075, crown + 0.06 + Math.sin(k0) * 0.075, 0,
+        Math.cos(k1) * 0.075, crown + 0.06 + Math.sin(k1) * 0.075, 0, 0.85);
+  }
+  ring(crown + 0.2, 0.05, 0.85, 32);
+  for (var h = 0; h < 14; h++) {
+    var ha = Math.PI * (0.12 + (h / 14) * 0.96);
+    var hb = Math.PI * (0.12 + ((h + 1) / 14) * 0.96);
+    seg(
+      Math.cos(ha) * HOOK_R,
+      HOOK_Y + Math.sin(ha) * HOOK_R,
       0,
-      Math.cos(hb) * 0.11,
-      crown + 0.3 + Math.sin(hb) * 0.11,
+      Math.cos(hb) * HOOK_R,
+      HOOK_Y + Math.sin(hb) * HOOK_R,
       0,
-      0.95
+      1.0
     );
   }
 
@@ -389,7 +466,7 @@
   var LINK_PITCH = LINK_H * 1.5;
   var LINKS = 34;
   var LINK_SEGS = 14;
-  var chainBase = HEIGHT / 2 + 0.3 + LINK_H;
+  var chainBase = HOOK_Y + LINK_H;
 
   orderOf = function (y) {
     return 0.62 + Math.min(1, (y - HIGH) / CHAIN_REVEAL) * 0.38;
@@ -750,7 +827,7 @@
     // Rotated where it is actually held: the top of the hook's arc, which is
     // the point the first link bears on — not the arc's centre, which is a
     // centimetre lower and lets the hook walk out of the link as it turns.
-    var pivot = HEIGHT / 2 + 0.41;
+    var pivot = HOOK_Y + HOOK_R;
     scrollTurn += (scrollTurnTarget - scrollTurn) * Math.min(1, dt * 4);
     // Rotate about a point, not the origin: translate the pivot to the origin
     // FIRST, then rotate, then put it back. multiply(a, b) applies b then a, so

@@ -1051,7 +1051,11 @@ code {
 .hero__claim {
   font-family: var(--editorial);
   font-size: clamp(1.35rem, 2.8vw, 2.2rem);
-  line-height: 1.32;
+  /* Loosened from 1.32. The struck half of this line wraps on a narrow column,
+     and box-decoration-break gives each fragment its own block — at tight
+     leading those blocks touch, and two touching blocks read as one ragged
+     shape rather than as a marked sentence. */
+  line-height: 1.5;
   font-weight: 500;
   max-width: 24ch;
   margin: 0 0 var(--s5);
