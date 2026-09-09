@@ -24,6 +24,7 @@
     "mail:ingest": "tsx scripts/mail.ts ingest",
     "import:masters": "tsx scripts/import-masters.ts",
     "import:knowledge": "tsx scripts/import-knowledge.ts",
+    "import:whatsapp": "tsx scripts/import-whatsapp.ts",
     "load:knowledge": "tsx scripts/load-knowledge.ts",
     "load:master": "tsx scripts/load-master-text.ts",
     "check": "npm run typecheck && npm run test"

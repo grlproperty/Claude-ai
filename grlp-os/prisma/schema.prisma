@@ -69,6 +69,7 @@ model User {
   signatures          Signature[]      @relation("SignatureSigner")
   capacitySnapshots   CapacitySnapshot[]
   preferences         Preference[]
+  threads             MessageThread[]  @relation("ThreadOwner")
 
   @@index([role])
   @@index([department])
@@ -140,6 +141,7 @@ model Contact {
   communications Communication[]
   documents      Document[]
   tasks          Task[]
+  threads        MessageThread[]
 
   @@index([kind])
   @@index([email])
@@ -192,6 +194,7 @@ model Property {
   marketAssessments MarketAssessment[]
   comparableOf      Comparable[]       @relation("ComparableSubject")
   leads             Lead[]
+  threads           MessageThread[]
 
   @@index([status])
   @@index([agentId])
@@ -968,6 +971,12 @@ model Communication {
   direction CommunicationDirection
   domain    DataDomain             @default(BUSINESS)
 
+  threadId String?
+  thread   MessageThread? @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  /// Present on WhatsApp messages, where the sender is a number rather than an address.
+  senderPhone String?
+  senderName  String?
+
   externalId String? @unique // provider message id, for idempotent ingestion
   subject    String?
   body       String?
@@ -998,6 +1007,83 @@ model Communication {
   @@index([receivedAt])
   @@index([triage])
   @@index([ownerId, answeredAt])
+}
+
+enum ThreadKind {
+  DIRECT
+  GROUP
+}
+
+/// A WhatsApp conversation, so the system can work at the level a person thinks
+/// at — "the Sedgefield sale chat" — rather than at the level of single messages.
+///
+/// Nothing in this system can reply on WhatsApp. That is structural: no send
+/// function exists anywhere in the WhatsApp code, and a test asserts it.
+model MessageThread {
+  id         String     @id @default(cuid())
+  provider   String     @default("whatsapp")
+  externalId String     @unique
+  title      String
+  kind       ThreadKind @default(DIRECT)
+
+  counterpartyPhone String?
+  counterpartyName  String?
+
+  contactId  String?
+  contact    Contact?  @relation(fields: [contactId], references: [id])
+  propertyId String?
+  property   Property? @relation(fields: [propertyId], references: [id])
+  /// The GRLP person this conversation belongs to.
+  ownerId String?
+  owner   User?   @relation("ThreadOwner", fields: [ownerId], references: [id])
+
+  category   CommunicationCategory?
+  importance Priority               @default(NORMAL)
+
+  messageCount  Int       @default(0)
+  firstMessageAt DateTime?
+  lastMessageAt DateTime?
+  /// True when the last message came from the other party and asked something.
+  waitingOnUs   Boolean   @default(false)
+
+  /// A written summary of the conversation. Marked with how it was produced so a
+  /// model's reading is never mistaken for the conversation itself.
+  summary           String?
+  summaryProvenance ProvenanceKind @default(INFERENCE)
+  summaryUpdatedAt  DateTime?
+
+  archived  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages    Communication[]
+  commitments Commitment[]
+
+  @@index([lastMessageAt])
+  @@index([ownerId, waitingOnUs])
+  @@index([category])
+}
+
+/// Something someone said they would do, found in a conversation. The system
+/// surfaces these; it does not chase them on WhatsApp, because it cannot send.
+model Commitment {
+  id       String  @id @default(cuid())
+  threadId String
+  thread   MessageThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  /// The message it was found in, quoted so a person can check the reading.
+  quote    String
+  /// Who undertook it: "us" or "them".
+  side     String
+  /// What was undertaken, in plain words.
+  what     String
+  dueAt    DateTime?
+  saidAt   DateTime
+  /// Marked done by a person, or when a later message clearly settles it.
+  settledAt DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([threadId])
+  @@index([settledAt])
 }
 
 model Meeting {

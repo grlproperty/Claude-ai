@@ -51,9 +51,10 @@ This matters more than a feature list, so it is stated plainly.
 | Document catalogue and process maps | Complete. 58 documents across 14 stages, transcribed from GRLP's own checklists, with the real sign-off gates. |
 | Dropbox master-copy importer | Built and tested against a fake Dropbox. Live import needs credentials. |
 | Knowledge base | Built and tested. 41 operating rules encoded from GRLP's SOPs; the importer needs Dropbox credentials for the rest. |
+| WhatsApp assistant | Built and tested. Reads, sorts, summarises, raises tasks — and cannot reply, by construction. |
 | Data model | 39 tables, migrated. |
 
-**305 tests**, including the full simulation of Mandy's day (§63) against real Postgres.
+**333 tests**, including the full simulation of Mandy's day (§63) against real Postgres.
 
 ### Built as a real interface, awaiting credentials
 
@@ -114,6 +115,57 @@ Two things follow from password authentication rather than OAuth, and both matte
 
 Ingestion never sends. Triage decides what *should* happen; a reply leaves the mailbox
 only after a person has approved that specific message.
+
+---
+
+## WhatsApp
+
+An assistant for Mandy's WhatsApp that organises and never speaks. It reads
+conversations, works out who is waiting, finds what anyone undertook to do,
+links a chat to the client and property it concerns, and raises tasks — and it
+cannot reply.
+
+**That is structural, not a policy.** There is no send, reply, react or mark-read
+function anywhere in the WhatsApp code, nothing posts to Meta's API, and a test
+reads the source files to check it stays that way.
+
+### Getting conversations in
+
+Two routes, and the difference matters:
+
+| | Chat export | WhatsApp Business Cloud API |
+| --- | --- | --- |
+| Works on | Mandy's real chats, personal account included | Only a dedicated business number |
+| History | Everything in the chat | Only from connection onward |
+| Effort | Manual, one chat at a time | Live, via webhook |
+| Cost to how she works | None | That number leaves the ordinary WhatsApp app |
+
+```bash
+npm run import:whatsapp -- ~/exports --dry-run
+npm run import:whatsapp -- ~/exports
+```
+
+To export: open the chat, tap the contact or group name, **Export Chat**,
+**Without Media**, then save the `.txt` somewhere the importer can read.
+
+There is a third route — unofficial libraries that drive WhatsApp Web. It breaks
+WhatsApp's terms and gets numbers banned, so it is not built here.
+
+### What it reads
+
+- **Who is waiting** — a question from the other side that nobody answered after it
+- **What was promised** — "I'll send…", "we will…", with the date where one was given
+- **What it is about** — the same rules the inbox uses, so a burst geyser is a
+  rental matter whichever way it arrives
+- **What to search on** — erf numbers, street addresses and rand amounts
+
+A promise stays with whoever made it. If Mandy said she would send the
+assessment, the task is hers — handing it to whichever agent has capacity would
+lose the fact that the client is expecting it from her.
+
+Exports are day-first, as South African phones produce them: 08/09/2026 is
+8 September, and reading it as 9 August would put a month of messages in the
+wrong place.
 
 ---
 
