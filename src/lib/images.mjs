@@ -211,19 +211,39 @@ export async function buildHeroImage({ dist, dir }) {
   const out = join(dist, 'assets/img');
   await mkdir(out, { recursive: true });
 
+  // A cut-out — a figure on a transparent ground — is a different object from a
+  // photograph, and the page has to treat it as one: a cut-out put behind the
+  // plate's frame is a silhouette floating in a bordered box with the page's own
+  // blush showing around it, which reads as a mistake rather than a crop.
+  //
+  // `metadata().hasAlpha` only says the file has a channel; a PNG exported from
+  // most tools has one whether or not anything in it is actually transparent.
+  // `stats().isOpaque` reads the pixels, which is the question being asked.
+  let cutout = false;
+  if (meta.hasAlpha) {
+    try {
+      cutout = !(await sharp(src).stats()).isOpaque;
+    } catch {
+      cutout = false;
+    }
+  }
+
   for (const width of [640, 1200]) {
     await sharp(src)
       .resize({ width, withoutEnlargement: true })
-      .webp({ quality: 86, effort: 5 })
+      .webp({ quality: 86, effort: 5, alphaQuality: 100 })
       .toFile(join(out, `hero-${width}.webp`));
   }
 
-  console.log(`  Hero image: ${named[0]} (${meta.width}x${meta.height})`);
+  console.log(
+    `  Hero image: ${named[0]} (${meta.width}x${meta.height})${cutout ? ' — cut-out, shown unframed' : ''}`
+  );
   return {
     thumb: '/assets/img/hero-640.webp',
     image: '/assets/img/hero-1200.webp',
     width: meta.width ?? null,
     height: meta.height ?? null,
+    cutout,
   };
 }
 

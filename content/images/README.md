@@ -16,3 +16,17 @@ Instagram carry one, which is right in a feed and a duplicate directly under a
 page already headed FERAL FEMME.
 
 Portrait suits the slot best — the plate is set to 3:4 and crops to it.
+
+## Cut-outs
+
+A file with a genuinely transparent background — a figure cut out of its
+ground, saved as PNG or WebP — is detected at build time and shown differently:
+unframed, uncropped, standing directly on the page at its own proportions,
+with the caption centred under it. Nothing has to be set for this; the build
+reads the pixels, and says so in its output when it fires:
+
+    Hero image: hero.png (1585x1965) — cut-out, shown unframed
+
+A PNG whose alpha channel exists but is fully opaque is treated as an ordinary
+photograph, which is what it is. So exporting with transparency turned on by
+habit does not change the layout — only actually cutting the figure out does.

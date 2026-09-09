@@ -1254,6 +1254,48 @@ code {
   }
 }
 
+/* A cut-out stands on the page; it is not framed by it.
+ *
+ * The frame, the crop and the printed shadow are all right for a photograph —
+ * they say this is a plate on a page. A figure on a transparent ground needs
+ * none of them: bordering it draws a box around empty air, cropping it to 3:4
+ * cuts the head and the boots off the very thing that was cut out, and a
+ * shadow falls from a rectangle that is not there. So the frame stops being a
+ * frame and the picture is simply let stand at its own proportions, taller
+ * than the plate a photograph gets, and drifting bodily rather than inside an
+ * opening.
+ */
+.hero__plate--cutout .hero__frame {
+  border: 0;
+  box-shadow: none;
+  overflow: visible;
+  max-width: none;
+}
+
+.hero__plate--cutout img {
+  aspect-ratio: auto;
+  object-fit: contain;
+  transform: translate3d(0, calc(var(--drift, 0%) * 0.5), 0);
+  /* Room to stand without pushing the counts beside it off the fold. */
+  max-height: min(76vh, 44rem);
+  width: auto;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__plate--cutout img {
+    transform: none;
+  }
+}
+
+/* The caption belongs to the picture, so it lines up under the figure rather
+   than under the column the figure happens to be centred in. */
+.hero__plate--cutout figcaption {
+  text-align: center;
+  margin-inline: auto;
+}
+
 .hero__plate figcaption {
   font-family: var(--ui);
   font-size: 0.75rem;

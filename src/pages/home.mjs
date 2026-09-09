@@ -62,7 +62,7 @@ export function renderHome({ site, notes, data }) {
 
     ${
       hero
-        ? `<figure class="hero__plate">
+        ? `<figure class="hero__plate${hero.cutout ? ' hero__plate--cutout' : ''}">
       <span class="hero__frame"><img data-drift src="${esc(hero.image)}" srcset="${esc(hero.thumb)} 640w, ${esc(hero.image)} 1200w" sizes="(min-width: 60rem) 42vw, (min-width: 34rem) 32rem, 100vw" alt="${esc(
             hero.title
           )}" width="${hero.width ?? 2096}" height="${hero.height ?? 2795}" fetchpriority="high" decoding="async"></span>
