@@ -4,7 +4,11 @@ summary: The terms on which this platform is published, and how its work may be 
 order: 6
 ---
 
-*Last updated: 6 September 2026*
+*Last updated: 10 September 2026*
+
+## Who these terms are with
+
+FERAL FEMME is an independent publication run by one person. It is not a registered company, and it is not part of one. **"We", "us", and "our" in these terms mean the individual who publishes FERAL FEMME**, who can be reached at [info@feral-femme.co](mailto:info@feral-femme.co).
 
 ## Nature of the content
 
