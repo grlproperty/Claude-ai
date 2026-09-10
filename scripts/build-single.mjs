@@ -192,11 +192,33 @@ async function main() {
     }
   }
 
+  /**
+   * Each distinct image is carried once and referenced everywhere else.
+   *
+   * Substituting the data URI at every occurrence was fine while a cover
+   * appeared on one page. The shelf put six of them on a hundred and
+   * twenty-nine routes, and the same twenty-seven kilobytes went into the
+   * document twenty-three times — 3.9 MB of the 8.3 MB file was the same
+   * pictures over and over. They are numbered here and resolved from a map at
+   * runtime, which costs one small script and takes the file back under five.
+   *
+   * The `src` is dropped rather than set to a placeholder: an <img> with no
+   * source draws nothing and still reserves its box from width and height,
+   * where a broken path would draw a broken-image mark until the swap.
+   */
+  const imageIds = new Map();
+  const idFor = (uri) => {
+    if (!imageIds.has(uri)) imageIds.set(uri, `i${imageIds.size}`);
+    return imageIds.get(uri);
+  };
+
   const inlineImages = (html) =>
     html
       .replace(/srcset="[^"]*"/g, '')
       .replace(/sizes="[^"]*"/g, '')
-      .replace(/src="(\/assets\/img\/[^"]+)"/g, (m, p) => (images.has(p) ? `src="${images.get(p)}"` : m))
+      .replace(/src="(\/assets\/img\/[^"]+)"/g, (m, p) =>
+        images.has(p) ? `data-img="${idFor(images.get(p))}"` : m
+      )
       // Before rewrite() runs, which only looks at hrefs beginning with "/".
       // Once this is a data: URI it is no longer a candidate for routing.
       .replace(/href="(\/downloads\/[^"]+)"/g, (m, p) => (pdfs.has(p) ? `href="${pdfs.get(p)}"` : m));
@@ -338,6 +360,9 @@ async function main() {
       toggle.textContent = 'Menu';
     }
     if (window.FF) {
+      // Before initContent, which measures layout: an image whose source has
+      // not been set yet has no height for the reveal and the spine to read.
+      if (FF.paintImages) FF.paintImages();
       if (FF.initContent) FF.initContent();
       if (FF.initFilters) FF.initFilters();
       if (FF.initCage) FF.initCage();
@@ -471,8 +496,19 @@ async function main() {
   else setTimeout(add, 400);
 })();`;
 
+  // Written after every page has been through inlineImages, so the map holds
+  // exactly the images the document actually references.
+  const imageMap =
+    `window.FF_IMG={${[...imageIds].map(([uri, id]) => `${id}:"${uri}"`).join(',')}};\n` +
+    `(function(){function paint(root){var n=(root||document).querySelectorAll('img[data-img]');` +
+    `for(var i=0;i<n.length;i++){var s=window.FF_IMG[n[i].getAttribute('data-img')];` +
+    `if(s){n[i].src=s;n[i].removeAttribute('data-img');}}}` +
+    `window.FF=window.FF||{};window.FF.paintImages=paint;` +
+    `if(document.readyState!=='loading')paint();` +
+    `else document.addEventListener('DOMContentLoaded',function(){paint();});})();`;
+
   await mkdir(OUT, { recursive: true });
-  const doc = `<!doctype html>\n<html lang="en">\n<head>\n${head}\n</head>\n<body>\n${shellBody}\n<script>${js.join(
+  const doc = `<!doctype html>\n<html lang="en">\n<head>\n${head}\n</head>\n<body>\n${shellBody}\n<script>${imageMap}\n${js.join(
     '\n;\n'
   )}\n${router}\n${lateFonts}\n</script>\n${views}\n</body>\n</html>\n`;
   await writeFile(join(OUT, 'index.html'), doc);

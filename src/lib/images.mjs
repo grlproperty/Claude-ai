@@ -19,6 +19,39 @@ const FC_DIR = join(ROOT, 'tools/.fontconfig');
 
 const C = { blush: '#F6DFE2', crimson: '#8E0B14', ink: '#12100F', white: '#FDFCFC' };
 
+/**
+ * The family names these faces actually declare, which are not the names the
+ * brand calls them.
+ *
+ * Google serves a static instance whose name record carries the optical size
+ * or the weight — "Bodoni Moda 11pt", "Cormorant Garamond Light" — and
+ * fontconfig matches on that. An SVG asking for "Bodoni Moda" therefore
+ * matched nothing and fell back to whatever else was installed, which is why
+ * every social card this build has produced had its headline set in Jost
+ * rather than in the didone that is the brand's whole visual signature.
+ *
+ * Each entry lists the real name first and the brand name after it, so a
+ * system that does have the properly-named family still resolves.
+ * scripts/fetch-ttf.mjs prints what it downloaded; check these against it.
+ */
+const FACE = {
+  display: 'Bodoni Moda 11pt Medium, Bodoni Moda 11pt, Bodoni Moda, serif',
+  editorial: 'Cormorant Garamond Light, Cormorant Garamond, serif',
+  ui: 'Jost, sans-serif',
+  mono: 'Space Mono, monospace',
+};
+
+/**
+ * Weight is carried by the family name, not by font-weight.
+ *
+ * The medium cut declares itself as the family "Bodoni Moda 11pt Medium" with
+ * the subfamily "Regular", so fontconfig registers it at regular weight and a
+ * request for 500 matches no Bodoni at all — it matched Jost Medium instead,
+ * which is the actual mechanism behind every mis-set card. Asking for the
+ * medium family at normal weight is the only combination that resolves.
+ */
+const WEIGHT_IN_FAMILY = 'normal';
+
 let fontsReady = false;
 
 async function ensureFontConfig() {
@@ -46,6 +79,12 @@ async function ensureFontConfig() {
   process.env.FONTCONFIG_FILE = file;
   return true;
 }
+
+const slugOf = (name) =>
+  String(name)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
 
 const xml = (s) =>
   String(s ?? '')
@@ -103,20 +142,22 @@ function ogSvg({ title, eyebrow, site, kicker }) {
   <rect width="${W}" height="${H}" fill="${C.blush}"/>
   <rect x="0" y="0" width="${W}" height="10" fill="${C.crimson}"/>
   <rect x="90" y="128" width="56" height="2" fill="${C.crimson}"/>
-  <text x="168" y="136" font-family="Jost" font-size="19" font-weight="500"
+  <text x="168" y="136" font-family="${FACE.ui}" font-size="19" font-weight="500"
         letter-spacing="4.2" fill="${C.crimson}">${xml(eyebrow.toUpperCase())}</text>
   ${lines
     .map(
       (l, i) =>
-        `<text x="90" y="${blockTop + i * size * 1.14}" font-family="Bodoni Moda" font-size="${size}" font-weight="500" fill="${C.ink}">${xml(l)}</text>`
+        `<text x="90" y="${blockTop + i * size * 1.14}" font-family="${FACE.display}" font-size="${size}" font-weight="${WEIGHT_IN_FAMILY}" fill="${C.ink}">${xml(l)}</text>`
     )
     .join('\n  ')}
   <rect x="90" y="${H - 132}" width="${W - 180}" height="1" fill="${C.ink}" opacity="0.16"/>
-  <text x="90" y="${H - 76}" font-family="Bodoni Moda" font-size="34" font-weight="500"
-        letter-spacing="9" fill="${C.crimson}">FERAL</text>
-  <text x="248" y="${H - 76}" font-family="Bodoni Moda" font-size="34" font-weight="500"
-        letter-spacing="9" fill="${C.ink}">FEMME.</text>
-  <text x="${W - 90}" y="${H - 76}" text-anchor="end" font-family="Jost" font-size="17"
+  <!-- One run in two colours rather than two runs at measured offsets. The
+       second x was tuned against the face that was actually rendering, which
+       was the wrong one; now that the didone resolves, a hard offset would
+       have to be re-measured every time the wordmark or its tracking moved. -->
+  <text x="90" y="${H - 76}" font-family="${FACE.display}" font-size="34" font-weight="${WEIGHT_IN_FAMILY}"
+        letter-spacing="9" fill="${C.crimson}">FERAL<tspan dx="20" fill="${C.ink}">FEMME.</tspan></text>
+  <text x="${W - 90}" y="${H - 76}" text-anchor="end" font-family="${FACE.ui}" font-size="17"
         font-weight="300" letter-spacing="3.4" fill="${C.ink}" opacity="0.62">${xml(kicker.toUpperCase())}</text>
 </svg>`;
 }
@@ -127,8 +168,8 @@ function markSvg({ size = 512, background = C.blush } = {}) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
   <rect width="${size}" height="${size}" fill="${background}"/>
   <circle cx="${c}" cy="${c}" r="${size * 0.375}" fill="none" stroke="${C.crimson}" stroke-width="${size * 0.014}"/>
-  <text x="${c}" y="${c + size * 0.115}" text-anchor="middle" font-family="Bodoni Moda"
-        font-size="${size * 0.32}" font-weight="500" letter-spacing="${size * 0.02}" fill="${C.crimson}">FF</text>
+  <text x="${c}" y="${c + size * 0.115}" text-anchor="middle" font-family="${FACE.display}"
+        font-size="${size * 0.32}" font-weight="${WEIGHT_IN_FAMILY}" letter-spacing="${size * 0.02}" fill="${C.crimson}">FF</text>
 </svg>`;
 }
 
@@ -260,6 +301,106 @@ export async function buildHeroImage({ dist, dir }) {
  * card is about 340px wide on a phone and 500 on a desktop, and a retina
  * screen wants twice that.
  */
+/**
+ * A typeset jacket for a document whose PDF is not in this repository.
+ *
+ * Covers are the first page of the real PDF, which is the only version worth
+ * showing — a buyer who has seen it has seen the thing. Two of the six volumes
+ * were written before the source files were kept here, so they had no cover at
+ * all, and the shelf drew them as a hatched placeholder. On a front page whose
+ * job is to sell them, a hatched box beside five real covers reads as a product
+ * that does not exist, and it was sitting under the most expensive one.
+ *
+ * This is not a mock-up of the missing page. It is the same jacket the printed
+ * volumes carry, set from the product's own data — so it is true, and it is
+ * replaced automatically the moment a real cover file appears in
+ * content/images/covers/.
+ */
+function jacketSvg({ product, site, index }) {
+  const W = 840;
+  const H = 1187;
+  const M = 84;
+  const title = product.name.replace(/^The\s+/i, '');
+  const size = title.length > 26 ? 62 : title.length > 18 ? 72 : 84;
+  const lines = wrap(title, size, W - M * 2, 3);
+  const blurb = wrap(product.summary ?? '', 21, W - M * 2 - 40, 4);
+  const serial = String(index + 1).padStart(2, '0');
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+  <rect width="${W}" height="${H}" fill="${C.blush}"/>
+  <text x="${M}" y="112" font-family="${FACE.mono}" font-size="15" letter-spacing="2.4"
+        fill="${C.ink}" opacity="0.72">${xml(`${site.name.toUpperCase()} · PAID WORK ${serial}`)}</text>
+  <text x="${W - M}" y="112" text-anchor="end" font-family="${FACE.mono}" font-size="15"
+        letter-spacing="2.4" fill="${C.ink}" opacity="0.72">EDITION ${xml(String(site.established))}.1</text>
+
+  <text x="${M}" y="392" font-family="${FACE.display}" font-size="92" font-weight="${WEIGHT_IN_FAMILY}"
+        letter-spacing="2" fill="${C.crimson}">FERAL</text>
+  <text x="${M}" y="462" font-family="${FACE.display}" font-size="62" font-weight="${WEIGHT_IN_FAMILY}"
+        letter-spacing="1" fill="${C.ink}">FEMME.</text>
+
+  ${lines
+    .map(
+      (l, i) =>
+        `<text x="${M}" y="${628 + i * size * 1.1}" font-family="${FACE.display}" font-size="${size}" font-weight="${WEIGHT_IN_FAMILY}" fill="${C.ink}">${xml(l)}</text>`
+    )
+    .join('\n  ')}
+
+  ${blurb
+    .map(
+      (l, i) =>
+        `<text x="${M}" y="${628 + lines.length * size * 1.1 + 46 + i * 32}" font-family="${FACE.ui}" font-size="21" font-weight="300" fill="${C.ink}" opacity="0.82">${xml(l)}</text>`
+    )
+    .join('\n  ')}
+
+  <rect x="${M}" y="${H - 128}" width="${W - M * 2}" height="1" fill="${C.crimson}" opacity="0.34"/>
+  <text x="${M}" y="${H - 88}" font-family="${FACE.mono}" font-size="15" letter-spacing="2.4"
+        fill="${C.ink}" opacity="0.72">${xml(String(site.url).replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '').toUpperCase())}</text>
+  <text x="${W - M}" y="${H - 88}" text-anchor="end" font-family="${FACE.mono}" font-size="15"
+        letter-spacing="2.4" fill="${C.ink}" opacity="0.72">${xml(
+          `${product.pages} PAGES · ${String(product.for ?? '').toUpperCase()}`
+        )}</text>
+</svg>`;
+}
+
+/**
+ * Fills the gaps left by buildCovers. Only products with no cover file get one,
+ * so a real cover always wins and nothing has to be deleted to adopt it.
+ */
+export async function buildProductJackets({ dist, site, covers }) {
+  const products = site.shop?.products ?? [];
+  const missing = products
+    .map((p, i) => ({ p, i }))
+    .filter(({ p }) => !covers[slugOf(p.name)]);
+  if (!missing.length) return covers;
+
+  const ok = await ensureFontConfig();
+  const out = join(dist, 'assets/img/covers');
+  await mkdir(out, { recursive: true });
+
+  for (const { p, i } of missing) {
+    const slug = slugOf(p.name);
+    const svg = Buffer.from(jacketSvg({ product: p, site, index: i }));
+    for (const width of [420, 840]) {
+      await sharp(svg)
+        .resize({ width })
+        .webp({ quality: 82, effort: 6 })
+        .toFile(join(out, `${slug}-${width}.webp`));
+    }
+    covers[slug] = {
+      thumb: `/assets/img/covers/${slug}-420.webp`,
+      image: `/assets/img/covers/${slug}-840.webp`,
+      width: 840,
+      height: 1187,
+      generated: true,
+    };
+  }
+
+  console.log(
+    `  Jackets: ${missing.length} typeset for volumes with no cover file${ok ? '' : ' (fallback face)'}`
+  );
+  return covers;
+}
+
 export async function buildCovers({ dist, dir }) {
   if (!existsSync(dir)) return {};
   const out = join(dist, 'assets/img/covers');

@@ -17,7 +17,7 @@
  * would be thin by construction, which is worth less than no page at all.
  */
 import { layout } from '../templates/layout.mjs';
-import { label, note, supportBanner } from '../templates/components.mjs';
+import { label, note, supportBanner, shelf } from '../templates/components.mjs';
 import { esc, typo, slugify } from '../lib/util.mjs';
 
 /** Trim to a usable meta description without cutting mid-word. */
@@ -134,7 +134,7 @@ export const ENTRY_TYPES = [
   },
 ];
 
-export function renderEntry({ site, type, entry, entries, dataset }) {
+export function renderEntry({ site, type, entry, entries, dataset, covers = {} }) {
   const name = type.nameOf(entry);
   const slug = slugify(name);
   const path = `${type.base}${slug}/`;
@@ -169,6 +169,7 @@ export function renderEntry({ site, type, entry, entries, dataset }) {
 
 ${related(entries, entry, type.base, type.nameOf, type.catOf)}
 
+${shelf(site, covers, { tier: 'professional', limit: 2 })}
 ${supportBanner(site)}
 `;
 

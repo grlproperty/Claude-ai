@@ -250,6 +250,83 @@ export function newsletterForm(site, { dark = false, note = true } = {}) {
 }
 
 /** Closing band: the funding position, and the briefing. */
+/**
+ * The shelf: the paid documents, shown where the reading happens.
+ *
+ * They were reachable from every page and findable from none — one nav item,
+ * labelled "Published", which a stranger reads as "things they have written"
+ * rather than "things you can buy". Nothing on the home page said the site
+ * sold anything at all, and the one high-intent block on a finished field note
+ * asked for a donation.
+ *
+ * Two rules keep this from reading as advertising on a site whose whole claim
+ * is that it carries none. It shows the actual covers and the actual prices —
+ * no pitch, no urgency, no invented scarcity — and it says plainly what the
+ * money does, which is the same thing the funding page says. A shelf, not a
+ * banner.
+ *
+ * `tier` picks who is being shown to: 'reader' for the volumes under $50,
+ * 'professional' for the org-licensed packs. A reader at the end of a field
+ * note and an auditor half-way through the certification decoder are not
+ * looking at the same thing.
+ */
+export function shelf(site, covers = {}, { tier = 'all', limit = 3, heading = true } = {}) {
+  const s = site.shop ?? {};
+  const all = s.products ?? [];
+  if (!all.length) return '';
+
+  const pick =
+    tier === 'reader'
+      ? all.filter((p) => p.price < 50)
+      : tier === 'professional'
+        ? all.filter((p) => p.price >= 50)
+        : all;
+  const shown = (pick.length ? pick : all).slice(0, limit);
+  if (!shown.length) return '';
+
+  const cheapest = Math.min(...all.map((p) => p.price));
+  const sym = s.currencySymbol ?? '$';
+  const slugOf = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+  const items = shown
+    .map((p) => {
+      const c = covers[slugOf(p.name)];
+      return `<li class="shelf__item">
+        <a class="shelf__link" href="/shop/">
+          ${
+            c
+              ? `<span class="shelf__cover"><img src="${esc(c.thumb)}" alt="" loading="lazy" decoding="async" width="${
+                  c.width ?? 911
+                }" height="${c.height ?? 1287}"></span>`
+              : '<span class="shelf__cover shelf__cover--blank" aria-hidden="true"></span>'
+          }
+          <span class="shelf__name">${esc(p.name)}</span>
+          <span class="shelf__price">${esc(sym)}${esc(String(p.price))}</span>
+        </a>
+      </li>`;
+    })
+    .join('');
+
+  return `<section class="section shelf-band">
+    <div class="wrap">
+      ${
+        heading
+          ? sectionHead({
+              eyebrow: 'Published',
+              title: 'The documents',
+              lede: `Everything else on this site is free and stays free. These took long enough to assemble that they are sold instead, and what they earn is what pays for the next ${
+                site.donate?.fundsNotes ?? 'eighteen'
+              } field notes — there are no advertisers behind this and no industry sponsorship.`,
+              stamp: `${all.length} volumes · from ${sym}${cheapest}`,
+            })
+          : ''
+      }
+      <ul class="shelf">${items}</ul>
+      <p class="shelf__more"><a class="arrow" href="/shop/">Every document, with what is in each</a></p>
+    </div>
+  </section>`;
+}
+
 export function supportBanner(site) {
   return `<section class="section on-crimson">
     <div class="wrap">

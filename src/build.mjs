@@ -33,7 +33,7 @@ import { buildTermIndex, crosslink } from './lib/crosslink.mjs';
 import { renderPage, renderNotFound, renderRedirect } from './pages/simple.mjs';
 import { renderFindUs } from './pages/find-us.mjs';
 import { renderShop } from './pages/shop.mjs';
-import { buildOgImages, buildBrandAssets, buildHeroImage, buildCovers } from './lib/images.mjs';
+import { buildOgImages, buildBrandAssets, buildHeroImage, buildCovers, buildProductJackets } from './lib/images.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const CONTENT = join(ROOT, 'content');
@@ -272,6 +272,9 @@ async function main() {
   // of the things the wipe takes with it.
   data.hero = await buildHeroImage({ dist: DIST, dir: join(CONTENT, 'images') });
   data.covers = await buildCovers({ dist: DIST, dir: join(CONTENT, 'images/covers') });
+  // Anything still without a cover gets a typeset jacket, so the shelf never
+  // draws a placeholder where a volume should be.
+  data.covers = await buildProductJackets({ dist: DIST, site, covers: data.covers });
 
   const routes = [];
   const track = (path, opts = {}) => routes.push({ path, ...opts });
@@ -283,18 +286,18 @@ async function main() {
   await writePage('/industries/', renderIndustries({ site, data: data.industries, notes }));
   track('/industries/', { priority: '0.9' });
 
-  await writePage('/field-notes/', renderFieldNotesIndex({ site, entries: notes }));
+  await writePage('/field-notes/', renderFieldNotesIndex({ site, entries: notes, covers: data.covers }));
   track('/field-notes/', { priority: '0.9', changefreq: 'weekly' });
 
   for (const [i, note] of notes.entries()) {
     const prev = notes[i - 1] ?? null;
     const next = notes[i + 1] ?? null;
-    await writePage(note.url, renderFieldNote({ site, entry: note, all: notes, prev, next }));
+    await writePage(note.url, renderFieldNote({ site, entry: note, all: notes, prev, next, covers: data.covers }));
     track(note.url, { priority: '0.8', lastmod: note.date });
   }
 
   // ---- tools and reference
-  await writePage('/tools/', renderToolsIndex({ site, data }));
+  await writePage('/tools/', renderToolsIndex({ site, data, covers: data.covers }));
   track('/tools/', { priority: '0.9' });
 
   const tools = [
@@ -305,7 +308,7 @@ async function main() {
     ['/tools/act/', renderAct, data.act],
   ];
   for (const [path, render, dataset] of tools) {
-    await writePage(path, render({ site, data: dataset }));
+    await writePage(path, render({ site, data: dataset, covers: data.covers }));
     track(path, { priority: '0.8', lastmod: dataset.reviewed });
   }
 
@@ -318,13 +321,13 @@ async function main() {
     const entries = dataset[type.collection];
     for (const entry of entries) {
       const path = `${type.base}${slugify(type.nameOf(entry))}/`;
-      await writePage(path, renderEntry({ site, type, entry, entries, dataset }));
+      await writePage(path, renderEntry({ site, type, entry, entries, dataset, covers: data.covers }));
       track(path, { priority: '0.7', lastmod: dataset.reviewed });
       entryPages += 1;
     }
   }
 
-  await writePage('/library/', renderLibrary({ site, data: data.library }));
+  await writePage('/library/', renderLibrary({ site, data: data.library, covers: data.covers }));
   track('/library/', { priority: '0.8' });
 
   await writePage('/archive/', renderArchive({ site, data: data.archive, instagram: data.instagram }));

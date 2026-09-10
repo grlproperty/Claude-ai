@@ -3729,3 +3729,104 @@ code {
 .colophon__brand .tiles {
   margin-top: var(--s4);
 }
+
+/* ------------------------------------------------------------------ shelf
+ *
+ * The paid documents, shown where the reading happens. Covers at a readable
+ * size, the price beside the name, and nothing that reads as advertising —
+ * this site's standing claim is that it carries none, and a promotional band
+ * on a field note would cost more in credibility than it could earn.
+ */
+.shelf-band {
+  background: var(--blush-pale);
+  border-block: 1px solid var(--rule);
+}
+
+.shelf {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s4);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+}
+
+.shelf__link {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  column-gap: var(--s2);
+  color: inherit;
+  text-decoration: none;
+}
+
+.shelf__link:hover {
+  text-decoration: none;
+}
+
+/* The cover spans the row above the name and the price. */
+.shelf__cover {
+  grid-column: 1 / -1;
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--rule-soft);
+  background: var(--white);
+  box-shadow: var(--lift-1);
+  margin-bottom: var(--s3);
+  transition: box-shadow 0.3s var(--ease), transform 0.3s var(--ease);
+}
+
+.shelf__cover img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* The top of the page, where the title is — the same crop the shop's own
+     cards take, so a cover looks the same wherever it appears. */
+  aspect-ratio: 5 / 4;
+  object-fit: cover;
+  object-position: 50% 0;
+}
+
+.shelf__cover--blank {
+  aspect-ratio: 5 / 4;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--blush-pale) 0 6px,
+    var(--white) 6px 12px
+  );
+}
+
+.shelf__link:hover .shelf__cover,
+.shelf__link:focus-visible .shelf__cover {
+  box-shadow: var(--lift-3);
+  transform: translateY(-2px);
+}
+
+.shelf__name {
+  font-family: var(--editorial);
+  font-size: 1.05rem;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+
+.shelf__price {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--crimson);
+  white-space: nowrap;
+}
+
+.shelf__more {
+  margin: var(--s5) 0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shelf__cover,
+  .shelf__link:hover .shelf__cover {
+    transition: none;
+    transform: none;
+  }
+}

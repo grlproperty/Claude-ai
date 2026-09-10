@@ -1,5 +1,13 @@
 import { layout } from '../templates/layout.mjs';
-import { label, sectionHead, entryCard, statBand, supportBanner, ticker } from '../templates/components.mjs';
+import {
+  label,
+  sectionHead,
+  entryCard,
+  statBand,
+  supportBanner,
+  ticker,
+  shelf,
+} from '../templates/components.mjs';
 import { esc, typo, slugify } from '../lib/util.mjs';
 
 const SPELLED = ['zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
@@ -206,9 +214,11 @@ ${ticker(
   </div>
 </section>
 
+${shelf(site, data.covers, { tier: 'all', limit: 6 })}
+
 ${
   shots.length
-    ? `<section class="section on-pale" id="archive">
+    ? `<section class="section" id="archive">
   <div class="wrap">
     ${sectionHead({
       eyebrow: `The visual essays · ${esc(data.instagram.handle)}`,

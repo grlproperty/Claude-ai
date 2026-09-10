@@ -1,9 +1,31 @@
 import { layout } from '../templates/layout.mjs';
-import { label, sectionHead, supportBanner, note, reviewStamp } from '../templates/components.mjs';
+import {
+  label,
+  sectionHead,
+  supportBanner,
+  note,
+  reviewStamp,
+  shelf,
+} from '../templates/components.mjs';
 import { esc, typo, slugify, isoDate } from '../lib/util.mjs';
 
 /** Every decoder shares the same shell: search box, category chips, filtered list. */
-function decoderShell({ site, data, path, description, categories, items, footer = '', lead = '', eyebrow = 'Free tool', scripts = true }) {
+function decoderShell({
+  site,
+  data,
+  path,
+  description,
+  categories,
+  items,
+  covers = {},
+  footer = '',
+  lead = '',
+  eyebrow = 'Free tool',
+  // Who is on this page. A decoder is used by somebody testing a claim; the
+  // archive and the reading list are read. They are not shown the same shelf.
+  tier = 'professional',
+  scripts = true,
+}) {
   const body = `${lead}
 <section class="section--tight" style="padding-top:clamp(2.5rem,6vw,5rem);">
   <div class="wrap">
@@ -43,6 +65,7 @@ function decoderShell({ site, data, path, description, categories, items, footer
   </div>
 </section>
 
+${shelf(site, covers, { tier, limit: 2 })}
 ${supportBanner(site)}
 `;
 
@@ -72,7 +95,7 @@ const wrapItem = (id, category, text, inner) =>
 
 // ------------------------------------------------------------------- index
 
-export function renderToolsIndex({ site, data }) {
+export function renderToolsIndex({ site, data, covers = {} }) {
   const tools = [
     ['01', 'Certification Decoder', '/tools/certifications/', 'Cross-industry literacy', `Who runs a label, what it verifies, and what it does not. ${data.certifications.schemes.length} schemes.`],
     ['02', 'Greenwashing Decoder', '/tools/greenwashing/', 'Cross-industry literacy', `What brands claim, and what the term actually means. ${data.greenwashing.terms.length} terms.`],
@@ -117,6 +140,7 @@ export function renderToolsIndex({ site, data }) {
   </div>
 </section>
 
+${shelf(site, covers, { tier: 'professional', limit: 2 })}
 ${supportBanner(site)}
 `;
 
@@ -132,7 +156,7 @@ ${supportBanner(site)}
 
 // -------------------------------------------------------------- decoders
 
-export function renderCertifications({ site, data }) {
+export function renderCertifications({ site, data, covers = {} }) {
   const categories = [...new Set(data.schemes.map((s) => s.cat))].sort();
   const items = data.schemes.map((s) => ({
     html: wrapItem(
@@ -155,6 +179,7 @@ export function renderCertifications({ site, data }) {
   return decoderShell({
     site,
     data,
+    covers,
     path: '/tools/certifications/',
     description:
       'What Leaping Bunny, PETA, Certified Vegan, RSPCA Assured, GOTS, Fairtrade, B Corp, FSC and others actually verify — and what each one does not.',
@@ -163,7 +188,7 @@ export function renderCertifications({ site, data }) {
   });
 }
 
-export function renderGreenwashing({ site, data }) {
+export function renderGreenwashing({ site, data, covers = {} }) {
   const categories = [...new Set(data.terms.map((t) => t.cat))].sort();
   const items = data.terms.map((t) => ({
     html: wrapItem(
@@ -185,6 +210,7 @@ export function renderGreenwashing({ site, data }) {
   return decoderShell({
     site,
     data,
+    covers,
     path: '/tools/greenwashing/',
     description:
       'A reference for the language brands use when they want to suggest virtue without committing to it — what is implied, and what the term actually means.',
@@ -193,7 +219,7 @@ export function renderGreenwashing({ site, data }) {
   });
 }
 
-export function renderMaterials({ site, data }) {
+export function renderMaterials({ site, data, covers = {} }) {
   const categories = [...new Set(data.materials.map((m) => m.cat))].sort();
   const items = data.materials.map((m) => ({
     html: wrapItem(
@@ -217,6 +243,7 @@ export function renderMaterials({ site, data }) {
   return decoderShell({
     site,
     data,
+    covers,
     path: '/tools/materials/',
     description:
       'What a fibre, leather, filling, or fabric really is — its animal-welfare position, its environmental cost, and the alternatives that exist.',
@@ -225,7 +252,7 @@ export function renderMaterials({ site, data }) {
   });
 }
 
-export function renderRecord({ site, data }) {
+export function renderRecord({ site, data, covers = {} }) {
   const categories = [...new Set(data.findings.map((f) => f.sector))].sort();
   const items = data.findings.map((f) => ({
     html: wrapItem(
@@ -251,6 +278,7 @@ export function renderRecord({ site, data }) {
   return decoderShell({
     site,
     data,
+    covers,
     path: '/tools/record/',
     description:
       'Documented regulatory actions, court rulings, and formal findings against named companies and sectors, each tied to a public source.',
@@ -260,7 +288,7 @@ export function renderRecord({ site, data }) {
   });
 }
 
-export function renderAct({ site, data }) {
+export function renderAct({ site, data, covers = {} }) {
   const categories = [...new Set(data.organisations.map((o) => o.cat))].sort();
   const items = data.organisations.map((o) => ({
     html: wrapItem(
@@ -279,6 +307,7 @@ export function renderAct({ site, data }) {
   return decoderShell({
     site,
     data,
+    covers,
     path: '/tools/act/',
     description:
       'A directory of established organisations working on the two subjects FERAL FEMME holds at equal weight — women and animals — across the industries it covers.',
@@ -289,7 +318,7 @@ export function renderAct({ site, data }) {
 
 // -------------------------------------------------------- library, archive
 
-export function renderLibrary({ site, data }) {
+export function renderLibrary({ site, data, covers = {} }) {
   const categories = [...new Set(data.entries.flatMap((e) => e.tags))].filter(Boolean).sort();
   const items = data.entries.map((e) => ({
     html: `<article class="entry reveal" data-category="${esc(e.tags.map(slugify).join(' '))}" data-text="${esc(
@@ -305,7 +334,9 @@ export function renderLibrary({ site, data }) {
 
   return decoderShell({
     site,
+    tier: 'reader',
     data,
+    covers,
     path: '/library/',
     description:
       'The investigations, databases, and reports FERAL FEMME returns to — every one public, published by a named organisation, and linked to its original.',
@@ -320,7 +351,7 @@ export function renderLibrary({ site, data }) {
  * images, and each entry renders as a typographic plate; once the pull has
  * happened the same page leads with the gallery.
  */
-export function renderArchive({ site, data, instagram }) {
+export function renderArchive({ site, data, instagram, covers = {} }) {
   const items = data.entries.map((e) => ({
     html: `<article class="entry reveal" data-text="${esc(`${e.title} ${e.caption} ${e.lore} ${e.badge}`.toLowerCase())}">
       <div class="entry__head">
@@ -370,7 +401,9 @@ export function renderArchive({ site, data, instagram }) {
 
   return decoderShell({
     site,
+    tier: 'reader',
     data,
+    covers,
     path: '/archive/',
     description:
       'The FERAL FEMME digital archive: numbered entries in the visual essay series, each a single documented case filed with its caption and note.',

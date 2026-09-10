@@ -25,7 +25,19 @@ const WANTED = [
   { family: 'Cormorant Garamond', weight: 600, file: 'CormorantGaramond-SemiBold.ttf' },
   { family: 'Jost', weight: 500, file: 'Jost-Medium.ttf' },
   { family: 'Jost', weight: 300, file: 'Jost-Light.ttf' },
+  { family: 'Space Mono', weight: 400, file: 'SpaceMono-Regular.ttf' },
+  { family: 'Space Mono', weight: 700, file: 'SpaceMono-Bold.ttf' },
 ];
+
+/**
+ * What each file actually calls itself, which is not what it was asked for.
+ * Google serves a static instance whose name record carries the optical size
+ * or the weight — "Bodoni Moda 11pt", "Jost Light" — and fontconfig matches on
+ * that, so an SVG asking for "Bodoni Moda" silently gets whatever else is
+ * installed. Every social card this build has ever produced had its headline
+ * set in Jost for that reason. src/lib/images.mjs holds the resolved names;
+ * re-run this and check them if the font stack changes.
+ */
 
 async function main() {
   await mkdir(OUT, { recursive: true });

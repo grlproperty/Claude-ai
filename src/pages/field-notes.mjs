@@ -1,8 +1,16 @@
 import { layout } from '../templates/layout.mjs';
-import { label, sectionHead, entryRow, entryCard, supportBanner, note } from '../templates/components.mjs';
+import {
+  label,
+  sectionHead,
+  entryRow,
+  entryCard,
+  supportBanner,
+  note,
+  shelf,
+} from '../templates/components.mjs';
 import { esc, typo, slugify } from '../lib/util.mjs';
 
-export function renderFieldNotesIndex({ site, entries }) {
+export function renderFieldNotesIndex({ site, entries, covers = {} }) {
   const topics = [...new Set(entries.flatMap((e) => e.topics ?? [e.topic]).filter(Boolean))].sort();
 
   const body = `
@@ -46,6 +54,7 @@ export function renderFieldNotesIndex({ site, entries }) {
   </div>
 </section>
 
+${shelf(site, covers, { tier: 'reader' })}
 ${supportBanner(site)}
 `;
 
@@ -96,7 +105,7 @@ function related(entry, all) {
   </section>`;
 }
 
-export function renderFieldNote({ site, entry, all }) {
+export function renderFieldNote({ site, entry, all, covers = {} }) {
   const body = `
 <article>
   <header class="article-head">
@@ -126,6 +135,7 @@ export function renderFieldNote({ site, entry, all }) {
 </article>
 
 ${related(entry, all)}
+${shelf(site, covers, { tier: 'reader' })}
 ${supportBanner(site)}
 `;
 
