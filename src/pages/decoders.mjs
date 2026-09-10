@@ -266,7 +266,12 @@ export function renderRecord({ site, data, covers = {} }) {
       <div class="panel"><h3>Documented finding</h3><p>${typo(f.finding)}</p></div>
       <p class="src-note">Source — ${typo(f.src)}${
         f.url ? ` · <a href="${esc(f.url)}" target="_blank" rel="noopener noreferrer">Open the record</a>` : ''
-      }</p>`
+      }${(f.more || [])
+        .map(
+          (m) =>
+            ` · <a href="${esc(m.url)}" target="_blank" rel="noopener noreferrer">${esc(m.label)}</a>`
+        )
+        .join('')}</p>`
     ),
   }));
 

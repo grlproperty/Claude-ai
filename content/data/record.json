@@ -8,44 +8,50 @@
     {
       "name": "JBS",
       "sector": "Food / meat",
-      "finding": "NY Attorney General sued JBS USA (Feb 2024) over its 'Net Zero by 2040' marketing; separately paid US$4M in fines (Jan 2025) over child-labour violations at US facilities.",
-      "src": "NY Attorney General; US Dept. of Labor.",
-      "url": "https://ag.ny.gov/press-release/2024/attorney-general-james-sues-worlds-largest-beef-producer-misrepresenting"
+      "finding": "NY Attorney General sued JBS USA (Feb 2024) over its 'Net Zero by 2040' marketing. Separately, JBS USA agreed a US$4M settlement with the US Department of Labor (Jan 2025) over child labour by its third-party sanitation contractors, funding remediation rather than paying a penalty, and agreed to compliance training and a dedicated specialist.",
+      "src": "NY Attorney General; US Department of Labor settlement.",
+      "url": "https://ag.ny.gov/press-release/2024/attorney-general-james-sues-worlds-largest-beef-producer-misrepresenting",
+      "more": [
+        {
+          "label": "The Labor Department settlement",
+          "url": "https://civileats.com/2025/01/16/department-of-labor-says-jbs-will-pay-for-child-labor/"
+        }
+      ]
     },
     {
       "name": "TotalEnergies",
       "sector": "Energy / advertising",
-      "finding": "Paris Judicial Tribunal ruled (Oct 2025) that its 'carbon neutrality by 2050' marketing breached consumer-protection law — a first against a major oil company for greenwashing.",
-      "src": "Paris Judicial Tribunal.",
-      "url": "https://blogs.law.columbia.edu/climatechange/"
+      "finding": "Paris Judicial Court ruled (23 Oct 2025) that its 'carbon neutrality by 2050' consumer marketing was a misleading commercial practice, the first such ruling against a major oil company. The court dismissed the remainder of the NGOs' claims.",
+      "src": "Paris Judicial Court, judgment of 23 October 2025.",
+      "url": "https://blogs.law.columbia.edu/climatechange/2025/12/16/greenwashing-on-trial-the-paris-tribunal-finds-totalenergies-misled-consumers-with-its-carbon-neutrality-claims/"
     },
     {
       "name": "Shein",
       "sector": "Fashion",
-      "finding": "Italy's competition authority fined a Shein-linked company €1M (Aug 2025) for misleading environmental claims about its clothing.",
-      "src": "AGCM (Italian Competition Authority).",
-      "url": "https://en.agcm.it/en/media/press-releases/"
+      "finding": "Italy's competition authority fined Infinite Styles Services Co. Ltd — the Dublin company running Shein's European site — €1M (July 2025) for vague, misleading and omissive environmental claims, including emissions targets contradicted by Shein's own rising 2023-24 emissions.",
+      "src": "AGCM (Italian Competition Authority), decision PS12709.",
+      "url": "https://en.agcm.it/en/media/press-releases/2025/8/PS12709"
     },
     {
       "name": "KLM",
       "sector": "Aviation / advertising",
-      "finding": "Amsterdam District Court ruled (2024) that KLM's 'Fly Responsibly' carbon-offset claims lacked adequate, verifiable evidence.",
-      "src": "Amsterdam District Court.",
-      "url": "https://www.rechtspraak.nl/"
+      "finding": "Amsterdam District Court ruled (20 March 2024) that 15 of 19 of KLM's environmental advertising claims were misleading, covering sustainable aviation fuel and reforestation as well as offsetting. No penalty was imposed and no injunction granted, the claims having already been withdrawn.",
+      "src": "District Court of Amsterdam, ECLI:NL:RBAMS:2024:1512.",
+      "url": "https://www.clientearth.org/media/cx4po41h/klm-judgment-20-march-2024.pdf"
     },
     {
       "name": "L'Oréal",
       "sector": "Beauty",
-      "finding": "Excluded from the Leaping Bunny programme; the company states it tests 'where required by law', a reference to markets such as China where animal testing can be required.",
-      "src": "Cruelty Free International.",
-      "url": "https://crueltyfreeinternational.org/"
+      "finding": "Not certified under Cruelty Free International's Leaping Bunny programme. L'Oréal states it has not tested its products on animals since 1989, no longer tests ingredients, and tolerates no exception — while noting that some health authorities, notably in China, may themselves conduct tests on cosmetic products.",
+      "src": "L'Oréal published position; Leaping Bunny certified-brand list.",
+      "url": "https://www.loreal.com/en/commitments-and-responsibilities/for-our-products/for-beauty-with-no-animal-testing/"
     },
     {
       "name": "Boohoo",
       "sector": "Fashion",
-      "finding": "UK reporting and an independent review (Levitt QC, 2020) found serious supply-chain failings in Leicester garment factories, including underpayment; 50+ MPs wrote to the Home Secretary.",
-      "src": "Levitt QC independent review; UK Parliament.",
-      "url": "https://www.parliament.uk/"
+      "finding": "An independent review by Alison Levitt QC (24 Sept 2020) found many failings in Boohoo's Leicester supply chain, including underpayment, and that the company ignored warnings. The same review expressly found Boohoo did not deliberately allow those conditions, did not intentionally profit from them, and that its business model is not founded on exploiting workers.",
+      "src": "Independent Review into the boohoo Group PLC's Leicester supply chain (Levitt, 2020).",
+      "url": "https://media.business-humanrights.org/media/documents/final-report-open-version-24.9.2020.pdf"
     },
     {
       "name": "Mobilewalla",
@@ -64,9 +70,9 @@
     {
       "name": "H&M",
       "sector": "Fashion / fast fashion",
-      "finding": "EU regulators (2022) found the vast majority of H&M's sustainability claims unsubstantiated; H&M reached a US$3M settlement over its \"Conscious Collection\" marketing and removed Higg sustainability scores after they were challenged.",
-      "src": "EU consumer authorities; US class-action settlement",
-      "url": "https://www.business-humanrights.org/en/latest-news/hm-faces-class-action-over-conscious-collection-greenwashing-claims/"
+      "finding": "A US class action (Commodore v. H&M, 2022) alleged the 'Conscious Collection' and its Higg-based 'sustainability profiles' were misleading, and H&M withdrew the scorecards after the underlying data was challenged. The case was voluntarily dismissed with prejudice in December 2023. No finding was made against H&M.",
+      "src": "Commodore v. H&M (S.D.N.Y.), voluntarily dismissed with prejudice, 13 December 2023.",
+      "url": "https://www.thefashionlaw.com/plaintiffs-drop-lawsuit-over-hms-misleading-sustainability-scorecards/"
     },
     {
       "name": "Zara / Inditex",
@@ -92,9 +98,9 @@
     {
       "name": "Grande Cosmetics",
       "sector": "Beauty / lash & brow",
-      "finding": "Agreed to a US$6.25M class-action settlement (Jan 2024) over claims it failed to disclose that its serums contain isopropyl cloprostenate, alleged to carry undisclosed side-effect risks. Company maintains products are safe.",
-      "src": "Class-action settlement (2024)",
-      "url": "https://topclassactions.com/lawsuit-settlements/closed-settlements/grande-cosmetics-false-advertising-6-25m-class-action-lawsuit-settlement/"
+      "finding": "Settled a US class action for US$6.25M over a failure to disclose that its lash, brow and hair serums contain isopropyl cloprostenate, a prostaglandin analogue alleged to carry undisclosed side-effect risks. Final approval July 2024. Settled without admitting wrongdoing; the company maintains its products are safe.",
+      "src": "Class-action settlement, final approval 18 July 2024.",
+      "url": "https://www.arnoldporter.com/en/perspectives/blogs/consumer-products-and-retail-navigator/2024/02/grande-cosmetics-false-advertising-settlement"
     },
     {
       "name": "Sephora",
@@ -148,9 +154,9 @@
     {
       "name": "Estée Lauder",
       "sector": "Beauty / cosmetics",
-      "finding": "A US federal judge (SDNY) declined to dismiss a securities-fraud suit alleging the company concealed its reliance on 'daigou' gray-market sales in China, later reaching a settlement with investors. Investor-disclosure matter, not a product claim.",
-      "src": "SDNY securities litigation; investor settlement",
-      "url": "https://insights.citeline.com/hbw-insight/beauty/policy-and-regulation/legal/"
+      "finding": "A federal judge (SDNY) declined to dismiss a securities-fraud suit alleging the company misled investors about the sustainability of its China sales through gray-market 'daigou' resellers, finding actionable half-truths in its disclosures. Estée Lauder later agreed a US$210M settlement with investors, without admitting liability or wrongdoing. An investor-disclosure matter, not a product claim.",
+      "src": "In re The Estée Lauder Companies Inc. Securities Litigation, 1:23-cv-10669 (S.D.N.Y.).",
+      "url": "https://www.thefashionlaw.com/estee-lauder-210m-settlement-puts-luxurys-daigou-model-under-the-microscope/"
     }
   ]
 }

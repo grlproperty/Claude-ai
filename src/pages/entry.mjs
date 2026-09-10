@@ -125,6 +125,8 @@ export const ENTRY_TYPES = [
     panels: (f) => [panel('Documented finding', f.finding)],
     src: (f) => f.src,
     srcUrl: (f) => f.url,
+    // an entry covering more than one matter links each one it asserts
+    more: (f) => f.more,
     schemaType: 'Article',
     footer: () =>
       note(
@@ -157,7 +159,12 @@ export function renderEntry({ site, type, entry, entries, dataset, covers = {} }
 
     <p class="src-note">Source — ${typo(type.src(entry))}${
       url ? ` · <a href="${esc(url)}" target="_blank" rel="noopener noreferrer">Open the record</a>` : ''
-    }</p>
+    }${((type.more ? type.more(entry) : []) || [])
+      .map(
+        (m) =>
+          ` · <a href="${esc(m.url)}" target="_blank" rel="noopener noreferrer">${esc(m.label)}</a>`
+      )
+      .join('')}</p>
 
     ${type.footer ? `<div style="margin-top:2.5rem;">${type.footer()}</div>` : ''}
 
