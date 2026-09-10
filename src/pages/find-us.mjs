@@ -104,12 +104,9 @@ export function renderFindUs({ site }) {
   <div class="wrap">
     <div class="rows" style="border-top-color:var(--rule-strong);">
       ${[
-        ['Founded in', site.origin],
         [
-          'Written from',
-          site.basedIn
-            ? `${site.basedIn} at present. The editor travels; where a note is written from changes, and what it covers does not.`
-            : 'No fixed base — the editor travels, and the work travels with her.',
+          'Where we are',
+          'No fixed base. The editor travels and the work travels with her, so where a note is written from changes; what it covers, and the standard it is held to, do not. Email reaches her wherever she is.',
         ],
         ['Established', String(site.established)],
         ['Funding', site.funding],
@@ -136,13 +133,9 @@ ${supportBanner(site)}
     url: site.url,
     email: site.email,
     sameAs: profiles.map((p) => p.url),
-    // Where it was founded, not where it is today: this is an itinerant
-    // publication with no premises, and a postal address implying otherwise is
-    // the kind of unverifiable detail the site exists to object to.
-    foundingLocation: {
-      '@type': 'Place',
-      address: { '@type': 'PostalAddress', addressCountry: site.origin },
-    },
+    // No address and no country. This is an itinerant publication with no
+    // premises, and structured data asserting a location it does not have is
+    // exactly the unverifiable detail the site exists to object to.
   };
 
   return layout({

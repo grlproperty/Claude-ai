@@ -51,7 +51,6 @@ export function renderHome({ site, notes, data }) {
     <div class="hero__meta">
       <span class="is-crimson">${esc(site.descriptor)}</span>
       <span>Est. ${site.established}</span>
-      <span>Founded in ${esc(site.origin)}</span>
       <span>${esc(site.funding)}</span>
     </div>
 
@@ -265,13 +264,9 @@ ${supportBanner(site)}
     slogan: site.motto,
     sameAs: [site.social.instagram],
     founder: { '@type': 'Person', name: site.founder.name },
-    // Where it was founded, not where it is today: this is an itinerant
-    // publication with no premises, and a postal address implying otherwise is
-    // the kind of unverifiable detail the site exists to object to.
-    foundingLocation: {
-      '@type': 'Place',
-      address: { '@type': 'PostalAddress', addressCountry: site.origin },
-    },
+    // No address and no country. This is an itinerant publication with no
+    // premises, and structured data asserting a location it does not have is
+    // exactly the unverifiable detail the site exists to object to.
   };
 
   return layout({
