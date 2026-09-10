@@ -826,7 +826,12 @@ code {
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--crimson);
-  opacity: 0.7;
+  /* 0.7 for as long as this nav has existed, which put crimson on blush at
+     4.25:1 — under the 4.5:1 AA asks of text this size, on every page. The
+     site-wide sweep never caught it because it read each element's own opacity
+     and not the opacity it inherits; 0.82 clears it at 5.50:1 and is close
+     enough to the old weight that nothing else in the masthead moves. */
+  opacity: 0.82;
   padding-block: 0.4rem;
   border-bottom: 1px solid transparent;
 }
@@ -3829,4 +3834,22 @@ code {
     transition: none;
     transform: none;
   }
+}
+
+/* The price on the Shop link. Six editorial destinations and one commercial
+   one, set identically, meant the only thing for sale looked like another
+   section to read. The number is the whole point — it is the fact that decides
+   whether anyone follows the link — so it is set in the docket mono beside the
+   label rather than replacing it. */
+.nav__from {
+  font-family: var(--mono);
+  font-size: 0.78em;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  font-variant-numeric: tabular-nums;
+  margin-left: 0.5em;
+  white-space: nowrap;
+  /* No opacity of its own. Nested inside a link that already carries one, a
+     second 0.72 multiplies to 0.50 and takes the price to 2.73:1 — the number
+     that has to be read is the one that would have been hardest to. */
 }

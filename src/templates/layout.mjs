@@ -8,10 +8,26 @@ const wordmark = (site, classes = 'wordmark') =>
   `<span class="stop is-crimson">${esc(site.nameParts.stop)}</span></a>`;
 
 function masthead(site, current) {
+  // The one commercial item in a row of editorial ones, carrying the fact that
+  // decides whether anybody clicks it: what the cheapest thing costs.
+  //
+  // Not a second button. The masthead already has one, and the obvious move —
+  // relabelling it Shop — would put two controls saying the same word within
+  // an inch of each other, which reads as a mistake rather than as emphasis.
+  // A price on the nav item distinguishes it without duplicating anything, and
+  // it is read out as part of the link, so it is a label rather than a mark.
+  const prices = (site.shop?.products ?? []).map((p) => p.price).filter((n) => Number.isFinite(n));
+  const from = prices.length
+    ? `${site.shop.currencySymbol ?? '$'}${Math.min(...prices)}`
+    : '';
+
   const links = site.nav
     .map((item) => {
       const active = current === item.href || (item.href !== '/' && current.startsWith(item.href));
-      return `<a href="${esc(item.href)}"${active ? ' aria-current="page"' : ''}>${esc(item.label)}</a>`;
+      // The space is real, not a margin: the price is part of the link's
+      // accessible name, and without it a screen reader says "Shopfrom 14".
+      const tag = item.href === '/shop/' && from ? ` <span class="nav__from">from ${esc(from)}</span>` : '';
+      return `<a href="${esc(item.href)}"${active ? ' aria-current="page"' : ''}>${esc(item.label)}${tag}</a>`;
     })
     .join('');
 
