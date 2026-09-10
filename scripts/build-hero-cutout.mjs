@@ -34,13 +34,13 @@ const GATE = 78;     // wall only — the floor tops out around 77
 const SEED_Y = 0.60; // seed the side edges only above this fraction of the height
 const YCAP = 0.715;  // measured wall/floor junction; the fill may not cross it
 const BOT = 0.03;    // edge feather at the bottom, as a fraction of height
-const SEAM = 0.075;  // fade the concrete out of the junction over this band
+const SEAM = 0.16;   // fade the concrete out of the junction over this band
 // The kept floor is shaped into a pool under the figure rather than left as a
 // band: a rectangle of concrete ending at the frame edge reads as a crop, the
 // same soft ellipse reads as the shadow she is standing in.
 const POOL_X = 0.45; // centre of the contact area, as a fraction of width
-const POOL_R = 0.20; // fully opaque within this distance of the centre
-const POOL_F = 0.46; // fully transparent beyond it
+const POOL_R = 0.16; // fully opaque within this distance of the centre
+const POOL_F = 0.44; // fully transparent beyond it
 
 const meta = await sharp(SRC).metadata();
 const W = 560; // the mask is solved small, then scaled up: concrete grain is noise here

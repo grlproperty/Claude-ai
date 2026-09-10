@@ -4,11 +4,15 @@ summary: What this site collects, which is close to nothing, and how that sits w
 order: 5
 ---
 
-*Last updated: 31 August 2026*
+*Last updated: 10 September 2026*
 
 FERAL FEMME is a South African publication and processes personal information in line with the **Protection of Personal Information Act 4 of 2013 (POPIA)**. It has no premises: it is written from wherever the editor is, and the address below reaches her wherever that is.
 
 This site is built as static files. It has no database, no user accounts, and no server-side processing of visitor data.
+
+## Who is responsible
+
+FERAL FEMME is an independent publication run by one person. It is not a registered company, and it is not part of one. Under POPIA the **responsible party** is the individual who publishes it — "we", "us", and "our" on this page mean her — and she can be reached at [info@feral-femme.co](mailto:info@feral-femme.co).
 
 ## What we do not do
 
@@ -40,7 +44,9 @@ Our hosting provider records standard server logs — IP address, timestamp, req
 
 ## The briefing
 
-If you subscribe to The Research Briefing, we hold your email address for the sole purpose of sending it. It is used for nothing else, shared with no one, and deleted on unsubscribe. Every issue carries a one-click unsubscribe link.
+If you subscribe to The Research Briefing, we hold your email address for the sole purpose of sending it. It is used for nothing else, never sold, never disclosed to anyone else, and deleted on unsubscribe. Every issue carries a one-click unsubscribe link.
+
+The briefing is stored and sent through **MailerLite**, which acts on our instruction and holds your address under its own privacy policy. The subscribe form submits to MailerLite directly, which means your IP address reaches them at the moment you subscribe. It is the only form on this site that submits anywhere other than here, and it runs only if you choose to subscribe. (Following a payment link to PayPal discloses your address to PayPal in the same ordinary way that visiting any site does.)
 
 ## Donations
 
