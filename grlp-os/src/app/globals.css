@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  body {
+    @apply bg-surface-sunken text-ink antialiased;
+    font-feature-settings: 'kern' 1;
+  }
+
+  /* The brand guide asks for left-aligned body copy and generous white space. */
+  h1, h2, h3 {
+    @apply text-ink font-semibold tracking-tight;
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-maroon ring-offset-2 ring-offset-surface;
+  }
+}
+
+@layer components {
+  .eyebrow {
+    @apply text-micro font-semibold uppercase tracking-[0.14em] text-maroon;
+  }
+
+  .card {
+    @apply rounded-lg border border-line bg-surface shadow-card;
+  }
+
+  .rule {
+    @apply border-t border-line;
+  }
+}
