@@ -80,6 +80,25 @@
         "featured": true
       },
       {
+        "name": "The Brand Audit Pack",
+        "for": "For auditors, journalists and brands auditing themselves",
+        "price": 120,
+        "pages": 27,
+        "summary": "The method Feral Femme uses to audit a company, written down so you can run it yourself. Six modules in the order they have to be worked, twelve templates that feed them, and the standard a finding has to meet before it is published.",
+        "contains": [
+          "The six-step sequence — scope, trace, label, regulator, receipt, write-up",
+          "Twelve working templates, T01 to T12, made to be printed at A4 and filled by hand",
+          "The supply-chain trace to tier three, with the public sources for each tier",
+          "All 22 certification schemes, with what each one does not cover",
+          "The regulator map — South Africa, the UK, the US and the EU, and what each publishes",
+          "The publication standard, and the claim-language checklist behind it",
+          "The brand scorecard, the corrections notice, and the re-audit schedule",
+          "Where the records live: every register and database the method draws on"
+        ],
+        "licence": "Single-organisation licence. Circulate it internally as widely as you like.",
+        "buy": ""
+      },
+      {
         "name": "The Conscious Wardrobe",
         "for": "For anyone who buys clothes",
         "price": 32,
