@@ -6,7 +6,7 @@ order: 5
 
 *Last updated: 31 August 2026*
 
-FERAL FEMME is operated from South Africa and processes personal information in line with the **Protection of Personal Information Act 4 of 2013 (POPIA)**.
+FERAL FEMME is a South African publication and processes personal information in line with the **Protection of Personal Information Act 4 of 2013 (POPIA)**. It has no premises: it is written from wherever the editor is, and the address below reaches her wherever that is.
 
 This site is built as static files. It has no database, no user accounts, and no server-side processing of visitor data.
 

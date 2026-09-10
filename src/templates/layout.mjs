@@ -62,7 +62,7 @@ function colophon(site) {
     </div>
     <div class="colophon__base">
       <span>© ${String(site.established) === String(year) ? year : `${site.established}\u2013${year}`} ${esc(site.name)}</span>
-      <span>Est. ${site.established} · ${esc(site.location)} · ${esc(site.funding)}</span>
+      <span>Est. ${site.established} · Founded in ${esc(site.origin)} · ${esc(site.funding)}</span>
       <span><a href="mailto:${esc(site.email)}">${esc(site.email)}</a></span>
       <span>${esc(site.motto)}</span>
     </div>
