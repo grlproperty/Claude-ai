@@ -11,6 +11,7 @@ export function renderFieldNotesIndex({ site, entries }) {
     ${sectionHead({
       eyebrow: 'Editorial',
       title: 'Field Notes',
+      stamp: `${entries.length} filed \u00b7 ${topics.length} topics`,
       lede: 'Investigations that already exist in the public record, read in full and reframed. The original publisher always gets the credit; the sources are always named.',
       wide: true,
       level: 1,

@@ -9,6 +9,7 @@ export function renderIndustries({ site, data }) {
     ${sectionHead({
       eyebrow: 'The remit',
       title: data.title,
+      stamp: `${data.industries.length} industries \u00b7 open file`,
       lede: data.summary,
       wide: true,
       level: 1,

@@ -7,7 +7,14 @@ function decoderShell({ site, data, path, description, categories, items, footer
   const body = `${lead}
 <section class="section--tight" style="padding-top:clamp(2.5rem,6vw,5rem);">
   <div class="wrap">
-    ${sectionHead({ eyebrow, title: data.title, lede: data.summary, wide: true, level: 1 })}
+    ${sectionHead({
+      eyebrow,
+      title: data.title,
+      lede: data.summary,
+      wide: true,
+      level: 1,
+      stamp: `${items.length} entries \u00b7 free to use`,
+    })}
 
     <div class="search">
       <label class="visually-hidden" for="q">Search ${esc(data.title.toLowerCase())}</label>
@@ -81,6 +88,7 @@ export function renderToolsIndex({ site, data }) {
     ${sectionHead({
       eyebrow: 'Free tools',
       title: 'Awareness, made usable',
+      stamp: `${tools.length} tools \u00b7 all free`,
       lede: 'Reading is the first step; these are the second. Every tool is free — no account, no sign-up, no payment — and every entry names the source it rests on.',
       wide: true,
       level: 1,
@@ -334,6 +342,7 @@ export function renderArchive({ site, data, instagram }) {
             title: 'The visual essays',
             lede: instagram.summary,
             wide: true,
+            stamp: `${instagram.posts.length} frames`,
           })}
           <div class="gallery">
             ${instagram.posts
@@ -377,7 +386,14 @@ export function renderSources({ site, data }) {
   const body = `
 <section class="section--tight" style="padding-top:clamp(2.5rem,6vw,5rem);">
   <div class="wrap">
-    ${sectionHead({ eyebrow: 'Provenance', title: data.title, lede: data.summary, wide: true, level: 1 })}
+    ${sectionHead({
+      eyebrow: 'Provenance',
+      title: data.title,
+      lede: data.summary,
+      wide: true,
+      level: 1,
+      stamp: `${data.authorities.length} authorities`,
+    })}
 
     <div class="rows">
       ${data.authorities

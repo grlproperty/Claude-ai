@@ -107,7 +107,11 @@ export function renderDonate({ site, rates }) {
   <div class="wrap">
     <div class="grid grid--2" style="gap:4rem;align-items:start;">
       <div>
-        ${sectionHead({ eyebrow: 'Where it goes', title: 'What a donation pays for' })}
+        ${sectionHead({
+          eyebrow: 'Where it goes',
+          title: 'What a donation pays for',
+          stamp: 'No advertisers \u00b7 no sponsors',
+        })}
         <div class="rows" style="border-top-color:var(--rule-strong);">
           ${[
             ['Source access', 'Database subscriptions, archive access, and the paywalled reporting that the field notes are built on.'],
@@ -177,7 +181,11 @@ export function renderBriefing({ site }) {
 
 <section class="section on-white">
   <div class="wrap wrap--narrow">
-    ${sectionHead({ eyebrow: 'What is in it', title: 'One note, whole, when it lands' })}
+    ${sectionHead({
+      eyebrow: 'What is in it',
+      title: 'One note, whole, when it lands',
+      stamp: n.cadence,
+    })}
     <div class="rows" style="border-top-color:var(--rule-strong);">
       ${[
         ['The note in full', 'The complete field note as published — not a summary with a link back to it. You can read the whole thing without leaving your inbox.'],

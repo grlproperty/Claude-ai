@@ -93,6 +93,7 @@ export function renderShop({ site, rates, covers = {} }) {
     ${sectionHead({
       eyebrow: 'Published',
       title: 'Printed, and worth printing',
+      stamp: `${s.free.length} free \u00b7 ${s.products.length} paid`,
       lede: 'Everything on this site is free and stays free. These are the documents that took long enough to assemble that they are sold instead — plus two pocket cards that are not, because a card you can carry is worth more in circulation than it is behind a payment.',
       wide: true,
       level: 1,
@@ -107,6 +108,7 @@ ${
     ${sectionHead({
       eyebrow: 'Free to download',
       title: 'The two pocket cards',
+      stamp: 'No email \u00b7 no account',
       lede: s.freeNote,
     })}
     <div class="grid grid--2" style="gap:2.5rem;align-items:start;">
@@ -139,6 +141,7 @@ ${
     ${sectionHead({
       eyebrow: 'Published',
       title: 'The documents',
+      stamp: `${s.products.length} volumes \u00b7 ${s.products.reduce((n, p) => n + p.pages, 0)} pages`,
       lede: 'Priced in US dollars, which is what the payment links are issued in. Use the selector to read them in another currency — your bank sets the rate it actually applies.',
     })}
     ${currencyPicker(rates)}
@@ -207,7 +210,11 @@ ${
 
 <section class="section on-pale">
   <div class="wrap">
-    ${sectionHead({ eyebrow: site.newsletter.name, title: 'Told when an edition changes' })}
+    ${sectionHead({
+      eyebrow: site.newsletter.name,
+      title: 'Told when an edition changes',
+      stamp: site.newsletter.cadence,
+    })}
     ${newsletterForm(site)}
   </div>
 </section>

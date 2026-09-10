@@ -26,6 +26,7 @@ export function renderFindUs({ site }) {
     ${sectionHead({
       eyebrow: 'Find us',
       title: 'Where to reach us',
+      stamp: `${profiles.length} platforms \u00b7 one inbox`,
       lede: `One inbox, read by the person who writes the site, and ${
         profiles.length === 1 ? 'the account' : 'the accounts'
       } where the work is published.`,
@@ -90,7 +91,11 @@ export function renderFindUs({ site }) {
 
 <section class="section on-white">
   <div class="wrap wrap--narrow">
-    ${sectionHead({ eyebrow: site.newsletter.name, title: 'Or have it sent to you' })}
+    ${sectionHead({
+      eyebrow: site.newsletter.name,
+      title: 'Or have it sent to you',
+      stamp: site.newsletter.cadence,
+    })}
     ${newsletterForm(site)}
   </div>
 </section>
