@@ -10,6 +10,8 @@ order: 6
 
 FERAL FEMME is an independent publication run by one person. It is not a registered company, and it is not part of one. **"We", "us", and "our" in these terms mean the individual who publishes FERAL FEMME**, who can be reached at [info@feral-femme.co](mailto:info@feral-femme.co).
 
+Using this site means accepting these terms. If you do not accept them, please do not use it.
+
 ## Nature of the content
 
 FERAL FEMME publishes editorial and research material about industry conduct across ten sectors.
@@ -71,6 +73,12 @@ None of this removes a right the law gives you. Where a statutory right to cance
 
 This platform is provided as it stands. To the extent permitted by law, we accept no liability for loss arising from reliance on its content. Nothing here excludes liability that cannot lawfully be excluded.
 
+## Changes to these terms
+
+These terms may change. The date at the top of this page records when they last did. A change applies from the moment it is published — never backwards, to something you have already bought or already read.
+
 ## Governing law
 
 These terms are governed by the law of the Republic of South Africa.
+
+If any part of this page is found to be unenforceable, the rest of it still stands.
