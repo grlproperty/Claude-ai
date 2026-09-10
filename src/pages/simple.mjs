@@ -3,6 +3,48 @@ import { label, supportBanner, socialTiles } from '../templates/components.mjs';
 import { esc, typo } from '../lib/util.mjs';
 
 /** Markdown-backed institutional pages: about, funding, privacy, terms, and so on. */
+/**
+ * FAQPage structured data, built from the page's own headings.
+ *
+ * A question page is the one kind of institutional page a search engine will
+ * lift answers out of directly, and it will only do that if the questions are
+ * marked as questions. Rather than maintain a second copy of the content in
+ * JSON, the answer to each h3 is the markup between it and whatever heading
+ * comes next — so the schema cannot drift from the page, because it is the
+ * page.
+ */
+function faqSchema(page) {
+  const parts = page.html.split(/<h3\b/);
+  const entries = [];
+  for (const part of parts.slice(1)) {
+    const q = /^[^>]*>([\s\S]*?)<\/h3>/.exec(part);
+    if (!q) continue;
+    // Everything up to the next heading of any rank is the answer.
+    const rest = part.slice(q[0].length).split(/<h[1-6]\b/)[0];
+    const text = (html) =>
+      html
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/&amp;/g, '&')
+        .replace(/&#39;|&rsquo;/g, "'")
+        .replace(/&quot;|&ldquo;|&rdquo;/g, '"')
+        .replace(/&mdash;/g, '—')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    const question = text(q[1]);
+    const answer = text(rest);
+    if (question && answer) {
+      entries.push({
+        '@type': 'Question',
+        name: question,
+        acceptedAnswer: { '@type': 'Answer', text: answer },
+      });
+    }
+  }
+  if (!entries.length) return null;
+  return { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: entries };
+}
+
 export function renderPage({ site, page }) {
   const showToc = page.headings.length >= 4;
 
@@ -43,6 +85,7 @@ ${supportBanner(site)}
     description: page.summary,
     path: page.url,
     body,
+    schema: page.slug === 'faq' ? faqSchema(page) : null,
   });
 }
 

@@ -95,6 +95,30 @@ function analytics(site) {
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date);gtag('config','${id}');</script>`;
 }
 
+/**
+ * A meta description that ends where a sentence does.
+ *
+ * A search engine shows roughly 160 characters and cuts the rest mid-word.
+ * These summaries were written as standfirsts rather than as descriptions —
+ * one runs to three hundred characters — so rather than keep a second copy of
+ * every summary, the description is the first whole sentence or two that fit.
+ * Trimming at a full stop and only falling back to a word boundary means the
+ * result always reads as a finished thought.
+ */
+function trimForSearch(text, limit = 160) {
+  const clean = String(text ?? '').replace(/\s+/g, ' ').trim();
+  if (clean.length <= limit) return clean;
+
+  // The last sentence end inside the limit, if there is one worth keeping.
+  const window = clean.slice(0, limit + 1);
+  const stop = Math.max(window.lastIndexOf('. '), window.lastIndexOf('? '), window.lastIndexOf('! '));
+  if (stop >= limit * 0.55) return clean.slice(0, stop + 1);
+
+  // Otherwise the last word boundary, with an ellipsis so the cut is deliberate.
+  const cut = clean.lastIndexOf(' ', limit - 1);
+  return clean.slice(0, cut > 0 ? cut : limit - 1).replace(/[,;:—-]$/, '') + '…';
+}
+
 export function layout({
   site,
   title,
@@ -109,8 +133,19 @@ export function layout({
   head = '',
 }) {
   const canonical = new URL(path, site.url).href;
-  const fullTitle = path === '/' ? `${site.name} — ${site.descriptor}` : `${title} · ${site.name}`;
-  const desc = description || site.description;
+
+  // The headline is the content; the brand is the garnish. A search result
+  // shows about sixty characters, and eight of the field notes have headlines
+  // long enough that the whole of " · FERAL FEMME" was being spent pushing the
+  // end of the actual title past the cut. The suffix is added when there is
+  // room for it and dropped when there is not — never the other way round.
+  const suffix = ` · ${site.name}`;
+  const fullTitle =
+    path === '/'
+      ? `${site.name} — ${site.descriptor}`
+      : `${title}${title.length + suffix.length <= 62 ? suffix : ''}`;
+
+  const desc = trimForSearch(description || site.description);
   const og = new URL(ogImage, site.url).href;
 
   const jsonLd = schema

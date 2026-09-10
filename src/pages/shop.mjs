@@ -173,6 +173,7 @@ ${
 <section class="section on-white">
   <div class="wrap">
     ${sectionHead({ eyebrow: 'How it arrives', title: 'Bought through PayPal, sent by email' })}
+    <p class="mb-0" style="margin-top:var(--s5);"><a class="arrow" href="/faq/">Licensing, later editions, and everything else asked about these</a></p>
     <p class="prose">${typo(s.delivery)}</p>
     <p class="prose">${typo(s.deliveryNote)}</p>
     <p class="prose">${typo(s.processorNote)}</p>

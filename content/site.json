@@ -346,6 +346,10 @@
           "href": "/about/"
         },
         {
+          "label": "Questions",
+          "href": "/faq/"
+        },
+        {
           "label": "Editorial Standards",
           "href": "/editorial-standards/"
         },
