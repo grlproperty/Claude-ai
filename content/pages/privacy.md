@@ -22,7 +22,7 @@ This site is built as static files. It has no database, no user accounts, and no
 
 ## The one thing we do store
 
-If you choose a currency on the [Published](/shop/) or [Donate](/donate/) page, that choice is kept in your browser's local storage so the pages remember it. That is not a cookie and it is not sent anywhere — it never leaves your device, we cannot read it, and clearing your browser data removes it. It records one thing: three letters naming a currency.
+If you choose a currency in the [shop](/shop/) or on the [Donate](/donate/) page, that choice is kept in your browser's local storage so the pages remember it. That is not a cookie and it is not sent anywhere — it never leaves your device, we cannot read it, and clearing your browser data removes it. It records one thing: three letters naming a currency.
 
 We mention it because "no cookies" is a narrower statement than "nothing is stored", and the difference between those two is exactly the kind of gap this site exists to point out in other people's writing.
 

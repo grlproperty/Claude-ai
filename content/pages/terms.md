@@ -46,7 +46,7 @@ Links to any page are welcome and require no permission. Framing pages so as to 
 
 ## Payment and refunds
 
-The documents on the [Published](/shop/) page are digital files, delivered by email after payment through PayPal. Prices are charged in US dollars; your bank sets the rate it applies.
+The documents in the [shop](/shop/) are digital files, delivered by email after payment through PayPal. Prices are charged in US dollars; your bank sets the rate it applies.
 
 **A delivered file is not refundable.** It cannot be un-received, and there is no version of returning it. Each document is described in full before purchase — its page count, its contents, and what it is not — and the two pocket cards are published free so that the work can be read before any of it is paid for.
 
