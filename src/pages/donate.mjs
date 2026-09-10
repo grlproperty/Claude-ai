@@ -116,7 +116,7 @@ export function renderDonate({ site, rates }) {
           ${[
             ['Source access', 'Database subscriptions, archive access, and the paywalled reporting that the field notes are built on.'],
             ['Research time', 'Reading investigations in full, checking them against the primary filings, and writing the note that follows.'],
-            ['Open publication', 'Everything stays free to read. No paywall, no advertising, no affiliate links, no sponsored placements.'],
+            ['Open publication', 'Every field note, decoder and tool stays free to read — no paywall and no account. The documents are sold, and what they earn goes back into the research; nothing that is free today is moved behind a payment later.'],
             ['The tools', 'Maintaining the decoders as standards change — a reference that is not maintained becomes actively misleading.'],
           ]
             .map(
@@ -190,8 +190,8 @@ export function renderBriefing({ site }) {
       ${[
         ['The note in full', 'The complete field note as published — not a summary with a link back to it. You can read the whole thing without leaving your inbox.'],
         ['Every claim sourced', 'The links are the ones in the note itself: the reporting, ruling, or record each claim was built from, credited to whoever did the work.'],
-        ['No schedule', 'There is no edition to fill, so nothing is padded to meet one. You hear from us when a note is published, and not otherwise.'],
-        ['Nothing else', 'No promotions, no affiliate links, no product recommendations, no sponsored placements — the same as everywhere else on this site.'],
+        ['No schedule', 'There is no edition to fill, so nothing is padded to meet one. You hear from us when a note is published, and when a document we sell is revised — not otherwise.'],
+        ['Nothing from anyone else', 'No advertising, no affiliate links, no sponsored placements, and nothing about a product that is not ours. When a new document is published you are told once, in a line, and that is the whole of the selling.'],
       ]
         .map(
           ([t, x]) => `<div class="row row--label-14">

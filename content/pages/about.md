@@ -26,7 +26,7 @@ We translate the vocabulary, cite the source, and file the receipt — across fa
 
 ## Who runs it
 
-FERAL FEMME was founded in 2026 by **Ayden Rosemary Brown** and is based in South Africa. It is independently funded through reader donations: no advertisers, no industry sponsorship, no affiliate revenue, and no funding from any company whose conduct this platform documents.
+FERAL FEMME was founded in 2026 by **Ayden Rosemary Brown** and is based in South Africa. It is funded by its readers — donations, and the documents it sells — and by nobody else: no advertisers, no industry sponsorship, no affiliate revenue, and no funding from any company whose conduct this platform documents.
 
 That independence is the reason the [Record Checker](/tools/record/) can name companies without hesitating.
 

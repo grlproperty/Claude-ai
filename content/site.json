@@ -266,7 +266,7 @@
     },
     {
       "title": "Self-Funded Platform",
-      "body": "Feral Femme is independently funded through reader donations. No advertisers, no industry sponsorship, no editorial conflicts of interest.",
+      "body": "Feral Femme is funded by its readers — donations, and the documents it sells. No advertisers, no industry sponsorship, no editorial conflicts of interest.",
       "stamp": "Reader-supported"
     }
   ],
@@ -400,7 +400,7 @@
   "newsletter": {
     "name": "The Research Briefing",
     "cadence": "Sent on publication",
-    "summary": "Every field note in full, sent the day it is published — the whole note, not a summary with a link back. No promotions, no product recommendations, one-click unsubscribe.",
+    "summary": "Every field note in full, sent the day it is published — the whole note, not a summary with a link back. Nothing from anyone else, and one-click unsubscribe.",
     "action": "https://assets.mailerlite.com/jsonp/2610955/forms/197500769051608208/subscribe",
     "emailField": "fields[email]",
     "fields": {

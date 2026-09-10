@@ -52,7 +52,7 @@ To report an error, write to [info@feral-femme.co](mailto:info@feral-femme.co) w
 
 No advertisers. No industry sponsorship. No affiliate links. No sponsored placements. No funding from any company whose conduct this platform documents.
 
-The platform is funded by reader donations, and that is the only revenue it takes.
+The platform is funded by its readers — donations, and the documents it sells. Both are set out in full on [Funding & Conflicts](/funding/), including the revenue it refuses. Neither buys any influence over what is published: nobody has ever paid to appear here, and nobody can.
 
 ## AI use
 

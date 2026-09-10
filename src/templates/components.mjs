@@ -259,11 +259,16 @@ export function newsletterForm(site, { dark = false, note = true } = {}) {
  * sold anything at all, and the one high-intent block on a finished field note
  * asked for a donation.
  *
- * Two rules keep this from reading as advertising on a site whose whole claim
- * is that it carries none. It shows the actual covers and the actual prices —
- * no pitch, no urgency, no invented scarcity — and it says plainly what the
- * money does, which is the same thing the funding page says. A shelf, not a
- * banner.
+ * Two rules keep it a shelf rather than a banner. It shows the actual covers
+ * and the actual prices — no pitch, no urgency, no invented scarcity — and it
+ * says plainly what the money does, which is what the funding page says.
+ *
+ * Selling our own work is not what the no-advertising claim is about, and the
+ * copy here should not blur the two. The claim is that nobody can pay to
+ * appear on this site and nothing said about a company is for sale. A shelf of
+ * documents this platform wrote and sells to fund itself leaves that intact —
+ * so this block says what the money buys, and does not reach for a denial to
+ * excuse itself.
  *
  * `tier` picks who is being shown to: 'reader' for the volumes under $50,
  * 'professional' for the org-licensed packs. A reader at the end of a field
@@ -314,9 +319,9 @@ export function shelf(site, covers = {}, { tier = 'all', limit = 3, heading = tr
           ? sectionHead({
               eyebrow: 'Published',
               title: 'The documents',
-              lede: `Everything else on this site is free and stays free. These took long enough to assemble that they are sold instead, and what they earn is what pays for the next ${
+              lede: `Everything else on this site is free and stays free. These took long enough to assemble that they are sold instead, and what they earn is what pays for the research — the reading time, the database access, and the next ${
                 site.donate?.fundsNotes ?? 'eighteen'
-              } field notes — there are no advertisers behind this and no industry sponsorship.`,
+              } field notes. Buying one funds the work. It buys no influence over it.`,
               stamp: `${all.length} volumes · from ${sym}${cheapest}`,
             })
           : ''

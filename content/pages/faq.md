@@ -14,7 +14,7 @@ An independent editorial and research platform documenting the industries built 
 
 ### Is it free?
 
-The reading is. Every field note, every decoder, the archive, the reading list and the tools are free, with no account, no sign-up and no payment. Six documents are sold, and two of those have a free printable card taken from them so you can read the work before paying for any of it.
+The reading is. Every field note, every decoder, the archive, the reading list and the tools are free, with no account, no sign-up and no payment, and nothing that is free today gets moved behind a payment later. Six documents are sold, and two of those have a free printable card taken from them so you can read the work before paying for any of it.
 
 ### Who pays for it?
 
@@ -23,6 +23,12 @@ Nobody but readers. There are no advertisers, no industry sponsorship, no affili
 ### Do you take money from the industries you write about?
 
 No. Not as advertising, not as sponsorship, not as gifted product, not as affiliate commission. If that ever changes it will be declared on the disclosures page before anything is published, not after.
+
+### You say you carry no advertising — but you sell things and you post on social media.
+
+Both are true, and they are not the same thing. The claim is narrow and it is about influence: nobody can pay to appear on this site, and nothing said here about a company is for sale — not a mention, not a favourable entry, not the removal of an unfavourable one.
+
+Selling our own documents and posting our own work on our own channels is not that. It is how the research is paid for and how it reaches anyone, and both are done openly under our own name. What would breach the claim is a third party paying for space, for coverage, or for silence. That has never happened and there is no price at which it would.
 
 ## The sources
 
@@ -78,11 +84,13 @@ Quote freely with attribution and a link — that is what it is for. Reproducing
 
 ### Do you track me?
 
-No analytics, no advertising trackers, no third-party scripts, and no cookies. The site stores one thing in your browser — which currency you chose to read prices in — and that never leaves your device. The privacy page sets out how this sits with POPIA.
+No analytics, no advertising trackers, no third-party scripts and no cookies on this site. It stores one thing in your browser — which currency you chose to read prices in — and that never leaves your device. The privacy page sets out how this sits with POPIA.
+
+Social platforms are the exception, and not one we control: if you reach us through Instagram, TikTok, Facebook or LinkedIn, that platform is measuring you under its own terms before you ever arrive here. That is a reason the work is published here in full rather than only there.
 
 ### What happens if I subscribe?
 
-You get each field note in full on the day it is published, and nothing else. No promotions, no product recommendations, no sponsored placements. One click unsubscribes.
+Each field note in full on the day it is published, and a line when a document we sell is revised — the shop offers the same list for exactly that reason. Nothing from anybody else: no advertising, no affiliate links, no sponsored placements, and nothing about a product that is not ours. One click unsubscribes.
 
 ### How do I get in touch?
 
