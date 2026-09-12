@@ -74,13 +74,18 @@ number a buyer can verify the second the file opens.
 
 It is not part of `npm run check` and not in CI. `products/dist/` is
 gitignored, so a clean checkout has none of these and a CI run would fail
-every time, which is how a check gets ignored. Run it before promoting
-anything.
+every time, which is how a check gets ignored.
 
-Only two of the six are built here. The other four are authored elsewhere, so
-the check reports them missing whenever they are not on this shelf — that is
-the check working, not a fault, but it does mean the shop is taking payment
-for documents this repository cannot produce.
+Only two of the six are built here; the rest are authored elsewhere and
+emailed by hand from wherever they are kept. So the shelf is an argument, and
+pointing it at that folder is the run that actually means something:
+
+    npm run products:check -- --shelf ~/path/to/the/documents
+
+With no argument it checks `products/dist/` and reports the other four as not
+on this shelf rather than as faults — absence there proves nothing. Given a
+shelf, absence is a fault, because that folder is meant to hold everything on
+sale.
 
 ## Selling them
 
