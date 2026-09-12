@@ -1,7 +1,7 @@
 {
   "title": "Record Checker",
   "slug": "record",
-  "reviewed": "2026-09-02",
+  "reviewed": "2026-09-10",
   "reviewCycleDays": 120,
   "summary": "Documented regulatory actions, court rulings, and formal findings, each tied to a named public source. This holds only what the public record shows. Absence of a record is not evidence of good practice.",
   "findings": [
