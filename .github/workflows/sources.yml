@@ -1,0 +1,123 @@
+# Monthly citation check.
+#
+# Every finding on this site names a company and links to the document it came
+# from. When one of those documents moves or is withdrawn the page keeps
+# asserting the finding with nothing behind it, which is a different and worse
+# problem than a broken link — so the sweep runs on a schedule and opens an
+# issue rather than waiting for a reader to find it.
+#
+# Only genuine rot is reported. Roughly a fifth of these hosts refuse automated
+# requests outright and answer 403 or 429 while working perfectly in a browser;
+# those are counted as unverifiable, because a report that cries wolf is a
+# report nobody opens.
+name: Sources
+
+on:
+  schedule:
+    # 06:00 UTC on the 1st of the month.
+    - cron: '0 6 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  sources:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Check every cited source
+        id: check
+        # The script exits non-zero when something is dead or unsupported, which
+        # is the signal we want rather than a failed job.
+        run: |
+          # The sweep takes minutes and is deliberately paced, so it runs once:
+          # the JSON is the artefact and the log line is derived from it.
+          set +e
+          node scripts/check-sources.mjs --json > sources.json
+          echo "rotted=$?" >> "$GITHUB_OUTPUT"
+          node -e '
+            const r = require("./sources.json");
+            console.log(
+              `${r.checked} checked · ${r.dead.length} dead · ${r.unsupported.length} unsupported` +
+              ` · ${r.flaky.length} no answer · ${r.blocked} unverifiable · ${r.moved} redirected`
+            );
+          '
+
+      - name: Open an issue for what has rotted
+        if: steps.check.outputs.rotted != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const r = JSON.parse(fs.readFileSync('sources.json', 'utf8'));
+
+            const list = (items, why) =>
+              items.length
+                ? `\n### ${why}\n\n` +
+                  items
+                    .map(
+                      (i) =>
+                        `- [ ] \`${i.status}\` ${i.url}\n` +
+                        `  - cited in ${i.files.map((f) => `\`${f}\``).join(', ')}` +
+                        (i.expected
+                          ? `\n  - the page no longer names: ${i.expected.join(' / ')}`
+                          : '')
+                    )
+                    .join('\n')
+                : '';
+
+            const body =
+              `The monthly sweep checked ${r.checked} cited sources.\n` +
+              list(r.dead, 'Dead — the source is gone') +
+              list(
+                r.unsupported,
+                'Unsupported — the page still loads, but no longer names the company it is cited for'
+              ) +
+              list(r.flaky, 'No answer on two attempts — may be temporary') +
+              `\n\n---\n\nEach of these sits under a finding that names a company. Until a ` +
+              `citation is replaced, that finding is asserted with nothing behind it — so ` +
+              `either repoint it at the document's new home or amend the entry to what can ` +
+              `still be shown.\n\n` +
+              `${r.blocked} further sources could not be checked automatically: those hosts ` +
+              `refuse robots and answer 403 or 429 while working normally in a browser. ` +
+              `${r.moved} redirected and still resolve.`;
+
+            const title = 'Citations need attention';
+            const open = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'sources',
+            });
+
+            const existing = open.data.find((i) => i.title === title);
+            if (existing) {
+              // Replace the body rather than stacking issues: the list is a
+              // current state, not a log.
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body,
+              });
+              core.info(`Updated #${existing.number}.`);
+              return;
+            }
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+              labels: ['sources'],
+            });
