@@ -323,8 +323,32 @@ export function jacketSvg({ product, site, index }) {
   const title = product.name.replace(/^The\s+/i, '');
   const size = title.length > 26 ? 62 : title.length > 18 ? 72 : 84;
   const lines = wrap(title, size, W - M * 2, 3);
-  const blurb = wrap(product.summary ?? '', 21, W - M * 2 - 40, 4);
+  const blurb = wrap(product.summary ?? '', 21, W - M * 2, 5);
   const serial = String(index + 1).padStart(2, '0');
+
+  const host = String(site.url)
+    .replace(/^https?:\/\/(www\.)?/, '')
+    .replace(/\/$/, '')
+    .toUpperCase();
+  const audience = String(product.for ?? '').toUpperCase();
+  const pages = `${product.pages} PAGES`;
+  const together = audience ? `${pages} · ${audience}` : pages;
+  const column = W - M * 2;
+  // mono at 15px on 2.4 tracking runs about 11.4px a character. An end-anchored
+  // run wider than the space left beside the URL slides back over it, so a long
+  // audience line drops above the rule instead of colliding with the address.
+  const inline = (host.length + together.length) * 11.4 + 40 <= column;
+  const foot = (x, y, end, t) =>
+    `<text x="${x}" y="${y}" ${end ? 'text-anchor="end" ' : ''}font-family="${FACE.mono}" font-size="15" letter-spacing="2.4" fill="${C.ink}" opacity="0.72">${xml(t)}</text>`;
+  const footer = [
+    !inline && audience ? foot(M, H - 152, false, audience) : '',
+    `<rect x="${M}" y="${H - 128}" width="${column}" height="1" fill="${C.crimson}" opacity="0.34"/>`,
+    foot(M, H - 88, false, host),
+    foot(W - M, H - 88, true, inline ? together : pages),
+  ]
+    .filter(Boolean)
+    .join('\n  ');
+
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
   <rect width="${W}" height="${H}" fill="${C.blush}"/>
@@ -352,13 +376,7 @@ export function jacketSvg({ product, site, index }) {
     )
     .join('\n  ')}
 
-  <rect x="${M}" y="${H - 128}" width="${W - M * 2}" height="1" fill="${C.crimson}" opacity="0.34"/>
-  <text x="${M}" y="${H - 88}" font-family="${FACE.mono}" font-size="15" letter-spacing="2.4"
-        fill="${C.ink}" opacity="0.72">${xml(String(site.url).replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '').toUpperCase())}</text>
-  <text x="${W - M}" y="${H - 88}" text-anchor="end" font-family="${FACE.mono}" font-size="15"
-        letter-spacing="2.4" fill="${C.ink}" opacity="0.72">${xml(
-          `${product.pages} PAGES · ${String(product.for ?? '').toUpperCase()}`
-        )}</text>
+  ${footer}
 </svg>`;
 }
 
