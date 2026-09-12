@@ -283,7 +283,7 @@ export function renderIngredients({ site, data, covers = {} }) {
   // design, and reading one name at a time is what nobody does standing in a
   // shop. It degrades to the list below when JavaScript does not run.
   const intro = `<div class="panel" data-inci hidden style="margin-bottom:var(--s5);">
-      <h3>Paste an ingredients list</h3>
+      <h2>Paste an ingredients list</h2>
       <p>Straight off the back of the bottle. Names are matched against the ${data.ingredients.length} entries in this file, aliases included.</p>
       <label class="visually-hidden" for="inci">Ingredients list</label>
       <textarea id="inci" rows="4" data-inci-input placeholder="Aqua, Glycerin, Cera Alba, Carmine, Parfum…"></textarea>
