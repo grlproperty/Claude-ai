@@ -52,7 +52,7 @@ function related(entries, current, base, nameOf, catOf, max = 6) {
   const peers = entries.filter((e) => e !== current && catOf(e) === catOf(current)).slice(0, max);
   if (!peers.length) return '';
 
-  return `<section class="section--tight" style="padding-top:0;">
+return `<section class="section--tight" style="padding-top:0;">
     <div class="wrap wrap--narrow">
       ${label(`More in ${catOf(current)}`)}
       <ul class="peer-list">
@@ -115,6 +115,24 @@ export const ENTRY_TYPES = [
     schemaType: 'DefinedTerm',
   },
   {
+    id: 'ingredients',
+    collection: 'ingredients',
+    base: '/tools/ingredients/',
+    parent: { name: 'Ingredient Decoder', url: '/tools/ingredients/' },
+    nameOf: (i) => i.name,
+    catOf: (i) => i.cat,
+    describe: (i) => `What ${i.name} is, where it comes from, and whether an animal paid for it. ${clamp(i.what, 90)}`,
+    // An INCI list rarely uses the common name, so the aliases are the part a
+    // reader arrives with.
+    sub: (i) => ((i.aliases ?? []).length ? `Also listed as ${i.aliases.join(', ')}` : ''),
+    panels: (i) =>
+      [
+        panel('What it is', i.what),
+        i.note ? panel('What it costs', i.note, i.cat === 'Animal') : '',
+      ].filter(Boolean),
+    schemaType: 'DefinedTerm',
+  },
+  {
     id: 'record',
     collection: 'findings',
     base: '/tools/record/',
@@ -142,6 +160,21 @@ export function renderEntry({ site, type, entry, entries, dataset, covers = {} }
   const path = `${type.base}${slug}/`;
   const url = type.srcUrl?.(entry);
 
+  // Not every dataset has a per-entry source: the ingredient file is compiled
+  // from public references as a whole rather than one citation per substance.
+  const srcText = type.src ? type.src(entry) : '';
+  const extra = ((type.more ? type.more(entry) : []) || [])
+    .map(
+      (m) =>
+        ` · <a href="${esc(m.url)}" target="_blank" rel="noopener noreferrer">${esc(m.label)}</a>`
+    )
+    .join('');
+  const sourceNote = srcText
+    ? `<p class="src-note">Source — ${typo(srcText)}${
+        url ? ` · <a href="${esc(url)}" target="_blank" rel="noopener noreferrer">Open the record</a>` : ''
+      }${extra}</p>`
+    : '';
+
   const body = `
 <section class="section--tight" style="padding-top:clamp(2rem,5vw,3.5rem);">
   <div class="wrap wrap--narrow">
@@ -157,14 +190,7 @@ export function renderEntry({ site, type, entry, entries, dataset, covers = {} }
       ${type.panels(entry).join('')}
     </div>
 
-    <p class="src-note">Source — ${typo(type.src(entry))}${
-      url ? ` · <a href="${esc(url)}" target="_blank" rel="noopener noreferrer">Open the record</a>` : ''
-    }${((type.more ? type.more(entry) : []) || [])
-      .map(
-        (m) =>
-          ` · <a href="${esc(m.url)}" target="_blank" rel="noopener noreferrer">${esc(m.label)}</a>`
-      )
-      .join('')}</p>
+    ${sourceNote}
 
     ${type.footer ? `<div style="margin-top:2.5rem;">${type.footer()}</div>` : ''}
 

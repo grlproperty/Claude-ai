@@ -3835,3 +3835,74 @@ code {
     transform: none;
   }
 }
+
+/* ---------------------------------------------------------------- INCI box
+
+   The ingredient decoder takes a pasted list rather than one name at a time,
+   because an INCI list is unreadable by design and nobody reads one entry at a
+   time standing in a shop. The field borrows the search input's treatment so
+   the two read as the same instrument. */
+
+[data-inci] textarea {
+  width: 100%;
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  line-height: 1.7;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--rule);
+  background: var(--white);
+  color: var(--ink);
+  resize: vertical;
+  margin-top: 0.9rem;
+}
+
+[data-inci] textarea:focus {
+  border-color: var(--crimson);
+  outline: none;
+}
+
+.inci-result {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem 1rem;
+  align-items: baseline;
+  padding: 0.85rem 0;
+  border-top: 1px solid var(--rule);
+}
+
+.inci-result__name {
+  font-family: var(--ui);
+  font-weight: 400;
+}
+
+.inci-result__what {
+  font-size: 0.9375rem;
+  color: var(--ink-muted);
+  grid-column: 1 / -1;
+}
+
+/* Origin is the whole answer, so it is a swatch rather than a word to find. */
+.inci-origin {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid currentColor;
+  white-space: nowrap;
+}
+
+.inci-origin--animal { color: var(--crimson); }
+
+.inci-tally {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  margin: 1.1rem 0 0;
+}
+
+@media (max-width: 30rem) {
+  .inci-result {
+    grid-template-columns: 1fr;
+  }
+}

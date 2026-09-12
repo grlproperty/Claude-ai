@@ -20,6 +20,8 @@ function decoderShell({
   covers = {},
   footer = '',
   lead = '',
+  // a decoder whose instrument belongs under its own title, not above it
+  intro = '',
   eyebrow = 'Free tool',
   // Who is on this page. A decoder is used by somebody testing a claim; the
   // archive and the reading list are read. They are not shown the same shelf.
@@ -37,6 +39,8 @@ function decoderShell({
       level: 1,
       stamp: `${items.length} entries \u00b7 free to use`,
     })}
+
+    ${intro}
 
     <div class="search">
       <label class="visually-hidden" for="q">Search ${esc(data.title.toLowerCase())}</label>
@@ -75,7 +79,8 @@ ${supportBanner(site)}
     description,
     path,
     body,
-    scripts: scripts ? ['/assets/js/filter.js'] : [],
+    // a decoder with its own behaviour passes the list it needs
+    scripts: Array.isArray(scripts) ? scripts : scripts ? ['/assets/js/filter.js'] : [],
     schema: {
       '@context': 'https://schema.org',
       '@type': 'Dataset',
@@ -100,9 +105,10 @@ export function renderToolsIndex({ site, data, covers = {} }) {
     ['01', 'Certification Decoder', '/tools/certifications/', 'Cross-industry literacy', `Who runs a label, what it verifies, and what it does not. ${data.certifications.schemes.length} schemes.`],
     ['02', 'Greenwashing Decoder', '/tools/greenwashing/', 'Cross-industry literacy', `What brands claim, and what the term actually means. ${data.greenwashing.terms.length} terms.`],
     ['03', 'Material Decoder', '/tools/materials/', 'Fashion & home', `What a fibre, leather, filling, or fabric really is — and what it costs. ${data.materials.materials.length} materials.`],
-    ['04', 'Record Checker', '/tools/record/', 'Corporate accountability', `Documented regulatory actions, rulings, and findings, each tied to a named public source. ${data.record.findings.length} entries.`],
-    ['05', 'Where to Act', '/tools/act/', 'Take action', `Established organisations working on the two subjects we hold at equal weight. ${data.act.organisations.length} listed.`],
-    ['06', 'The Reading List', '/library/', 'Research', `The investigations and databases the field notes are built from. ${data.library.entries.length} entries.`],
+    ['04', 'Ingredient Decoder', '/tools/ingredients/', 'Beauty & home', `Paste an ingredients list and read back what each substance is, and what it cost. ${data.ingredients.ingredients.length} entries.`],
+    ['05', 'Record Checker', '/tools/record/', 'Corporate accountability', `Documented regulatory actions, rulings, and findings, each tied to a named public source. ${data.record.findings.length} entries.`],
+    ['06', 'Where to Act', '/tools/act/', 'Take action', `Established organisations working on the two subjects we hold at equal weight. ${data.act.organisations.length} listed.`],
+    ['07', 'The Reading List', '/library/', 'Research', `The investigations and databases the field notes are built from. ${data.library.entries.length} entries.`],
   ];
 
   const body = `
@@ -249,6 +255,60 @@ export function renderMaterials({ site, data, covers = {} }) {
       'What a fibre, leather, filling, or fabric really is — its animal-welfare position, its environmental cost, and the alternatives that exist.',
     categories,
     items,
+  });
+}
+
+export function renderIngredients({ site, data, covers = {} }) {
+  const categories = [...new Set(data.ingredients.map((i) => i.cat))].sort();
+  const items = data.ingredients.map((i) => ({
+    html: wrapItem(
+      slugify(i.name),
+      i.cat,
+      `${i.name} ${(i.aliases ?? []).join(' ')} ${i.what} ${i.note ?? ''}`,
+      `<div class="entry__head">
+        <h2 class="entry__name"><a href="/tools/ingredients/${esc(slugify(i.name))}/">${typo(i.name)}</a></h2>
+        <span class="tag">${esc(i.cat)}</span>
+      </div>
+      <p class="entry__runby">${typo(i.what)}</p>
+      ${i.note ? `<div class="panel${i.cat === 'Animal' ? ' panel--warn' : ''}"><h3>What it costs</h3><p>${typo(i.note)}</p></div>` : ''}
+      ${
+        (i.aliases ?? []).length
+          ? `<p class="src-note">Also listed as — ${i.aliases.map((a) => esc(a)).join(' \u00b7 ')}</p>`
+          : ''
+      }`
+    ),
+  }));
+
+  // The paste box is the point of this decoder: an INCI list is unreadable by
+  // design, and reading one name at a time is what nobody does standing in a
+  // shop. It degrades to the list below when JavaScript does not run.
+  const intro = `<div class="panel" data-inci hidden style="margin-bottom:var(--s5);">
+      <h3>Paste an ingredients list</h3>
+      <p>Straight off the back of the bottle. Names are matched against the ${data.ingredients.length} entries in this file, aliases included.</p>
+      <label class="visually-hidden" for="inci">Ingredients list</label>
+      <textarea id="inci" rows="4" data-inci-input placeholder="Aqua, Glycerin, Cera Alba, Carmine, Parfum…"></textarea>
+      <div class="tracker-controls">
+        <button class="chip" type="button" data-inci-run aria-pressed="false">Decode</button>
+        <button class="chip" type="button" data-inci-sample aria-pressed="false">Use a sample list</button>
+        <button class="chip" type="button" data-inci-clear aria-pressed="false">Clear</button>
+      </div>
+      <div data-inci-out hidden></div>
+    </div>`;
+
+  return decoderShell({
+    site,
+    data,
+    covers,
+    path: '/tools/ingredients/',
+    description:
+      'What each substance on an ingredients list is, where it comes from, and whether an animal paid for it. Paste a list or read the file.',
+    categories,
+    items,
+    intro,
+    footer: data.note
+      ? note('How to read this', `<p class="mb-0">${typo(data.note)}</p>`)
+      : '',
+    scripts: ['/assets/js/filter.js', '/assets/js/inci.js'],
   });
 }
 

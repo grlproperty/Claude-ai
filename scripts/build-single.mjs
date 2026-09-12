@@ -122,7 +122,7 @@ async function main() {
   const css = await readFile(join(DIST, 'assets/css/site.css'), 'utf8');
   const js = [];
   // cage-mesh.js declares the model cage.js reads, so it has to come first.
-  for (const f of ['site.js', 'filter.js', 'cage-mesh.js', 'cage.js'])
+  for (const f of ['site.js', 'filter.js', 'inci.js', 'cage-mesh.js', 'cage.js'])
     js.push(await readFile(join(DIST, 'assets/js', f), 'utf8'));
 
   // Images are re-encoded down: at a data URI every byte is paid for on the
@@ -365,6 +365,7 @@ async function main() {
       if (FF.paintImages) FF.paintImages();
       if (FF.initContent) FF.initContent();
       if (FF.initFilters) FF.initFilters();
+      if (FF.initInci) FF.initInci();
       if (FF.initCage) FF.initCage();
       // The currency selector is inside <main>, so a swap replaces it with a
       // fresh, unpopulated one — and the reader's chosen currency has to be

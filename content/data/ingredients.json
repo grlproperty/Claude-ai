@@ -1,0 +1,523 @@
+{
+  "title": "Ingredient Decoder",
+  "slug": "ingredients",
+  "reviewed": "2026-09-12",
+  "reviewCycleDays": 180,
+  "summary": "Paste the ingredients list off the back of a product. This names what each substance is, where it comes from, and whether an animal paid for it. Anything it does not hold, it says so.",
+  "note": "Origin describes where a substance comes from, not whether the finished product was tested on animals — that depends on the brand and the market it sells into. A plant or synthetic origin says nothing about a testing policy.",
+  "ingredients": [
+    {
+      "name": "Carmine",
+      "cat": "Animal",
+      "aliases": [
+        "CI 75470",
+        "Cochineal Extract",
+        "Carminic Acid",
+        "Natural Red 4"
+      ],
+      "what": "A red pigment made from crushed cochineal insects, used in lipsticks, blushes and some foods.",
+      "note": "Roughly 70,000 insects are killed to produce a kilogram of dye."
+    },
+    {
+      "name": "Lanolin",
+      "cat": "Animal",
+      "aliases": [
+        "Wool Wax",
+        "Adeps Lanae",
+        "Lanolin Alcohol"
+      ],
+      "what": "A waxy emollient extracted from sheep's wool, common in lip balms and heavy moisturisers.",
+      "note": "A wool by-product; its supply is tied to the wool industry."
+    },
+    {
+      "name": "Beeswax",
+      "cat": "Animal",
+      "aliases": [
+        "Cera Alba",
+        "Cera Flava"
+      ],
+      "what": "Wax secreted by honeybees to build comb, used as a thickener and barrier agent."
+    },
+    {
+      "name": "Honey",
+      "cat": "Animal",
+      "aliases": [
+        "Mel",
+        "Mel Extract"
+      ],
+      "what": "Bee-produced humectant used in masks and cleansers."
+    },
+    {
+      "name": "Propolis",
+      "cat": "Animal",
+      "aliases": [
+        "Bee Propolis"
+      ],
+      "what": "Resin collected by bees to seal the hive; used for claimed antibacterial effects."
+    },
+    {
+      "name": "Royal Jelly",
+      "cat": "Animal",
+      "aliases": [
+        "Jelly Royale"
+      ],
+      "what": "Secretion fed to bee larvae, marketed in anti-ageing formulas."
+    },
+    {
+      "name": "Collagen",
+      "cat": "Varies",
+      "aliases": [
+        "Hydrolyzed Collagen",
+        "Soluble Collagen",
+        "Marine Collagen"
+      ],
+      "what": "A structural protein used as a film-former and humectant.",
+      "note": "Cosmetic collagen is usually taken from cattle hide, pig skin or fish. Plant versions do not exist; 'vegetal collagen' is a different molecule."
+    },
+    {
+      "name": "Keratin",
+      "cat": "Animal",
+      "aliases": [
+        "Hydrolyzed Keratin"
+      ],
+      "what": "Protein used in hair treatments to smooth and strengthen the shaft.",
+      "note": "Typically sourced from wool, horns, hooves or feathers."
+    },
+    {
+      "name": "Elastin",
+      "cat": "Animal",
+      "aliases": [
+        "Hydrolyzed Elastin"
+      ],
+      "what": "Connective-tissue protein used in firming claims.",
+      "note": "Usually derived from cattle neck ligaments or aorta."
+    },
+    {
+      "name": "Silk Protein",
+      "cat": "Animal",
+      "aliases": [
+        "Hydrolyzed Silk",
+        "Serica",
+        "Sericin"
+      ],
+      "what": "Protein from silkworm cocoons, used for slip in hair and skin products.",
+      "note": "Silkworms are killed in the cocoon during conventional reeling."
+    },
+    {
+      "name": "Guanine",
+      "cat": "Varies",
+      "aliases": [
+        "CI 75170",
+        "Pearl Essence"
+      ],
+      "what": "A pearlescent agent used in nail polish, eyeshadow and shimmer.",
+      "note": "Traditionally made from fish scales; synthetic mica-based pearl is now common."
+    },
+    {
+      "name": "Squalene",
+      "cat": "Varies",
+      "aliases": [
+        "Shark Liver Oil"
+      ],
+      "what": "A light emollient oil. Squalane is its stable, hydrogenated form.",
+      "note": "Historically taken from shark liver; most cosmetic squalane is now made from olive or sugarcane. The label rarely says which."
+    },
+    {
+      "name": "Squalane",
+      "cat": "Varies",
+      "aliases": [
+        "Olive Squalane",
+        "Sugarcane Squalane"
+      ],
+      "what": "Hydrogenated squalene; a common lightweight moisturising oil.",
+      "note": "Plant-derived unless stated otherwise, but shark-derived supply still exists."
+    },
+    {
+      "name": "Stearic Acid",
+      "cat": "Varies",
+      "aliases": [
+        "Octadecanoic Acid"
+      ],
+      "what": "A fatty acid used to thicken creams and harden soap bars.",
+      "note": "Can come from animal tallow or from palm and other vegetable oils."
+    },
+    {
+      "name": "Glycerin",
+      "cat": "Varies",
+      "aliases": [
+        "Glycerol",
+        "Glycerine"
+      ],
+      "what": "The most widely used humectant in skincare; draws water into the skin.",
+      "note": "Sourced from animal fat, vegetable oil or synthesis. Labels almost never distinguish."
+    },
+    {
+      "name": "Tallow",
+      "cat": "Animal",
+      "aliases": [
+        "Sodium Tallowate",
+        "Tallow Acid",
+        "Adeps Bovis"
+      ],
+      "what": "Rendered cattle or sheep fat, used in soaps and some creams.",
+      "note": "A slaughter by-product."
+    },
+    {
+      "name": "Gelatin",
+      "cat": "Animal",
+      "aliases": [
+        "Gelatine",
+        "Hydrolyzed Gelatin"
+      ],
+      "what": "Protein from boiled skin, bone and connective tissue; used as a thickener and in capsules."
+    },
+    {
+      "name": "Shellac",
+      "cat": "Animal",
+      "aliases": [
+        "Lacca",
+        "Shellac Wax"
+      ],
+      "what": "Resin secreted by the lac insect, used in nail products and hair sprays.",
+      "note": "Insects are commonly harvested along with the resin."
+    },
+    {
+      "name": "Ambergris",
+      "cat": "Animal",
+      "aliases": [
+        "Ambra Grisea"
+      ],
+      "what": "A sperm-whale intestinal secretion used historically as a perfume fixative.",
+      "note": "Trade is restricted in several countries; most modern 'amber' notes are synthetic."
+    },
+    {
+      "name": "Musk",
+      "cat": "Synthetic",
+      "aliases": [
+        "Musk Ketone",
+        "Galaxolide",
+        "Tonalide"
+      ],
+      "what": "Base note in perfumery, now almost entirely synthetic.",
+      "note": "Natural musk came from the glands of musk deer. Several synthetic musks are persistent in water systems."
+    },
+    {
+      "name": "Chitosan",
+      "cat": "Animal",
+      "aliases": [
+        "Chitin"
+      ],
+      "what": "Film-forming polymer used in hair styling and some sunscreens.",
+      "note": "Made from crustacean shells."
+    },
+    {
+      "name": "Placental Protein",
+      "cat": "Animal",
+      "aliases": [
+        "Placenta",
+        "Placental Enzymes",
+        "Placental Extract"
+      ],
+      "what": "Extract used in anti-ageing and hair products.",
+      "note": "Usually taken from sheep or cattle placenta."
+    },
+    {
+      "name": "Allantoin",
+      "cat": "Varies",
+      "aliases": [
+        "Comfrey Extract"
+      ],
+      "what": "A soothing, keratolytic agent used in sensitive-skin formulas.",
+      "note": "Originally isolated from cow urine; the cosmetic grade is now generally synthetic or from comfrey root."
+    },
+    {
+      "name": "Hyaluronic Acid",
+      "cat": "Varies",
+      "aliases": [
+        "Sodium Hyaluronate",
+        "Hydrolyzed Hyaluronic Acid"
+      ],
+      "what": "A humectant that binds many times its weight in water.",
+      "note": "Once extracted from rooster combs; the standard supply is now bacterial fermentation."
+    },
+    {
+      "name": "Cetyl Alcohol",
+      "cat": "Varies",
+      "aliases": [
+        "Cetearyl Alcohol",
+        "Spermaceti Derived"
+      ],
+      "what": "A fatty alcohol that thickens and stabilises emulsions. Not drying like ethanol.",
+      "note": "Historically from sperm whale oil; now made from coconut, palm or petroleum."
+    },
+    {
+      "name": "Oleic Acid",
+      "cat": "Varies",
+      "aliases": [
+        "Oleyl Alcohol",
+        "Oleyl Oleate"
+      ],
+      "what": "A fatty acid emollient and emulsifier.",
+      "note": "Tallow- or plant-derived."
+    },
+    {
+      "name": "Beta-Carotene",
+      "cat": "Varies",
+      "aliases": [
+        "CI 40800",
+        "Provitamin A"
+      ],
+      "what": "Orange pigment and antioxidant.",
+      "note": "Usually from algae, carrots or synthesis."
+    },
+    {
+      "name": "Dimethicone",
+      "cat": "Synthetic",
+      "aliases": [
+        "Cyclopentasiloxane",
+        "Cyclomethicone",
+        "Amodimethicone"
+      ],
+      "what": "A silicone that gives products their slip and leaves a smoothing film.",
+      "note": "Some cyclic silicones face EU restrictions in rinse-off products for persistence in the environment."
+    },
+    {
+      "name": "Parfum",
+      "cat": "Synthetic",
+      "aliases": [
+        "Fragrance",
+        "Aroma",
+        "Perfume"
+      ],
+      "what": "A legally protected blend that may contain dozens to hundreds of undisclosed substances.",
+      "note": "Only 26 known allergens must be named separately in the EU and UK. The rest of the formula stays trade secret."
+    },
+    {
+      "name": "Phenoxyethanol",
+      "cat": "Synthetic",
+      "aliases": [],
+      "what": "A broad-spectrum preservative, capped at 1% in the EU and UK."
+    },
+    {
+      "name": "Parabens",
+      "cat": "Synthetic",
+      "aliases": [
+        "Methylparaben",
+        "Propylparaben",
+        "Butylparaben",
+        "Ethylparaben"
+      ],
+      "what": "Preservatives that prevent mould and bacterial growth.",
+      "note": "Five parabens are banned in EU and UK cosmetics; the remaining ones are permitted within concentration limits."
+    },
+    {
+      "name": "Sodium Lauryl Sulfate",
+      "cat": "Synthetic",
+      "aliases": [
+        "SLS",
+        "Sodium Laureth Sulfate",
+        "SLES"
+      ],
+      "what": "A foaming detergent used in shampoos, cleansers and toothpaste.",
+      "note": "An irritant at high concentration rather than a proven toxin."
+    },
+    {
+      "name": "Formaldehyde Releasers",
+      "cat": "Synthetic",
+      "aliases": [
+        "DMDM Hydantoin",
+        "Imidazolidinyl Urea",
+        "Quaternium-15",
+        "Diazolidinyl Urea"
+      ],
+      "what": "Preservatives that work by slowly releasing small amounts of formaldehyde.",
+      "note": "Free formaldehyde is banned in EU and UK cosmetics; releasers are restricted and must be labelled when they exceed a set threshold."
+    },
+    {
+      "name": "Retinol",
+      "cat": "Synthetic",
+      "aliases": [
+        "Retinyl Palmitate",
+        "Retinaldehyde",
+        "Vitamin A"
+      ],
+      "what": "A vitamin A derivative that increases cell turnover.",
+      "note": "The EU restricts retinol concentrations in face and body products. Not advised in pregnancy."
+    },
+    {
+      "name": "Niacinamide",
+      "cat": "Synthetic",
+      "aliases": [
+        "Vitamin B3",
+        "Nicotinamide"
+      ],
+      "what": "Regulates oil, supports the barrier and reduces uneven tone."
+    },
+    {
+      "name": "Salicylic Acid",
+      "cat": "Varies",
+      "aliases": [
+        "BHA",
+        "Beta Hydroxy Acid"
+      ],
+      "what": "An oil-soluble exfoliant that clears pores.",
+      "note": "Derived from willow bark or, more usually, synthesised."
+    },
+    {
+      "name": "Glycolic Acid",
+      "cat": "Varies",
+      "aliases": [
+        "AHA",
+        "Alpha Hydroxy Acid",
+        "Lactic Acid"
+      ],
+      "what": "Water-soluble exfoliants that loosen dead surface cells.",
+      "note": "Lactic acid can be fermented from plant sugars or produced from dairy."
+    },
+    {
+      "name": "Titanium Dioxide",
+      "cat": "Mineral",
+      "aliases": [
+        "CI 77891"
+      ],
+      "what": "A white pigment and mineral UV filter.",
+      "note": "Banned as a food additive in the EU; still permitted in cosmetics, with restrictions on inhalable powder forms."
+    },
+    {
+      "name": "Zinc Oxide",
+      "cat": "Mineral",
+      "aliases": [
+        "CI 77947"
+      ],
+      "what": "A broad-spectrum mineral UV filter and soothing agent."
+    },
+    {
+      "name": "Mica",
+      "cat": "Mineral",
+      "aliases": [
+        "CI 77019",
+        "Muscovite"
+      ],
+      "what": "A mineral that gives shimmer to powders, highlighters and polish.",
+      "note": "Child labour has been documented in mica mining in India and Madagascar. Synthetic fluorphlogopite is the alternative."
+    },
+    {
+      "name": "Talc",
+      "cat": "Mineral",
+      "aliases": [
+        "Magnesium Silicate"
+      ],
+      "what": "A soft mineral used to absorb oil and add slip in powders.",
+      "note": "Deposits can occur near asbestos; cosmetic talc must be asbestos-free and is subject to purity testing."
+    },
+    {
+      "name": "Kaolin",
+      "cat": "Mineral",
+      "aliases": [
+        "China Clay",
+        "CI 77004"
+      ],
+      "what": "An absorbent clay used in masks and pressed powders."
+    },
+    {
+      "name": "Iron Oxides",
+      "cat": "Mineral",
+      "aliases": [
+        "CI 77491",
+        "CI 77492",
+        "CI 77499"
+      ],
+      "what": "Red, yellow and black pigments used in foundations and shadows.",
+      "note": "Cosmetic grades are synthesised for purity."
+    },
+    {
+      "name": "Palm Oil",
+      "cat": "Plant",
+      "aliases": [
+        "Elaeis Guineensis",
+        "Sodium Palmate",
+        "Palmitic Acid",
+        "Cetyl Palmitate"
+      ],
+      "what": "A cheap, stable oil and the base for hundreds of derivative ingredients.",
+      "note": "A leading driver of deforestation and orangutan habitat loss in Indonesia and Malaysia. It hides behind dozens of derivative names."
+    },
+    {
+      "name": "Shea Butter",
+      "cat": "Plant",
+      "aliases": [
+        "Butyrospermum Parkii"
+      ],
+      "what": "A rich occlusive fat pressed from shea nuts."
+    },
+    {
+      "name": "Jojoba Oil",
+      "cat": "Plant",
+      "aliases": [
+        "Simmondsia Chinensis"
+      ],
+      "what": "A liquid wax close in structure to human sebum."
+    },
+    {
+      "name": "Aloe Vera",
+      "cat": "Plant",
+      "aliases": [
+        "Aloe Barbadensis Leaf Juice"
+      ],
+      "what": "Hydrating leaf gel used in after-sun and soothing formulas."
+    },
+    {
+      "name": "Argan Oil",
+      "cat": "Plant",
+      "aliases": [
+        "Argania Spinosa Kernel Oil"
+      ],
+      "what": "A fatty-acid-rich oil used on hair and skin."
+    },
+    {
+      "name": "Candelilla Wax",
+      "cat": "Plant",
+      "aliases": [
+        "Euphorbia Cerifera"
+      ],
+      "what": "A plant wax used where beeswax would otherwise be."
+    },
+    {
+      "name": "Carnauba Wax",
+      "cat": "Plant",
+      "aliases": [
+        "Copernicia Cerifera"
+      ],
+      "what": "A hard palm wax used to structure lipsticks and mascaras."
+    },
+    {
+      "name": "Tocopherol",
+      "cat": "Varies",
+      "aliases": [
+        "Vitamin E",
+        "Tocopheryl Acetate"
+      ],
+      "what": "An antioxidant that also slows oils from going rancid.",
+      "note": "Usually from soy or sunflower; synthetic grades exist."
+    },
+    {
+      "name": "Lecithin",
+      "cat": "Varies",
+      "aliases": [
+        "Soy Lecithin",
+        "Hydrogenated Lecithin"
+      ],
+      "what": "An emulsifier that holds oil and water together.",
+      "note": "Soy is standard; egg-yolk lecithin is used in some formulas."
+    },
+    {
+      "name": "Aqua",
+      "cat": "Mineral",
+      "aliases": [
+        "Water",
+        "Eau"
+      ],
+      "what": "Water. Usually the first and largest ingredient in anything that pours."
+    }
+  ]
+}

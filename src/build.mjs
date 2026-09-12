@@ -26,6 +26,7 @@ import {
   renderLibrary,
   renderArchive,
   renderSources,
+  renderIngredients,
 } from './pages/decoders.mjs';
 import { renderDonate, renderBriefing } from './pages/donate.mjs';
 import { ENTRY_TYPES, renderEntry } from './pages/entry.mjs';
@@ -224,6 +225,7 @@ async function main() {
     certifications: await readJson(join(CONTENT, 'data/certifications.json')),
     greenwashing: await readJson(join(CONTENT, 'data/greenwashing.json')),
     materials: await readJson(join(CONTENT, 'data/materials.json')),
+    ingredients: await readJson(join(CONTENT, 'data/ingredients.json')),
     record: await readJson(join(CONTENT, 'data/record.json')),
     act: await readJson(join(CONTENT, 'data/act.json')),
     library: await readJson(join(CONTENT, 'data/library.json')),
@@ -304,6 +306,7 @@ async function main() {
     ['/tools/certifications/', renderCertifications, data.certifications],
     ['/tools/greenwashing/', renderGreenwashing, data.greenwashing],
     ['/tools/materials/', renderMaterials, data.materials],
+    ['/tools/ingredients/', renderIngredients, data.ingredients],
     ['/tools/record/', renderRecord, data.record],
     ['/tools/act/', renderAct, data.act],
   ];
@@ -411,6 +414,7 @@ async function main() {
     ...data.certifications.schemes.map((x) => ({ t: x.name, u: `/tools/certifications/${slugify(x.name)}/`, s: x.verifies, k: 'Certification', c: x.cat, b: `${x.verifies} ${x.notguarantee}` })),
     ...data.greenwashing.terms.map((x) => ({ t: x.term, u: `/tools/greenwashing/${slugify(x.term)}/`, s: x.actual, k: 'Greenwashing', c: x.cat, b: `${x.claim} ${x.actual}` })),
     ...data.materials.materials.map((x) => ({ t: x.name, u: `/tools/materials/${slugify(x.name)}/`, s: x.what, k: 'Material', c: x.cat, b: `${x.what} ${x.welfare} ${x.environment}` })),
+    ...data.ingredients.ingredients.map((x) => ({ t: x.name, u: `/tools/ingredients/${slugify(x.name)}/`, s: x.what, k: 'Ingredient', c: x.cat, b: `${x.what} ${(x.aliases ?? []).join(' ')} ${x.note ?? ''}` })),
     ...data.record.findings.map((x) => ({ t: x.name, u: `/tools/record/${slugify(x.name)}/`, s: x.finding, k: 'Record', c: x.sector, b: x.finding })),
     ...data.industries.industries.map((x) => ({ t: x.name, u: `/industries/#${slugify(x.name)}`, s: x.resource.title, k: 'Industry', c: '', b: x.resource.body })),
   ];
