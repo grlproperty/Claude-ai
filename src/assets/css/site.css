@@ -1294,31 +1294,6 @@ code {
   }
 }
 
-/* The caption belongs to the picture, so it lines up under the figure rather
-   than under the column the figure happens to be centred in. */
-.hero__plate--cutout figcaption {
-  text-align: center;
-  margin-inline: auto;
-}
-
-.hero__plate figcaption {
-  font-family: var(--ui);
-  font-size: 0.75rem;
-  line-height: 1.7;
-  color: var(--ink-muted);
-  max-width: 46ch;
-  margin-top: 0.9rem;
-}
-
-.hero__plate figcaption .is-crimson {
-  color: var(--crimson);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  font-size: 0.6rem;
-  display: block;
-  margin-bottom: 0.35rem;
-}
-
 .hero__plate-note {
   display: block;
   color: var(--ink-faint);
