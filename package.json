@@ -20,7 +20,8 @@
     "briefing": "node scripts/send-briefing.mjs",
     "single": "node src/build.mjs && node scripts/build-single.mjs",
     "products": "node src/build.mjs && node products/build.mjs",
-    "sources": "node scripts/check-sources.mjs"
+    "sources": "node scripts/check-sources.mjs",
+    "products:check": "node scripts/check-products.mjs"
   },
   "devDependencies": {
     "gray-matter": "^4.0.3",

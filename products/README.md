@@ -60,6 +60,28 @@ The cover is unnumbered, which is the ordinary print convention and is why the
 folios in the contents match the printed footers rather than the PDF's page
 indices.
 
+## Checking they can be delivered
+
+    npm run products:check
+
+Every product in the shop carries a live PayPal link, and delivery is manual,
+so the failure mode is silent and on this side: a buy button for a document
+that is not on the shelf, discovered only once somebody has paid. This checks
+that each product on sale has a file in `products/dist/`, and that the file's
+real page count matches the number `content/site.json` advertises — a
+publication that audits other people's claims cannot be loose about the one
+number a buyer can verify the second the file opens.
+
+It is not part of `npm run check` and not in CI. `products/dist/` is
+gitignored, so a clean checkout has none of these and a CI run would fail
+every time, which is how a check gets ignored. Run it before promoting
+anything.
+
+Only two of the six are built here. The other four are authored elsewhere, so
+the check reports them missing whenever they are not on this shelf — that is
+the check working, not a fault, but it does mean the shop is taking payment
+for documents this repository cannot produce.
+
 ## Selling them
 
 Through PayPal, and by hand.
