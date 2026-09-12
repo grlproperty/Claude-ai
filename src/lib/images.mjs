@@ -316,7 +316,7 @@ export async function buildHeroImage({ dist, dir }) {
  * replaced automatically the moment a real cover file appears in
  * content/images/covers/.
  */
-function jacketSvg({ product, site, index }) {
+export function jacketSvg({ product, site, index }) {
   const W = 840;
   const H = 1187;
   const M = 84;

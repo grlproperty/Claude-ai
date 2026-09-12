@@ -4,7 +4,7 @@ summary: What this site collects, which is close to nothing, and how that sits w
 order: 5
 ---
 
-*Last updated: 10 September 2026*
+*Last updated: 12 September 2026*
 
 FERAL FEMME is a South African publication and processes personal information in line with the **Protection of Personal Information Act 4 of 2013 (POPIA)**. It has no premises: it is written from wherever the editor is, and the address below reaches her wherever that is.
 
@@ -12,7 +12,7 @@ This site is built as static files. It has no database, no user accounts, and no
 
 ## Who is responsible
 
-FERAL FEMME is an independent publication run by one person. It is not a registered company, and it is not part of one. Under POPIA the **responsible party** is the individual who publishes it — "we", "us", and "our" on this page mean her — and she can be reached at [info@feral-femme.co](mailto:info@feral-femme.co).
+FERAL FEMME is published by **Ayden Rosemary Brown**, who trades under that name. It is an independent publication run by one person: it is not a registered company, and it is not part of one. Under POPIA she is the **responsible party** — "we", "us", and "our" on this page mean her — and she can be reached at [info@feral-femme.co](mailto:info@feral-femme.co).
 
 ## What we do not do
 

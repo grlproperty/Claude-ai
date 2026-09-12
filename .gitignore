@@ -7,3 +7,6 @@ tools/.fontconfig/
 *.log
 tools/.instagram-cache/
 products/dist/
+
+# Cover exports are generated on demand by scripts/export-covers.mjs
+export/
