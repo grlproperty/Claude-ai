@@ -142,6 +142,21 @@ export function Label({
   );
 }
 
+/** The heading for a group of checkboxes or radios inside a fieldset. */
+export function Legend({
+  className,
+  children,
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <legend className={cn('mb-1.5 text-[0.8125rem] font-medium text-ink', className)}>
+      {children}
+    </legend>
+  );
+}
+
 export function Field({
   label,
   hint,

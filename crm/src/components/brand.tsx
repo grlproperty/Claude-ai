@@ -31,7 +31,13 @@ export function Wordmark({
       </span>
       <span className="min-w-0 leading-tight">
         <span className={cn('block font-semibold text-ink', name)}>
-          Garden Route <span className="text-brand">Lifestyle Property</span>
+          {/* The full name needs room; on a phone the initials carry it. */}
+          <span className="hidden sm:inline">
+            Garden Route <span className="text-brand">Lifestyle Property</span>
+          </span>
+          <span className="sm:hidden">
+            GRL<span className="text-brand">P</span>
+          </span>
         </span>
         {withTagline ? (
           <span className="block text-[0.6875rem] italic text-ink-faint">Find your way home.</span>

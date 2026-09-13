@@ -20,7 +20,8 @@ import { fileURLToPath } from 'node:url';
 import { closePools, withOwner, withUser, readAsUser, type Db } from '../../src/lib/db.ts';
 import { runMigrations } from '../../src/lib/migrate.ts';
 import { hashPassword } from '../../src/lib/password.ts';
-import type { RoleCode } from '../../src/lib/permissions.ts';
+import type { Permission, RoleCode } from '../../src/lib/permissions.ts';
+import type { Ctx } from '../../src/lib/actor.ts';
 
 const migrationsDir = join(
   dirname(fileURLToPath(import.meta.url)),
@@ -38,8 +39,19 @@ export async function migrateTestDatabase(): Promise<void> {
   migrated = true;
 }
 
-/** Reference data seeded by migrations is kept; everything else is cleared. */
-const KEEP = new Set(['schema_migrations', 'roles', 'permissions', 'role_permissions']);
+/**
+ * Reference data seeded by migrations is kept; everything else is cleared.
+ * These tables are part of the schema's own configuration, not test data, and
+ * clearing them would leave the database in a state production never reaches.
+ */
+const KEEP = new Set([
+  'schema_migrations',
+  'roles',
+  'permissions',
+  'role_permissions',
+  'merge_child_tables',
+  'tags',
+]);
 
 export async function resetData(): Promise<void> {
   await migrateTestDatabase();
@@ -53,6 +65,15 @@ export async function resetData(): Promise<void> {
       .map((name) => `public."${name}"`);
     if (targets.length > 0) {
       await db.query(`truncate table ${targets.join(', ')} restart identity cascade`);
+    }
+
+    // Standalone sequences -- the GRLP reference counters -- are not owned by
+    // a column, so TRUNCATE ... RESTART IDENTITY does not touch them.
+    const sequences = await db.query<{ sequencename: string }>(
+      `select sequencename from pg_sequences where schemaname = 'public'`,
+    );
+    for (const sequence of sequences) {
+      await db.query(`alter sequence public."${sequence.sequencename}" restart with 1`);
     }
   });
 }
@@ -126,4 +147,28 @@ export async function rejects(promise: Promise<unknown>): Promise<Error> {
     return error as Error;
   }
   throw new Error('Expected the operation to be refused, but it succeeded.');
+}
+
+/**
+ * The actor context a data module expects, with the permissions actually
+ * held by that user read back from the database rather than assumed.
+ */
+export async function ctxFor(user: TestUser | string): Promise<Ctx> {
+  const id = typeof user === 'string' ? user : user.id;
+  const row = await withOwner((db) =>
+    db.one<{ email: string; codes: string[] }>(
+      `select u.email,
+              coalesce((select array_agg(distinct p.code)
+                          from user_roles ur
+                          join role_permissions rp on rp.role_id = ur.role_id
+                          join permissions p on p.id = rp.permission_id
+                         where ur.user_id = u.id), '{}'::text[]) as codes
+         from users u where u.id = $1`,
+      [id],
+    ),
+  );
+  return {
+    actor: { id, email: row.email, permissions: new Set(row.codes as Permission[]) },
+    meta: { ip: '198.51.100.10', userAgent: 'test' },
+  };
 }

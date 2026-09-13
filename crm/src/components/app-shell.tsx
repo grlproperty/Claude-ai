@@ -83,7 +83,7 @@ export function AppShell({
             {navOpen ? <Icon.close /> : <Icon.menu />}
           </button>
 
-          <Link href="/" className="shrink-0 rounded-md lg:w-56" aria-label="GRLP CRM home">
+          <Link href="/" className="min-w-0 shrink rounded-md lg:w-56 lg:shrink-0" aria-label="GRLP CRM home">
             <Wordmark />
           </Link>
 
@@ -107,7 +107,7 @@ export function AppShell({
             </kbd>
           </form>
 
-          <div className="ml-auto flex items-center gap-1 sm:ml-2">
+          <div className="ml-auto flex shrink-0 items-center gap-1 sm:ml-2">
             <QuickAddMenu items={quickAdd} />
 
             <Link

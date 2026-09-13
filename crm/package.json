@@ -18,7 +18,8 @@
     "seed": "node --experimental-strip-types scripts/seed.ts",
     "test": "node --test --test-concurrency=1 \"test/**/*.test.ts\"",
     "ci": "npm run typecheck && npm run lint && npm run migrate && npm test && npm run build",
-    "test:watch": "node --test --watch \"test/**/*.test.ts\""
+    "test:watch": "node --test --watch \"test/**/*.test.ts\"",
+    "smoke": "node --experimental-strip-types scripts/smoke.ts"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -40,6 +41,7 @@
     "eslint": "^9.39.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.12.0",
+    "playwright": "^1.63.0",
     "postcss": "^8.5.28",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3",
