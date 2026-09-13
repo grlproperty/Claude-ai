@@ -1,4 +1,4 @@
-import type { Ctx } from '../actor.ts';
+import { agentToKeep, type Ctx } from '../actor.ts';
 import type { Db } from '../db.ts';
 import { diff, recordAudit } from '../audit.ts';
 import { ConcurrencyError, NotFoundError, ValidationError } from '../errors.ts';
@@ -48,8 +48,7 @@ export async function createProperty(
   ctx: Ctx,
   input: PropertyInput,
 ): Promise<PropertyWriteResult> {
-  const primaryAgentId =
-    input.primaryAgentId ?? (ctx.actor.permissions.has('DATA_VIEW_ALL') ? null : ctx.actor.id);
+  const primaryAgentId = agentToKeep(ctx.actor, input.primaryAgentId);
 
   const property = await db.one<{ id: string; property_ref: string }>(
     `insert into properties
@@ -171,6 +170,12 @@ export async function updateProperty(
   if (!before) throw new NotFoundError('That property');
   if (before.row_version !== expectedVersion) throw new ConcurrencyError();
 
+  const primaryAgentId = agentToKeep(
+    ctx.actor,
+    input.primaryAgentId,
+    before.primary_agent_id as string | null,
+  );
+
   const updated = await db.query<Record<string, unknown>>(
     `update properties set
         erf_number=$2, portion_number=$3, township=$4, property_name=$5, street_address=$6,
@@ -195,7 +200,7 @@ export async function updateProperty(
       input.businessArea, input.propertyStatus, input.salesStatus, input.rentalStatus,
       input.mandateStatus, input.mandateType, input.saleOutcome,
       input.mandateStart, input.mandateExpiry,
-      input.primaryAgentId, input.secondaryAgentId, input.officeId, input.teamId,
+      primaryAgentId, input.secondaryAgentId, input.officeId, input.teamId,
       input.notes, ctx.actor.id, expectedVersion,
     ],
   );

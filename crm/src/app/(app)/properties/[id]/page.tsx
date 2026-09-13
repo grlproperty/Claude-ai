@@ -39,6 +39,7 @@ import {
 import { Alert, EmptyState } from '@/components/ui/feedback.tsx';
 import { DescriptionList, Table, TableScroll, Td, Th, Tr } from '@/components/ui/table.tsx';
 import { QuickActions } from '@/components/quick-actions.tsx';
+import { RelatedRecordCards, loadRelatedRecords } from '@/components/related-records.tsx';
 import {
   ArchiveDocumentButton,
   ArchivePropertyPanel,
@@ -88,6 +89,8 @@ export default async function PropertyPage({
 
     return {
       property,
+      // What is in flight for this property (spec 100).
+      related: await loadRelatedRecords(db, user, { propertyId: property.id }),
       history: await getPropertyHistory(db, id),
       photos: await listPropertyPhotos(db, id),
       documents: await listDocuments(db, { propertyId: id }),
@@ -172,6 +175,7 @@ export default async function PropertyPage({
   if (!data) notFound();
   const {
     property,
+    related,
     history,
     photos,
     documents,
@@ -773,6 +777,8 @@ export default async function PropertyPage({
         ) : null}
 
         {/* ---------------- Record ---------------- */}
+        <RelatedRecordCards records={related} user={user} scope={{ propertyId: property.id }} />
+
         <Card>
           <CardHeader title="Record" />
           <div className="p-4 sm:p-5">

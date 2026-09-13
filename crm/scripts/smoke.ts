@@ -3,7 +3,8 @@
  *
  * Drives a real browser against a running CRM to prove the daily path works:
  * first-run setup, creating a client, the duplicate check catching the same
- * person a second time, and the whole thing being usable on a phone.
+ * person a second time, taking that client through a lead and a sale, and the
+ * whole thing being usable on a phone.
  *
  *   npm run build && npm start &      # or npm run dev
  *   npm run smoke -- http://127.0.0.1:3000
@@ -62,6 +63,7 @@ async function main(): Promise<void> {
 
     await page.getByRole('button', { name: /create person/i }).click();
     await page.waitForURL(/\/people\/[0-9a-f-]{36}/, { timeout: 15_000 });
+    const personId = idFromUrl(page.url());
 
     const body = await page.textContent('body');
     check('the new client received a GRLP reference', /GRLP-\d{8}/.test(body ?? ''));
@@ -104,6 +106,7 @@ async function main(): Promise<void> {
     });
     await page.getByRole('button', { name: /create property/i }).click();
     await page.waitForURL(/\/properties\/[0-9a-f-]{36}/, { timeout: 15_000 });
+    const propertyId = idFromUrl(page.url());
 
     const propertyBody = await page.textContent('body');
     check('the new property received a GRLP property reference', /GRLP-P-\d{8}/.test(propertyBody ?? ''));
@@ -138,6 +141,74 @@ async function main(): Promise<void> {
     );
     await page.screenshot({ path: `${shotsDir}/08-property-duplicate.png`, fullPage: true });
 
+    // --- the pipeline: a lead, then a sale --------------------------------
+    await page.goto(`${baseUrl}/leads/new?personId=${personId}&propertyId=${propertyId}`, {
+      waitUntil: 'domcontentloaded',
+    });
+    check(
+      'a lead opened from a profile arrives with that person already chosen',
+      (await page.inputValue('select[name="personId"]')) === personId &&
+        (await page.inputValue('select[name="propertyId"]')) === propertyId,
+    );
+
+    // A lost lead must say why. The database refuses one without a reason, and
+    // the form must not let it get that far silently (spec 41).
+    await page.selectOption('select[name="leadType"]', 'buyer');
+    await page.selectOption('select[name="status"]', 'lost');
+    await page.getByRole('button', { name: /create lead/i }).click();
+    await page.waitForSelector('text=/why this lead was lost/i', { timeout: 15_000 });
+    check('a lost lead cannot be saved without a reason', true);
+
+    await page.selectOption('select[name="status"]', 'new');
+    await page.fill('textarea[name="enquirySummary"]', 'Wants a three bedroom in Wilderness.');
+    await page.getByRole('button', { name: /create lead/i }).click();
+    await page.waitForURL(/\/leads\/[0-9a-f-]{36}/, { timeout: 15_000 });
+    check('the lead was created and opened', true);
+    await page.screenshot({ path: `${shotsDir}/10-lead.png`, fullPage: true });
+
+    // A transaction: concluded is not registered (spec 49).
+    await page.goto(`${baseUrl}/sales/transactions/new?propertyId=${propertyId}`, {
+      waitUntil: 'domcontentloaded',
+    });
+    await page.selectOption('select[name="propertyId"]', propertyId);
+    await page.selectOption('select[name="buyerId"]', { index: 1 });
+    await page.fill('input[name="transactionValue"]', '2850000');
+    await page.selectOption('select[name="status"]', 'sale_concluded');
+    await page.fill('input[name="saleDate"]', '2026-09-10');
+    await page.getByRole('button', { name: /create the transaction/i }).click();
+    await page.waitForURL(/\/sales\/transactions\/[0-9a-f-]{36}/, { timeout: 15_000 });
+
+    const deal = (await page.textContent('body')) ?? '';
+    check('the transaction was created', /GRLP-T-\d{8}|Sale concluded/i.test(deal));
+    check(
+      'a concluded sale is not shown as registered (spec 49)',
+      /awaiting registration|not registered|Register/i.test(deal) && !/Registered on/i.test(deal),
+    );
+    await page.screenshot({ path: `${shotsDir}/11-transaction.png`, fullPage: true });
+
+    // --- the profiles now show what is in flight (spec 99, 100) -----------
+    await page.goto(`${baseUrl}/people/${personId}`, { waitUntil: 'domcontentloaded' });
+    const personNow = (await page.textContent('body')) ?? '';
+    check(
+      "the person's profile lists their lead",
+      /Leads/.test(personNow) && /Wants a three bedroom|Buyer/i.test(personNow),
+    );
+    check(
+      "the person's profile still does not claim to have sent anything",
+      !/whatsapp sent|email sent|message sent/i.test(personNow),
+    );
+    await page.screenshot({ path: `${shotsDir}/12-person-pipeline.png`, fullPage: true });
+
+    await page.goto(`${baseUrl}/properties/${propertyId}`, { waitUntil: 'domcontentloaded' });
+    const propertyNow = (await page.textContent('body')) ?? '';
+    check(
+      "the property's profile lists its pipeline",
+      ['Leads', 'Viewings', 'Valuations', 'Offers', 'Transactions'].every((section) =>
+        propertyNow.includes(section),
+      ),
+    );
+    await page.screenshot({ path: `${shotsDir}/13-property-pipeline.png`, fullPage: true });
+
     // --- phone -----------------------------------------------------------
     const phone = await browser.newContext({
       viewport: { width: 390, height: 844 },
@@ -161,7 +232,7 @@ async function main(): Promise<void> {
     check(`the person form does not scroll sideways on a phone (overflow ${formOverflow}px)`, formOverflow <= 1);
     await phonePage.screenshot({ path: `${shotsDir}/06-phone-form.png`, fullPage: true });
 
-    for (const path of ['/properties', '/properties/new']) {
+    for (const path of ['/properties', '/properties/new', '/leads', '/tasks', '/calendar', '/sales', '/rentals']) {
       await phonePage.goto(`${baseUrl}${path}`, { waitUntil: 'domcontentloaded' });
       const sideways = await phonePage.evaluate(
         () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -177,6 +248,10 @@ async function main(): Promise<void> {
     failures === 0 ? '\nsmoke test passed\n' : `\nsmoke test failed: ${failures} problem(s)\n`,
   );
   if (failures > 0) process.exit(1);
+}
+
+function idFromUrl(url: string): string {
+  return url.split('?')[0]?.split('/').pop() ?? '';
 }
 
 async function signIn(page: Page): Promise<void> {

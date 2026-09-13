@@ -23,3 +23,22 @@ export function holds(actor: Actor, permission: Permission): boolean {
 }
 
 export const NO_META: RequestMeta = { ip: null, userAgent: null };
+
+/**
+ * Which agent a record should be left with after an edit.
+ *
+ * Row level security confines an agent to their own records, so clearing the
+ * agent would hide the record from the very person who just saved it — the
+ * write is refused outright by the policy's check. Management, who can see
+ * everything, may genuinely leave a record unassigned; an agent keeps the
+ * agent it had, or takes it themselves.
+ */
+export function agentToKeep(
+  actor: Actor,
+  requested: string | null | undefined,
+  existing?: string | null,
+): string | null {
+  if (requested) return requested;
+  if (holds(actor, 'DATA_VIEW_ALL')) return null;
+  return existing ?? actor.id;
+}

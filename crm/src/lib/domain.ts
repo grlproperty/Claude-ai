@@ -311,8 +311,40 @@ export function statusTone(value: string): 'neutral' | 'brand' | 'ok' | 'warn' |
   ) {
     return 'stop';
   }
-  if (['on_market'].includes(value)) return 'brand';
-  if (['prospect', 'rental_prospect', 'off_market', 'not_prepared'].includes(value)) return 'neutral';
+  if (
+    [
+      'won', 'accepted', 'approved', 'verified', 'complete', 'completed',
+      'lease_signed', 'mandate_signed', 'registered',
+    ].includes(value)
+  ) {
+    return 'ok';
+  }
+  if (
+    [
+      'lost', 'rejected', 'failed', 'cancelled', 'no_show', 'not_proceeding',
+      'not_interested', 'not_suitable', 'bond_declined', 'withdrawn',
+    ].includes(value)
+  ) {
+    return 'stop';
+  }
+  if (
+    [
+      'submitted', 'under_review', 'screening', 'documents_required', 'requested',
+      'awaiting_registration', 'suspensive_conditions', 'counter_offer', 'nurture',
+      'urgent', 'high', 'in_progress', 'scheduled',
+    ].includes(value)
+  ) {
+    return 'warn';
+  }
+  if (['on_market', 'new', 'offer', 'offer_accepted', 'very_interested'].includes(value)) {
+    return 'brand';
+  }
+  if (
+    ['prospect', 'rental_prospect', 'off_market', 'not_prepared', 'draft', 'to_do', 'none',
+     'not_started', 'not_applicable', 'low', 'normal'].includes(value)
+  ) {
+    return 'neutral';
+  }
   return 'info';
 }
 
@@ -336,3 +368,271 @@ export function propertyAddressLine(property: {
   if (parts.length === 0 && property.erfNumber) parts.push(`Erf ${property.erfNumber}`);
   return [parts.join(', '), place].filter(Boolean).join(', ');
 }
+
+// ===========================================================================
+// LEADS (spec 39, 40)
+// ===========================================================================
+
+export const SALES_LEAD_TYPES = {
+  buyer: 'Buyer',
+  seller: 'Seller',
+  investor: 'Investor',
+  valuation: 'Valuation',
+  property_enquiry: 'Property enquiry',
+} as const;
+
+export const RENTAL_LEAD_TYPES = {
+  landlord: 'Landlord',
+  tenant: 'Tenant',
+  rental_enquiry: 'Rental enquiry',
+  rental_valuation: 'Rental valuation',
+} as const;
+
+export const LEAD_TYPES = {
+  ...SALES_LEAD_TYPES,
+  ...RENTAL_LEAD_TYPES,
+  other: 'Other',
+} as const;
+export type LeadType = keyof typeof LEAD_TYPES;
+export const leadTypeOptions = options(LEAD_TYPES);
+export const salesLeadTypeOptions = options({ ...SALES_LEAD_TYPES, other: 'Other' });
+export const rentalLeadTypeOptions = options({ ...RENTAL_LEAD_TYPES, other: 'Other' });
+
+export const LEAD_STATUSES = {
+  new: 'New',
+  contacted: 'Contacted',
+  qualified: 'Qualified',
+  viewing_appointment: 'Viewing / appointment',
+  valuation: 'Valuation',
+  mandate_discussion: 'Mandate discussion',
+  mandate_signed: 'Mandate signed',
+  offer: 'Offer',
+  under_contract: 'Under contract',
+  won: 'Won',
+  lost: 'Lost',
+  nurture: 'Nurture',
+  archived: 'Archived',
+} as const;
+export type LeadStatus = keyof typeof LEAD_STATUSES;
+export const leadStatusOptions = options(LEAD_STATUSES);
+
+/** The statuses that mean the lead is still live work. */
+export const OPEN_LEAD_STATUSES: LeadStatus[] = [
+  'new', 'contacted', 'qualified', 'viewing_appointment', 'valuation',
+  'mandate_discussion', 'mandate_signed', 'offer', 'under_contract', 'nurture',
+];
+
+// ===========================================================================
+// TASKS AND CALENDAR (spec 43, 45)
+// ===========================================================================
+
+export const TASK_TYPES = {
+  follow_up: 'Follow-up',
+  call: 'Call',
+  whatsapp: 'WhatsApp',
+  email: 'Email',
+  meeting: 'Meeting',
+  viewing: 'Viewing',
+  valuation: 'Valuation',
+  paperwork: 'Paperwork',
+  fica: 'FICA',
+  compliance: 'Compliance',
+  marketing: 'Marketing',
+  commission: 'Commission',
+  other: 'Other',
+} as const;
+export type TaskType = keyof typeof TASK_TYPES;
+export const taskTypeOptions = options(TASK_TYPES);
+
+export const TASK_STATUSES = {
+  to_do: 'To do',
+  in_progress: 'In progress',
+  completed: 'Completed',
+  cancelled: 'Cancelled',
+} as const;
+export type TaskStatus = keyof typeof TASK_STATUSES;
+export const taskStatusOptions = options(TASK_STATUSES);
+
+export const TASK_PRIORITIES = {
+  low: 'Low',
+  normal: 'Normal',
+  high: 'High',
+  urgent: 'Urgent',
+} as const;
+export type TaskPriority = keyof typeof TASK_PRIORITIES;
+export const taskPriorityOptions = options(TASK_PRIORITIES);
+
+export const TASK_RECURRENCES = {
+  none: 'Does not repeat',
+  daily: 'Every day',
+  weekly: 'Every week',
+  fortnightly: 'Every two weeks',
+  monthly: 'Every month',
+} as const;
+export type TaskRecurrence = keyof typeof TASK_RECURRENCES;
+export const taskRecurrenceOptions = options(TASK_RECURRENCES);
+
+export const APPOINTMENT_TYPES = {
+  viewing: 'Viewing',
+  valuation: 'Valuation',
+  meeting: 'Meeting',
+  inspection: 'Inspection',
+  rental_appointment: 'Rental appointment',
+  other: 'Other',
+} as const;
+export type AppointmentType = keyof typeof APPOINTMENT_TYPES;
+export const appointmentTypeOptions = options(APPOINTMENT_TYPES);
+
+export const APPOINTMENT_STATUSES = {
+  scheduled: 'Scheduled',
+  completed: 'Completed',
+  cancelled: 'Cancelled',
+  no_show: 'Did not arrive',
+} as const;
+export type AppointmentStatus = keyof typeof APPOINTMENT_STATUSES;
+export const appointmentStatusOptions = options(APPOINTMENT_STATUSES);
+
+// ===========================================================================
+// VIEWINGS (spec 46)
+// ===========================================================================
+
+export const VIEWING_OUTCOMES = {
+  offer_expected: 'Offer expected',
+  wants_second_viewing: 'Wants a second viewing',
+  thinking: 'Thinking about it',
+  not_proceeding: 'Not proceeding',
+  other: 'Other',
+} as const;
+export type ViewingOutcome = keyof typeof VIEWING_OUTCOMES;
+export const viewingOutcomeOptions = options(VIEWING_OUTCOMES);
+
+export const INTEREST_LEVELS = {
+  very_interested: 'Very interested',
+  interested: 'Interested',
+  considering: 'Considering',
+  not_interested: 'Not interested',
+  not_suitable: 'Not suitable',
+} as const;
+export type InterestLevel = keyof typeof INTEREST_LEVELS;
+export const interestLevelOptions = options(INTEREST_LEVELS);
+
+// ===========================================================================
+// VALUATIONS (spec 47)
+// ===========================================================================
+
+export const VALUATION_STATUSES = {
+  requested: 'Requested',
+  scheduled: 'Scheduled',
+  completed: 'Completed',
+  mandate_discussion: 'Mandate discussion',
+  mandate_signed: 'Mandate signed',
+  not_proceeding: 'Not proceeding',
+  cancelled: 'Cancelled',
+} as const;
+export type ValuationStatus = keyof typeof VALUATION_STATUSES;
+export const valuationStatusOptions = options(VALUATION_STATUSES);
+
+// ===========================================================================
+// OFFERS AND TRANSACTIONS (spec 48, 49)
+// ===========================================================================
+
+export const OFFER_STATUSES = {
+  draft: 'Draft',
+  submitted: 'Submitted',
+  under_review: 'Under review',
+  counter_offer: 'Counter offer',
+  accepted: 'Accepted',
+  rejected: 'Rejected',
+  withdrawn: 'Withdrawn',
+  expired: 'Expired',
+  cancelled: 'Cancelled',
+} as const;
+export type OfferStatus = keyof typeof OFFER_STATUSES;
+export const offerStatusOptions = options(OFFER_STATUSES);
+
+export const FINANCE_STATUSES = {
+  not_applicable: 'Not applicable',
+  cash: 'Cash',
+  bond_applied: 'Bond applied for',
+  bond_pending: 'Bond pending',
+  bond_approved: 'Bond approved',
+  bond_declined: 'Bond declined',
+  other: 'Other',
+} as const;
+export type FinanceStatus = keyof typeof FINANCE_STATUSES;
+export const financeStatusOptions = options(FINANCE_STATUSES);
+
+/**
+ * Transaction statuses. Concluded and registered are separate stages, and
+ * the database refuses to record 'registered' without a registration date
+ * (spec 49).
+ */
+export const TRANSACTION_STATUSES = {
+  draft: 'Draft',
+  offer: 'Offer',
+  offer_accepted: 'Offer accepted',
+  sale_pending: 'Sale pending',
+  suspensive_conditions: 'Suspensive conditions',
+  sale_concluded: 'Sale concluded',
+  awaiting_registration: 'Awaiting registration',
+  registered: 'Registered',
+  cancelled: 'Cancelled',
+  failed: 'Failed',
+  other: 'Other',
+} as const;
+export type TransactionStatus = keyof typeof TRANSACTION_STATUSES;
+export const transactionStatusOptions = options(TRANSACTION_STATUSES);
+
+/** Statuses that mean the deal is still moving. */
+export const OPEN_TRANSACTION_STATUSES: TransactionStatus[] = [
+  'draft', 'offer', 'offer_accepted', 'sale_pending', 'suspensive_conditions',
+  'sale_concluded', 'awaiting_registration',
+];
+
+export const TRANSACTION_AGENT_ROLES = {
+  primary: 'Primary agent',
+  sharing: 'Sharing agent',
+  referral: 'Referral',
+} as const;
+export type TransactionAgentRole = keyof typeof TRANSACTION_AGENT_ROLES;
+export const transactionAgentRoleOptions = options(TRANSACTION_AGENT_ROLES);
+
+// ===========================================================================
+// RENTAL APPLICATIONS (spec 50, 51)
+// ===========================================================================
+
+export const RENTAL_APPLICATION_STATUSES = {
+  draft: 'Draft',
+  submitted: 'Submitted',
+  under_review: 'Under review',
+  documents_required: 'Documents required',
+  screening: 'Screening',
+  approved: 'Approved',
+  rejected: 'Rejected',
+  withdrawn: 'Withdrawn',
+  cancelled: 'Cancelled',
+  lease_prepared: 'Lease prepared',
+  lease_signed: 'Lease signed',
+} as const;
+export type RentalApplicationStatus = keyof typeof RENTAL_APPLICATION_STATUSES;
+export const rentalApplicationStatusOptions = options(RENTAL_APPLICATION_STATUSES);
+
+export const SCREENING_STATUSES = {
+  not_started: 'Not started',
+  in_progress: 'In progress',
+  complete: 'Complete',
+  failed: 'Failed',
+} as const;
+export type ScreeningStatus = keyof typeof SCREENING_STATUSES;
+export const screeningStatusOptions = options(SCREENING_STATUSES);
+
+export const SCREENING_ITEM_STATUSES = {
+  not_started: 'Not started',
+  requested: 'Requested',
+  received: 'Received',
+  verified: 'Verified',
+  failed: 'Failed',
+  not_applicable: 'Not applicable',
+} as const;
+export type ScreeningItemStatus = keyof typeof SCREENING_ITEM_STATUSES;
+export const screeningItemStatusOptions = options(SCREENING_ITEM_STATUSES);

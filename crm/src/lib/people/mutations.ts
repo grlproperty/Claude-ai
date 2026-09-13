@@ -1,4 +1,4 @@
-import type { Ctx } from '../actor.ts';
+import { agentToKeep, type Ctx } from '../actor.ts';
 import type { Db } from '../db.ts';
 import { diff, recordAudit } from '../audit.ts';
 import { ConcurrencyError, NotFoundError, ValidationError } from '../errors.ts';
@@ -44,8 +44,7 @@ export async function createPerson(
   input: PersonInput,
 ): Promise<PersonWriteResult> {
   const identity = prepareIdentity(input);
-  const primaryAgentId =
-    input.primaryAgentId ?? (ctx.actor.permissions.has('DATA_VIEW_ALL') ? null : ctx.actor.id);
+  const primaryAgentId = agentToKeep(ctx.actor, input.primaryAgentId);
 
   const person = await db.one<{ id: string; client_ref: string }>(
     `insert into people
@@ -125,6 +124,11 @@ export async function updatePerson(
 
   const identity = prepareIdentity(input);
   const allowClear = ctx.actor.permissions.has('PERSON_ID_VIEW');
+  const primaryAgentId = agentToKeep(
+    ctx.actor,
+    input.primaryAgentId,
+    before.primary_agent_id as string | null,
+  );
 
   const updated = await db.query<Record<string, unknown>>(
     `update people set
@@ -148,7 +152,7 @@ export async function updatePerson(
     [
       personId, input.title, input.firstName, input.middleName, input.surname, input.preferredName,
       input.passportCountry, input.passportExpiry,
-      input.businessArea, input.primaryAgentId, input.secondaryAgentId,
+      input.businessArea, primaryAgentId, input.secondaryAgentId,
       input.officeId, input.teamId, input.nextFollowUpAt, input.notes,
       identity.idLast3, identity.idFingerprint, allowClear,
       identity.passportLast3, identity.passportFingerprint,

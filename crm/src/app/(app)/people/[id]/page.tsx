@@ -25,6 +25,7 @@ import {
 import { Alert, EmptyState } from '@/components/ui/feedback.tsx';
 import { DescriptionList } from '@/components/ui/table.tsx';
 import { QuickActions, CommunicationNotice } from '@/components/quick-actions.tsx';
+import { RelatedRecordCards, loadRelatedRecords } from '@/components/related-records.tsx';
 import { Icon } from '@/components/icons.tsx';
 import { IdentityReveal } from './identity-reveal.tsx';
 import { AssignAgentPanel, ArchivePanel, RelationshipPanel, RemoveRelationshipButton } from './panels.tsx';
@@ -116,11 +117,14 @@ export default async function PersonPage({
 
     const agents = user.permissions.has('DATA_VIEW_ALL') ? await listAgents(db) : [];
 
-    return { person, duplicates, assignments, audit, others, agents };
+    // What is in flight for this person (spec 99).
+    const related = await loadRelatedRecords(db, user, { personId: person.id });
+
+    return { person, duplicates, assignments, audit, others, agents, related };
   });
 
   if (!data) notFound();
-  const { person, duplicates, assignments, audit, others, agents } = data;
+  const { person, duplicates, assignments, audit, others, agents, related } = data;
 
   const canEdit = user.permissions.has('PEOPLE_EDIT');
   const primaryMobile =
@@ -408,6 +412,8 @@ export default async function PersonPage({
             ) : null}
           </Card>
         ) : null}
+
+        <RelatedRecordCards records={related} user={user} scope={{ personId: person.id }} />
 
         <Card>
           <CardHeader title="Record" />

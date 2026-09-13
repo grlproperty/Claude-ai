@@ -51,6 +51,9 @@ const KEEP = new Set([
   'role_permissions',
   'merge_child_tables',
   'tags',
+  'lead_sources',
+  'lead_loss_reasons',
+  'screening_checklist_items',
 ]);
 
 export async function resetData(): Promise<void> {

@@ -13,13 +13,12 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "migrate": "node --experimental-strip-types scripts/migrate.ts",
-    "db:reset": "node --experimental-strip-types scripts/reset.ts",
-    "seed": "node --experimental-strip-types scripts/seed.ts",
-    "test": "node --test --test-concurrency=1 \"test/**/*.test.ts\"",
+    "migrate": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/migrate.ts",
+    "db:reset": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/reset.ts",
+      "test": "node --env-file-if-exists=.env.local --test --test-concurrency=1 \"test/**/*.test.ts\"",
     "ci": "npm run typecheck && npm run lint && npm run migrate && npm test && npm run build",
-    "test:watch": "node --test --watch \"test/**/*.test.ts\"",
-    "smoke": "node --experimental-strip-types scripts/smoke.ts"
+    "test:watch": "node --env-file-if-exists=.env.local --test --watch \"test/**/*.test.ts\"",
+    "smoke": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/smoke.ts"
   },
   "dependencies": {
     "clsx": "^2.1.1",
