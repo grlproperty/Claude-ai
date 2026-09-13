@@ -1,6 +1,6 @@
 import { Icon } from './icons.tsx';
 import { ExternalActionLink, ButtonLink } from './ui/primitives.tsx';
-import { mailtoHref, telHref, whatsappHref } from '@/lib/phone.ts';
+import { contactLinks, stopNotice } from '@/lib/contact-links.ts';
 import { cn } from '@/lib/cn.ts';
 
 /**
@@ -11,6 +11,13 @@ import { cn } from '@/lib/cn.ts';
  * The CRM sends nothing and claims nothing was sent. Log contact and
  * Follow-up are what it actually does — record what happened and decide what
  * happens next.
+ *
+ * If the person has asked not to be contacted (spec 54), the outward links for
+ * the channels they stopped are not rendered at all. Hiding a button is not
+ * security, and it is not meant to be here either: the record of the request
+ * is what counts, and this is so nobody taps Call by habit. Log contact and
+ * Follow-up stay, because recording what happened is always allowed — and is
+ * how somebody records that they were asked to stop.
  */
 export function QuickActions({
   mobile,
@@ -21,6 +28,7 @@ export function QuickActions({
   size = 'md',
   canLog = true,
   canTask = true,
+  stoppedChannels = [],
   className,
 }: {
   mobile?: string | null;
@@ -31,11 +39,13 @@ export function QuickActions({
   size?: 'sm' | 'md';
   canLog?: boolean;
   canTask?: boolean;
+  /** Channels this person has asked us to stop using. 'all' stops every one. */
+  stoppedChannels?: readonly string[];
   className?: string;
 }) {
-  const tel = telHref(mobile);
-  const whatsapp = whatsappHref(mobile);
-  const mail = mailtoHref(email);
+  const links = contactLinks({ mobile, email, stoppedChannels });
+  const { tel, whatsapp, mailto: mail } = links;
+  const notice = stopNotice(links);
 
   const params = new URLSearchParams();
   if (personId) params.set('personId', personId);
@@ -45,6 +55,13 @@ export function QuickActions({
 
   return (
     <div className={cn('flex flex-wrap gap-2', className)}>
+      {notice ? (
+        <span className="inline-flex items-center gap-1.5 rounded-lg bg-stop-wash px-3 py-1.5 text-xs font-medium text-stop">
+          <Icon.warning className="size-4" />
+          {notice}
+        </span>
+      ) : null}
+
       {tel ? (
         <ExternalActionLink href={tel} size={size} title="Open your phone's dialler">
           <Icon.phone className="size-4" />

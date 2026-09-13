@@ -33,9 +33,23 @@ const migrationsDir = join(
 
 let migrated = false;
 
+/**
+ * The migration-seeded contents of the tables a TRUNCATE ... CASCADE would
+ * empty anyway, captured once while they are still intact.
+ */
+const seedSnapshot = new Map<string, Record<string, unknown>[]>();
+
 export async function migrateTestDatabase(): Promise<void> {
   if (migrated) return;
   await runMigrations({ dir: migrationsDir });
+  await withOwner(async (db) => {
+    for (const name of RESCUE_FROM_CASCADE) {
+      seedSnapshot.set(
+        name,
+        await db.query<Record<string, unknown>>(`select * from public."${name}"`),
+      );
+    }
+  });
   migrated = true;
 }
 
@@ -54,7 +68,14 @@ const KEEP = new Set([
   'lead_sources',
   'lead_loss_reasons',
   'screening_checklist_items',
+  // Configurable business values are schema, not test data. Clearing them
+  // would leave the database in a state production never reaches, and the
+  // compliance preflight reads its thresholds from here.
+  'settings',
 ]);
+
+/** Kept tables that a CASCADE would empty anyway, because they reference users. */
+const RESCUE_FROM_CASCADE = ['settings', 'tags'];
 
 export async function resetData(): Promise<void> {
   await migrateTestDatabase();
@@ -66,8 +87,32 @@ export async function resetData(): Promise<void> {
       .map((t) => t.tablename)
       .filter((name) => !KEEP.has(name))
       .map((name) => `public."${name}"`);
+
     if (targets.length > 0) {
       await db.query(`truncate table ${targets.join(', ')} restart identity cascade`);
+    }
+
+    // TRUNCATE ... CASCADE reaches every table holding a foreign key into one
+    // being truncated, so a kept table that records who last touched a row is
+    // emptied along with users regardless of being in KEEP. Put the
+    // migration-seeded configuration back from the snapshot taken while it
+    // was still intact, or it silently vanishes after the first test.
+    for (const [name, rows] of seedSnapshot) {
+      if (rows.length === 0) continue;
+      await db.query(`delete from public."${name}"`);
+      for (const row of rows) {
+        // Whoever last touched it went with the users, so that returns as null
+        // rather than as a dangling id.
+        const clean: Record<string, unknown> = { ...row };
+        if ('updated_by' in clean) clean.updated_by = null;
+        if ('created_by' in clean) clean.created_by = null;
+        const columns = Object.keys(clean);
+        await db.query(
+          `insert into public."${name}" (${columns.map((c) => `"${c}"`).join(', ')})
+           values (${columns.map((_, index) => `$${index + 1}`).join(', ')})`,
+          columns.map((column) => clean[column]),
+        );
+      }
     }
 
     // Standalone sequences -- the GRLP reference counters -- are not owned by

@@ -8,6 +8,7 @@ import {
   rejects,
   resetData,
   shutdown,
+  type TestUser,
 } from './helpers/harness.ts';
 import {
   acceptInvitation,
@@ -523,10 +524,19 @@ describe('row level security (spec 102, 133)', () => {
          values ('open', '1'::jsonb, 'Open', false), ('secret', '2'::jsonb, 'Secret', true)`,
       ),
     );
-    const managerSees = await readingAs(manager, (db) => db.query('select key from settings'));
-    const agentSees = await readingAs(agent, (db) => db.query('select key from settings'));
-    assert.equal(managerSees.length, 2);
-    assert.deepEqual(agentSees.map((r) => (r as { key: string }).key), ['open']);
+    // Scoped to the two keys this test inserted: migrations seed configuration
+    // of their own, and what matters is which of these two each role can see.
+    const keysVisibleTo = async (user: TestUser) =>
+      (
+        await readingAs(user, (db) =>
+          db.query<{ key: string }>("select key from settings where key in ('open','secret')"),
+        )
+      )
+        .map((row) => row.key)
+        .sort();
+
+    assert.deepEqual(await keysVisibleTo(manager), ['open', 'secret']);
+    assert.deepEqual(await keysVisibleTo(agent), ['open']);
   });
 
   it('refuses to let an agent change settings', async () => {

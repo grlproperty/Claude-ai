@@ -225,7 +225,14 @@ export function CardHeader({
         <h2 className="text-[0.9375rem] font-semibold text-ink">{title}</h2>
         {description ? <p className="mt-0.5 text-xs text-ink-soft">{description}</p> : null}
       </div>
-      {actions ? <div className="flex shrink-0 flex-wrap gap-2">{actions}</div> : null}
+      {/*
+        shrink-0 keeps buttons from being squashed, but max-w-full stops a
+        wide action cluster (a filter form, say) pushing the card past the
+        screen on a phone. It may wrap; it may not overflow.
+      */}
+      {actions ? (
+        <div className="flex max-w-full shrink-0 flex-wrap gap-2">{actions}</div>
+      ) : null}
     </div>
   );
 }

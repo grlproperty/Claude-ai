@@ -8,9 +8,14 @@ import {
   ADDRESS_TYPES,
   BUSINESS_AREAS,
   CONTACT_TYPES,
+  DNC_CHANNELS,
+  DNC_SOURCES,
+  PREFLIGHT_STATUSES,
   RELATIONSHIP_TYPES,
   clientTypeSummary,
   labelOf,
+  permissionChannelOptions,
+  preflightTone,
 } from '@/lib/domain.ts';
 import { formatZaPhone } from '@/lib/phone.ts';
 import { formatDate, formatDateTime, isOverdue, relativeTime } from '@/lib/format.ts';
@@ -26,6 +31,7 @@ import { Alert, EmptyState } from '@/components/ui/feedback.tsx';
 import { DescriptionList } from '@/components/ui/table.tsx';
 import { QuickActions, CommunicationNotice } from '@/components/quick-actions.tsx';
 import { RelatedRecordCards, loadRelatedRecords } from '@/components/related-records.tsx';
+import { listDoNotContact, listPermissions, preflightAllChannels } from '@/lib/compliance.ts';
 import { Icon } from '@/components/icons.tsx';
 import { IdentityReveal } from './identity-reveal.tsx';
 import { AssignAgentPanel, ArchivePanel, RelationshipPanel, RemoveRelationshipButton } from './panels.tsx';
@@ -120,11 +126,22 @@ export default async function PersonPage({
     // What is in flight for this person (spec 99).
     const related = await loadRelatedRecords(db, user, { personId: person.id });
 
-    return { person, duplicates, assignments, audit, others, agents, related };
+    // Whether they may be contacted at all (spec 52 to 57). The verdicts come
+    // from the database so an agent who cannot see a do-not-contact entry is
+    // still told not to contact them.
+    const compliance = user.permissions.has('COMPLIANCE_VIEW')
+      ? {
+          permissions: await listPermissions(db, person.id),
+          stops: await listDoNotContact(db, { personId: person.id, state: 'active' }),
+          verdicts: await preflightAllChannels(db, person.id),
+        }
+      : null;
+
+    return { person, duplicates, assignments, audit, others, agents, related, compliance };
   });
 
   if (!data) notFound();
-  const { person, duplicates, assignments, audit, others, agents, related } = data;
+  const { person, duplicates, assignments, audit, others, agents, related, compliance } = data;
 
   const canEdit = user.permissions.has('PEOPLE_EDIT');
   const primaryMobile =
@@ -157,6 +174,20 @@ export default async function PersonPage({
       {person.isArchived && !person.mergedIntoId ? (
         <Alert tone="warn" title="This client is archived" className="mb-4">
           {person.archiveReason ?? 'No reason was recorded.'}
+        </Alert>
+      ) : null}
+
+      {compliance && compliance.stops.length > 0 ? (
+        <Alert tone="stop" title="Do not contact this person" className="mb-4">
+          {compliance.stops
+            .map(
+              (entry) =>
+                `${labelOf(DNC_CHANNELS, entry.channel)} — ${labelOf(DNC_SOURCES, entry.source)}${entry.reason ? `: ${entry.reason}` : ''}`,
+            )
+            .join('. ')}{' '}
+          <Link href={`/people/${person.id}/compliance`} className="underline">
+            See the detail
+          </Link>
         </Alert>
       ) : null}
 
@@ -212,6 +243,7 @@ export default async function PersonPage({
             personId={person.id}
             canLog={user.permissions.has('COMMUNICATION_CREATE')}
             canTask={user.permissions.has('TASKS_CREATE')}
+            stoppedChannels={compliance?.stops.map((entry) => entry.channel) ?? []}
           />
           <CommunicationNotice />
         </div>
@@ -409,6 +441,40 @@ export default async function PersonPage({
                   </li>
                 ))}
               </ul>
+            ) : null}
+          </Card>
+        ) : null}
+
+        {compliance ? (
+          <Card>
+            <CardHeader
+              title="May we contact them?"
+              description="For direct marketing."
+              actions={
+                <ButtonLink href={`/people/${person.id}/compliance`} size="sm">
+                  Manage
+                </ButtonLink>
+              }
+            />
+            <div className="grid grid-cols-2 gap-2 p-4 sm:grid-cols-3 sm:p-5">
+              {permissionChannelOptions.map((option) => {
+                const verdict = compliance.verdicts[option.value];
+                return (
+                  <div key={option.value} className="rounded-lg border border-line-soft p-2">
+                    <p className="text-[0.6875rem] font-semibold uppercase tracking-wide text-ink-faint">
+                      {option.label}
+                    </p>
+                    <Badge tone={preflightTone(verdict.status)}>
+                      {PREFLIGHT_STATUSES[verdict.status]}
+                    </Badge>
+                  </div>
+                );
+              })}
+            </div>
+            {compliance.permissions.length === 0 ? (
+              <p className="px-4 pb-4 text-[0.6875rem] text-ink-faint sm:px-5">
+                Nothing has been recorded. Until it is, marketing to this person is a guess.
+              </p>
             ) : null}
           </Card>
         ) : null}

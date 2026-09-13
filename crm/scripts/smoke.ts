@@ -3,8 +3,9 @@
  *
  * Drives a real browser against a running CRM to prove the daily path works:
  * first-run setup, creating a client, the duplicate check catching the same
- * person a second time, taking that client through a lead and a sale, and the
- * whole thing being usable on a phone.
+ * person a second time, taking that client through a lead and a sale,
+ * recording what they said about being contacted, and the whole thing being
+ * usable on a phone.
  *
  *   npm run build && npm start &      # or npm run dev
  *   npm run smoke -- http://127.0.0.1:3000
@@ -209,6 +210,87 @@ async function main(): Promise<void> {
     );
     await page.screenshot({ path: `${shotsDir}/13-property-pipeline.png`, fullPage: true });
 
+    // --- compliance: may we contact them at all? --------------------------
+    await page.goto(`${baseUrl}/people/${personId}/compliance`, {
+      waitUntil: 'domcontentloaded',
+    });
+    const before = (await page.textContent('body')) ?? '';
+    check(
+      'with nothing recorded, no channel reads as clear to send',
+      !/Clear to send/.test(before) && /Check before sending/.test(before),
+    );
+
+    // Record permission with nothing behind it: still amber, not green.
+    await page.selectOption('select[name="channel"]', 'email');
+    await page.selectOption('select[name="purpose"]', 'direct_marketing');
+    await page.selectOption('select[name="status"]', 'granted');
+    await page.getByRole('button', { name: /record this/i }).click();
+    // Wait for the permission itself to appear, not for the success message:
+    // the list re-renders after the action returns, and reading the page in
+    // between sees the state before the save.
+    await page.waitForSelector('text=/Nothing kept to back this up/i', { timeout: 15_000 });
+    check(
+      'a permission with no evidence is not treated as clear',
+      !/Clear to send/.test((await page.locator('body').innerText()) ?? ''),
+    );
+
+    // Now the do-not-contact, which must override everything.
+    await page.selectOption('select[name="source"]', 'client_request');
+    await page.fill('input[name="reason"]', 'Asked at the office');
+    await page.getByRole('button', { name: /stop contacting/i }).click();
+    await page.waitForSelector('text=/Do not send|will not be contacted/i', { timeout: 15_000 });
+
+    await page.goto(`${baseUrl}/people/${personId}/compliance`, {
+      waitUntil: 'domcontentloaded',
+    });
+    const stopped = (await page.textContent('body')) ?? '';
+    check(
+      'a do-not-contact overrides a granted permission',
+      /Do not send/.test(stopped) && !/Clear to send/.test(stopped),
+    );
+    await page.screenshot({ path: `${shotsDir}/14-compliance.png`, fullPage: true });
+
+    // And the profile must not offer to call or email them.
+    await page.goto(`${baseUrl}/people/${personId}`, { waitUntil: 'domcontentloaded' });
+    const profile = await page.content();
+    check(
+      'the profile warns, and no longer offers a way to contact them',
+      /Do not contact this person/i.test(profile) &&
+        !/href="tel:/.test(profile) &&
+        !/href="mailto:/.test(profile),
+    );
+    check(
+      'logging what happened is still offered, so the request can be recorded',
+      /Log contact/.test(profile),
+    );
+
+    // The preflight, across everyone.
+    await page.goto(`${baseUrl}/compliance/preflight?channel=email`, {
+      waitUntil: 'domcontentloaded',
+    });
+    const preflight = (await page.textContent('body')) ?? '';
+    check('the preflight lists who may not be contacted', /Do not send/.test(preflight));
+    check(
+      'the preflight does not claim to send anything',
+      /Nothing is sent from here/i.test(preflight),
+    );
+    await page.screenshot({ path: `${shotsDir}/15-preflight.png`, fullPage: true });
+
+    // The NCC register must never be described as connected.
+    await page.goto(`${baseUrl}/compliance`, { waitUntil: 'domcontentloaded' });
+    const compliance = (await page.textContent('body')) ?? '';
+    check(
+      'the NCC register is shown as NOT CONNECTED',
+      /NOT CONNECTED/.test(compliance) && /cannot check a number/i.test(compliance),
+    );
+    check(
+      'the compliance dashboard does not claim any check happened',
+      !/checked automatically|verified against the register/i.test(
+        compliance.replace(/Nothing is checked automatically\./g, ''),
+      ),
+    );
+    await page.screenshot({ path: `${shotsDir}/16-compliance-dashboard.png`, fullPage: true });
+
     // --- phone -----------------------------------------------------------
     const phone = await browser.newContext({
       viewport: { width: 390, height: 844 },
@@ -232,7 +314,19 @@ async function main(): Promise<void> {
     check(`the person form does not scroll sideways on a phone (overflow ${formOverflow}px)`, formOverflow <= 1);
     await phonePage.screenshot({ path: `${shotsDir}/06-phone-form.png`, fullPage: true });
 
-    for (const path of ['/properties', '/properties/new', '/leads', '/tasks', '/calendar', '/sales', '/rentals']) {
+    for (const path of [
+      '/properties',
+      '/properties/new',
+      '/leads',
+      '/tasks',
+      '/calendar',
+      '/sales',
+      '/rentals',
+      '/compliance',
+      '/compliance/do-not-contact',
+      '/compliance/preflight',
+      '/compliance/ncc',
+    ]) {
       await phonePage.goto(`${baseUrl}${path}`, { waitUntil: 'domcontentloaded' });
       const sideways = await phonePage.evaluate(
         () => document.documentElement.scrollWidth - document.documentElement.clientWidth,

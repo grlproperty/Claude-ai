@@ -286,6 +286,107 @@ export type DocumentCategory = keyof typeof DOCUMENT_CATEGORIES;
 export const documentCategoryOptions = options(DOCUMENT_CATEGORIES);
 
 /** Badge colour for a status, so the same state reads the same everywhere. */
+// --- Compliance (spec 52 to 57) --------------------------------------------
+// The channel a message to a person would go out on. Three separate things
+// are easy to confuse here, so they stay separate lists: CONTACT_TYPES is
+// what a detail IS (a mobile number), MARKETING_CHANNELS is where a PROPERTY
+// is advertised (Property24), and this is how the office would REACH SOMEONE.
+// One mobile number carries calls, SMS and WhatsApp, and a person may allow
+// one of those and refuse another.
+export const PERMISSION_CHANNELS = {
+  call: 'Call',
+  sms: 'SMS',
+  whatsapp: 'WhatsApp',
+  email: 'Email',
+  post: 'Post',
+} as const;
+export type PermissionChannel = keyof typeof PERMISSION_CHANNELS;
+export const permissionChannelOptions = options(PERMISSION_CHANNELS);
+
+export const PERMISSION_PURPOSES = {
+  direct_marketing: 'Direct marketing',
+  property_alerts: 'Property alerts',
+  newsletter: 'Newsletter',
+  market_reports: 'Market reports',
+  service_updates: 'Service updates',
+} as const;
+export type PermissionPurpose = keyof typeof PERMISSION_PURPOSES;
+export const permissionPurposeOptions = options(PERMISSION_PURPOSES);
+
+export const PERMISSION_STATUSES = {
+  granted: 'Granted',
+  withdrawn: 'Withdrawn',
+  refused: 'Refused',
+} as const;
+export type PermissionStatus = keyof typeof PERMISSION_STATUSES;
+export const permissionStatusOptions = options(PERMISSION_STATUSES);
+
+export const LAWFUL_BASES = {
+  consent: 'Consent',
+  contract: 'Contract',
+  legitimate_interest: 'Legitimate interest',
+  legal_obligation: 'Legal obligation',
+} as const;
+export type LawfulBasis = keyof typeof LAWFUL_BASES;
+export const lawfulBasisOptions = options(LAWFUL_BASES);
+
+export const EVIDENCE_TYPES = {
+  signed_form: 'Signed form',
+  email_reply: 'Email reply',
+  whatsapp_reply: 'WhatsApp reply',
+  website_form: 'Website form',
+  verbal_noted: 'Said in person, noted at the time',
+  imported_record: 'Came in with an import',
+  other: 'Other',
+} as const;
+export type EvidenceType = keyof typeof EVIDENCE_TYPES;
+export const evidenceTypeOptions = options(EVIDENCE_TYPES);
+
+export const DNC_SOURCES = {
+  client_request: 'They asked us',
+  ncc_register: 'NCC opt-out register',
+  complaint: 'Complaint',
+  bounced: 'Kept bouncing',
+  deceased: 'Deceased',
+  other: 'Other',
+} as const;
+export type DncSource = keyof typeof DNC_SOURCES;
+export const dncSourceOptions = options(DNC_SOURCES);
+
+export const DNC_CHANNELS = { all: 'Every channel', ...PERMISSION_CHANNELS } as const;
+export type DncChannel = keyof typeof DNC_CHANNELS;
+export const dncChannelOptions = options(DNC_CHANNELS);
+
+export const NCC_BATCH_STATUSES = {
+  draft: 'Draft',
+  submitted: 'Sent for checking',
+  results_loaded: 'Results loaded',
+  cancelled: 'Cancelled',
+} as const;
+export type NccBatchStatus = keyof typeof NCC_BATCH_STATUSES;
+export const nccBatchStatusOptions = options(NCC_BATCH_STATUSES);
+
+export const NCC_RESULTS = {
+  not_checked: 'Not checked',
+  not_listed: 'Not on the register',
+  listed: 'On the register',
+  invalid_number: 'Not a usable number',
+} as const;
+export type NccResult = keyof typeof NCC_RESULTS;
+export const nccResultOptions = options(NCC_RESULTS);
+
+/** The preflight verdict (spec 57). Never anything but these three. */
+export const PREFLIGHT_STATUSES = {
+  green: 'Clear to send',
+  amber: 'Check before sending',
+  red: 'Do not send',
+} as const;
+export type PreflightStatus = keyof typeof PREFLIGHT_STATUSES;
+
+export function preflightTone(status: PreflightStatus): 'ok' | 'warn' | 'stop' {
+  return status === 'green' ? 'ok' : status === 'amber' ? 'warn' : 'stop';
+}
+
 export function statusTone(value: string): 'neutral' | 'brand' | 'ok' | 'warn' | 'stop' | 'info' {
   if (
     [
@@ -306,7 +407,7 @@ export function statusTone(value: string): 'neutral' | 'brand' | 'ok' | 'warn' |
   if (
     [
       'sale_cancelled', 'mandate_withdrawn', 'mandate_cancelled', 'withdrawn',
-      'not_available', 'not_sold', 'sold_by_third_party',
+      'not_available', 'not_sold', 'sold_by_third_party', 'refused', 'listed',
     ].includes(value)
   ) {
     return 'stop';
@@ -314,7 +415,8 @@ export function statusTone(value: string): 'neutral' | 'brand' | 'ok' | 'warn' |
   if (
     [
       'won', 'accepted', 'approved', 'verified', 'complete', 'completed',
-      'lease_signed', 'mandate_signed', 'registered',
+      'lease_signed', 'mandate_signed', 'registered', 'granted', 'not_listed',
+      'results_loaded',
     ].includes(value)
   ) {
     return 'ok';

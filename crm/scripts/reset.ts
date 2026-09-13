@@ -11,6 +11,14 @@ import { fileURLToPath } from 'node:url';
 import { closePools, ownerPool } from '../src/lib/db.ts';
 import { runMigrations } from '../src/lib/migrate.ts';
 
+// `npm run db:reset -- --test` resets the test database instead, which is
+// what an edited-but-unreleased migration needs.
+const useTest = process.argv.includes('--test');
+if (useTest) {
+  process.env.DATABASE_ADMIN_URL = process.env.TEST_DATABASE_ADMIN_URL ?? '';
+  process.env.DATABASE_URL = process.env.TEST_DATABASE_URL ?? '';
+}
+
 const url = process.env.DATABASE_ADMIN_URL ?? '';
 const database = url.split('/').pop()?.split('?')[0] ?? '';
 const looksLocal = /^(127\.0\.0\.1|localhost)/.test(new URL(url).hostname);
