@@ -1,0 +1,112 @@
+@import 'tailwindcss';
+
+/* =====================================================================
+   Garden Route Lifestyle Property — visual identity
+   Find your way home.
+
+   Professional, modern, clean, approachable. A South African property
+   company's CRM, not a generic developer dashboard: generous white space,
+   one confident red, warm neutrals, and Montserrat throughout.
+   ===================================================================== */
+
+@theme {
+  --color-brand: #991c1f;
+  --color-brand-dark: #7a1619;
+  --color-brand-deep: #5e1113;
+  --color-brand-soft: #b8383b;
+  --color-brand-wash: #f8f0f0;
+  --color-brand-line: #e7cfd0;
+
+  --color-paper: #f2f2f0;
+  --color-line: #d5d5d0;
+  --color-line-soft: #e6e6e2;
+  --color-ink: #3a3a3a;
+  --color-ink-soft: #5a5a5a;
+  --color-ink-faint: #8a8a85;
+
+  /* Status colours, muted to sit beside the brand red without shouting. */
+  --color-ok: #2f6f4f;
+  --color-ok-wash: #edf5f0;
+  --color-warn: #8a6100;
+  --color-warn-wash: #fbf3e2;
+  --color-stop: #9a2020;
+  --color-stop-wash: #fbeeee;
+  --color-info: #1f5673;
+  --color-info-wash: #eef4f8;
+
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, -apple-system,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  --radius-card: 0.75rem;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    /* Nothing may scroll sideways on a phone (spec 101). */
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    color: var(--color-ink);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  /* Visible focus everywhere, keyboard and screen reader users included. */
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  [hidden] { display: none !important; }
+}
+
+@layer utilities {
+  /* Tap targets large enough to use one-handed in a car park. */
+  .tap {
+    min-height: 2.75rem;
+  }
+
+  .card {
+    background-color: #fff;
+    border: 1px solid var(--color-line-soft);
+    border-radius: var(--radius-card);
+  }
+
+  /* Wide tables stay usable on a phone by scrolling inside their own box,
+     never by making the page scroll sideways. */
+  .table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 100;
+  }
+  .skip-link:focus {
+    left: 0.5rem;
+    top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: #fff;
+    border: 1px solid var(--color-brand);
+    border-radius: 0.5rem;
+  }
+}
+
+@media print {
+  .no-print { display: none !important; }
+}
