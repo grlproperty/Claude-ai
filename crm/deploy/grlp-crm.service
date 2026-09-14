@@ -1,0 +1,70 @@
+# ---------------------------------------------------------------------
+# For a bare-metal install, without Docker.
+#
+#   sudo cp deploy/grlp-crm.service /etc/systemd/system/
+#   sudo systemctl daemon-reload && sudo systemctl enable --now grlp-crm
+#
+# Assumes: the built app at /opt/grlp-crm, PostgreSQL on this host, and a
+# service user that owns neither.
+# ---------------------------------------------------------------------
+[Unit]
+Description=Garden Route Lifestyle Property CRM
+Documentation=file:/opt/grlp-crm/deploy/README.md
+After=network-online.target postgresql.service
+Wants=network-online.target
+Requires=postgresql.service
+
+[Service]
+Type=simple
+User=grlp
+Group=grlp
+WorkingDirectory=/opt/grlp-crm
+
+# 600, owned by root, readable by grlp. It holds the database password,
+# the session secret and the identity pepper.
+EnvironmentFile=/etc/grlp-crm/env
+Environment=NODE_ENV=production
+Environment=PORT=3000
+Environment=HOSTNAME=127.0.0.1
+
+ExecStart=/usr/bin/node /opt/grlp-crm/server.js
+Restart=on-failure
+RestartSec=5s
+KillSignal=SIGINT
+TimeoutStopSec=30
+
+# --- Hardening -------------------------------------------------------
+# The CRM needs exactly one writable path: the document store. Everything
+# else on the filesystem is read-only to it.
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+ProtectProc=invisible
+RestrictSUIDSGID=true
+RestrictRealtime=true
+RestrictNamespaces=true
+LockPersonality=true
+MemoryDenyWriteExecute=false
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+CapabilityBoundingSet=
+AmbientCapabilities=
+UMask=0077
+
+ReadWritePaths=/var/lib/grlp-crm/storage
+
+# scrypt is memory-hard on purpose: about 32 MB per concurrent sign-in.
+# Leave room for that plus the Node heap.
+MemoryMax=1500M
+TasksMax=256
+
+[Install]
+WantedBy=multi-user.target

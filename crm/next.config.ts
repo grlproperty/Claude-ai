@@ -1,3 +1,5 @@
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { NextConfig } from 'next';
 
 /**
@@ -5,6 +7,20 @@ import type { NextConfig } from 'next';
  * deployment gets them regardless of what sits in front of the app.
  */
 const config: NextConfig = {
+  /**
+   * A self-contained server bundle, so a deployment copies one directory
+   * instead of the whole of node_modules. This is what makes the Docker
+   * image small and the upload quick.
+   */
+  output: 'standalone',
+  /**
+   * Pinned to this directory. Without it Next traces from whichever parent
+   * happens to hold a lockfile and nests the bundle under an extra folder,
+   * so the same build lands in two different shapes depending on what is
+   * above it on disk — and the deployment then works in one place and not
+   * the other.
+   */
+  outputFileTracingRoot: dirname(fileURLToPath(import.meta.url)),
   poweredByHeader: false,
   reactStrictMode: true,
   serverExternalPackages: ['pg', 'exceljs'],

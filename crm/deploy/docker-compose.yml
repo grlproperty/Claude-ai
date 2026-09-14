@@ -1,0 +1,91 @@
+# ---------------------------------------------------------------------
+# The whole CRM on one server: database, application, and TLS.
+#
+#   docker compose --env-file .env.production up -d --build
+#   docker compose exec app node --experimental-strip-types scripts/migrate.ts
+#
+# Nothing here is exposed to the internet except Caddy on 80 and 443.
+# Postgres listens only on the internal network; the application is not
+# published to the host at all.
+# ---------------------------------------------------------------------
+name: grlp-crm
+
+services:
+  db:
+    image: postgres:16-bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: grlp_crm
+      POSTGRES_USER: grlp_owner
+      POSTGRES_PASSWORD: ${DB_OWNER_PASSWORD:?set DB_OWNER_PASSWORD}
+      # 'C' collation to match what the migrations were written and tested
+      # against, so index behaviour and ordering do not shift under you.
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=C --lc-ctype=C"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./init-app-role.sql:/docker-entrypoint-initdb.d/10-app-role.sql:ro
+    # Deliberately not published. Only the app container can reach it.
+    expose:
+      - "5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U grlp_owner -d grlp_crm"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    command:
+      - postgres
+      - -c
+      - shared_buffers=512MB
+      - -c
+      - work_mem=16MB
+      - -c
+      - max_connections=60
+      - -c
+      - log_min_duration_statement=500
+
+  app:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # The application role: no SUPERUSER, no BYPASSRLS, not the owner.
+      DATABASE_URL: postgres://grlp_app:${DB_APP_PASSWORD:?set DB_APP_PASSWORD}@db:5432/grlp_crm
+      # The owner role, used by migrations only.
+      DATABASE_ADMIN_URL: postgres://grlp_owner:${DB_OWNER_PASSWORD}@db:5432/grlp_crm
+      SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET}
+      IDENTITY_PEPPER: ${IDENTITY_PEPPER:?set IDENTITY_PEPPER}
+      ALLOWED_EMAIL_DOMAINS: ${ALLOWED_EMAIL_DOMAINS:-grproperty.co.za}
+      SESSION_HOURS: ${SESSION_HOURS:-12}
+      STORAGE_DRIVER: local
+      STORAGE_LOCAL_PATH: /data/storage
+      MAX_UPLOAD_BYTES: ${MAX_UPLOAD_BYTES:-26214400}
+      PG_POOL_MAX: ${PG_POOL_MAX:-10}
+    volumes:
+      - storage:/data
+    expose:
+      - "3000"
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - app
+    environment:
+      CRM_DOMAIN: ${CRM_DOMAIN:?set CRM_DOMAIN, e.g. crm.grproperty.co.za}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  db-data:
+  storage:
+  caddy-data:
+  caddy-config:

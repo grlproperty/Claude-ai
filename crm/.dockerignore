@@ -1,0 +1,24 @@
+# Docker reads this from the build context root, which for
+# deploy/docker-compose.yml is this directory — not deploy/.
+#
+# Keeping node_modules and .next out matters: the image builds them itself,
+# and a host copy would be both slow to send and wrong for the image.
+node_modules
+.next
+.git
+.gitignore
+
+# Secrets never enter the build context, let alone an image layer.
+.env
+.env.local
+.env.production
+
+# Runtime and generated output.
+storage
+smoke-shots
+.handover-webp
+GRLP-CRM-handover.html
+
+# The test suite needs a database; it runs before deployment, not inside
+# the image.
+test
