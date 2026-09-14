@@ -15,10 +15,11 @@
     "typecheck": "tsc --noEmit",
     "migrate": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/migrate.ts",
     "db:reset": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/reset.ts",
-      "test": "node --env-file-if-exists=.env.local --test --test-concurrency=1 \"test/**/*.test.ts\"",
+    "test": "node --env-file-if-exists=.env.local --test --test-concurrency=1 \"test/**/*.test.ts\"",
     "ci": "npm run typecheck && npm run lint && npm run migrate && npm test && npm run build",
     "test:watch": "node --env-file-if-exists=.env.local --test --watch \"test/**/*.test.ts\"",
-    "smoke": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/smoke.ts"
+    "smoke": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/smoke.ts",
+    "handover": "node --experimental-strip-types scripts/handover.ts"
   },
   "dependencies": {
     "clsx": "^2.1.1",

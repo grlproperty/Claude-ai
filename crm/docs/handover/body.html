@@ -1,0 +1,613 @@
+<title>GRLP CRM Handover</title>
+<style>
+  :root {
+    --brand: #991C1F;
+    --brand-dark: #7d1719;
+    --paper: #F2F2F0;
+    --line: #D5D5D0;
+    --line-soft: #e4e4e0;
+    --ink: #3A3A3A;
+    --ink-soft: #5A5A5A;
+    --ink-faint: #8a8a86;
+    --ok: #1f6b3a;
+    --warn: #8a5a10;
+    --stop: #991C1F;
+    --radius: 12px;
+    --shell: 1120px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: Montserrat, "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  img { max-width: 100%; display: block; }
+  a { color: var(--brand); }
+  code, .mono {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.875em;
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead {
+    background: var(--brand);
+    color: #fff;
+    padding-block: 3.5rem 3rem;
+  }
+  .wrap { max-width: var(--shell); margin-inline: auto; padding-inline: 20px; }
+  .logo {
+    display: inline-flex; align-items: center; gap: .7rem;
+    margin-bottom: 1.75rem;
+  }
+  .logo .mark {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: #fff; color: var(--brand);
+    display: grid; place-items: center;
+    font-weight: 800; letter-spacing: .02em; font-size: 1rem;
+  }
+  .logo .name { font-weight: 700; line-height: 1.15; font-size: .95rem; }
+  .logo .name span { font-weight: 400; opacity: .82; display: block; font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; }
+  .masthead h1 {
+    font-size: clamp(1.9rem, 5vw, 3.1rem);
+    line-height: 1.1; margin: 0 0 .9rem; font-weight: 700; letter-spacing: -0.02em;
+  }
+  .masthead .lede { font-size: clamp(1rem, 2.2vw, 1.2rem); max-width: 62ch; opacity: .94; margin: 0; }
+  .tagline { margin-top: 1.5rem; font-style: italic; opacity: .8; font-size: .95rem; }
+  .facts { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 2rem; }
+  .facts span {
+    background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.24);
+    border-radius: 999px; padding: .3rem .8rem; font-size: .78rem; font-weight: 600;
+    letter-spacing: .01em;
+  }
+
+  /* ---------- layout ---------- */
+  main { padding-block: 2.5rem 4rem; }
+  section { margin-bottom: 3rem; scroll-margin-top: 1.5rem; }
+  h2 {
+    font-size: clamp(1.3rem, 3vw, 1.75rem); line-height: 1.2; letter-spacing: -0.015em;
+    margin: 0 0 .35rem; font-weight: 700;
+  }
+  h2 .num {
+    display: inline-block; color: var(--brand); font-size: .72em; font-weight: 700;
+    margin-right: .55rem; vertical-align: .08em;
+  }
+  .sub { color: var(--ink-soft); margin: 0 0 1.5rem; max-width: 70ch; }
+  h3 { font-size: 1.05rem; margin: 0 0 .4rem; font-weight: 700; }
+  p { max-width: 72ch; }
+
+  .card {
+    background: #fff; border: 1px solid var(--line-soft); border-radius: var(--radius);
+    padding: 1.25rem 1.35rem;
+    /* A grid item will not shrink below its widest child otherwise, and a
+       card holding a wide code block would push the page sideways. */
+    min-width: 0;
+  }
+  .grid { display: grid; gap: 1rem; }
+  .grid > * { min-width: 0; }
+  @media (min-width: 760px) { .grid.two { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 980px) { .grid.three { grid-template-columns: repeat(3, 1fr); } }
+
+  .callout {
+    border-left: 4px solid var(--brand); background: #fff;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 1.15rem 1.35rem; margin-bottom: 1.25rem;
+  }
+  .callout.quiet { border-left-color: var(--line); }
+  .callout h3 { margin-bottom: .35rem; }
+  .callout p:last-child { margin-bottom: 0; }
+
+  /* ---------- table of contents ---------- */
+  nav.toc { background:#fff; border:1px solid var(--line-soft); border-radius: var(--radius); padding: 1.1rem 1.35rem; margin-bottom: 2.5rem; }
+  nav.toc p { font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); font-weight: 700; margin: 0 0 .6rem; }
+  nav.toc ol { margin: 0; padding-left: 1.2rem; columns: 2; column-gap: 2rem; }
+  @media (max-width: 640px) { nav.toc ol { columns: 1; } }
+  nav.toc li { margin-bottom: .25rem; }
+  nav.toc a { text-decoration: none; font-weight: 600; font-size: .9rem; }
+  nav.toc a:hover { text-decoration: underline; }
+
+  /* ---------- ledger ---------- */
+  .ledger { border: 1px solid var(--line-soft); border-radius: var(--radius); overflow: hidden; background: #fff; }
+  .ledger .row { padding: 1.1rem 1.3rem; border-bottom: 1px solid var(--line-soft); }
+  .ledger .row:last-child { border-bottom: 0; }
+  .ledger .claim { font-weight: 700; color: var(--stop); display: block; margin-bottom: .2rem; }
+  .ledger .how { color: var(--ink-soft); font-size: .9rem; margin: .45rem 0 0; }
+  .ledger .how code { background: var(--paper); padding: .1rem .35rem; border-radius: 4px; }
+
+  .pill {
+    display: inline-block; font-size: .68rem; font-weight: 800; letter-spacing: .07em;
+    text-transform: uppercase; padding: .18rem .5rem; border-radius: 999px;
+    border: 1px solid currentColor; vertical-align: .12em;
+  }
+  .pill.stop { color: var(--stop); }
+  .pill.ok { color: var(--ok); }
+  .pill.warn { color: var(--warn); }
+
+  table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+  .scroll { overflow-x: auto; max-width: 100%; }
+  th, td { text-align: left; padding: .55rem .7rem; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+  th { font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-faint); font-weight: 700; border-bottom-color: var(--line); }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  pre {
+    background: #2b2b2b; color: #f4f4f2; border-radius: var(--radius);
+    padding: 1rem 1.15rem; overflow-x: auto; font-size: .82rem; line-height: 1.55;
+    min-width: 0; max-width: 100%;
+  }
+  pre code { font-size: inherit; }
+
+  ul.tight { margin: .4rem 0 0; padding-left: 1.15rem; }
+  ul.tight li { margin-bottom: .3rem; }
+
+  /* ---------- gallery ---------- */
+  .shots { display: grid; gap: 1.6rem; }
+  .shots > * { min-width: 0; }
+  @media (min-width: 900px) { .shots { grid-template-columns: 1fr 1fr; } }
+  figure { margin: 0; background:#fff; border:1px solid var(--line-soft); border-radius: var(--radius); overflow: hidden; }
+  figure img { border-bottom: 1px solid var(--line-soft); }
+  figcaption { padding: .85rem 1.1rem 1rem; }
+  figcaption strong { display: block; font-size: .95rem; margin-bottom: .2rem; }
+  figcaption span { color: var(--ink-soft); font-size: .85rem; }
+  .group-head { margin: 2.5rem 0 1.1rem; }
+  .group-head:first-of-type { margin-top: 1rem; }
+  .group-head h3 { font-size: 1.15rem; }
+  .group-head p { color: var(--ink-soft); font-size: .92rem; margin: .2rem 0 0; }
+
+  footer { border-top: 1px solid var(--line); padding-block: 2rem 3rem; color: var(--ink-faint); font-size: .85rem; }
+  footer p { max-width: 70ch; }
+  @media print {
+    body { background: #fff; }
+    .masthead { background: #fff; color: var(--ink); border-bottom: 3px solid var(--brand); }
+    .logo .mark { background: var(--brand); color: #fff; }
+    .facts span { border-color: var(--line); background: var(--paper); }
+    nav.toc { display: none; }
+    figure, .card, .ledger { break-inside: avoid; }
+  }
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="logo">
+      <span class="mark">GR</span>
+      <span class="name">Garden Route Lifestyle Property<span>Internal CRM · Handover</span></span>
+    </div>
+    <h1>The CRM is built, and this is the honest account of it.</h1>
+    <p class="lede">
+      A private internal CRM for a boutique Garden Route estate agency: one master record per
+      person, one per property, and a deliberate refusal to claim anything it cannot actually do.
+      Every screenshot below is the real application running, captured by the test suite.
+    </p>
+    <p class="tagline">Find your way home.</p>
+    <div class="facts">
+      <span>13 migrations</span>
+      <span>83 tables</span>
+      <span>190 row-level-security policies</span>
+      <span>84 routes</span>
+      <span>518 tests passing</span>
+      <span>172 end-to-end checks passing</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<nav class="toc" aria-label="Contents">
+  <p>What is in this document</p>
+  <ol>
+    <li><a href="#one-file">Why this is a document, not the app</a></li>
+    <li><a href="#ledger">What it refuses to claim</a></li>
+    <li><a href="#not-connected">What is NOT CONNECTED</a></li>
+    <li><a href="#running">Running it</a></li>
+    <li><a href="#built">What was built, stage by stage</a></li>
+    <li><a href="#security">How the rules are actually enforced</a></li>
+    <li><a href="#data">The data model</a></li>
+    <li><a href="#verification">How it was verified</a></li>
+    <li><a href="#screens">The CRM, running</a></li>
+    <li><a href="#boundary">What is deliberately not built</a></li>
+  </ol>
+</nav>
+
+<section id="one-file">
+  <h2><span class="num">01</span>Why this is a document, not the app</h2>
+  <p class="sub">The one thing this handover has to be straight about before anything else.</p>
+
+  <div class="callout">
+    <h3>A single HTML file cannot be this CRM</h3>
+    <p>
+      The security model is the product. Authorisation lives in PostgreSQL row-level security, on
+      a database role that holds neither <code>SUPERUSER</code> nor <code>BYPASSRLS</code>.
+      Passwords are scrypt hashes the application cannot read. Identity numbers are stored as a
+      masked last-three plus a peppered one-way fingerprint, and are deliberately kept out of
+      URLs, query strings and browser storage. The contact preflight runs as a
+      <code>SECURITY&nbsp;DEFINER</code> function so that a reader who may not see a
+      do-not-contact entry is still told <strong>RED</strong>.
+    </p>
+    <p>
+      A file opened from a hard drive has no server, no database, no session and no policies.
+      Every one of those protections would become a button that pretends — which is precisely the
+      &ldquo;visual mockup with fake functionality&rdquo; the brief forbids. So this file is the
+      handover: what was built, how to run it, and photographic evidence of it working. The
+      application itself is real code, pushed to the branch.
+    </p>
+  </div>
+
+  <div class="grid two">
+    <div class="card">
+      <h3>The working application</h3>
+      <p style="margin-bottom:.4rem">
+        Branch <code>claude/loving-feynman-pqh1fu</code> of the repository, under
+        <code>crm/</code>. Next.js 15 and React 19 on PostgreSQL 16, TypeScript throughout in
+        strict mode.
+      </p>
+      <p style="margin-bottom:0">
+        Ten build stages, each finished with a full gate: typecheck, lint, unit and integration
+        tests against a real database as the real application role, migration checks, a production
+        build, and an end-to-end browser run.
+      </p>
+    </div>
+    <div class="card">
+      <h3>This document</h3>
+      <p style="margin-bottom:.4rem">
+        Self-contained: one file, no network, no external fonts, no CDN. The 42 screenshots are
+        embedded.
+      </p>
+      <p style="margin-bottom:0">
+        None of them is a mockup. Each was taken by <code>scripts/smoke.ts</code> driving a real
+        browser against the running CRM on a real database, in the same run that asserted the
+        honesty rules below.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="ledger">
+  <h2><span class="num">02</span>What it refuses to claim</h2>
+  <p class="sub">
+    Eight sentences a property CRM is usually happy to say. This one cannot say any of them,
+    because the database refuses — not because a form is careful.
+  </p>
+
+  <div class="ledger">
+    <div class="row">
+      <span class="claim">&ldquo;Email sent.&rdquo; &ldquo;WhatsApp sent.&rdquo;</span>
+      The CRM opens your own mail application or WhatsApp with the number and the wording ready.
+      You send it. Then you write down what happened.
+      <p class="how"><strong>Enforced by:</strong> <code>communications.logged_by_hand</code> is
+      <code>CHECK (logged_by_hand)</code> — the database will not hold a row claiming automatic
+      capture. There is no <code>delivery_status</code>, no <code>read_at</code> and no
+      <code>provider_message_id</code> column anywhere, and a test asserts they do not exist.</p>
+    </div>
+    <div class="row">
+      <span class="claim">&ldquo;Verified.&rdquo;</span>
+      A FICA file is verified by a named person on a known date, or it is not verified.
+      <p class="how"><strong>Enforced by:</strong>
+      <code>fica_records_verified_needs_a_person</code> — status <code>verified</code> is refused
+      without both <code>verified_by</code> and <code>verified_at</code>. A test proves even the
+      schema owner, with row-level security out of the way, cannot write one.</p>
+    </div>
+    <div class="row">
+      <span class="claim">&ldquo;Approved.&rdquo;</span>
+      Somebody with the permission approved it, and their name is on it permanently.
+      <p class="how"><strong>Enforced by:</strong>
+      <code>commissions_approved_needs_a_person</code>, plus a separate-approver setting the
+      office can switch on so the person who worked a commission out cannot also approve it.</p>
+    </div>
+    <div class="row">
+      <span class="claim">&ldquo;Paid.&rdquo;</span>
+      There is no bank feed. A commission recorded as paid is a person&rsquo;s record of a
+      payment — which is why the status reads <em>Recorded as paid</em> and never
+      <em>Payment confirmed</em>.
+      <p class="how"><strong>Enforced by:</strong>
+      <code>commissions_paid_needs_a_person</code> and
+      <code>commissions_payment_needs_approval</code>. No <code>payment_confirmed</code>,
+      <code>bank_reference</code> or <code>gateway_response</code> column exists, and a test
+      asserts that.</p>
+    </div>
+    <div class="row">
+      <span class="claim">&ldquo;Earned.&rdquo; — on a sale that has not registered</span>
+      A concluded sale is not a registered sale. They are months apart and only one of them is
+      money.
+      <p class="how"><strong>Enforced by:</strong>
+      <code>transactions_registered_needs_date</code>, and the trigger
+      <code>app.commission_registration_guard</code>, which refuses to invoice or record payment
+      against an unregistered transfer unless the office deliberately switches that off. A test
+      proves the refusal holds against a direct write as the schema owner.</p>
+    </div>
+    <div class="row">
+      <span class="claim">&ldquo;Portal updated.&rdquo; &ldquo;Posted to Instagram.&rdquo;</span>
+      Marketing status is what somebody in the office recorded, never a confirmation from a
+      portal.
+      <p class="how"><strong>Enforced by:</strong> no integration exists to be mistaken for one,
+      and a smoke check greps the property page for any claim that a portal was updated.</p>
+    </div>
+    <div class="row">
+      <span class="claim">&ldquo;Backup completed successfully.&rdquo;</span>
+      The CRM takes no backups and cannot verify one. It holds the office&rsquo;s own written
+      answer on who does and how, clearly labelled as a note somebody typed.
+      <p class="how"><strong>Enforced by:</strong> the health page has no green state for
+      backups; a test asserts the check can never read <code>ok</code>.</p>
+    </div>
+    <div class="row">
+      <span class="claim">Finding somebody by their identity number</span>
+      Search <em>refuses</em> an ID number rather than quietly returning nothing, and explains
+      where to look instead.
+      <p class="how"><strong>Why:</strong> a search box puts what you type into the address bar,
+      the browser history, the referrer header and the server log. Revealing an ID happens on the
+      profile, by somebody holding <code>PERSON_ID_VIEW</code>, and the audit log records that it
+      was viewed — never the number.</p>
+    </div>
+  </div>
+</section>
+
+<section id="not-connected">
+  <h2><span class="num">03</span>What is NOT CONNECTED</h2>
+  <p class="sub">
+    Each of these has its internal architecture in place and no external credential. The CRM says
+    so on its own system-health page rather than showing a green tick.
+  </p>
+  <div class="scroll">
+    <table>
+      <thead>
+        <tr><th>Service</th><th>State</th><th>What the CRM does instead</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Email sending</td><td><span class="pill stop">Not connected</span></td>
+          <td>Opens your own mail application with the message ready. No mail server, no OAuth, no mailbox sync.</td></tr>
+        <tr><td>WhatsApp</td><td><span class="pill stop">Not connected</span></td>
+          <td>Opens WhatsApp with the number and the wording ready. You send it and log it.</td></tr>
+        <tr><td>National Consumer Commission register</td><td><span class="pill stop">Not connected</span></td>
+          <td>Batches prepared, cost estimated, results loaded by hand. Nothing checked automatically.</td></tr>
+        <tr><td>Property24, Instagram, any portal</td><td><span class="pill stop">Not connected</span></td>
+          <td>Marketing status is recorded by a person, with who recorded it and when.</td></tr>
+        <tr><td>Home Affairs, CIPC, deeds office, sanctions and PEP lists</td><td><span class="pill stop">Not connected</span></td>
+          <td>A FICA file records what the office collected and who looked at it against the originals.</td></tr>
+        <tr><td>Bank feed, accounting, payroll</td><td><span class="pill stop">Not connected</span></td>
+          <td>Invoice numbers and payments are recorded by a named person on a known date.</td></tr>
+        <tr><td>Backups</td><td><span class="pill warn">Unverifiable</span></td>
+          <td>Holds the office&rsquo;s written answer on who takes them and how. Never claims one succeeded.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="running">
+  <h2><span class="num">04</span>Running it</h2>
+  <p class="sub">PostgreSQL 16 and Node 22. Nothing else is required, and nothing phones home.</p>
+
+  <div class="grid two">
+    <div class="card">
+      <h3>First run</h3>
+      <pre><code>cd crm
+npm install
+
+# Two roles: an owner for migrations, and the application
+# role, which has neither SUPERUSER nor BYPASSRLS.
+createdb grlp_crm
+psql grlp_crm -c "create role grlp_owner login password '...'"
+psql grlp_crm -c "create role grlp_app   login password '...'"
+
+cp .env.example .env.local   # then fill it in
+npm run migrate
+npm run build &amp;&amp; npm start</code></pre>
+      <p style="margin-bottom:0">
+        Open the CRM and the first authorised <code>@grproperty.co.za</code> address becomes
+        Management. There is no registration page.
+      </p>
+    </div>
+    <div class="card">
+      <h3>The environment</h3>
+      <div class="scroll">
+        <table>
+          <tbody>
+            <tr><td><code>DATABASE_URL</code></td><td>the application role — the one every request uses</td></tr>
+            <tr><td><code>DATABASE_ADMIN_URL</code></td><td>the owner role — migrations only, never a request</td></tr>
+            <tr><td><code>SESSION_SECRET</code></td><td>signs session cookies</td></tr>
+            <tr><td><code>IDENTITY_PEPPER</code></td><td>pepper for the one-way identity fingerprint; as sensitive as the numbers themselves</td></tr>
+            <tr><td><code>ALLOWED_EMAIL_DOMAINS</code></td><td><code>grproperty.co.za</code></td></tr>
+            <tr><td><code>STORAGE_LOCAL_PATH</code></td><td>private document storage, outside the web root</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin:.8rem 0 0">
+        No secret ever reaches the browser. Documents are served only through a route that checks
+        permission on every request; nothing sits on a public URL.
+      </p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <h3>The gate that every stage had to pass</h3>
+    <pre><code>npm run typecheck   # tsc --noEmit, strict, noUncheckedIndexedAccess
+npm run lint        # eslint, zero warnings tolerated
+npm test            # 518 tests against a real database as the real app role
+npm run build       # production build
+npm run smoke -- http://127.0.0.1:3100   # 172 checks in a real browser</code></pre>
+  </div>
+</section>
+
+<section id="built">
+  <h2><span class="num">05</span>What was built, stage by stage</h2>
+  <p class="sub">
+    Ten stages, in the order the brief set. Each one finished the gate above before the next
+    began.
+  </p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Stage</th><th>What it contains</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1 · Foundation</strong></td><td>Schema, two database roles, 49 granular permissions across 5 roles with per-user overrides, row-level security on every table, scrypt passwords, sessions, invitations, an append-only audit log and a separate sensitive-access log.</td></tr>
+        <tr><td><strong>2 · People</strong></td><td>One master record per person. Duplicate detection before creation on name, number and a peppered one-way fingerprint of the identity number. A merge that moves every child record in one transaction and keeps a reversible registry of what moved.</td></tr>
+        <tr><td><strong>3 · Properties</strong></td><td>One master record per property. Six status concepts kept apart. Price, mandate, sale and rental history; photos and documents in private storage; marketing kept separate from internal notes.</td></tr>
+        <tr><td><strong>4 · Pipeline</strong></td><td>Leads with sources and loss reasons, tasks with recurrence, appointments, viewings with feedback, valuations, offers with counter-offers that never overwrite the original, transactions where registration is its own stage, rental applications and screening.</td></tr>
+        <tr><td><strong>5 · Compliance</strong></td><td>Contact permission per channel with evidence, permission history that cannot be altered, do-not-contact that is released rather than deleted, NCC batches shown as NOT CONNECTED, and a preflight computed in the database so it cannot be talked round.</td></tr>
+        <tr><td><strong>6 · Import</strong></td><td>CSV and spreadsheet import with per-file delimiter detection, automatic column matching, a preview that writes nothing, duplicate handling, one all-or-nothing transaction, and a rollback that archives rather than deletes.</td></tr>
+        <tr><td><strong>7 · Communications</strong></td><td>Conversations written down after they happened, with outcomes a person can actually observe. Templates as wording, never as sending. Follow-ups that become real tasks. First and last contact derived from the log by trigger.</td></tr>
+        <tr><td><strong>8 · Entities &amp; FICA</strong></td><td>Companies, trusts and close corporations as their own master records with the people behind them and the properties they hold. FICA as a checklist with a named checker per item, and a verification that belongs to a person.</td></tr>
+        <tr><td><strong>9 · Commission</strong></td><td>Office rules as configuration, a calculator that shows its arithmetic on integer cents, sharing that must add to the whole, an approval workflow, and the registration rule enforced by trigger. Four figures kept deliberately apart.</td></tr>
+        <tr><td><strong>10 · Dashboards &amp; reports</strong></td><td>Dashboard, reports that refuse to blend statuses, data quality that reports contradictions and fixes nothing, audited exports that can never carry an identity number, global search, in-app notifications, saved views, favourites, tags, user administration and system health.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="security">
+  <h2><span class="num">06</span>How the rules are actually enforced</h2>
+  <p class="sub">
+    Hiding a button is not security. Every rule below is checked in at least two places, and the
+    database is always one of them.
+  </p>
+
+  <div class="grid two">
+    <div class="card">
+      <h3>Authorisation, five layers deep</h3>
+      <ul class="tight">
+        <li><strong>Interface</strong> — a control you may not use is not drawn.</li>
+        <li><strong>Page</strong> — every page re-checks its permission on the server, so typing the address is refused too.</li>
+        <li><strong>Action</strong> — every server action checks again before it writes.</li>
+        <li><strong>Database</strong> — 190 row-level-security policies on the connection the request actually uses.</li>
+        <li><strong>Grants</strong> — <code>users.password_hash</code> is outside the column grant entirely; sessions and sign-in attempts are unreadable even to Management and reachable only through <code>SECURITY DEFINER</code> functions.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Identity numbers</h3>
+      <ul class="tight">
+        <li>Stored as a masked last three plus a peppered one-way fingerprint. Duplicate detection works on the fingerprint; nobody reads the number to do it.</li>
+        <li>Never in a URL, a query string, a public page, browser storage, an export, or the audit log.</li>
+        <li>Revealing one needs <code>PERSON_ID_VIEW</code> and writes to the sensitive-access log — which records that it was viewed, not what it said.</li>
+        <li>Search refuses to accept one at all.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Nothing is destroyed</h3>
+      <ul class="tight">
+        <li>Append-only, enforced by trigger: audit log, sensitive-access log, permission history, FICA status history, commission history, export log.</li>
+        <li>Archived rather than deleted: people, properties, entities, documents, tags, commission rules, imports.</li>
+        <li>Released rather than deleted: do-not-contact requests.</li>
+        <li>Suspended rather than deleted: user accounts — so every record stays attributed to whoever touched it.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Everything else the brief asked for</h3>
+      <ul class="tight">
+        <li>Optimistic concurrency on every editable record: <em>&ldquo;This record has been updated by another user. Please refresh before saving.&rdquo;</em></li>
+        <li>One transaction for merges, imports, commission approval and assignment changes.</li>
+        <li>CSV values escaped against formula injection; filenames that cannot escape their directory or break a header.</li>
+        <li>URL import defended against SSRF: off by default, allow-list only, HTTPS only, no credentials, every resolved address range-checked, redirects refused, size and time capped.</li>
+        <li>Same-origin checks on state-changing routes; rate-limited sign-in with lockout; no framework or database error ever shown raw.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="data">
+  <h2><span class="num">07</span>The data model</h2>
+  <p class="sub">Two rules above all others, and the schema is shaped around them.</p>
+
+  <div class="callout quiet">
+    <h3>One person, one record. One property, one record.</h3>
+    <p style="margin-bottom:0">
+      Somebody who is a seller today, a landlord next year and a buyer after that is one row in
+      <code>people</code> with three client types — never three contacts. Business area
+      (<em>which part of the business deals with them</em>) and client type (<em>what they are to
+      us</em>) stay separate columns, because conflating them is how a CRM ends up with the same
+      family in it four times.
+    </p>
+  </div>
+
+  <div class="grid three">
+    <div class="card"><h3>83 tables</h3><p style="margin-bottom:0">Across 13 migrations and 5 557 lines of SQL, applied in order with a checksum guard that refuses a migration edited after the fact.</p></div>
+    <div class="card"><h3>190 policies</h3><p style="margin-bottom:0">Row-level security on every table. An agent&rsquo;s query is narrowed by the database, not by a <code>where</code> clause somebody might forget.</p></div>
+    <div class="card"><h3>205 check constraints</h3><p style="margin-bottom:0">Including every honesty rule in the ledger above. A constraint cannot be bypassed by a new code path.</p></div>
+    <div class="card"><h3>55 triggers</h3><p style="margin-bottom:0">Reference assignment, row versioning, append-only enforcement, contact-date recalculation, and the commission registration guard.</p></div>
+    <div class="card"><h3>59 <code>app.*</code> functions</h3><p style="margin-bottom:0">Permission checks, visibility helpers, the merge routines, session handling, and the marketing preflight — each <code>SECURITY DEFINER</code> only where that is the point.</p></div>
+    <div class="card"><h3>Every reference readable</h3><p style="margin-bottom:0"><code>GRLP-00000001</code> for a person, <code>GRLP-P-</code>, <code>GRLP-T-</code>, <code>GRLP-C-</code>, <code>GRLP-F-</code>, <code>GRLP-M-</code> — assigned by the database, never by the application.</p></div>
+  </div>
+</section>
+
+<section id="verification">
+  <h2><span class="num">08</span>How it was verified</h2>
+  <p class="sub">
+    Nothing is mocked. Every test runs against a real PostgreSQL database as the real application
+    role, so every policy, grant, constraint and trigger is exercised exactly as it will be in
+    use.
+  </p>
+
+  <div class="grid two">
+    <div class="card">
+      <h3>518 tests, 96 suites, 0 failing</h3>
+      <p>
+        Including the ones that matter most: that a constraint refuses a forged &ldquo;verified&rdquo;
+        or &ldquo;paid&rdquo; even to the schema owner; that an agent cannot read another
+        agent&rsquo;s records, commission, favourites or notifications; that an import breaks
+        cleanly and leaves nothing behind; that a merge moves every child record; that an export
+        refuses an identity column outright rather than dropping it quietly.
+      </p>
+      <p style="margin-bottom:0">
+        Money has its own suite: exact arithmetic on integer cents, half-away-from-zero rounding,
+        and shares that always add back up to the whole.
+      </p>
+    </div>
+    <div class="card">
+      <h3>172 end-to-end checks, 0 failing</h3>
+      <p>
+        One browser run through the whole daily path: first sign-in, a client, the duplicate
+        caught, a property, a lead, a concluded sale, compliance, an import and its rollback, a
+        logged conversation, a trust, a FICA file verified by a person, a commission approved and
+        then — only after registration — recorded as paid, and the office&rsquo;s own settings.
+      </p>
+      <p style="margin-bottom:0">
+        Forty-one pages are measured for sideways scrolling at 390&nbsp;pixels wide on every run.
+        The screenshots in the next section are the output of that run.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="screens">
+  <h2><span class="num">09</span>The CRM, running</h2>
+  <p class="sub">
+    Forty-two screenshots, every one captured by the test suite driving a real browser against the
+    running application on a real database. Nothing here was drawn.
+  </p>
+  <!--GALLERY-->
+</section>
+
+<section id="boundary">
+  <h2><span class="num">10</span>What is deliberately not built</h2>
+  <p class="sub">
+    The brief drew a line around version one, and holding that line is part of the work.
+  </p>
+  <div class="card">
+    <ul class="tight">
+      <li><strong>No Gmail or Microsoft OAuth</strong>, and no mailbox sync in either direction.</li>
+      <li><strong>No WhatsApp Business API</strong>, and no incoming message capture.</li>
+      <li><strong>No delivery or read status</strong>, no provider message IDs, no send APIs and no delivery confirmations — real or otherwise.</li>
+      <li><strong>No portal or social integration</strong>, so no listing is ever described as published by the CRM.</li>
+      <li><strong>No register lookups</strong> against Home Affairs, CIPC, a deeds office, a credit bureau or any sanctions list.</li>
+      <li><strong>No bank or accounting integration</strong>, and therefore no payment the CRM claims to have confirmed.</li>
+    </ul>
+    <p style="margin:.9rem 0 0">
+      All six have their internal architecture in place: the tables, the permissions, the
+      workflow and the places a real integration would attach. What they do not have is a
+      credential — and where that is true, the CRM says
+      <span class="pill stop">Not connected</span> rather than pretending.
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <p>
+    <strong>Garden Route Lifestyle Property — internal CRM.</strong>
+    Built to the 150-section specification, in the ten stages it set, with the honesty rules
+    enforced by the database rather than by good intentions.
+  </p>
+  <p style="margin-bottom:0">
+    Application: branch <code>claude/loving-feynman-pqh1fu</code>, directory <code>crm/</code>.
+    This document is self-contained; it makes no network requests and loads nothing from anywhere.
+  </p>
+</footer>
