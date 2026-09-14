@@ -200,7 +200,10 @@ export default async function ImportBatchPage({
           ) : null}
         </Card>
 
-        <div className="space-y-4 lg:col-span-2">
+        {/* min-w-0: a grid item will not shrink below its widest child
+            otherwise, and a wide table inside would push the page sideways
+            on a phone (spec 101, 139). */}
+        <div className="min-w-0 space-y-4 lg:col-span-2">
           {canImport && (needsMapping || batch.status === 'mapped' || batch.status === 'previewed') ? (
             <Card>
               <CardHeader

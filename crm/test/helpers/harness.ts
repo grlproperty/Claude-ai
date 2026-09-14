@@ -80,10 +80,17 @@ const KEEP = new Set([
   'communication_templates',
   // Seeded by migration 011: what the office asks for, not test data.
   'fica_checklist_items',
+  // Seeded by migration 012: the office's own commission terms.
+  'commission_rules',
 ]);
 
 /** Kept tables that a CASCADE would empty anyway, because they reference users. */
-const RESCUE_FROM_CASCADE = ['settings', 'tags', 'communication_templates'];
+const RESCUE_FROM_CASCADE = [
+  'settings',
+  'tags',
+  'communication_templates',
+  'commission_rules',
+];
 
 export async function resetData(): Promise<void> {
   await migrateTestDatabase();

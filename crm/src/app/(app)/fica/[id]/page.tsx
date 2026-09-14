@@ -163,7 +163,10 @@ export default async function FicaRecordPage({
           </div>
         </Card>
 
-        <div className="space-y-4 lg:col-span-2">
+        {/* min-w-0: a grid item will not shrink below its widest child
+            otherwise, and a wide table inside would push the page sideways
+            on a phone (spec 101, 139). */}
+        <div className="min-w-0 space-y-4 lg:col-span-2">
           {outstanding.length > 0 ? (
             <Alert tone="warn" title={`${outstanding.length} required item(s) outstanding`}>
               {outstanding.map((check) => check.name).join(', ')}. The file cannot be recorded as

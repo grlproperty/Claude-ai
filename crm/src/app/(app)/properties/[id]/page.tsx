@@ -123,6 +123,8 @@ export default async function PropertyPage({
         : [],
       rentals: user.permissions.has('RENTALS_VIEW')
         ? await db.query<{
+            id: string;
+            commission_id: string | null;
             lease_start: Date | null;
             lease_end: Date | null;
             monthly_rental: string | null;
@@ -131,7 +133,8 @@ export default async function PropertyPage({
             agent_name: string | null;
             notes: string | null;
           }>(
-            `select h.lease_start, h.lease_end, h.monthly_rental, h.notes,
+            `select h.id, h.lease_start, h.lease_end, h.monthly_rental, h.notes,
+                    (select c.id from commissions c where c.rental_id = h.id) as commission_id,
                     t.first_name || ' ' || t.surname as tenant_name,
                     l.first_name || ' ' || l.surname as landlord_name,
                     coalesce(a.display_name, a.full_name) as agent_name
@@ -747,8 +750,8 @@ export default async function PropertyPage({
               <EmptyState title="No past rentals recorded" className="py-6" />
             ) : (
               <ul className="divide-y divide-line-soft">
-                {rentals.map((rental, index) => (
-                  <li key={index} className="px-4 py-2.5 text-[0.8125rem] sm:px-5">
+                {rentals.map((rental) => (
+                  <li key={rental.id} className="px-4 py-2.5 text-[0.8125rem] sm:px-5">
                     <span className="font-medium text-ink">
                       {formatMoney(rental.monthly_rental) || 'Rent not recorded'} per month
                     </span>
@@ -766,6 +769,25 @@ export default async function PropertyPage({
                         .filter(Boolean)
                         .join(' · ')}
                     </div>
+                    {/* Letting commission, which is earned on the lease
+                        rather than on any registration (spec 62). */}
+                    {user.permissions.has('COMMISSION_VIEW') ? (
+                      rental.commission_id ? (
+                        <Link
+                          href={`/commissions/${rental.commission_id}`}
+                          className="text-[0.6875rem] font-medium text-brand hover:underline"
+                        >
+                          The commission on this lease
+                        </Link>
+                      ) : user.permissions.has('COMMISSION_CREATE') ? (
+                        <Link
+                          href={`/commissions/new?rentalId=${rental.id}`}
+                          className="text-[0.6875rem] font-medium text-brand hover:underline"
+                        >
+                          Work out the commission
+                        </Link>
+                      ) : null
+                    ) : null}
                   </li>
                 ))}
               </ul>

@@ -178,6 +178,7 @@ async function main(): Promise<void> {
     await page.fill('input[name="saleDate"]', '2026-09-10');
     await page.getByRole('button', { name: /create the transaction/i }).click();
     await page.waitForURL(/\/sales\/transactions\/[0-9a-f-]{36}/, { timeout: 15_000 });
+    const transactionId = idFromUrl(page.url());
 
     const deal = (await page.textContent('body')) ?? '';
     check('the transaction was created', /GRLP-T-\d{8}|Sale concluded/i.test(deal));
@@ -565,6 +566,7 @@ async function main(): Promise<void> {
     );
     await page.getByRole('button', { name: /open the file/i }).click();
     await page.waitForURL(/\/fica\/[0-9a-f-]{36}/, { timeout: 20_000 });
+    const ficaId = idFromUrl(page.url());
 
     const freshFica = await page.locator('body').innerText();
     check('the FICA file received its own reference', /GRLP-F-\d{6}/.test(freshFica));
@@ -662,6 +664,176 @@ async function main(): Promise<void> {
     check('and the verified file appears on it', /Wilderness Coastal Trust/.test(ficaList));
     await page.screenshot({ path: `${shotsDir}/26-fica-list.png`, fullPage: true });
 
+    // --- commission: worked out, approved, and only then paid ------------
+    // Three things the CRM must never conflate, and one it must never claim:
+    // that a payment was confirmed (spec 49, 115).
+    await page.goto(`${baseUrl}/commissions/new?transactionId=${transactionId}`, {
+      waitUntil: 'domcontentloaded',
+    });
+    const calculator = await page.locator('body').innerText();
+    check(
+      'the calculator warns that an unregistered transfer earns nothing',
+      /transfer has not registered/i.test(calculator),
+    );
+    check(
+      'and it shows its arithmetic rather than just a figure',
+      /How this figure is reached/i.test(calculator) && /5% of 2850000\.00/.test(calculator),
+    );
+    await page.screenshot({ path: `${shotsDir}/27-commission-calculator.png`, fullPage: true });
+
+    await page.getByRole('button', { name: /open the commission/i }).click();
+    await page.waitForURL(/\/commissions\/[0-9a-f-]{36}/, { timeout: 20_000 });
+    const commissionId = idFromUrl(page.url());
+
+    const fresh = await page.locator('body').innerText();
+    check('the commission received its own reference', /GRLP-M-\d{6}/.test(fresh));
+    check(
+      'the figures are worked out to the cent',
+      /142\u00a0500/.test(fresh) && /21\u00a0375/.test(fresh) && /163\u00a0875/.test(fresh),
+    );
+    check('nothing here is earned yet, and it says so', /Nothing here is earned yet/i.test(fresh));
+    check(
+      'the CRM does not claim anybody approved or paid anything',
+      /Nobody yet/.test(fresh) && !/payment confirmed|confirmed by the bank/i.test(fresh),
+    );
+    check(
+      'and while the transfer is unregistered it offers no way to invoice or pay',
+      !(await page.locator('input[name="invoiceNumber"]').count()) &&
+        !(await page.locator('input[name="paidOn"]').count()),
+    );
+    await page.screenshot({ path: `${shotsDir}/28-commission.png`, fullPage: true });
+
+    // The agent on the deal already holds the whole share, so the office's
+    // own share is over-allocation — refused by the database, not merely by
+    // a hidden button.
+    check(
+      'the agent on the deal was carried across without re-typing',
+      /100\.00% allocated/.test(fresh) && /Primary agent/i.test(fresh),
+    );
+
+    await setShare(page, { role: 'office', percent: '40' });
+    await page.waitForSelector('text=/more than the whole/i', { timeout: 20_000 });
+    check('shares adding up to more than the whole are refused', true);
+
+    // Cut the agent back, then give the office its 40%.
+    await setShare(page, { role: 'primary', percent: '60', agentIndex: 1 });
+    await page.waitForSelector('text=/60.00% allocated/i', { timeout: 20_000 });
+    await setShare(page, { role: 'office', percent: '40' });
+    await page.waitForSelector('text=/100.00% allocated/i', { timeout: 20_000 });
+
+    const shared = await page.locator('body').innerText();
+    check(
+      'the shares add back up to the whole, to the cent',
+      /85\u00a0500,00/.test(shared) && /57\u00a0000,00/.test(shared),
+    );
+    await page.screenshot({ path: `${shotsDir}/29-commission-shares.png`, fullPage: true });
+
+    // Send it for approval, then approve it.
+    await page.getByRole('button', { name: /send it for approval/i }).click();
+    await page.waitForSelector('text=/Your name goes onto this permanently/i', { timeout: 20_000 });
+    check('approval is a decision, and the CRM says whose', true);
+
+    await page.fill('input[name="approvalNote"]', 'Checked against the sole mandate.');
+    page.once('dialog', (dialog) => void dialog.accept());
+    await page.getByRole('button', { name: /^approve it$/i }).click();
+    await page.waitForSelector('text=/Ayden Grobler on /i', { timeout: 20_000 });
+
+    const approvedNow = await page.locator('body').innerText();
+    check(
+      'the approval carries a name and a date',
+      /Approved by\s*\n?\s*Ayden Grobler/i.test(approvedNow) ||
+        /Ayden Grobler on /i.test(approvedNow),
+    );
+    check(
+      'an approved commission on an unregistered transfer still cannot be paid',
+      /transfer has not registered/i.test(approvedNow) &&
+        !(await page.locator('input[name="paidOn"]').count()),
+    );
+
+    // Register the transfer, which is the separate act spec 49 exists for.
+    await page.goto(`${baseUrl}/sales/transactions/${transactionId}`, {
+      waitUntil: 'domcontentloaded',
+    });
+    await page.fill('input[name="registrationDate"]', '2026-09-12');
+    page.once('dialog', (dialog) => void dialog.accept());
+    await page.getByRole('button', { name: /record as registered/i }).click();
+    // Waited on the alert the registration produces, rather than on the word
+    // "Registered" which the page already carried as a heading.
+    await page.waitForSelector('text=/Transfer registered on/i', { timeout: 20_000 });
+    const registered = await page.locator('body').innerText();
+    check('registration is recorded as its own event', /12 September 2026/.test(registered));
+
+    // Now, and only now, the invoice and the payment can be recorded.
+    await page.goto(`${baseUrl}/commissions/${commissionId}`, { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('input[name="invoiceNumber"]', { timeout: 20_000 });
+    check('with the transfer registered, the invoice can be recorded', true);
+
+    await page.fill('input[name="invoiceNumber"]', 'INV-2026-0001');
+    await page.getByRole('button', { name: /record the invoice/i }).click();
+    await page.waitForSelector('text=/Invoice number recorded/i', { timeout: 20_000 });
+    const invoicedNow = await page.locator('body').innerText();
+    check(
+      'and the CRM is clear that it did not raise the invoice',
+      /The CRM did not raise the invoice|does not raise invoices/i.test(invoicedNow),
+    );
+
+    await page.fill('input[name="paidOn"]', '2026-09-30');
+    await page.fill('input[name="paymentReference"]', 'EFT 88231');
+    page.once('dialog', (dialog) => void dialog.accept());
+    await page.getByRole('button', { name: /record it as paid by me/i }).click();
+    await page.waitForSelector('text=/Recorded as paid by a person/i', { timeout: 20_000 });
+
+    const paidNow = await page.locator('body').innerText();
+    check(
+      'a payment is recorded by a person, never confirmed by the CRM',
+      /Recorded as paid by a person, not confirmed by a bank/i.test(paidNow) &&
+        /connected to no bank account/i.test(paidNow),
+    );
+    check(
+      'and nothing anywhere claims a bank or gateway confirmed it',
+      !/payment confirmed|bank confirmed|transaction successful|gateway/i.test(paidNow),
+    );
+    check(
+      'the whole history is on the record',
+      /What has happened to it/i.test(paidNow) &&
+        /Recorded as paid/.test(paidNow) &&
+        /Shares changed/.test(paidNow),
+    );
+    await page.screenshot({ path: `${shotsDir}/30-commission-paid.png`, fullPage: true });
+
+    // The list keeps the four figures apart.
+    await page.goto(`${baseUrl}/commissions`, { waitUntil: 'domcontentloaded' });
+    const list = await page.locator('body').innerText();
+    check(
+      'the list refuses to present any figure as money in the bank',
+      /No figure here is money in the bank/i.test(list),
+    );
+    check(
+      'and keeps worked out, waiting, due and recorded paid apart',
+      /Being worked out/i.test(list) &&
+        /Waiting on the deeds office/i.test(list) &&
+        /Due to the office/i.test(list) &&
+        /Recorded as paid/i.test(list),
+    );
+    await page.screenshot({ path: `${shotsDir}/31-commission-list.png`, fullPage: true });
+
+    await page.goto(`${baseUrl}/commissions/statements`, { waitUntil: 'domcontentloaded' });
+    const statements = await page.locator('body').innerText();
+    check('a statement says plainly that a share is not a payment', /A share is not a payment/i.test(statements));
+    check(
+      "and the office's own share is a line of its own",
+      /Garden Route Lifestyle Property/.test(statements),
+    );
+    await page.screenshot({ path: `${shotsDir}/32-statements.png`, fullPage: true });
+
+    await page.goto(`${baseUrl}/commissions/rules`, { waitUntil: 'domcontentloaded' });
+    const rules = await page.locator('body').innerText();
+    check(
+      'the office terms say that changing a rule never changes a past figure',
+      /never changes a past figure/i.test(rules),
+    );
+    await page.screenshot({ path: `${shotsDir}/33-commission-rules.png`, fullPage: true });
+
     // --- phone -----------------------------------------------------------
     const phone = await browser.newContext({
       viewport: { width: 390, height: 844 },
@@ -705,6 +877,17 @@ async function main(): Promise<void> {
       '/companies/new',
       '/fica',
       '/fica/new',
+      '/commissions',
+      '/commissions/rules',
+      '/commissions/statements',
+      // The record pages too: they carry the wide tables, so they are where
+      // sideways scrolling would actually appear.
+      `/people/${personId}`,
+      `/properties/${propertyId}`,
+      `/companies/${companyId}`,
+      `/fica/${ficaId}`,
+      `/commissions/${commissionId}`,
+      `/sales/transactions/${transactionId}`,
     ]) {
       await phonePage.goto(`${baseUrl}${path}`, { waitUntil: 'domcontentloaded' });
       const sideways = await phonePage.evaluate(
@@ -721,6 +904,20 @@ async function main(): Promise<void> {
     failures === 0 ? '\nsmoke test passed\n' : `\nsmoke test failed: ${failures} problem(s)\n`,
   );
   if (failures > 0) process.exit(1);
+}
+
+/** Fills in and submits the share panel on a commission. */
+async function setShare(
+  page: Page,
+  share: { role: string; percent: string; agentIndex?: number },
+): Promise<void> {
+  const form = page.locator('form:has(button:text-is("Save this share"))');
+  await form.locator('select[name="role"]').selectOption(share.role);
+  await form.locator('input[name="sharePercent"]').fill(share.percent);
+  if (share.agentIndex !== undefined) {
+    await form.locator('select[name="agentId"]').selectOption({ index: share.agentIndex });
+  }
+  await page.getByRole('button', { name: /save this share/i }).click();
 }
 
 /** How many people are in the active list, read from the list page itself. */

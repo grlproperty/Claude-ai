@@ -466,6 +466,9 @@ export function statusTone(value: string): 'neutral' | 'brand' | 'ok' | 'warn' |
       'won', 'accepted', 'approved', 'verified', 'complete', 'completed',
       'lease_signed', 'mandate_signed', 'registered', 'granted', 'not_listed',
       'results_loaded',
+      // Commission: recorded as paid by a person, which is as good as it gets
+      // without a bank feed.
+      'paid',
     ].includes(value)
   ) {
     return 'ok';
@@ -482,7 +485,7 @@ export function statusTone(value: string): 'neutral' | 'brand' | 'ok' | 'warn' |
     [
       'submitted', 'under_review', 'screening', 'documents_required', 'requested',
       'awaiting_registration', 'suspensive_conditions', 'counter_offer', 'nurture',
-      'urgent', 'high', 'in_progress', 'scheduled',
+      'urgent', 'high', 'in_progress', 'scheduled', 'invoiced',
     ].includes(value)
   ) {
     return 'warn';

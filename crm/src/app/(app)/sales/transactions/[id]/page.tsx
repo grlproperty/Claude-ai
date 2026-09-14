@@ -5,6 +5,8 @@ import { requirePermissionOrRedirect } from '@/lib/guard.ts';
 import { getTransaction, getTransactionHistory, listOffers } from '@/lib/sales.ts';
 import { listAgents } from '@/lib/people/queries.ts';
 import { listDocuments } from '@/lib/files.ts';
+import { COMMISSION_STATUSES } from '@/lib/commission/types.ts';
+import { commissionFor } from '@/lib/commission/records.ts';
 import {
   FINANCE_STATUSES,
   OFFER_STATUSES,
@@ -52,10 +54,13 @@ export default async function TransactionPage({
       offers: await listOffers(db, { propertyId: transaction.propertyId, limit: 50 }),
       documents: await listDocuments(db, { transactionId: id }),
       agents: user.permissions.has('DATA_VIEW_ALL') ? await listAgents(db) : [],
+      commission: user.permissions.has('COMMISSION_VIEW')
+        ? await commissionFor(db, { transactionId: id })
+        : null,
     };
   });
   if (!data) notFound();
-  const { transaction, history, offers, documents, agents } = data;
+  const { transaction, history, offers, documents, agents, commission } = data;
 
   const canEdit = user.permissions.has('SALES_EDIT');
 
@@ -160,6 +165,81 @@ export default async function TransactionPage({
                   : null
               }
             />
+          </Card>
+        ) : null}
+
+        {/* ---------------- Commission ---------------- */}
+        {user.permissions.has('COMMISSION_VIEW') ? (
+          <Card>
+            <CardHeader
+              title="Commission"
+              description="Only earned once the transfer registers."
+              actions={
+                commission ? (
+                  <ButtonLink href={`/commissions/${commission.id}`} size="sm">
+                    Open it
+                  </ButtonLink>
+                ) : user.permissions.has('COMMISSION_CREATE') ? (
+                  <ButtonLink
+                    href={`/commissions/new?transactionId=${transaction.id}`}
+                    size="sm"
+                    tone="primary"
+                  >
+                    Work it out
+                  </ButtonLink>
+                ) : null
+              }
+            />
+            <div className="p-4 sm:p-5">
+              {commission ? (
+                <DescriptionList
+                  items={[
+                    {
+                      label: 'Where it stands',
+                      value: (
+                        <Badge tone={statusTone(commission.status)}>
+                          {labelOf(COMMISSION_STATUSES, commission.status)}
+                        </Badge>
+                      ),
+                    },
+                    {
+                      label: 'Commission',
+                      value: formatMoney(commission.grossExclVat, { decimals: true }),
+                    },
+                    {
+                      label: commission.vatApplicable ? 'With VAT' : 'VAT',
+                      value: commission.vatApplicable
+                        ? formatMoney(commission.grossInclVat, { decimals: true })
+                        : 'Does not apply',
+                    },
+                    {
+                      label: 'Approved by',
+                      value: commission.approvedByName
+                        ? `${commission.approvedByName} on ${formatDate(commission.approvedAt)}`
+                        : 'Nobody yet',
+                    },
+                    {
+                      label: 'Recorded as paid',
+                      value: commission.paidOn
+                        ? `${formatDate(commission.paidOn)} by ${commission.markedPaidByName ?? 'somebody'}`
+                        : 'Not yet',
+                      span: true,
+                    },
+                  ]}
+                />
+              ) : (
+                <p className="text-[0.8125rem] text-ink-soft">
+                  No commission has been worked out on this transaction yet.
+                </p>
+              )}
+
+              {commission && transaction.status !== 'registered' ? (
+                <p className="mt-3 text-[0.8125rem] text-warn">
+                  The transfer has not registered, so this commission cannot be invoiced or
+                  recorded as paid yet.
+                </p>
+              ) : null}
+            </div>
           </Card>
         ) : null}
 

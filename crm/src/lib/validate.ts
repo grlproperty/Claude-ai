@@ -64,6 +64,35 @@ export const optionalMoney = z
     message: 'Please enter an amount, for example 1250000 or 1250000.50.',
   }) as unknown as z.ZodType<string | null>;
 
+/**
+ * A decimal with more places than money has.
+ *
+ * A commission rate is genuinely written to four places (4.5625% is a real
+ * mandate term) and a count of months to three, so neither fits the
+ * two-place rule that amounts follow.
+ */
+export function optionalDecimal(places: number, example: string) {
+  const pattern = new RegExp(`^-?\\d+(\\.\\d{1,${places}})?$`);
+  return z
+    .union([z.string(), z.number()])
+    .optional()
+    .transform((value) => {
+      if (value === undefined || value === null || value === '') return null;
+      const cleaned = String(value).replace(/[\s,]/g, '');
+      if (!pattern.test(cleaned)) return Number.NaN;
+      return cleaned;
+    })
+    .refine((value) => value === null || !Number.isNaN(value), {
+      message: `Please enter a number, for example ${example}.`,
+    }) as unknown as z.ZodType<string | null>;
+}
+
+/** A percentage rate, to four decimal places. */
+export const optionalRate = optionalDecimal(4, '5 or 4.5625');
+
+/** A count of months, to three decimal places. */
+export const optionalMonths = optionalDecimal(3, '1 or 1.5');
+
 /** Reads a checkbox group or repeated field from a form submission. */
 export function formList(formData: FormData, name: string): string[] {
   return formData
