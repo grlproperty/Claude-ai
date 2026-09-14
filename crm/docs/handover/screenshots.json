@@ -1,0 +1,278 @@
+[
+  {
+    "group": "Signing in and the daily view",
+    "blurb": "A private CRM. The first authorised company address became Management; after that people are invited and set their own password from a single-use link.",
+    "shots": [
+      [
+        "34-dashboard.png",
+        "The dashboard, with a day's work in it",
+        "Today, then what is in flight, then what is quietly going wrong. Every figure names the status it counted, and concluded is never added to registered."
+      ],
+      [
+        "01-dashboard.png",
+        "The same dashboard on day one",
+        "An empty CRM shows zeros and says what to do about them. Nothing is invented to fill the space, and no sample data is shipped."
+      ],
+      [
+        "35-search-refused.png",
+        "Search refuses an identity number",
+        "Typing an ID number into search would put it in the address bar, the browser history and the server log. The CRM refuses and says where to look instead."
+      ]
+    ]
+  },
+  {
+    "group": "People \u2014 one master record per person",
+    "blurb": "One person, one record, whatever they are to the business. Business area and client type stay separate concepts.",
+    "shots": [
+      [
+        "02-duplicate-check.png",
+        "The duplicate check runs before anybody is created",
+        "Not after. The CRM looks for the same person by name, by number and by a one-way fingerprint of the identity number."
+      ],
+      [
+        "03-person-profile.png",
+        "A client profile",
+        "The identity number is masked. Revealing it is a decision, taken by somebody authorised, and that access is logged \u2014 the log records that it was viewed, never the number."
+      ],
+      [
+        "04-duplicate-caught.png",
+        "The same person, captured a second time",
+        "Creating anyway is blocked until somebody confirms it really is a different person."
+      ]
+    ]
+  },
+  {
+    "group": "Properties \u2014 one master record per property",
+    "blurb": "Six status concepts kept deliberately apart, because a property can be off market, with an expired sole mandate, that was sold by a third party.",
+    "shots": [
+      [
+        "07-property-profile.png",
+        "A property profile",
+        "Property status, sales status, rental status, mandate status, mandate type and sale outcome, side by side, each labelled."
+      ],
+      [
+        "08-property-duplicate.png",
+        "The same property, captured twice",
+        "Matched on erf and portion number, on address, and on name."
+      ],
+      [
+        "13-property-pipeline.png",
+        "What is in flight on this property",
+        "Leads, viewings, valuations, offers and transactions, each linked back to the one master record."
+      ]
+    ]
+  },
+  {
+    "group": "The pipeline \u2014 and the distinction the whole CRM turns on",
+    "blurb": "A sale being concluded is not a sale being registered. They are months apart, and only one of them is money.",
+    "shots": [
+      [
+        "10-lead.png",
+        "A lead",
+        "Opened from a profile, so the person is already chosen. A lost lead cannot be saved without a reason."
+      ],
+      [
+        "11-transaction.png",
+        "A concluded sale is not a registered sale",
+        "The transaction is concluded. Registration is a separate act with its own date, and the database refuses the status 'registered' without one."
+      ],
+      [
+        "12-person-pipeline.png",
+        "What is in flight for this client",
+        "Every record that touches them, in one place, without a second copy of the person."
+      ]
+    ]
+  },
+  {
+    "group": "Compliance \u2014 what somebody actually agreed to",
+    "blurb": "Permission per channel, with evidence. A do-not-contact request overrides every permission and is released, never deleted.",
+    "shots": [
+      [
+        "14-compliance.png",
+        "Contact permissions",
+        "Per channel, with what backs each one up. A granted permission with no evidence is flagged for checking rather than shown as clear."
+      ],
+      [
+        "15-preflight.png",
+        "The preflight, before anybody is contacted",
+        "Green, amber or red per channel, with the reason. Computed in the database, so a reader who cannot see the do-not-contact entry is still told RED."
+      ],
+      [
+        "16-compliance-dashboard.png",
+        "The NCC register: NOT CONNECTED",
+        "No connection to the National Consumer Commission opt-out register. Batches can be prepared and results loaded by hand. Nothing is checked automatically."
+      ]
+    ]
+  },
+  {
+    "group": "Importing data, safely",
+    "blurb": "Nothing is written until somebody has seen what will happen. One transaction, all or nothing, and a rollback that archives rather than deletes.",
+    "shots": [
+      [
+        "17-import-preview.png",
+        "The preview writes nothing",
+        "Columns matched automatically, duplicates found, and a row with nothing to identify it refused outright."
+      ],
+      [
+        "18-import-done.png",
+        "What the import actually did",
+        "Created, updated and refused, counted separately. Rolling back archives what it created and leaves what it updated alone \u2014 and says so."
+      ]
+    ]
+  },
+  {
+    "group": "Communications \u2014 the CRM sends nothing",
+    "blurb": "There is no mail server, no WhatsApp API and no SMS gateway behind any of this. Every conversation here is one somebody had and then wrote down.",
+    "shots": [
+      [
+        "19-communications.png",
+        "Writing down a conversation",
+        "The outcomes are what a person observed \u2014 spoke to them, left a message, no answer. There is no 'delivered', no 'read' and no 'bounced' to record."
+      ],
+      [
+        "20-person-timeline.png",
+        "The conversation on the client's profile",
+        "First and last contact come from the log, not from a guess. A follow-up becomes a real task, not a date in a note."
+      ],
+      [
+        "21-templates.png",
+        "Wording, not sending",
+        "A template is wording to paste. Using one is not sending, and a merge field shows as a placeholder rather than pretending to be filled."
+      ]
+    ]
+  },
+  {
+    "group": "Entities and FICA \u2014 recorded, never asserted",
+    "blurb": "The CRM cannot verify anybody. No Home Affairs, no CIPC, no deeds office, no credit bureau, no sanctions or PEP list.",
+    "shots": [
+      [
+        "22-entity.png",
+        "A trust, with the people behind it",
+        "FICA is largely about establishing who is really behind an entity, so until a director, member or trustee is recorded the CRM says that question is unanswered."
+      ],
+      [
+        "24-fica.png",
+        "A FICA file as a to-do list",
+        "What the office asked for, what arrived, and what is still outstanding. The file cannot be recorded as verified while required items are outstanding."
+      ],
+      [
+        "25-fica-verified.png",
+        "Verified by a person, not by software",
+        "The name and the date go onto the file permanently. The database refuses the status 'verified' with nobody's name and no date on it."
+      ],
+      [
+        "23-property-entity.png",
+        "The entity that owns the property",
+        "With its FICA standing, one click from the property."
+      ],
+      [
+        "26-fica-list.png",
+        "Every file, and what it really means",
+        "The honesty statement sits at the top of the section, because this is exactly where somebody would otherwise assume an automatic check had happened."
+      ]
+    ]
+  },
+  {
+    "group": "Commission \u2014 worked out, approved, and only then paid",
+    "blurb": "Three different things, never one total. Nothing is earned until the transfer registers, and \u201cpaid\u201d is somebody's word with their name against it.",
+    "shots": [
+      [
+        "27-commission-calculator.png",
+        "The calculator shows its arithmetic",
+        "5% of 2 850 000, VAT at 15%, invoice total. Worked out on integer cents, and worked out again on the server before anything is stored."
+      ],
+      [
+        "28-commission.png",
+        "Nothing here is earned yet",
+        "The transfer has not registered. The CRM does not merely hide the buttons: the database refuses to invoice or pay against an unregistered transfer."
+      ],
+      [
+        "29-commission-shares.png",
+        "Sharing a deal",
+        "Shares that add up to more than the whole are refused by the database. What is left over after rounding goes to the largest share, so the parts add back up to the whole."
+      ],
+      [
+        "30-commission-paid.png",
+        "Recorded as paid by a person, not confirmed by a bank",
+        "The CRM is connected to no bank account and checked nothing. The whole history of the commission is kept, and nobody can alter it."
+      ],
+      [
+        "31-commission-list.png",
+        "Four figures, kept apart",
+        "Being worked out. Waiting on the deeds office. Due to the office. Recorded as paid. Adding them together is the error this whole section exists to prevent."
+      ],
+      [
+        "32-statements.png",
+        "An agent's statement",
+        "An agent sees their own; row level security has already removed everybody else's shares before the query runs."
+      ],
+      [
+        "33-commission-rules.png",
+        "The office's own terms",
+        "Configuration, not code. Changing a rate here changes what the next commission starts from and never rewrites a figure somebody has already agreed."
+      ]
+    ]
+  },
+  {
+    "group": "Reports, exports and the office's own settings",
+    "blurb": "Where a CRM usually starts summarising, and where these rules get their sharpest test.",
+    "shots": [
+      [
+        "36-reports.png",
+        "Reports that refuse to blend statuses",
+        "Concluded is counted as a deal that may still fall over. Registered is counted as a transfer that happened. Never as one number."
+      ],
+      [
+        "37-data-quality.png",
+        "Contradictions, corrected by nobody",
+        "A mandate marked active past its expiry; a property marked registered with no registered transaction. Each needs a person to decide which record is right."
+      ],
+      [
+        "38-export-log.png",
+        "Every export, permanently",
+        "No export contains an identity number, a passport number or a credential. Every one that happens is logged, and the database refuses to let the log be altered or deleted."
+      ],
+      [
+        "39-notifications.png",
+        "Notifications that were never sent",
+        "In-app only. No email, no SMS, no push. A notification waits inside the CRM until the person next opens it."
+      ],
+      [
+        "40-invite.png",
+        "An invitation the CRM cannot send",
+        "It hands back a single-use link and says so in capitals, rather than implying an email went out."
+      ],
+      [
+        "41-system-health.png",
+        "NOT CONNECTED, said plainly",
+        "Six external services, each with its internal architecture in place and no credential. And backups: the CRM takes none, can verify none, and never shows a green tick."
+      ],
+      [
+        "42-business-values.png",
+        "Business values, changeable without a deployment",
+        "Rates, thresholds and how long a check stays current. Changing one never rewrites the past."
+      ]
+    ]
+  },
+  {
+    "group": "On a phone",
+    "blurb": "Checked by the test suite, not by eye: every page is measured for sideways scrolling at 390 pixels wide.",
+    "shots": [
+      [
+        "05-phone-people.png",
+        "The client list on a phone",
+        "Wide tables scroll inside their own box. The page itself never scrolls sideways."
+      ],
+      [
+        "06-phone-form.png",
+        "Capturing a client on a phone",
+        "The same form, one column, with the tap targets an actual thumb can hit."
+      ],
+      [
+        "09-phone-properties.png",
+        "Properties on a phone",
+        "Forty-one pages are measured for horizontal overflow on every smoke run."
+      ]
+    ]
+  }
+]

@@ -1,0 +1,32 @@
+# ---------------------------------------------------------------------
+# TLS, automatically, from Let's Encrypt.
+#
+# This is not optional for this CRM: session cookies are set `secure` in
+# production, so over plain HTTP nobody can sign in at all.
+# ---------------------------------------------------------------------
+{$CRM_DOMAIN} {
+	encode zstd gzip
+
+	# HSTS. The application sets the rest of its security headers itself,
+	# in next.config.ts, so that they survive whatever sits in front.
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		-Server
+	}
+
+	# An upload can be 25 MB, so allow a little headroom and no more.
+	request_body {
+		max_size 30MB
+	}
+
+	reverse_proxy app:3000 {
+		header_up X-Real-IP {remote_host}
+	}
+
+	log {
+		output file /data/access.log {
+			roll_size 10MB
+			roll_keep 10
+		}
+	}
+}
