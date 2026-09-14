@@ -78,6 +78,8 @@ const KEEP = new Set([
   'settings',
   // Seeded by migration 010 and editable configuration, not test data.
   'communication_templates',
+  // Seeded by migration 011: what the office asks for, not test data.
+  'fica_checklist_items',
 ]);
 
 /** Kept tables that a CASCADE would empty anyway, because they reference users. */

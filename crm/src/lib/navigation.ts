@@ -18,6 +18,7 @@ export interface NavItem {
 export const NAV_ITEMS: NavItem[] = [
   { href: '/', label: 'Dashboard', icon: 'dashboard', permissions: [] },
   { href: '/people', label: 'People', icon: 'people', permissions: ['PEOPLE_VIEW'] },
+  { href: '/companies', label: 'Entities', icon: 'people', permissions: ['PEOPLE_VIEW'] },
   { href: '/properties', label: 'Properties', icon: 'property', permissions: ['PROPERTIES_VIEW'] },
   { href: '/sales', label: 'Sales', icon: 'sales', permissions: ['SALES_VIEW'] },
   { href: '/rentals', label: 'Rentals', icon: 'rentals', permissions: ['RENTALS_VIEW'] },
@@ -54,6 +55,7 @@ export interface QuickAddItem {
 
 export const QUICK_ADD: QuickAddItem[] = [
   { href: '/people/new', label: 'Person', hint: 'Runs a duplicate check', permission: 'PEOPLE_CREATE' },
+  { href: '/companies/new', label: 'Company or trust', permission: 'PEOPLE_CREATE' },
   {
     href: '/properties/new',
     label: 'Property',

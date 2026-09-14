@@ -15,6 +15,7 @@ import {
   RELATIONSHIP_TYPES,
   clientTypeSummary,
   labelOf,
+  statusTone,
   permissionChannelOptions,
   preflightTone,
 } from '@/lib/domain.ts';
@@ -33,6 +34,8 @@ import { DescriptionList } from '@/components/ui/table.tsx';
 import { QuickActions, CommunicationNotice } from '@/components/quick-actions.tsx';
 import { RelatedRecordCards, loadRelatedRecords } from '@/components/related-records.tsx';
 import { listDoNotContact, listPermissions, preflightAllChannels } from '@/lib/compliance.ts';
+import { COMPANY_ROLES, ENTITY_TYPES, companiesForPerson } from '@/lib/companies.ts';
+import { FICA_STATUSES, ficaFor } from '@/lib/fica.ts';
 import { Icon } from '@/components/icons.tsx';
 import { IdentityReveal } from './identity-reveal.tsx';
 import { AssignAgentPanel, ArchivePanel, RelationshipPanel, RemoveRelationshipButton } from './panels.tsx';
@@ -138,11 +141,23 @@ export default async function PersonPage({
         }
       : null;
 
-    return { person, duplicates, assignments, audit, others, agents, related, compliance };
+    // Which entities they act for, and their FICA file (spec 31, 33).
+    const companies = await companiesForPerson(db, person.id);
+    const fica = user.permissions.has('FICA_VIEW')
+      ? await ficaFor(db, { personId: person.id })
+      : null;
+
+    return {
+      person, duplicates, assignments, audit, others, agents, related, compliance,
+      companies, fica,
+    };
   });
 
   if (!data) notFound();
-  const { person, duplicates, assignments, audit, others, agents, related, compliance } = data;
+  const {
+    person, duplicates, assignments, audit, others, agents, related, compliance,
+    companies, fica,
+  } = data;
 
   const canEdit = user.permissions.has('PEOPLE_EDIT');
   const primaryMobile =
@@ -477,6 +492,74 @@ export default async function PersonPage({
                 Nothing has been recorded. Until it is, marketing to this person is a guess.
               </p>
             ) : null}
+          </Card>
+        ) : null}
+
+        {companies.length > 0 ? (
+          <Card>
+            <CardHeader
+              title="Entities they act for"
+              description="A company, trust or close corporation they are behind."
+            />
+            <ul className="divide-y divide-line-soft">
+              {companies.map((entry) => (
+                <li key={entry.linkId} className="px-4 py-2.5 text-[0.8125rem] sm:px-5">
+                  <Link
+                    href={`/companies/${entry.companyId}`}
+                    className="font-medium text-ink hover:text-brand"
+                  >
+                    {entry.registeredName}
+                  </Link>{' '}
+                  {entry.isPrimaryContact ? <Badge tone="brand">Main contact</Badge> : null}
+                  {entry.resignedOn ? <Badge>Resigned</Badge> : null}
+                  <p className="text-[0.6875rem] text-ink-faint">
+                    {labelOf(COMPANY_ROLES, entry.role)} ·{' '}
+                    {labelOf(ENTITY_TYPES, entry.entityType)} ·{' '}
+                    <span className="font-mono">{entry.companyRef}</span>
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </Card>
+        ) : null}
+
+        {user.permissions.has('FICA_VIEW') ? (
+          <Card>
+            <CardHeader
+              title="FICA"
+              description="Recorded by a person. The CRM verifies nothing."
+              actions={
+                fica ? (
+                  <ButtonLink href={`/fica/${fica.id}`} size="sm">
+                    Open the file
+                  </ButtonLink>
+                ) : user.permissions.has('FICA_CREATE') ? (
+                  <ButtonLink href={`/fica/new?personId=${person.id}`} size="sm">
+                    Open a file
+                  </ButtonLink>
+                ) : null
+              }
+            />
+            <div className="p-4 sm:p-5">
+              {fica ? (
+                <>
+                  <Badge tone={statusTone(fica.status)}>
+                    {labelOf(FICA_STATUSES, fica.status)}
+                  </Badge>
+                  {fica.isExpired ? <Badge tone="stop">Needs refreshing</Badge> : null}
+                  <p className="mt-1.5 text-[0.6875rem] text-ink-faint">
+                    {fica.verifiedByName
+                      ? `Verified by ${fica.verifiedByName} on ${formatDate(fica.verifiedAt)}`
+                      : 'Not verified by anybody yet'}
+                    {fica.expiresOn ? ` · needs redoing by ${formatDate(fica.expiresOn)}` : ''}
+                  </p>
+                </>
+              ) : (
+                <p className="text-[0.8125rem] text-ink-soft">
+                  No FICA file has been opened for this client.
+                </p>
+              )}
+            </div>
           </Card>
         ) : null}
 

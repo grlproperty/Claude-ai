@@ -11,6 +11,8 @@ import { findPropertyDuplicates } from '@/lib/properties/duplicates.ts';
 import { listLinkablePeople } from '@/lib/properties/form-options.ts';
 import { listAgents } from '@/lib/people/queries.ts';
 import { listDocuments, listPropertyPhotos } from '@/lib/files.ts';
+import { PROPERTY_COMPANY_ROLES, companiesForProperty } from '@/lib/companies.ts';
+import { FICA_STATUSES } from '@/lib/fica.ts';
 import {
   BUSINESS_AREAS,
   DOCUMENT_CATEGORIES,
@@ -54,6 +56,7 @@ import {
   SaleHistoryPanel,
   UnlinkPersonButton,
 } from './panels.tsx';
+import { LinkCompanyToPropertyPanel } from '../../companies/forms.tsx';
 
 export const dynamic = 'force-dynamic';
 
@@ -155,6 +158,17 @@ export default async function PropertyPage({
           )
         : [],
       people: user.permissions.has('PROPERTIES_EDIT') ? await listLinkablePeople(db) : [],
+      // An entity can own a property just as a person can (spec 42).
+      companies: user.permissions.has('PEOPLE_VIEW') ? await companiesForProperty(db, id) : [],
+      linkableCompanies:
+        user.permissions.has('PROPERTIES_EDIT') && user.permissions.has('PEOPLE_VIEW')
+          ? await db.query<{ id: string; label: string }>(
+              `select id, registered_name || ' (' || company_ref || ')' as label
+                 from companies
+                where not is_archived
+                order by registered_name limit 300`,
+            )
+          : [],
       agents: user.permissions.has('DATA_VIEW_ALL') ? await listAgents(db) : [],
       audit: user.permissions.has('AUDIT_LOG_VIEW')
         ? await db.query<{
@@ -184,6 +198,8 @@ export default async function PropertyPage({
     rentals,
     duplicates,
     people,
+    companies,
+    linkableCompanies,
     agents,
     audit,
   } = data;
@@ -519,6 +535,60 @@ export default async function PropertyPage({
             <LinkPersonPanel propertyId={property.id} people={people} />
           ) : null}
         </Card>
+
+        {/* ---------------- Entities ---------------- */}
+        {user.permissions.has('PEOPLE_VIEW') ? (
+          <Card>
+            <CardHeader
+              title="Companies and trusts"
+              description="Where the owner is an entity rather than a person."
+            />
+            {companies.length === 0 ? (
+              <EmptyState
+                title="No entity is linked to this property"
+                description="If a company, trust or close corporation holds it, link that entity so its FICA file and the people behind it are one click away."
+                className="py-6"
+              />
+            ) : (
+              <ul className="divide-y divide-line-soft">
+                {companies.map((entry) => (
+                  <li key={entry.linkId} className="px-4 py-2.5 sm:px-5">
+                    <Link
+                      href={`/companies/${entry.companyId}`}
+                      className="text-sm font-medium text-ink hover:text-brand"
+                    >
+                      {entry.registeredName}
+                    </Link>{' '}
+                    <span className="font-mono text-[0.6875rem] text-ink-faint">
+                      {entry.companyRef}
+                    </span>
+                    <p className="text-[0.6875rem] text-ink-faint">
+                      {labelOf(PROPERTY_COMPANY_ROLES, entry.role)}
+                      {entry.ownershipPercent ? ` \u00b7 ${Number(entry.ownershipPercent)}%` : ''}
+                    </p>
+                    {user.permissions.has('FICA_VIEW') ? (
+                      <p className="mt-1">
+                        {entry.ficaStatus ? (
+                          <Badge tone={statusTone(entry.ficaStatus)}>
+                            FICA: {labelOf(FICA_STATUSES, entry.ficaStatus)}
+                          </Badge>
+                        ) : (
+                          <Badge tone="warn">No FICA file opened</Badge>
+                        )}
+                      </p>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            )}
+            {canEdit && linkableCompanies.length > 0 ? (
+              <LinkCompanyToPropertyPanel
+                propertyId={property.id}
+                companies={linkableCompanies}
+              />
+            ) : null}
+          </Card>
+        ) : null}
 
         {/* ---------------- Marketing ---------------- */}
         <Card>

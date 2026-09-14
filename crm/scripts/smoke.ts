@@ -485,6 +485,183 @@ async function main(): Promise<void> {
     );
     await page.screenshot({ path: `${shotsDir}/21-templates.png`, fullPage: true });
 
+    // --- an entity, and its FICA file -------------------------------------
+    // A company owns property and has people behind it. FICA is the office
+    // writing down what it collected and who looked at it; nothing here is
+    // checked against Home Affairs, CIPC or any sanctions list (spec 115).
+    await page.goto(`${baseUrl}/companies/new`, { waitUntil: 'domcontentloaded' });
+    await page.fill('input[name="registeredName"]', 'Wilderness Coastal Trust');
+    await page.selectOption('select[name="entityType"]', 'trust');
+    await page.fill('input[name="registrationNumber"]', 'IT1234/2019(G)');
+    await page.fill('input[name="suburb"]', 'Wilderness');
+    await page.fill('input[name="city"]', 'George');
+    await page.getByRole('button', { name: /create the entity/i }).click();
+    await page.waitForURL(/\/companies\/[0-9a-f-]{36}/, { timeout: 20_000 });
+    const companyId = idFromUrl(page.url());
+
+    const entity = await page.locator('body').innerText();
+    check('the entity received its own reference', /GRLP-C-\d{6}/.test(entity));
+    check(
+      'and the CRM says nobody is recorded as controlling it yet',
+      /Nobody is recorded as controlling this entity/i.test(entity),
+    );
+
+    // Put a trustee behind it, which is the question FICA actually asks.
+    await page.selectOption('form:has(button:text-is("Link this person")) select[name="personId"]', {
+      index: 1,
+    });
+    await page.selectOption('form:has(button:text-is("Link this person")) select[name="role"]', 'trustee');
+    await page.check('form:has(button:text-is("Link this person")) input[name="isPrimaryContact"]');
+    await page.getByRole('button', { name: /link this person/i }).click();
+    await page.waitForFunction(
+      () => !/Nobody is recorded as controlling this entity/i.test(document.body.innerText),
+      undefined,
+      { timeout: 20_000 },
+    );
+    const withTrustee = await page.locator('body').innerText();
+    check('a trustee is recorded behind the entity', /Trustee/i.test(withTrustee));
+    check('and the office knows who it deals with', /We deal with them/i.test(withTrustee));
+    await page.screenshot({ path: `${shotsDir}/22-entity.png`, fullPage: true });
+
+    // The entity owns the property.
+    await page.goto(`${baseUrl}/properties/${propertyId}`, { waitUntil: 'domcontentloaded' });
+    await page.selectOption(
+      'form:has(button:text-is("Link this entity")) select[name="companyId"]',
+      companyId,
+    );
+    await page.selectOption(
+      'form:has(button:text-is("Link this entity")) select[name="role"]',
+      'owner',
+    );
+    await page.getByRole('button', { name: /link this entity/i }).click();
+    // Waited on the link itself rather than on the name, which also appears
+    // in the panel's own dropdown.
+    await page.waitForSelector(`a[href="/companies/${companyId}"]`, { timeout: 20_000 });
+    const propertyWithEntity = await page.locator('body').innerText();
+    check(
+      'the property shows the entity that owns it',
+      /Companies and trusts/i.test(propertyWithEntity) &&
+        /Wilderness Coastal Trust/.test(propertyWithEntity),
+    );
+    check(
+      'and warns that the entity has no FICA file yet',
+      /No FICA file opened/i.test(propertyWithEntity),
+    );
+    await page.screenshot({ path: `${shotsDir}/23-property-entity.png`, fullPage: true });
+
+    // Open the FICA file for the entity.
+    await page.goto(`${baseUrl}/fica/new?companyId=${companyId}`, { waitUntil: 'domcontentloaded' });
+    const ficaNew = await page.locator('body').innerText();
+    check(
+      'the FICA form says plainly that the CRM verifies nobody',
+      /The CRM cannot verify anybody/i.test(ficaNew) &&
+        /no connection to Home Affairs/i.test(ficaNew),
+    );
+    check(
+      'and a new file cannot be opened as already verified',
+      !(await page
+        .locator('select[name="status"] option[value="verified"]')
+        .count()),
+    );
+    await page.getByRole('button', { name: /open the file/i }).click();
+    await page.waitForURL(/\/fica\/[0-9a-f-]{36}/, { timeout: 20_000 });
+
+    const freshFica = await page.locator('body').innerText();
+    check('the FICA file received its own reference', /GRLP-F-\d{6}/.test(freshFica));
+    check(
+      'the file lists what is still outstanding',
+      /required item\(s\) outstanding/i.test(freshFica),
+    );
+    check(
+      'the CRM does not claim to have verified, screened or checked anything',
+      !/(automatically|successfully) verified|sanctions (check|screening) (passed|clear)|verified by the system|home affairs (confirmed|verified)/i.test(
+        freshFica,
+      ),
+    );
+    await page.screenshot({ path: `${shotsDir}/24-fica.png`, fullPage: true });
+
+    // Work the checklist. Required items must be seen against the original,
+    // or marked as not applying, before the file can be recorded as verified.
+    const rows = page.locator('form:has(select[name="status"]):has(input[name="itemId"])');
+    const rowCount = await rows.count();
+    check('the office checklist was copied onto the file', rowCount > 0);
+    for (let index = 0; index < rowCount; index += 1) {
+      const row = page
+        .locator('form:has(select[name="status"]):has(input[name="itemId"])')
+        .nth(index);
+      await row.locator('select[name="status"]').selectOption('seen_against_original');
+      await row.locator('input[name="note"]').fill('Original produced at the George office.');
+      await row.getByRole('button', { name: /^save$/i }).click();
+      await page.waitForFunction(
+        (expected: number) =>
+          (document.body.innerText.match(/Seen by /g) ?? []).length >= expected,
+        index + 1,
+        { timeout: 20_000 },
+      );
+    }
+    const worked = await page.locator('body').innerText();
+    check(
+      'every item records who looked at it, not that the CRM did',
+      /Seen by Ayden Grobler/.test(worked) && !/seen by the system/i.test(worked),
+    );
+    check(
+      'and with the checklist done the file can be recorded as verified',
+      /Everything required has been seen/i.test(worked),
+    );
+
+    // Record it as verified, which stamps a person's name onto the file.
+    // The confirmation and the note only appear once 'verified' is chosen,
+    // because the form spells out what is being asserted first.
+    await page
+      .locator('form:has(input[name="rowVersion"]) select[name="status"]')
+      .selectOption('verified');
+    await page.waitForSelector('input[name="verificationNote"]', { timeout: 10_000 });
+    await page.fill('input[name="verificationNote"]', 'Originals produced at the George office.');
+    page.once('dialog', (dialog) => void dialog.accept());
+    await page.getByRole('button', { name: /record it as verified by me/i }).click();
+    await page.waitForURL(/saved=yes/, { timeout: 20_000 });
+    await page.waitForSelector('text=/Verified by a person, not by software/i', {
+      timeout: 20_000,
+    });
+
+    const verified = await page.locator('body').innerText();
+    check(
+      'the file says a person verified it, not the software',
+      /Verified by a person, not by software/i.test(verified) &&
+        /Ayden Grobler recorded this as verified/i.test(verified),
+    );
+    check('and it carries a date by which it must be redone', /needs redoing by/i.test(verified));
+    check(
+      'the change is in a history nobody can alter',
+      /What has changed/i.test(verified) && /Verified by us/.test(verified),
+    );
+    await page.screenshot({ path: `${shotsDir}/25-fica-verified.png`, fullPage: true });
+
+    // And the property now shows the entity's FICA standing.
+    await page.goto(`${baseUrl}/properties/${propertyId}`, { waitUntil: 'domcontentloaded' });
+    check(
+      "the property reflects the entity's FICA standing",
+      /FICA:\s*Verified by us/i.test(await page.locator('body').innerText()),
+    );
+
+    // The person we linked as a trustee now shows the entity they act for.
+    await page.goto(`${baseUrl}/people/${personId}`, { waitUntil: 'domcontentloaded' });
+    check(
+      'the person shows the entity they act for',
+      /Entities they act for/i.test(await page.locator('body').innerText()),
+    );
+
+    await page.goto(`${baseUrl}/fica`, { waitUntil: 'domcontentloaded' });
+    const ficaList = await page.locator('body').innerText();
+    check(
+      'the FICA list is honest about what it is',
+      !/(automatically|successfully) verified|sanctions (check|screening) (passed|clear)/i.test(
+        ficaList,
+      ),
+    );
+    check('and the verified file appears on it', /Wilderness Coastal Trust/.test(ficaList));
+    await page.screenshot({ path: `${shotsDir}/26-fica-list.png`, fullPage: true });
+
     // --- phone -----------------------------------------------------------
     const phone = await browser.newContext({
       viewport: { width: 390, height: 844 },
@@ -524,6 +701,10 @@ async function main(): Promise<void> {
       '/communications',
       '/communications/new',
       '/communications/templates',
+      '/companies',
+      '/companies/new',
+      '/fica',
+      '/fica/new',
     ]) {
       await phonePage.goto(`${baseUrl}${path}`, { waitUntil: 'domcontentloaded' });
       const sideways = await phonePage.evaluate(
