@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { readAsUser } from '@/lib/db.ts';
+import { readAsUser, withUser } from '@/lib/db.ts';
 import { requirePermissionOrRedirect } from '@/lib/guard.ts';
 import { getPerson, listAgents } from '@/lib/people/queries.ts';
 import { findPersonDuplicates } from '@/lib/people/duplicates.ts';
@@ -37,6 +37,9 @@ import { listDoNotContact, listPermissions, preflightAllChannels } from '@/lib/c
 import { COMPANY_ROLES, ENTITY_TYPES, companiesForPerson } from '@/lib/companies.ts';
 import { FICA_STATUSES, ficaFor } from '@/lib/fica.ts';
 import { Icon } from '@/components/icons.tsx';
+import { isFavourite, noteViewed, tagsFor } from '@/lib/workspace.ts';
+import { listTags } from '@/lib/people/queries.ts';
+import { FavouriteButton, TagPanel } from '../../workspace.tsx';
 import { IdentityReveal } from './identity-reveal.tsx';
 import { AssignAgentPanel, ArchivePanel, RelationshipPanel, RemoveRelationshipButton } from './panels.tsx';
 
@@ -150,14 +153,24 @@ export default async function PersonPage({
     return {
       person, duplicates, assignments, audit, others, agents, related, compliance,
       companies, fica,
+      starred: await isFavourite(db, user.id, 'person', person.id),
+      tags: await tagsFor(db, 'person', person.id),
+      allTags: await listTags(db),
     };
   });
 
   if (!data) notFound();
   const {
     person, duplicates, assignments, audit, others, agents, related, compliance,
-    companies, fica,
+    companies, fica, starred, tags, allTags,
   } = data;
+
+  // Their own list of what they last opened (spec 93). Written in its own
+  // transaction because the page itself is read only, and never allowed to
+  // be the reason a profile fails to render.
+  await withUser(user.id, (db) =>
+    noteViewed(db, user.id, 'person', person.id, `${person.fullName} (${person.clientRef})`),
+  );
 
   const canEdit = user.permissions.has('PEOPLE_EDIT');
   const primaryMobile =
@@ -218,11 +231,19 @@ export default async function PersonPage({
           </>
         }
         actions={
-          canEdit ? (
-            <ButtonLink href={`/people/${person.id}/edit`} tone="primary">
-              Edit
-            </ButtonLink>
-          ) : null
+          <div className="flex flex-wrap gap-2">
+            <FavouriteButton
+              entityType="person"
+              entityId={person.id}
+              path={`/people/${person.id}`}
+              isFavourite={starred}
+            />
+            {canEdit ? (
+              <ButtonLink href={`/people/${person.id}/edit`} tone="primary">
+                Edit
+              </ButtonLink>
+            ) : null}
+          </div>
         }
       />
 
@@ -564,6 +585,36 @@ export default async function PersonPage({
         ) : null}
 
         <RelatedRecordCards records={related} user={user} scope={{ personId: person.id }} />
+
+        {/* ---------------- Tags ---------------- */}
+        <Card>
+          <CardHeader
+            title="Tags"
+            description="The office's own labels. Retired tags stay on records that carry them."
+          />
+          <div className="px-4 pt-4 sm:px-5 sm:pt-5">
+            {tags.length === 0 ? (
+              <p className="text-[0.8125rem] text-ink-soft">No tags on this record.</p>
+            ) : (
+              <p className="flex flex-wrap gap-1">
+                {tags.map((tag) => (
+                  <Badge key={tag.id} tone={tag.colour as 'neutral'}>
+                    {tag.name}
+                  </Badge>
+                ))}
+              </p>
+            )}
+          </div>
+          {canEdit && allTags.length > 0 ? (
+            <TagPanel
+              entityType="person"
+              entityId={person.id}
+              path={`/people/${person.id}`}
+              tags={allTags}
+              selected={tags.map((tag) => tag.id)}
+            />
+          ) : null}
+        </Card>
 
         <Card>
           <CardHeader title="Record" />

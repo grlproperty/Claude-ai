@@ -161,6 +161,19 @@ export const templateCategoryOptions = options(TEMPLATE_CATEGORIES);
 export const TEMPLATE_CHANNELS = { any: 'Any channel', ...COMMUNICATION_CHANNELS } as const;
 export const templateChannelOptions = options(TEMPLATE_CHANNELS);
 
+// --- Accounts (spec 7, 10) -------------------------------------------------
+// A user is suspended or disabled, never deleted, so that everything they
+// did stays attributable (spec 104). Kept here rather than beside the user
+// queries because a client component needs the labels and must not pull a
+// database driver into the browser bundle.
+export const USER_STATUSES = {
+  active: 'Active',
+  invited: 'Invited, not yet set up',
+  suspended: 'Suspended',
+  disabled: 'Disabled',
+} as const;
+export type UserStatus = keyof typeof USER_STATUSES;
+
 export const TITLES = ['Mr', 'Mrs', 'Ms', 'Miss', 'Dr', 'Prof', 'Adv', 'Rev', 'Other'] as const;
 
 export function labelOf<T extends string>(map: Record<T, string>, value: string | null): string {

@@ -4,6 +4,7 @@ import { holds } from '../actor.ts';
 import { recordAudit } from '../audit.ts';
 import { ConcurrencyError, ForbiddenError, NotFoundError, ValidationError } from '../errors.ts';
 import { getSetting } from '../settings.ts';
+import { notify, notifyMany, usersWithPermission } from '../notifications.ts';
 import { getCommission, listSplits, note, type CommissionRecord } from './records.ts';
 import { COMMISSION_STATUSES, mayMoveTo, type CommissionStatus } from './types.ts';
 
@@ -61,6 +62,17 @@ export async function submitCommission(
     newStatus: 'submitted',
     reason: 'Sent for approval',
   });
+  // Somebody has to actually approve it, so the people who can are told.
+  // In-app only: the CRM sends no email and no message (spec 6, 90).
+  await notifyMany(db, await usersWithPermission(db, 'COMMISSION_APPROVE'), {
+    kind: 'commission_waiting',
+    title: `${record.commissionRef} is waiting for approval`,
+    body: `${record.propertyLabel ?? record.propertyRef} — ${record.grossExclVat} excluding VAT.`,
+    href: `/commissions/${id}`,
+    entityType: 'commission',
+    entityId: id,
+  });
+
   await recordAudit(db, ctx.actor, ctx.meta, {
     action: 'commission.submitted',
     entityType: 'commission',
@@ -114,6 +126,18 @@ export async function approveCommission(
     reason: approvalNote,
     detail: { grossExclVat: record.grossExclVat, netExclVat: record.netExclVat },
   });
+  if (record.createdById && record.createdById !== ctx.actor.id) {
+    await notify(db, {
+      userId: record.createdById,
+      kind: 'commission_decided',
+      title: `${record.commissionRef} was approved`,
+      body: approvalNote ?? 'Approved as it stood.',
+      href: `/commissions/${id}`,
+      entityType: 'commission',
+      entityId: id,
+    });
+  }
+
   await recordAudit(db, ctx.actor, ctx.meta, {
     action: 'commission.approved',
     entityType: 'commission',
@@ -151,6 +175,18 @@ export async function rejectCommission(
     newStatus: 'rejected',
     reason: reason.trim(),
   });
+  if (record.createdById && record.createdById !== ctx.actor.id) {
+    await notify(db, {
+      userId: record.createdById,
+      kind: 'commission_decided',
+      title: `${record.commissionRef} was sent back`,
+      body: reason.trim(),
+      href: `/commissions/${id}`,
+      entityType: 'commission',
+      entityId: id,
+    });
+  }
+
   await recordAudit(db, ctx.actor, ctx.meta, {
     action: 'commission.rejected',
     entityType: 'commission',

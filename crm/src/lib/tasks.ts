@@ -3,6 +3,7 @@ import { agentToKeep, type Ctx } from './actor.ts';
 import type { Db } from './db.ts';
 import { diff, recordAudit } from './audit.ts';
 import { ConcurrencyError, NotFoundError } from './errors.ts';
+import { notify } from './notifications.ts';
 import {
   APPOINTMENT_STATUSES,
   APPOINTMENT_TYPES,
@@ -311,6 +312,20 @@ export async function createTask(db: Db, ctx: Ctx, input: TaskInput): Promise<{ 
       input.recurrence, input.recurrenceUntil, ctx.actor.id,
     ],
   );
+
+  // A task given to somebody else is the one thing worth telling them.
+  // In-app only: the CRM sends no email and no message (spec 6, 90).
+  if (assignedUserId !== ctx.actor.id) {
+    await notify(db, {
+      userId: assignedUserId,
+      kind: 'task_assigned',
+      title: input.title,
+      body: input.dueAt ? `Due ${input.dueAt.slice(0, 10)}.` : 'No due date set.',
+      href: `/tasks?view=open`,
+      entityType: 'task',
+      entityId: row.id,
+    });
+  }
 
   await recordAudit(db, ctx.actor, ctx.meta, {
     action: 'task.created',

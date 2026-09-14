@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { readAsUser } from '@/lib/db.ts';
+import { cleanQuery, listSavedViews } from '@/lib/workspace.ts';
+import { SaveViewPanel } from '../workspace.tsx';
 import { getAgentFilter } from '@/lib/session.ts';
 import { requirePermissionOrRedirect } from '@/lib/guard.ts';
 import { listProperties, type PropertyFilters } from '@/lib/properties/queries.ts';
@@ -75,6 +77,14 @@ export default async function PropertiesPage({
     user.permissions.has('DATA_VIEW_ALL') ? await listAgents(db) : [],
     await listTags(db),
   ]);
+
+  // Saved views are this page's own filters, named (spec 88).
+  const views = await readAsUser(user.id, (db) => listSavedViews(db, user.id, 'property'));
+  const currentQuery = cleanQuery(
+    new URLSearchParams(
+      Object.entries(params).filter(([, value]) => value) as [string, string][],
+    ).toString(),
+  );
 
   const canCreate = user.permissions.has('PROPERTIES_CREATE');
   const canMerge = user.permissions.has('MERGE_RECORDS');
@@ -252,6 +262,12 @@ export default async function PropertiesPage({
             </ButtonLink>
           </div>
         </form>
+        <SaveViewPanel
+          entityType="property"
+          query={currentQuery}
+          path="/properties"
+          views={views}
+        />
       </Card>
 
       <Card>
@@ -259,11 +275,18 @@ export default async function PropertiesPage({
           <p className="text-xs text-ink-soft">
             {total === 0 ? 'No properties match these filters' : pluralise(total, 'property', 'properties')}
           </p>
-          {lastPage > 1 ? (
-            <p className="text-xs text-ink-faint">
-              Page {page} of {lastPage}
-            </p>
-          ) : null}
+          <div className="flex flex-wrap items-center gap-3">
+            {lastPage > 1 ? (
+              <p className="text-xs text-ink-faint">
+                Page {page} of {lastPage}
+              </p>
+            ) : null}
+            {user.permissions.has('REPORTS_EXPORT') ? (
+              <ButtonLink href="/api/export/properties" size="sm">
+                Export CSV
+              </ButtonLink>
+            ) : null}
+          </div>
         </div>
 
         {rows.length === 0 ? (

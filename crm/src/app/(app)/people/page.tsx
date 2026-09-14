@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { readAsUser } from '@/lib/db.ts';
+import { cleanQuery, listSavedViews } from '@/lib/workspace.ts';
+import { SaveViewPanel } from '../workspace.tsx';
 import { getAgentFilter } from '@/lib/session.ts';
 import { requirePermissionOrRedirect } from '@/lib/guard.ts';
 import { listPeople, listAgents, listTags, type PeopleFilters } from '@/lib/people/queries.ts';
@@ -44,6 +46,14 @@ export default async function PeoplePage({
     user.permissions.has('DATA_VIEW_ALL') ? await listAgents(db) : [],
     await listTags(db),
   ]);
+
+  // Saved views are this page's own filters, named (spec 88).
+  const views = await readAsUser(user.id, (db) => listSavedViews(db, user.id, 'person'));
+  const currentQuery = cleanQuery(
+    new URLSearchParams(
+      Object.entries(params).filter(([, value]) => value) as [string, string][],
+    ).toString(),
+  );
 
   const canCreate = user.permissions.has('PEOPLE_CREATE');
   const canMerge = user.permissions.has('MERGE_RECORDS');
@@ -186,6 +196,7 @@ export default async function PeoplePage({
             </ButtonLink>
           </div>
         </form>
+        <SaveViewPanel entityType="person" query={currentQuery} path="/people" views={views} />
       </Card>
 
       <Card>
@@ -193,11 +204,20 @@ export default async function PeoplePage({
           <p className="text-xs text-ink-soft">
             {total === 0 ? 'No people match these filters' : pluralise(total, 'person', 'people')}
           </p>
-          {lastPage > 1 ? (
-            <p className="text-xs text-ink-faint">
-              Page {page} of {lastPage}
-            </p>
-          ) : null}
+          <div className="flex flex-wrap items-center gap-3">
+            {lastPage > 1 ? (
+              <p className="text-xs text-ink-faint">
+                Page {page} of {lastPage}
+              </p>
+            ) : null}
+            {user.permissions.has('REPORTS_EXPORT') ? (
+              // No identity number is in any export, and every export is
+              // recorded permanently (spec 15, 98).
+              <ButtonLink href="/api/export/people" size="sm">
+                Export CSV
+              </ButtonLink>
+            ) : null}
+          </div>
         </div>
 
         {rows.length === 0 ? (

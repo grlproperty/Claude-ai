@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { readAsUser } from '@/lib/db.ts';
+import { readAsUser, withUser } from '@/lib/db.ts';
 import { requirePermissionOrRedirect } from '@/lib/guard.ts';
 import {
   getProperty,
@@ -57,6 +57,9 @@ import {
   UnlinkPersonButton,
 } from './panels.tsx';
 import { LinkCompanyToPropertyPanel } from '../../companies/forms.tsx';
+import { isFavourite, noteViewed, tagsFor } from '@/lib/workspace.ts';
+import { listTags } from '@/lib/people/queries.ts';
+import { FavouriteButton, TagPanel } from '../../workspace.tsx';
 
 export const dynamic = 'force-dynamic';
 
@@ -173,6 +176,9 @@ export default async function PropertyPage({
             )
           : [],
       agents: user.permissions.has('DATA_VIEW_ALL') ? await listAgents(db) : [],
+      starred: await isFavourite(db, user.id, 'property', property.id),
+      tags: await tagsFor(db, 'property', property.id),
+      allTags: await listTags(db),
       audit: user.permissions.has('AUDIT_LOG_VIEW')
         ? await db.query<{
             occurred_at: Date;
@@ -205,7 +211,22 @@ export default async function PropertyPage({
     linkableCompanies,
     agents,
     audit,
+    starred,
+    tags,
+    allTags,
   } = data;
+
+  // Their own list of what they last opened (spec 93), written in its own
+  // transaction because this page reads only.
+  await withUser(user.id, (db) =>
+    noteViewed(
+      db,
+      user.id,
+      'property',
+      property.id,
+      property.addressLine || property.propertyRef,
+    ),
+  );
 
   const canEdit = user.permissions.has('PROPERTIES_EDIT');
   const canMarket = canEdit || user.permissions.has('MARKETING_ADMIN');
@@ -247,11 +268,19 @@ export default async function PropertyPage({
           </>
         }
         actions={
-          canEdit ? (
-            <ButtonLink href={`/properties/${property.id}/edit`} tone="primary">
-              Edit
-            </ButtonLink>
-          ) : null
+          <div className="flex flex-wrap gap-2">
+            <FavouriteButton
+              entityType="property"
+              entityId={property.id}
+              path={`/properties/${property.id}`}
+              isFavourite={starred}
+            />
+            {canEdit ? (
+              <ButtonLink href={`/properties/${property.id}/edit`} tone="primary">
+                Edit
+              </ButtonLink>
+            ) : null}
+          </div>
         }
       />
 
@@ -870,6 +899,36 @@ export default async function PropertyPage({
 
         {/* ---------------- Record ---------------- */}
         <RelatedRecordCards records={related} user={user} scope={{ propertyId: property.id }} />
+
+        {/* ---------------- Tags ---------------- */}
+        <Card>
+          <CardHeader
+            title="Tags"
+            description="The office's own labels. Retired tags stay on records that carry them."
+          />
+          <div className="px-4 pt-4 sm:px-5 sm:pt-5">
+            {tags.length === 0 ? (
+              <p className="text-[0.8125rem] text-ink-soft">No tags on this record.</p>
+            ) : (
+              <p className="flex flex-wrap gap-1">
+                {tags.map((tag) => (
+                  <Badge key={tag.id} tone={tag.colour as 'neutral'}>
+                    {tag.name}
+                  </Badge>
+                ))}
+              </p>
+            )}
+          </div>
+          {canEdit && allTags.length > 0 ? (
+            <TagPanel
+              entityType="property"
+              entityId={property.id}
+              path={`/properties/${property.id}`}
+              tags={allTags}
+              selected={tags.map((tag) => tag.id)}
+            />
+          ) : null}
+        </Card>
 
         <Card>
           <CardHeader title="Record" />

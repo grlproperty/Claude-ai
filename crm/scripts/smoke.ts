@@ -10,7 +10,7 @@
  *   npm run build && npm start &      # or npm run dev
  *   npm run smoke -- http://127.0.0.1:3000
  */
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
 import { chromium, type Page } from 'playwright';
 
 const baseUrl = process.argv[2] ?? 'http://127.0.0.1:3000';
@@ -33,7 +33,10 @@ async function main(): Promise<void> {
   const browser = await chromium.launch(executablePath ? { executablePath } : {});
 
   try {
-    const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+    const context = await browser.newContext({
+      viewport: { width: 1280, height: 900 },
+      acceptDownloads: true,
+    });
     const page = await context.newPage();
 
     // --- first run setup -------------------------------------------------
@@ -834,6 +837,194 @@ async function main(): Promise<void> {
     );
     await page.screenshot({ path: `${shotsDir}/33-commission-rules.png`, fullPage: true });
 
+    // --- the dashboard, search, and the office's own pages ---------------
+    await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded' });
+    const board = await page.locator('body').innerText();
+    check(
+      'the dashboard keeps concluded and registered apart (spec 49)',
+      /Concluded, not registered/i.test(board) && /Registered this month/i.test(board),
+    );
+    check(
+      'and never presents a commission figure as money in the bank',
+      /Waiting on the deeds office/i.test(board) &&
+        /by a person, not a bank feed/i.test(board) &&
+        !/total earnings|money earned|revenue/i.test(board),
+    );
+    await page.screenshot({ path: `${shotsDir}/34-dashboard.png`, fullPage: true });
+
+    // Global search finds a person however the number was typed.
+    await page.goto(`${baseUrl}/search?q=${encodeURIComponent('082 543 2681')}`, {
+      waitUntil: 'domcontentloaded',
+    });
+    check(
+      'search finds a person from a mobile number typed with spaces',
+      /John Smith/.test(await page.locator('body').innerText()),
+    );
+
+    // And refuses an identity number outright, rather than finding nothing.
+    await page.goto(`${baseUrl}/search?q=8001015009087`, { waitUntil: 'domcontentloaded' });
+    const refused = await page.locator('body').innerText();
+    check(
+      'search refuses an identity number instead of putting it in a URL (spec 15)',
+      /Identity numbers are not searchable/i.test(refused),
+    );
+    check('and returns no results for it', !/John Smith/.test(refused));
+    await page.screenshot({ path: `${shotsDir}/35-search-refused.png`, fullPage: true });
+
+    // Starring a record, which only the person who did it can see.
+    await page.goto(`${baseUrl}/people/${personId}`, { waitUntil: 'domcontentloaded' });
+    // Found by its accessible name, which is what a screen reader reads.
+    await page.getByRole('button', { name: /add to your favourites/i }).click();
+    await page.waitForSelector('text=/★ Starred/', { timeout: 20_000 });
+    await page.goto(`${baseUrl}/`, { waitUntil: 'domcontentloaded' });
+    const withFavourite = await page.locator('body').innerText();
+    check(
+      'a starred record appears on your own dashboard',
+      /Favourites/.test(withFavourite) &&
+        /Only you can see these/i.test(withFavourite) &&
+        /John Smith/.test(withFavourite),
+    );
+    check('and so does what you last opened', /Recently opened/i.test(withFavourite));
+
+    // Tagging a record.
+    await page.goto(`${baseUrl}/people/${personId}`, { waitUntil: 'domcontentloaded' });
+    const tagForm = page.locator('form:has(button:text-is("Save tags"))');
+    await tagForm.locator('input[name="tagIds"]').first().check();
+    await page.getByRole('button', { name: /save tags/i }).click();
+    await page.waitForSelector('text=/Tags saved/i', { timeout: 20_000 });
+    check('a tag can be put on a record', true);
+
+    // Saving the filters somebody is looking at.
+    await page.goto(`${baseUrl}/people?clientType=seller`, { waitUntil: 'domcontentloaded' });
+    await page.fill('input[name="name"]', 'My sellers');
+    await page.getByRole('button', { name: /save the view/i }).click();
+    await page.waitForSelector('text=/Only you can see it/i', { timeout: 20_000 });
+    const saved = await page.locator('body').innerText();
+    check('filters can be saved as a named view', /My sellers/.test(saved));
+
+    // Reports.
+    await page.goto(`${baseUrl}/reports`, { waitUntil: 'domcontentloaded' });
+    const reports = await page.locator('body').innerText();
+    check(
+      'reports say plainly that concluded is not registered',
+      /Concluded is not registered/i.test(reports),
+    );
+    check(
+      'and count the two separately rather than as turnover',
+      /not yet registered, so not turnover/i.test(reports),
+    );
+    await page.screenshot({ path: `${shotsDir}/36-reports.png`, fullPage: true });
+
+    await page.goto(`${baseUrl}/reports/data-quality`, { waitUntil: 'domcontentloaded' });
+    const quality = await page.locator('body').innerText();
+    check(
+      'data quality corrects nothing on its own',
+      /Nothing here is corrected automatically/i.test(quality),
+    );
+    await page.screenshot({ path: `${shotsDir}/37-data-quality.png`, fullPage: true });
+
+    // An export, which is recorded permanently and carries no identity data.
+    // Exported the way a person does it: the button on the list page, and
+    // the file the browser actually receives.
+    await page.goto(`${baseUrl}/people`, { waitUntil: 'domcontentloaded' });
+    const [download] = await Promise.all([
+      page.waitForEvent('download', { timeout: 20_000 }),
+      page.getByRole('link', { name: /export csv/i }).click(),
+    ]);
+    const csvPath = await download.path();
+    const csv = csvPath ? await readFile(csvPath, 'utf8') : '';
+
+    check('exporting gives you a CSV file', csv.length > 0);
+    check(
+      'which suggests a filename saying what it is',
+      /^grlp-people-\d{4}-\d{2}-\d{2}\.csv$/.test(download.suggestedFilename()),
+    );
+    check(
+      'an export carries no identity number at all (spec 15)',
+      csv.length > 0 && !/8001015009087/.test(csv) && !/id.?number/i.test(csv),
+    );
+    check('and does carry the ordinary columns', /Reference,First name,Surname/.test(csv));
+
+    await page.goto(`${baseUrl}/reports/exports`, { waitUntil: 'domcontentloaded' });
+    const exportLog = await page.locator('body').innerText();
+    check(
+      'every export is on a log that cannot be altered',
+      /cannot be altered or deleted/i.test(exportLog) && /No identity data/i.test(exportLog),
+    );
+    await page.screenshot({ path: `${shotsDir}/38-export-log.png`, fullPage: true });
+
+    // Notifications: in-app only.
+    await page.goto(`${baseUrl}/notifications`, { waitUntil: 'domcontentloaded' });
+    const notifications = await page.locator('body').innerText();
+    check(
+      'notifications say plainly that nothing was sent',
+      /Nothing here was sent to you/i.test(notifications) &&
+        /no mail server/i.test(notifications),
+    );
+    check(
+      'and no status claims a delivery',
+      !/delivered|bounced|email sent|sms sent/i.test(notifications),
+    );
+    await page.screenshot({ path: `${shotsDir}/39-notifications.png`, fullPage: true });
+
+    // Users: invited, never registered; suspended, never deleted.
+    await page.goto(`${baseUrl}/settings/users`, { waitUntil: 'domcontentloaded' });
+    const users = await page.locator('body').innerText();
+    check(
+      'the CRM is clear that nobody can register and nobody is deleted',
+      /Nobody can register, and nobody is ever deleted/i.test(users),
+    );
+
+    await page.fill('input[name="fullName"]', 'Thandi Ngwenya');
+    await page.fill('input[name="email"]', 'thandi@grproperty.co.za');
+    await page.selectOption('select[name="role"]', 'AGENT');
+    await page.getByRole('button', { name: /create an invitation link/i }).click();
+    await page.waitForSelector('text=/Give them this link yourself/i', { timeout: 20_000 });
+    const invited = await page.locator('body').innerText();
+    check(
+      'an invitation hands back a link rather than claiming to email it',
+      /THE CRM HAS NOT SENT ANYTHING/.test(invited) && /\/invite\//.test(invited),
+    );
+    await page.screenshot({ path: `${shotsDir}/40-invite.png`, fullPage: true });
+
+    // System health: NOT CONNECTED, said plainly, for everything external.
+    await page.goto(`${baseUrl}/settings/system`, { waitUntil: 'domcontentloaded' });
+    const health = await page.locator('body').innerText();
+    check(
+      'the CRM says it takes no backups and cannot verify one',
+      /takes no backups and cannot verify one/i.test(health),
+    );
+    for (const service of [
+      'Email sending',
+      'WhatsApp',
+      'National Consumer Commission register',
+      'Property24 and Instagram',
+      'Bank feed and accounting',
+    ]) {
+      check(`${service} is shown as NOT CONNECTED`, health.includes(service));
+    }
+    check(
+      'and the NOT CONNECTED wording is actually on the page',
+      (health.match(/NOT CONNECTED/g) ?? []).length >= 5,
+    );
+    await page.screenshot({ path: `${shotsDir}/41-system-health.png`, fullPage: true });
+
+    // Business values are configuration, not code.
+    await page.goto(`${baseUrl}/settings/business`, { waitUntil: 'domcontentloaded' });
+    const business = await page.locator('body').innerText();
+    check(
+      'business values are editable without a deployment',
+      /Changing a value never rewrites the past/i.test(business) &&
+        /commission\.vat_rate/.test(business),
+    );
+    await page.screenshot({ path: `${shotsDir}/42-business-values.png`, fullPage: true });
+
+    await page.goto(`${baseUrl}/settings/tags`, { waitUntil: 'domcontentloaded' });
+    check(
+      'a tag is retired rather than deleted',
+      /A tag is retired, never deleted/i.test(await page.locator('body').innerText()),
+    );
+
     // --- phone -----------------------------------------------------------
     const phone = await browser.newContext({
       viewport: { width: 390, height: 844 },
@@ -880,6 +1071,17 @@ async function main(): Promise<void> {
       '/commissions',
       '/commissions/rules',
       '/commissions/statements',
+      '/',
+      '/search?q=Smith',
+      '/notifications',
+      '/reports',
+      '/reports/data-quality',
+      '/reports/exports',
+      '/settings',
+      '/settings/users',
+      '/settings/business',
+      '/settings/tags',
+      '/settings/system',
       // The record pages too: they carry the wide tables, so they are where
       // sideways scrolling would actually appear.
       `/people/${personId}`,
