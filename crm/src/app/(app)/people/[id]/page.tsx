@@ -7,6 +7,7 @@ import { findPersonDuplicates } from '@/lib/people/duplicates.ts';
 import {
   ADDRESS_TYPES,
   BUSINESS_AREAS,
+  COMMUNICATION_CHANNELS,
   CONTACT_TYPES,
   DNC_CHANNELS,
   DNC_SOURCES,
@@ -218,7 +219,7 @@ export default async function PersonPage({
             label="Last contact"
             value={
               person.lastContactAt
-                ? `${formatDate(person.lastContactAt)} · ${labelOf(CONTACT_TYPES, person.lastContactMethod)}`
+                ? `${formatDate(person.lastContactAt)} · ${labelOf(COMMUNICATION_CHANNELS, person.lastContactMethod)}`
                 : 'Never'
             }
             hint={person.lastContactAt ? relativeTime(person.lastContactAt) : undefined}

@@ -100,17 +100,66 @@ export const RELATIONSHIP_TYPES = {
 export type RelationshipType = keyof typeof RELATIONSHIP_TYPES;
 export const relationshipTypeOptions = options(RELATIONSHIP_TYPES);
 
-// --- Communication (spec 53) -----------------------------------------------
+// --- Communication (spec 43 to 45, 143) ------------------------------------
+// How a conversation happened. Kept in step with the check constraint on
+// communications.channel, and distinct from CONTACT_TYPES (what a detail IS)
+// and PERMISSION_CHANNELS (what somebody agreed to be reached on).
 export const COMMUNICATION_CHANNELS = {
-  email: 'Email',
+  call: 'Call',
   whatsapp: 'WhatsApp',
-  phone: 'Phone',
   sms: 'SMS',
+  email: 'Email',
   in_person: 'In person',
+  meeting: 'Meeting',
+  post: 'Post',
   other: 'Other',
 } as const;
 export type CommunicationChannel = keyof typeof COMMUNICATION_CHANNELS;
 export const communicationChannelOptions = options(COMMUNICATION_CHANNELS);
+
+export const COMMUNICATION_DIRECTIONS = {
+  outgoing: 'We contacted them',
+  incoming: 'They contacted us',
+} as const;
+export type CommunicationDirection = keyof typeof COMMUNICATION_DIRECTIONS;
+export const communicationDirectionOptions = options(COMMUNICATION_DIRECTIONS);
+
+/**
+ * What the person who had the conversation observed.
+ *
+ * Deliberately never a delivery state: the CRM does not send anything and
+ * nothing reports back to it, so there is no "delivered", no "read" and no
+ * "bounced" to record (spec 143).
+ */
+export const COMMUNICATION_OUTCOMES = {
+  spoke_to_them: 'Spoke to them',
+  left_a_message: 'Left a message',
+  no_answer: 'No answer',
+  wrong_number: 'Wrong number',
+  they_replied: 'They replied',
+  no_reply_yet: 'No reply yet',
+  sent_from_my_own_app: 'Sent it myself from my own app',
+  other: 'Other',
+} as const;
+export type CommunicationOutcome = keyof typeof COMMUNICATION_OUTCOMES;
+export const communicationOutcomeOptions = options(COMMUNICATION_OUTCOMES);
+
+export const TEMPLATE_CATEGORIES = {
+  general: 'General',
+  enquiry_response: 'Answering an enquiry',
+  viewing: 'Viewings',
+  mandate: 'Mandates',
+  offer: 'Offers',
+  transaction: 'Transactions',
+  rental: 'Rentals',
+  follow_up: 'Following up',
+  market_update: 'Market updates',
+} as const;
+export type TemplateCategory = keyof typeof TEMPLATE_CATEGORIES;
+export const templateCategoryOptions = options(TEMPLATE_CATEGORIES);
+
+export const TEMPLATE_CHANNELS = { any: 'Any channel', ...COMMUNICATION_CHANNELS } as const;
+export const templateChannelOptions = options(TEMPLATE_CHANNELS);
 
 export const TITLES = ['Mr', 'Mrs', 'Ms', 'Miss', 'Dr', 'Prof', 'Adv', 'Rev', 'Other'] as const;
 

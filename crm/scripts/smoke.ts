@@ -5,7 +5,7 @@
  * first-run setup, creating a client, the duplicate check catching the same
  * person a second time, taking that client through a lead and a sale,
  * recording what they said about being contacted, importing a spreadsheet,
- * and the whole thing being usable on a phone.
+ * writing down a conversation, and the whole thing being usable on a phone.
  *
  *   npm run build && npm start &      # or npm run dev
  *   npm run smoke -- http://127.0.0.1:3000
@@ -389,6 +389,102 @@ async function main(): Promise<void> {
       afterRollback === beforeImport,
     );
 
+    // --- logging what was said -------------------------------------------
+    await page.goto(`${baseUrl}/communications`, { waitUntil: 'domcontentloaded' });
+    const commsPage = await page.locator('body').innerText();
+    check(
+      'the communications page says plainly that the CRM does not send',
+      /The CRM does not send messages/i.test(commsPage) &&
+        /no such thing as a delivery or a read receipt/i.test(commsPage),
+    );
+    // The page's own disclaimer names those words in order to deny them, so
+    // the meaningful check is that no badge on a logged conversation asserts
+    // one — a badge is where a status would appear if there were one.
+    const commsBadges = await page.locator('span.rounded-full').allInnerTexts();
+    check(
+      'no status badge asserts a delivery, a read or a bounce',
+      !commsBadges.some((badge) => /delivered|read receipt|bounced|opened/i.test(badge)),
+    );
+
+    await page.goto(`${baseUrl}/communications/new?personId=${personId}`, {
+      waitUntil: 'domcontentloaded',
+    });
+    const form = await page.locator('body').innerText();
+    check(
+      'the log form explains it is writing down what already happened',
+      /This writes down what happened/i.test(form) &&
+        /You made the call or sent the message yourself/i.test(form),
+    );
+
+    // The outcome list must not offer anything only a provider could know.
+    const outcomeOptions = await page
+      .locator('select[name="outcome"] option')
+      .allInnerTexts();
+    check(
+      'no outcome asserts delivery',
+      !outcomeOptions.some((option) => /delivered|read|bounced/i.test(option)),
+    );
+
+    await page.selectOption('select[name="channel"]', 'call');
+    await page.selectOption('select[name="outcome"]', 'spoke_to_them');
+    await page.fill('textarea[name="body"]', 'Rang about the Wilderness house. Wants a viewing.');
+
+    // Ask for a follow-up, which must become a real task.
+    await page.getByLabel(/Make a follow-up for this/i).check();
+    await page.fill('input[name="followUpTitle"]', 'Confirm the Saturday viewing');
+    await page.fill('input[name="followUpAt"]', '2026-09-19T09:00');
+
+    await page.getByRole('button', { name: /^Record it$/i }).click();
+    await page.waitForURL(/logged=/, { timeout: 20_000 });
+    const afterLog = await page.locator('body').innerText();
+    check(
+      'the conversation was recorded and the follow-up made',
+      /follow-up is on your task list/i.test(afterLog),
+    );
+    await page.screenshot({ path: `${shotsDir}/19-communications.png`, fullPage: true });
+
+    // The task list opens on what is due today; the follow-up was set for
+    // later, so it is looked for among the open ones.
+    await page.goto(`${baseUrl}/tasks?view=open`, { waitUntil: 'domcontentloaded' });
+    check(
+      'the follow-up is a real task, not a date in a note',
+      /Confirm the Saturday viewing/.test(await page.locator('body').innerText()),
+    );
+
+    // The person's profile now shows the conversation and their contact dates.
+    await page.goto(`${baseUrl}/people/${personId}`, { waitUntil: 'domcontentloaded' });
+    const profileNow = await page.locator('body').innerText();
+    check(
+      "the person's profile lists the conversation",
+      /Conversations/.test(profileNow) && /Wilderness house/.test(profileNow),
+    );
+    check(
+      'and their first and last contact came from the log',
+      !/First contact\s*Not yet/i.test(profileNow) && !/Last contact\s*Never/i.test(profileNow),
+    );
+    check(
+      'the profile still does not claim anything was sent',
+      !/whatsapp sent|email sent|message sent|delivered/i.test(profileNow),
+    );
+    await page.screenshot({ path: `${shotsDir}/20-person-timeline.png`, fullPage: true });
+
+    // --- wording ----------------------------------------------------------
+    await page.goto(`${baseUrl}/communications/templates`, { waitUntil: 'domcontentloaded' });
+    const templates = await page.locator('body').innerText();
+    check(
+      'the wording page says using a template is not sending',
+      /Using a template is not sending/i.test(templates),
+    );
+    check(
+      'and the shipped wording never claims the CRM sent something',
+      !/we have sent|email sent|whatsapp sent|automatically sent/i.test(templates),
+    );
+    check(
+      'a merge field is shown as a placeholder rather than pretending to be filled',
+      /\{\{first_name\}\}/.test(templates),
+    );
+    await page.screenshot({ path: `${shotsDir}/21-templates.png`, fullPage: true });
+
     // --- phone -----------------------------------------------------------
     const phone = await browser.newContext({
       viewport: { width: 390, height: 844 },
@@ -425,6 +521,9 @@ async function main(): Promise<void> {
       '/compliance/preflight',
       '/compliance/ncc',
       '/import',
+      '/communications',
+      '/communications/new',
+      '/communications/templates',
     ]) {
       await phonePage.goto(`${baseUrl}${path}`, { waitUntil: 'domcontentloaded' });
       const sideways = await phonePage.evaluate(

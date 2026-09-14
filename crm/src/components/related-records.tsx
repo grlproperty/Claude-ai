@@ -5,8 +5,11 @@ import { listLeads } from '@/lib/leads.ts';
 import { listAppointments, listTasks } from '@/lib/tasks.ts';
 import { listOffers, listTransactions, listValuations, listViewings } from '@/lib/sales.ts';
 import { listRentalApplications } from '@/lib/rentals.ts';
+import { listCommunications, timelineFor } from '@/lib/communications.ts';
 import {
   APPOINTMENT_TYPES,
+  COMMUNICATION_CHANNELS,
+  COMMUNICATION_DIRECTIONS,
   INTEREST_LEVELS,
   LEAD_STATUSES,
   LEAD_TYPES,
@@ -32,6 +35,8 @@ import { EmptyState } from './ui/feedback.tsx';
  */
 
 export interface RelatedRecords {
+  communications: Awaited<ReturnType<typeof listCommunications>>['rows'];
+  timeline: Awaited<ReturnType<typeof timelineFor>>;
   leads: Awaited<ReturnType<typeof listLeads>>['rows'];
   tasks: Awaited<ReturnType<typeof listTasks>>['rows'];
   appointments: Awaited<ReturnType<typeof listAppointments>>;
@@ -48,6 +53,8 @@ export async function loadRelatedRecords(
   scope: { personId?: string; propertyId?: string },
 ): Promise<RelatedRecords> {
   const empty: RelatedRecords = {
+    communications: [],
+    timeline: [],
     leads: [],
     tasks: [],
     appointments: [],
@@ -58,8 +65,22 @@ export async function loadRelatedRecords(
     rentalApplications: [],
   };
 
-  const [leads, tasks, appointments, viewings, valuations, offers, transactions, rentalApplications] =
-    await Promise.all([
+  const [
+    communications,
+    timeline,
+    leads,
+    tasks,
+    appointments,
+    viewings,
+    valuations,
+    offers,
+    transactions,
+    rentalApplications,
+  ] = await Promise.all([
+      user.permissions.has('COMMUNICATION_VIEW')
+        ? listCommunications(db, { ...scope, pageSize: 10 })
+        : Promise.resolve({ rows: empty.communications, total: 0, page: 1, pageSize: 0 }),
+      timelineFor(db, scope, user.permissions as ReadonlySet<string>, 40),
       user.permissions.has('LEADS_VIEW')
         ? listLeads(db, { ...scope, archived: 'all', status: 'all', pageSize: 20 })
         : Promise.resolve({ rows: empty.leads, total: 0, page: 1, pageSize: 0 }),
@@ -100,6 +121,8 @@ export async function loadRelatedRecords(
     ]);
 
   return {
+    communications: communications.rows,
+    timeline,
     leads: leads.rows,
     tasks: tasks.rows,
     appointments,
@@ -126,8 +149,91 @@ export function RelatedRecordCards({
   const suffix = query.toString() ? `?${query.toString()}` : '';
   const returnTo = scope.personId ? `/people/${scope.personId}` : `/properties/${scope.propertyId}`;
 
+  // Built rather than concatenated: with no scope the suffix is empty, and
+  // gluing "&returnTo=" onto that would produce a broken URL.
+  const logContactParams = new URLSearchParams(query);
+  logContactParams.set('returnTo', returnTo);
+  const logContactHref = `/communications/new?${logContactParams.toString()}`;
+
   return (
     <>
+      {user.permissions.has('COMMUNICATION_VIEW') ? (
+        <Card>
+          <CardHeader
+            title="Conversations"
+            description="What was said. The CRM records it; it does not send anything."
+            actions={
+              user.permissions.has('COMMUNICATION_CREATE') ? (
+                <ButtonLink href={logContactHref} size="sm">
+                  Log what was said
+                </ButtonLink>
+              ) : null
+            }
+          />
+          {records.communications.length === 0 ? (
+            <EmptyState title="Nothing logged yet" className="py-6" />
+          ) : (
+            <ul className="divide-y divide-line-soft">
+              {records.communications.map((entry) => (
+                <li key={entry.id} className="px-4 py-2.5 text-[0.8125rem] sm:px-5">
+                  <Link
+                    href={`/communications/${entry.id}`}
+                    className="font-medium text-ink hover:text-brand"
+                  >
+                    {labelOf(COMMUNICATION_CHANNELS, entry.channel)}
+                  </Link>{' '}
+                  <Badge tone={entry.direction === 'incoming' ? 'info' : 'neutral'}>
+                    {labelOf(COMMUNICATION_DIRECTIONS, entry.direction)}
+                  </Badge>
+                  {entry.isImportant ? <Badge tone="brand">Important</Badge> : null}
+                  <div className="text-[0.6875rem] text-ink-faint">
+                    {formatDateTime(entry.occurredAt)}
+                    {entry.agentName ? ` · ${entry.agentName}` : ''}
+                    {entry.durationMinutes ? ` · ${entry.durationMinutes} min` : ''}
+                  </div>
+                  {entry.subject || entry.body ? (
+                    <p className="text-[0.8125rem] text-ink-soft">
+                      {(entry.subject ?? entry.body ?? '').slice(0, 140)}
+                    </p>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          )}
+        </Card>
+      ) : null}
+
+      {records.timeline.length > 0 ? (
+        <Card>
+          <CardHeader
+            title="What has happened"
+            description="Assembled from the records themselves, so it cannot drift out of step."
+          />
+          <ol className="divide-y divide-line-soft">
+            {records.timeline.slice(0, 20).map((entry, index) => (
+              <li key={index} className="px-4 py-2.5 text-[0.8125rem] sm:px-5">
+                <div className="flex flex-wrap items-baseline gap-2">
+                  {entry.href ? (
+                    <Link href={entry.href} className="font-medium text-ink hover:text-brand">
+                      {entry.title}
+                    </Link>
+                  ) : (
+                    <span className="font-medium text-ink">{entry.title}</span>
+                  )}
+                  <span className="text-[0.6875rem] text-ink-faint">
+                    {formatDateTime(entry.at)}
+                    {entry.byName ? ` · ${entry.byName}` : ''}
+                  </span>
+                </div>
+                {entry.detail ? (
+                  <p className="text-[0.8125rem] text-ink-soft">{entry.detail}</p>
+                ) : null}
+              </li>
+            ))}
+          </ol>
+        </Card>
+      ) : null}
+
       {user.permissions.has('LEADS_VIEW') ? (
         <Card>
           <CardHeader

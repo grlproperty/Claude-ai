@@ -76,10 +76,12 @@ const KEEP = new Set([
   // would leave the database in a state production never reaches, and the
   // compliance preflight reads its thresholds from here.
   'settings',
+  // Seeded by migration 010 and editable configuration, not test data.
+  'communication_templates',
 ]);
 
 /** Kept tables that a CASCADE would empty anyway, because they reference users. */
-const RESCUE_FROM_CASCADE = ['settings', 'tags'];
+const RESCUE_FROM_CASCADE = ['settings', 'tags', 'communication_templates'];
 
 export async function resetData(): Promise<void> {
   await migrateTestDatabase();

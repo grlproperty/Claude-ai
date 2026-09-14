@@ -547,7 +547,7 @@ describe('first and last contact (spec 13, 14)', () => {
 
     await asUser(ayden, (db) =>
       db.query('select app.record_person_contact($1, $2::timestamptz, $3, $4)', [
-        created.id, '2026-09-01T09:00:00Z', 'phone', ayden.id,
+        created.id, '2026-09-01T09:00:00Z', 'call', ayden.id,
       ]),
     );
     await asUser(ayden, (db) =>
