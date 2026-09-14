@@ -4,8 +4,8 @@
  * Drives a real browser against a running CRM to prove the daily path works:
  * first-run setup, creating a client, the duplicate check catching the same
  * person a second time, taking that client through a lead and a sale,
- * recording what they said about being contacted, and the whole thing being
- * usable on a phone.
+ * recording what they said about being contacted, importing a spreadsheet,
+ * and the whole thing being usable on a phone.
  *
  *   npm run build && npm start &      # or npm run dev
  *   npm run smoke -- http://127.0.0.1:3000
@@ -291,6 +291,104 @@ async function main(): Promise<void> {
     );
     await page.screenshot({ path: `${shotsDir}/16-compliance-dashboard.png`, fullPage: true });
 
+    // --- importing a spreadsheet -----------------------------------------
+    await page.goto(`${baseUrl}/import`, { waitUntil: 'domcontentloaded' });
+    check(
+      'the import page says nothing is written until it has been checked',
+      /checked before anything is written/i.test((await page.locator('body').innerText()) ?? ''),
+    );
+
+    await page.fill('input[name="name"]', 'Smoke test clients');
+    await page.selectOption('select[name="entityType"]', 'person');
+    await page.selectOption('select[name="how"]', 'paste');
+    await page.fill(
+      'textarea[name="pasted"]',
+      [
+        'First Name,Surname,Cell,Email,Client Type',
+        // The same person already captured earlier in this run, by mobile.
+        'John,Smith,082 543 2681,john@example.com,Buyer',
+        'Refilwe,Motaung,083 777 1234,refilwe@example.com,Buyer;Tenant',
+        // A row with nothing that could identify anyone.
+        ',,,,Buyer',
+      ].join('\n'),
+    );
+    await page.getByRole('button', { name: /read the file/i }).click();
+    await page.waitForURL(/\/import\/[0-9a-f-]{36}/, { timeout: 20_000 });
+    check('the file was read and kept as an import', true);
+
+    const mapped = await page.locator('body').innerText();
+    check(
+      'the columns were matched automatically',
+      /First Name/.test(mapped) && /Surname/.test(mapped),
+    );
+
+    await page.getByRole('button', { name: /save the column matching/i }).click();
+    await page.waitForSelector('text=/Now check what it will do/i', {
+      timeout: 20_000,
+    });
+
+    await page.getByRole('button', { name: /check what this will do/i }).click();
+    await page.waitForSelector('text=/Nothing has been written yet/i', { timeout: 20_000 });
+    const preview = await page.locator('body').innerText();
+    check('the check runs without writing anything', /Nothing has been written yet/i.test(preview));
+    check(
+      'it offers to update the person already on file rather than duplicate them',
+      /Update an existing record/i.test(preview) && /already on the system/i.test(preview),
+    );
+    check(
+      'it refuses the row with nothing to identify it',
+      /Cannot import/i.test(preview) && /nothing in it that could identify/i.test(preview),
+    );
+    await page.screenshot({ path: `${shotsDir}/17-import-preview.png`, fullPage: true });
+
+    // Counting navigates to the people list, so the import page is reopened
+    // before carrying on.
+    const importUrl = page.url().split('?')[0]!;
+    const beforeImport = await countPeople(page);
+    await page.goto(importUrl, { waitUntil: 'domcontentloaded' });
+
+    page.once('dialog', (dialog) => dialog.accept());
+    await page.getByRole('button', { name: /^Import \d+ record/i }).click();
+    await page.waitForSelector('text=/record\\(s\\) created and/i', { timeout: 30_000 });
+    const after = await page.locator('body').innerText();
+    check(
+      'the import ran and reported what it did',
+      /record\(s\) created and \d+ updated/i.test(after) &&
+        /as one operation/i.test(after),
+    );
+    check('and it records that it cannot be changed now', /This import has been run/i.test(after));
+    await page.screenshot({ path: `${shotsDir}/18-import-done.png`, fullPage: true });
+
+    const afterImport = await countPeople(page);
+    check(
+      `one new person was created, not two (${beforeImport} then ${afterImport})`,
+      afterImport === beforeImport + 1,
+    );
+
+    // --- rolling it back --------------------------------------------------
+    await page.goto(importUrl, { waitUntil: 'domcontentloaded' });
+    await page.fill('input[name="rollbackReason"]', 'Smoke test tidy-up');
+    page.once('dialog', (dialog) => dialog.accept());
+    await page.getByRole('button', { name: /roll it back/i }).click();
+    // Wait for the outcome, not for text the form itself already showed: the
+    // warning above the button says "will be archived, not deleted" before
+    // anything has happened.
+    await page.waitForURL(/rolledback=/, { timeout: 20_000 });
+    const rolled = await page.locator('body').innerText();
+    check(
+      'rolling back archives what it created rather than deleting it',
+      /this import created were archived, not deleted/i.test(rolled),
+    );
+    check(
+      'and says plainly that it left the updated records alone',
+      /left as they are/i.test(rolled),
+    );
+    const afterRollback = await countPeople(page);
+    check(
+      `the created person is no longer in the active list (${afterRollback})`,
+      afterRollback === beforeImport,
+    );
+
     // --- phone -----------------------------------------------------------
     const phone = await browser.newContext({
       viewport: { width: 390, height: 844 },
@@ -326,6 +424,7 @@ async function main(): Promise<void> {
       '/compliance/do-not-contact',
       '/compliance/preflight',
       '/compliance/ncc',
+      '/import',
     ]) {
       await phonePage.goto(`${baseUrl}${path}`, { waitUntil: 'domcontentloaded' });
       const sideways = await phonePage.evaluate(
@@ -342,6 +441,14 @@ async function main(): Promise<void> {
     failures === 0 ? '\nsmoke test passed\n' : `\nsmoke test failed: ${failures} problem(s)\n`,
   );
   if (failures > 0) process.exit(1);
+}
+
+/** How many people are in the active list, read from the list page itself. */
+async function countPeople(page: Page): Promise<number> {
+  await page.goto(`${baseUrl}/people`, { waitUntil: 'domcontentloaded' });
+  const text = await page.locator('body').innerText();
+  const match = /(\d+)\s+(?:person|people)/i.exec(text);
+  return match ? Number(match[1]) : 0;
 }
 
 function idFromUrl(url: string): string {

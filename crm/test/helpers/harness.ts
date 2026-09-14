@@ -37,17 +37,21 @@ let migrated = false;
  * The migration-seeded contents of the tables a TRUNCATE ... CASCADE would
  * empty anyway, captured once while they are still intact.
  */
-const seedSnapshot = new Map<string, Record<string, unknown>[]>();
+const seedSnapshot = new Map<string, unknown[]>();
 
 export async function migrateTestDatabase(): Promise<void> {
   if (migrated) return;
   await runMigrations({ dir: migrationsDir });
   await withOwner(async (db) => {
     for (const name of RESCUE_FROM_CASCADE) {
-      seedSnapshot.set(
-        name,
-        await db.query<Record<string, unknown>>(`select * from public."${name}"`),
+      // Captured as jsonb text rather than as parsed rows: a jsonb column read
+      // back as a JS array would be re-sent by pg as a Postgres array literal,
+      // which is not valid JSON. Going out and back through jsonb keeps every
+      // column's type exactly as the migration wrote it.
+      const rows = await db.query<{ row: unknown }>(
+        `select to_jsonb(t) as row from public."${name}" t`,
       );
+      seedSnapshot.set(name, rows.map((entry) => entry.row));
     }
   });
   migrated = true;
@@ -101,16 +105,15 @@ export async function resetData(): Promise<void> {
       if (rows.length === 0) continue;
       await db.query(`delete from public."${name}"`);
       for (const row of rows) {
-        // Whoever last touched it went with the users, so that returns as null
-        // rather than as a dangling id.
-        const clean: Record<string, unknown> = { ...row };
+        // Whoever last touched it went with the users, so that comes back as
+        // null rather than as a dangling id.
+        const clean = { ...(row as Record<string, unknown>) };
         if ('updated_by' in clean) clean.updated_by = null;
         if ('created_by' in clean) clean.created_by = null;
-        const columns = Object.keys(clean);
         await db.query(
-          `insert into public."${name}" (${columns.map((c) => `"${c}"`).join(', ')})
-           values (${columns.map((_, index) => `$${index + 1}`).join(', ')})`,
-          columns.map((column) => clean[column]),
+          `insert into public."${name}"
+           select * from jsonb_populate_record(null::public."${name}", $1::jsonb)`,
+          [JSON.stringify(clean)],
         );
       }
     }

@@ -111,6 +111,18 @@ export async function updatePerson(
   personId: string,
   input: PersonInput,
   expectedVersion: number,
+  options: {
+    /**
+     * Whether a blank identity in the input may clear one already on file.
+     *
+     * A person editing the form can see that a number is recorded and choose
+     * to remove it, so the default is to let somebody with PERSON_ID_VIEW do
+     * that. An import passes false: a blank column in a spreadsheet means the
+     * spreadsheet did not have the number, not that the office wants the
+     * checked one deleted.
+     */
+    mayClearIdentity?: boolean;
+  } = {},
 ): Promise<PersonWriteResult> {
   const before = await db.maybeOne<Record<string, unknown> & { client_ref: string; row_version: number }>(
     `select id, client_ref, row_version, title, first_name, middle_name, surname, preferred_name,
@@ -123,7 +135,8 @@ export async function updatePerson(
   if (before.row_version !== expectedVersion) throw new ConcurrencyError();
 
   const identity = prepareIdentity(input);
-  const allowClear = ctx.actor.permissions.has('PERSON_ID_VIEW');
+  const allowClear =
+    (options.mayClearIdentity ?? true) && ctx.actor.permissions.has('PERSON_ID_VIEW');
   const primaryAgentId = agentToKeep(
     ctx.actor,
     input.primaryAgentId,

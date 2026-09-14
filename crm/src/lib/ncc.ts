@@ -6,7 +6,7 @@ import { ConcurrencyError, NotFoundError, ValidationError } from './errors.ts';
 import { NCC_BATCH_STATUSES, NCC_RESULTS, type NccBatchStatus, type NccResult } from './domain.ts';
 import { getNumberSetting } from './settings.ts';
 import { normaliseZaPhone } from './phone.ts';
-import { toCsv } from './csv.ts';
+import { detectDelimiter, splitCsvRow, toCsv } from './csv.ts';
 import { optionalText, requiredText } from './validate.ts';
 
 /**
@@ -524,7 +524,8 @@ export function parseResultsCsv(text: string): {
     .filter((row) => row.length > 0);
   if (rows.length === 0) return { lines, problems: ['That file is empty.'] };
 
-  const header = splitCsvRow(rows[0]!).map((cell) => cell.trim().toLowerCase());
+  const separator = detectDelimiter(rows[0]!);
+  const header = splitCsvRow(rows[0]!, separator).map((cell) => cell.trim().toLowerCase());
   const numberAt = header.findIndex((cell) => /number|msisdn|cell|phone/.test(cell));
   const resultAt = header.findIndex((cell) => /result|status|listed|outcome/.test(cell));
   const noteAt = header.findIndex((cell) => /note|comment|reason/.test(cell));
@@ -537,7 +538,7 @@ export function parseResultsCsv(text: string): {
   }
 
   for (const [index, row] of rows.slice(1).entries()) {
-    const cells = splitCsvRow(row);
+    const cells = splitCsvRow(row, separator);
     const number = cells[numberAt]?.trim();
     const rawResult = cells[resultAt]?.trim().toLowerCase() ?? '';
     if (!number) {
@@ -558,38 +559,6 @@ export function parseResultsCsv(text: string): {
   }
 
   return { lines, problems };
-}
-
-/** A single CSV row, honouring quotes and doubled quotes inside them. */
-function splitCsvRow(row: string): string[] {
-  const cells: string[] = [];
-  let current = '';
-  let inQuotes = false;
-
-  for (let index = 0; index < row.length; index += 1) {
-    const character = row[index]!;
-    if (inQuotes) {
-      if (character === '"') {
-        if (row[index + 1] === '"') {
-          current += '"';
-          index += 1;
-        } else {
-          inQuotes = false;
-        }
-      } else {
-        current += character;
-      }
-    } else if (character === '"') {
-      inQuotes = true;
-    } else if (character === ',' || character === ';') {
-      cells.push(current);
-      current = '';
-    } else {
-      current += character;
-    }
-  }
-  cells.push(current);
-  return cells;
 }
 
 export const BATCH_STATUS_LABELS = NCC_BATCH_STATUSES;
