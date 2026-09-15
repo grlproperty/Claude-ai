@@ -1,12 +1,26 @@
 import { requireUser } from '../../server/session';
 import { decisionInbox } from '../../server/executive';
+import { delegationCandidates } from '../../server/decisions';
 import { Shell } from '../../components/shell';
 import { Card, Empty, Notice } from '../../components/ui';
 import { formatZar } from '../../lib/format';
+import { DecideForm } from './decide-form';
 
 export const dynamic = 'force-dynamic';
 
 interface Option { key: string; label: string; consequence: string; financialImpactZar?: number; reversible: boolean }
+
+/**
+ * Pre-selects the option the system recommended, so taking the advice is one
+ * press. It matches on the label rather than assuming an order, and selects
+ * nothing when the recommendation is not one of the options — a wrong
+ * pre-selection is worse than none.
+ */
+function recommendedOptionKey(options: Option[], recommendation: string): string | null {
+  const wanted = recommendation.trim().toLowerCase();
+  const hit = options.find((o) => o.label.trim().toLowerCase() === wanted);
+  return hit?.key ?? null;
+}
 
 /**
  * The decision inbox (§25). Each card carries the research already done, so a
@@ -14,7 +28,8 @@ interface Option { key: string; label: string; consequence: string; financialImp
  */
 export default async function DecisionsPage() {
   const user = await requireUser();
-  const decisions = await decisionInbox(user.id);
+  const [decisions, people] = await Promise.all([decisionInbox(user.id), delegationCandidates(user.id)]);
+  const choices = people.map((p) => ({ id: p.id, name: p.name, department: p.department }));
 
   return (
     <Shell
@@ -91,22 +106,12 @@ export default async function DecisionsPage() {
 
                 <p className="mt-4 text-sm font-semibold">{d.decisionRequired}</p>
 
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {['Approve', 'Reject', 'Delegate', 'Request information', 'Defer'].map((label) => (
-                    <button
-                      key={label}
-                      type="button"
-                      disabled
-                      title="Recording decisions is wired to the escalation record; the action endpoints are not built yet."
-                      className="rounded border border-line px-3 py-1.5 text-sm text-ink-muted"
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-                <p className="mt-2 text-xs text-ink-muted">
-                  These actions are not yet wired up. They are shown disabled rather than as buttons that appear to work.
-                </p>
+                <DecideForm
+                  escalationId={d.id}
+                  options={options.map((o) => ({ key: o.key, label: o.label, reversible: o.reversible }))}
+                  people={choices}
+                  recommendedOptionKey={recommendedOptionKey(options, d.recommendation)}
+                />
               </article>
             );
           })}
