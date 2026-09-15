@@ -1,0 +1,86 @@
+# Runs the whole system on one machine: the application and its database.
+#
+#   cp .env.example .env                        # fill in the required values
+#   docker compose up -d                        # migrations run on start
+#   docker compose run --rm tools npm run seed  # first run only
+#   docker compose run --rm tools npm run doctor
+#
+# Works on any Linux server, a Mac, or any host that runs Docker. Nothing in
+# here is tied to a particular hosting company.
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-grlp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-grlp_os}
+    volumes:
+      - grlp-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-grlp} -d ${POSTGRES_DB:-grlp_os}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # Not published to the host: the database is reachable only by the app.
+    expose:
+      - '5432'
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-grlp}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-grlp_os}
+      SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET in .env}
+      NODE_ENV: production
+      # Everything below is optional. The system runs without them and says so.
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      MAIL_IMAP_HOST: ${MAIL_IMAP_HOST:-}
+      MAIL_IMAP_PORT: ${MAIL_IMAP_PORT:-993}
+      MAIL_SMTP_HOST: ${MAIL_SMTP_HOST:-}
+      MAIL_SMTP_PORT: ${MAIL_SMTP_PORT:-587}
+      MAIL_USER: ${MAIL_USER:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      DROPBOX_APP_KEY: ${DROPBOX_APP_KEY:-}
+      DROPBOX_APP_SECRET: ${DROPBOX_APP_SECRET:-}
+      DROPBOX_REFRESH_TOKEN: ${DROPBOX_REFRESH_TOKEN:-}
+      DROPBOX_ROOT_NAMESPACE_ID: ${DROPBOX_ROOT_NAMESPACE_ID:-}
+      WHATSAPP_APP_SECRET: ${WHATSAPP_APP_SECRET:-}
+      WHATSAPP_VERIFY_TOKEN: ${WHATSAPP_VERIFY_TOKEN:-}
+    ports:
+      - '${APP_PORT:-3000}:3000'
+
+  # Setup and import commands — seeding, the installation check, mail and
+  # Dropbox imports. They are written in TypeScript and run through tsx, which
+  # the production image deliberately does not carry, so they run from the
+  # build stage instead. The profile keeps this out of `docker compose up`:
+  # it is built only when a command actually asks for it.
+  tools:
+    build:
+      context: .
+      target: build
+    profiles: ['tools']
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-grlp}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-grlp_os}
+      SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET in .env}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      MAIL_IMAP_HOST: ${MAIL_IMAP_HOST:-}
+      MAIL_IMAP_PORT: ${MAIL_IMAP_PORT:-993}
+      MAIL_SMTP_HOST: ${MAIL_SMTP_HOST:-}
+      MAIL_SMTP_PORT: ${MAIL_SMTP_PORT:-587}
+      MAIL_USER: ${MAIL_USER:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      DROPBOX_APP_KEY: ${DROPBOX_APP_KEY:-}
+      DROPBOX_APP_SECRET: ${DROPBOX_APP_SECRET:-}
+      DROPBOX_REFRESH_TOKEN: ${DROPBOX_REFRESH_TOKEN:-}
+      DROPBOX_ROOT_NAMESPACE_ID: ${DROPBOX_ROOT_NAMESPACE_ID:-}
+
+volumes:
+  grlp-data:
