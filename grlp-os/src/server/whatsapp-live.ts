@@ -50,9 +50,11 @@ async function ingestThread(
   ourNames: string[],
   now: Date,
 ): Promise<number> {
-  const first = batch[0]!;
   const counterpartyName = batch.find((m) => !m.isFromUs)?.fromName ?? null;
-  const phone = batch.find((m) => !m.isFromUs)?.from ?? first.from;
+  // Taken from the thread key rather than from the batch: a delivery carrying
+  // only our own reply would otherwise record GRLP's number as the client's,
+  // and the conversation would be matched to whoever holds that number.
+  const phone = threadKey.replace(/^whatsapp:/, '');
 
   const thread = await prisma.messageThread.upsert({
     where: { externalId: threadKey },
@@ -159,4 +161,43 @@ async function reanalyse(threadId: string, ourNames: string[], now: Date): Promi
       data: { threadId, quote: c.quote, side: c.side, what: c.what, dueAt: c.dueAt, saidAt: c.saidAt },
     });
   }
+}
+
+/**
+ * Notes that Meta really did deliver something.
+ *
+ * This is the only honest proof the live feed works: the app secret, the verify
+ * token and the webhook URL can all look right in a settings screen while the
+ * subscription was never actually saved. A signed delivery that parsed is the
+ * whole path working, so that — not the presence of credentials — is what the
+ * Settings screen reports as connected.
+ */
+export async function recordWhatsAppDelivery(
+  summary: { messages: number; stored: number },
+  now = new Date(),
+): Promise<void> {
+  const note =
+    summary.messages === 0
+      ? 'Last delivery carried no messages (usually a delivery receipt).'
+      : `Last delivery: ${summary.messages} message(s), ${summary.stored} new.`;
+
+  await prisma.integration.upsert({
+    where: { key: 'whatsapp' },
+    update: { status: 'CONNECTED', lastCheckedAt: now, lastError: null, notes: note },
+    create: {
+      key: 'whatsapp',
+      name: 'WhatsApp Business (live feed)',
+      category: 'messaging',
+      status: 'CONNECTED',
+      requiredEnv: ['WHATSAPP_APP_SECRET', 'WHATSAPP_VERIFY_TOKEN', 'WHATSAPP_PHONE_NUMBER_ID', 'WHATSAPP_BUSINESS_NUMBER'],
+      lastCheckedAt: now,
+      notes: note,
+    },
+  });
+}
+
+/** When Meta last delivered anything, or null if it never has. */
+export async function lastWhatsAppDelivery(): Promise<{ at: Date; note: string | null } | null> {
+  const row = await prisma.integration.findUnique({ where: { key: 'whatsapp' } });
+  return row?.lastCheckedAt ? { at: row.lastCheckedAt, note: row.notes } : null;
 }

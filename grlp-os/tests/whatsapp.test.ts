@@ -332,6 +332,66 @@ describe('the live webhook, when a business number is connected', () => {
     expect(messages[0]!.threadKey).toBe('whatsapp:27825551234');
   });
 
+  // The previous version compared Meta's phone-number id against the sender's
+  // wa_id. They are different identifiers and never match, so every message we
+  // sent was recorded as the client's — and every conversation looked as though
+  // it were waiting on a reply.
+  it('tells our own messages from the client\u2019s by the telephone number', () => {
+    const config = { appSecret: 's', verifyToken: 't', phoneNumberId: '845019283746152', businessNumber: '+27740000000' };
+    const delivery = (from: string, to?: string) => ({
+      entry: [{
+        changes: [{
+          value: {
+            metadata: { phone_number_id: '845019283746152', display_phone_number: '27740000000' },
+            messages: [{ id: `wamid.${from}`, from, ...(to ? { to } : {}), timestamp: '1789000000', type: 'text', text: { body: 'hello' } }],
+          },
+        }],
+      }],
+    });
+
+    expect(parseWebhook(delivery('27825551234'), config)[0]!.isFromUs).toBe(false);
+    expect(parseWebhook(delivery('27740000000', '27825551234'), config)[0]!.isFromUs).toBe(true);
+  });
+
+  it('reads the business number off the delivery when it is not configured', () => {
+    const config = { appSecret: 's', verifyToken: 't' };
+    const messages = parseWebhook({
+      entry: [{
+        changes: [{
+          value: {
+            metadata: { phone_number_id: '845019283746152', display_phone_number: '+27 74 000 0000' },
+            messages: [{ id: 'wamid.mine', from: '27740000000', to: '27825551234', timestamp: '1789000000', type: 'text', text: { body: 'hi' } }],
+          },
+        }],
+      }],
+    }, config);
+
+    expect(messages[0]!.isFromUs).toBe(true);
+  });
+
+  // A message we sent belongs in the client's conversation, not in one of our own.
+  it('files our own message under the person it was sent to', () => {
+    const config = { appSecret: 's', verifyToken: 't', businessNumber: '27740000000' };
+    const messages = parseWebhook({
+      entry: [{
+        changes: [{
+          value: {
+            metadata: { phone_number_id: '845019283746152', display_phone_number: '27740000000' },
+            messages: [{ id: 'wamid.out', from: '27740000000', to: '27825551234', timestamp: '1789000000', type: 'text', text: { body: 'hi' } }],
+          },
+        }],
+      }],
+    }, config);
+
+    expect(messages[0]!.threadKey).toBe('whatsapp:27825551234');
+  });
+
+  it('shrugs off a delivery receipt, which carries no messages', () => {
+    expect(parseWebhook({
+      entry: [{ changes: [{ value: { metadata: { phone_number_id: '845019283746152' }, statuses: [{ id: 'wamid.x', status: 'delivered' }] } }] }],
+    })).toHaveLength(0);
+  });
+
   it('skips anything it cannot read rather than guessing', () => {
     expect(parseWebhook({ entry: [{ changes: [{ value: { messages: [{ id: 'x' }] } }] }] })).toHaveLength(0);
     expect(parseWebhook({})).toHaveLength(0);

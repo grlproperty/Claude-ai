@@ -188,6 +188,25 @@ describe('the live feed', () => {
     expect(thread.messageCount).toBe(2);
   });
 
+  // A delivery carrying only our own reply used to overwrite the client's
+  // number with GRLP's, and the conversation would then match whoever holds it.
+  it('keeps the client\u2019s number when the only new message is ours', async () => {
+    await ingestLiveMessages([message()]);
+    await ingestLiveMessages([
+      message({
+        externalId: 'wamid.ours',
+        isFromUs: true,
+        from: '27740000000',
+        fromName: 'Mandy',
+        text: 'I will call you at 2pm.',
+        sentAt: new Date('2026-09-20T09:00:00Z'),
+      }),
+    ]);
+
+    const thread = await prisma.messageThread.findUniqueOrThrow({ where: { externalId: 'whatsapp:27825551234' } });
+    expect(thread.counterpartyPhone).toBe('27825551234');
+  });
+
   it('files the conversation against a client whose number matches', async () => {
     const contact = await prisma.contact.create({
       data: { kind: 'BUYER', firstName: 'Thandiwe', lastName: 'Ndlovu', phone: '082 555 1234' },

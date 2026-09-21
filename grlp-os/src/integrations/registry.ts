@@ -10,6 +10,8 @@
  * fail with a typed error naming exactly what is required.
  */
 
+import { normalisePhone } from '../domain/contact-match';
+
 export type IntegrationStatus = 'NOT_CONFIGURED' | 'CREDENTIALS_MISSING' | 'CONNECTED' | 'ERROR';
 
 /** Any environment-shaped map. Looser than NodeJS.ProcessEnv so tests can pass a bare object. */
@@ -27,6 +29,12 @@ export interface IntegrationSpec {
   degradedBehaviour: string;
   /** Live check. Only called when every required env var is present. */
   verify?: (env: EnvLike) => Promise<{ ok: boolean; detail?: string }>;
+  /**
+   * True when `verify` only inspects the configuration and contacts nobody.
+   * Such a check is safe to run while rendering a page, which is where a
+   * mistyped setting most needs to be seen.
+   */
+  verifyIsLocal?: boolean;
 }
 
 export class IntegrationNotConfiguredError extends Error {
@@ -113,6 +121,54 @@ export const INTEGRATIONS: IntegrationSpec[] = [
       'Documents are stored in the application database with their metadata; they are not filed to Dropbox.',
   },
   {
+    key: 'whatsapp',
+    name: 'WhatsApp Business (live feed)',
+    category: 'messaging',
+    requiredEnv: [
+      'WHATSAPP_APP_SECRET',
+      'WHATSAPP_VERIFY_TOKEN',
+      'WHATSAPP_PHONE_NUMBER_ID',
+      'WHATSAPP_BUSINESS_NUMBER',
+    ],
+    scopes: ['whatsapp_business_messaging (receive only)'],
+    capabilityWhenConnected:
+      'Messages on the business number are read, categorised and filed against the client as they arrive. Replying is never done by the system.',
+    degradedBehaviour:
+      'Conversations come in by upload on the Messages screen, or by mailing a chat export to the connected mailbox. Nothing is lost except immediacy.',
+    verifyIsLocal: true,
+    // No call is made to Meta. There is no token to make one with — receiving
+    // needs only the app secret — and a live check here would be the one place
+    // in the system that reaches WhatsApp's API. What is checked instead is the
+    // mistake that actually happens: the telephone number pasted into the field
+    // that wants Meta's id for it, which produces a webhook that never matches
+    // anything and no error to explain why.
+    verify: async (env) => {
+      const id = env.WHATSAPP_PHONE_NUMBER_ID?.trim() ?? '';
+      const number = env.WHATSAPP_BUSINESS_NUMBER?.trim() ?? '';
+
+      if (/^\+/.test(id) || /\s/.test(id)) {
+        return {
+          ok: false,
+          detail:
+            'WHATSAPP_PHONE_NUMBER_ID looks like a telephone number. It is Meta\u2019s own id for the number, shown in WhatsApp \u2192 API Setup',
+        };
+      }
+      if (!/^\d{6,}$/.test(id)) {
+        return { ok: false, detail: 'WHATSAPP_PHONE_NUMBER_ID should be a long number from WhatsApp \u2192 API Setup' };
+      }
+      if (number && normalisePhone(id) != null && normalisePhone(id) === normalisePhone(number)) {
+        return {
+          ok: false,
+          detail: 'WHATSAPP_PHONE_NUMBER_ID and WHATSAPP_BUSINESS_NUMBER are the same value; they are different things',
+        };
+      }
+      if (!normalisePhone(number)) {
+        return { ok: false, detail: 'WHATSAPP_BUSINESS_NUMBER is not a usable telephone number' };
+      }
+      return { ok: true };
+    },
+  },
+  {
     key: 'esignature',
     name: 'E-signature provider',
     category: 'signature',
@@ -166,15 +222,28 @@ export async function checkIntegration(
   if (missing.length) {
     return { ...base, status: 'CREDENTIALS_MISSING', detail: `Partly configured. Still missing ${missing.join(', ')}.` };
   }
-  if (!spec.verify || !live) {
+  if (!spec.verify || (!live && !spec.verifyIsLocal)) {
     return { ...base, status: 'CONNECTED', detail: 'Credentials present. No live check is defined for this provider.' };
   }
 
   try {
     const result = await spec.verify(env);
+    // A local check contacted nobody, so it must not claim the provider agreed.
     return result.ok
-      ? { ...base, status: 'CONNECTED', detail: 'Credentials verified against the provider.' }
-      : { ...base, status: 'ERROR', detail: `The provider rejected the credentials: ${result.detail ?? 'unknown reason'}.` };
+      ? {
+          ...base,
+          status: 'CONNECTED',
+          detail: spec.verifyIsLocal
+            ? 'Settings present and coherent. Nothing was contacted — only a real delivery proves the feed is live.'
+            : 'Credentials verified against the provider.',
+        }
+      : {
+          ...base,
+          status: 'ERROR',
+          detail: spec.verifyIsLocal
+            ? `${result.detail ?? 'The settings are not coherent'}.`
+            : `The provider rejected the credentials: ${result.detail ?? 'unknown reason'}.`,
+        };
   } catch (e) {
     return { ...base, status: 'ERROR', detail: `Could not reach the provider: ${(e as Error).message}` };
   }

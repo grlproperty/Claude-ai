@@ -40,9 +40,9 @@ in that way.
 This is the closest thing to a live connection that a personal WhatsApp account
 allows.
 
-### 3. The live feed — only for a WhatsApp Business number
+### 3. The live feed — only for a number on the WhatsApp Business *Platform*
 
-With `WHATSAPP_APP_SECRET` and `WHATSAPP_VERIFY_TOKEN` set, `/api/whatsapp`
+With the `WHATSAPP_*` settings in place, `/api/whatsapp`
 accepts Meta's webhook deliveries and messages arrive as they are sent. Every
 delivery must carry a valid signature; unsigned or wrongly signed bodies are
 discarded, and a repeated delivery — Meta retries until it gets a 200 — cannot
@@ -119,19 +119,93 @@ the CEO — or the conversation's own owner — can see or set that.
 
 ## Setting up the live feed
 
-Only if GRLP has a dedicated WhatsApp Business number.
+Before anything else, there is a decision to make, because it is not reversible
+in an afternoon.
 
-1. Create a Meta app with the WhatsApp product, and register the business
-   number on it.
-2. Put the app secret and a verify token you invent into `.env`:
-   ```sh
-   WHATSAPP_APP_SECRET="from the Meta app settings"
-   WHATSAPP_VERIFY_TOKEN="any long random string you choose"
-   WHATSAPP_PHONE_NUMBER_ID="the id Meta shows for the number"
-   ```
-3. Point the webhook at `https://your-host/api/whatsapp` and subscribe to
-   `messages`. Meta will call it once with the verify token; a wrong token is
-   refused.
+### Which WhatsApp is the number on?
 
-Until those are set the endpoint returns 404 rather than an error that tells the
-internet something about a system it cannot use.
+"WhatsApp Business" is two different products, and only one of them has an API.
+
+| | **WhatsApp Business App** | **WhatsApp Business Platform (Cloud API)** |
+|---|---|---|
+| What it is | The free green app on a phone | A programmatic interface, no app |
+| Who replies | A person, in the app | Whatever tool you connect; there is no app |
+| Webhooks | None | Yes — this is what the live feed uses |
+| Chat export | Yes | No |
+
+**A number can only be on one of them.** Registering a number on the Cloud API
+takes it out of the app on the phone: from that moment nobody can open a chat
+on that number and type a reply the ordinary way.
+
+That matters here more than usual, because **this system deliberately cannot
+send**. If a number is moved to the Cloud API and this is the only thing
+connected to it, messages will arrive, be read, categorised and filed — and
+nobody will be able to answer them. Answering would need a separate inbox tool
+connected to the same number.
+
+So there are two sensible shapes:
+
+* **The number stays on the Business App.** A person keeps replying as they do
+  now, and conversations reach the system by export — Export Chat → Mail, which
+  the mailbox picks up. Nothing changes about how anyone works.
+* **The number moves to the Cloud API**, and GRLP also connects an inbox tool
+  that can reply. The live feed then organises everything in real time.
+
+Choose the first unless replying is already handled elsewhere.
+
+### The three values, and what they are not
+
+Meta shows several long numbers and it is easy to confuse them. What this
+system needs:
+
+| Setting | Where it comes from | What it is **not** |
+|---|---|---|
+| `WHATSAPP_APP_SECRET` | Meta app → Settings → Basic → App secret | Not the App ID |
+| `WHATSAPP_PHONE_NUMBER_ID` | WhatsApp → API Setup, directly under the number | **Not the telephone number** |
+| `WHATSAPP_BUSINESS_NUMBER` | The number in dialling form, e.g. `+27 74 000 0000` | Not an id |
+| `WHATSAPP_BUSINESS_ACCOUNT_ID` | WhatsApp → API Setup | Recorded only; never called |
+| `WHATSAPP_VERIFY_TOKEN` | You invent it: `openssl rand -hex 24` | Not issued by Meta |
+
+The one worth repeating: **the phone number id is not the phone number.** It is
+a long number of Meta's own, and pasting the telephone number there produces a
+webhook that verifies, delivers, and then silently matches nothing. The
+Settings screen and `npm run whatsapp:status` both check for exactly that.
+
+**No access token is needed.** Receiving messages requires only the app secret,
+to prove a delivery really came from Meta. This system holds no credential that
+could send a message even if someone added code to try.
+
+### Steps
+
+1. Put the values in `.env`. They belong there and **not in the repository** —
+   this repository is public.
+2. Run `npm run whatsapp:setup`. It prints the exact callback URL and verify
+   token to paste into Meta, and lists anything still missing.
+3. In the Meta app, under **WhatsApp → Configuration → Webhook**:
+   * **Callback URL** — `https://your-host/api/whatsapp`
+   * **Verify token** — the one from step 2
+   * **Subscribe to** — `messages`
+   Meta calls the URL once with the verify token before it will save the
+   subscription. A wrong token is refused, and the endpoint returns 404 until
+   the credentials are set, so nothing is advertised before it works.
+4. Send a message to the business number, then run `npm run whatsapp:status`.
+
+### "Connected" means Meta actually delivered something
+
+Credentials being present is not the same as the subscription being live — the
+commonest failure is a webhook that was never saved, which looks identical from
+inside. So the system records the moment Meta last delivered anything, and
+`whatsapp:status` reports that rather than guessing from configuration:
+
+```
+  Meta last delivered   2026/09/21, 14:02
+  Last delivery: 1 message(s), 1 new.
+```
+
+Until a real delivery arrives it says so plainly.
+
+### What the live feed sees
+
+Only what happens after it is connected, on that one number. It cannot see a
+personal account, and it cannot see anything said before the webhook was saved.
+History comes from exports.

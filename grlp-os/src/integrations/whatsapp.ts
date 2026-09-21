@@ -1,4 +1,5 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
+import { normalisePhone } from '../domain/contact-match';
 import type { EnvLike } from './registry';
 
 /**
@@ -30,8 +31,16 @@ export const WHATSAPP_ENV = ['WHATSAPP_APP_SECRET', 'WHATSAPP_VERIFY_TOKEN'] as 
 export interface WhatsAppConfig {
   appSecret: string;
   verifyToken: string;
-  /** Optional: the business number's id, used only to tell our messages apart. */
+  /**
+   * Meta's id for the number, from WhatsApp → API Setup. It is a long number of
+   * its own and is *not* the telephone number — confusing the two is the usual
+   * reason a webhook never delivers anything.
+   */
   phoneNumberId?: string;
+  /** The number in dialling form, used to tell our own messages from theirs. */
+  businessNumber?: string;
+  /** The WhatsApp Business Account this number belongs to. Recorded, not called. */
+  businessAccountId?: string;
 }
 
 export function whatsappConfig(env: EnvLike = process.env): WhatsAppConfig | null {
@@ -41,7 +50,30 @@ export function whatsappConfig(env: EnvLike = process.env): WhatsAppConfig | nul
     appSecret: env.WHATSAPP_APP_SECRET!.trim(),
     verifyToken: env.WHATSAPP_VERIFY_TOKEN!.trim(),
     phoneNumberId: env.WHATSAPP_PHONE_NUMBER_ID?.trim() || undefined,
+    businessNumber: env.WHATSAPP_BUSINESS_NUMBER?.trim() || undefined,
+    businessAccountId: env.WHATSAPP_BUSINESS_ACCOUNT_ID?.trim() || undefined,
   };
+}
+
+/**
+ * What is still needed before the live feed can work, in the words Meta uses
+ * for each one. Returned rather than thrown so a setup screen can show the list.
+ */
+export function whatsappSetupGaps(env: EnvLike = process.env): string[] {
+  const gaps: string[] = [];
+  if (!env.WHATSAPP_APP_SECRET?.trim()) {
+    gaps.push('WHATSAPP_APP_SECRET — Meta app → Settings → Basic → App secret.');
+  }
+  if (!env.WHATSAPP_VERIFY_TOKEN?.trim()) {
+    gaps.push('WHATSAPP_VERIFY_TOKEN — any long random string you invent; Meta only echoes it back.');
+  }
+  if (!env.WHATSAPP_PHONE_NUMBER_ID?.trim()) {
+    gaps.push('WHATSAPP_PHONE_NUMBER_ID — WhatsApp → API Setup. A long number, not the telephone number.');
+  }
+  if (!env.WHATSAPP_BUSINESS_NUMBER?.trim()) {
+    gaps.push('WHATSAPP_BUSINESS_NUMBER — the number in dialling form, so our own messages can be told apart.');
+  }
+  return gaps;
 }
 
 /**
@@ -90,11 +122,12 @@ interface Payload {
   entry?: Array<{
     changes?: Array<{
       value?: {
-        metadata?: { phone_number_id?: string };
+        metadata?: { phone_number_id?: string; display_phone_number?: string };
         contacts?: Array<{ wa_id?: string; profile?: { name?: string } }>;
         messages?: Array<{
           id?: string;
           from?: string;
+          to?: string;
           timestamp?: string;
           type?: string;
           text?: { body?: string };
@@ -137,21 +170,37 @@ export function parseWebhook(payload: unknown, config?: WhatsAppConfig): Inbound
         const type = message.type ?? 'text';
         const text = type === 'text' ? (message.text?.body ?? '') : '';
 
+        // Ours or theirs is decided by the telephone number, not by the
+        // phone-number id: those are different identifiers, and comparing them
+        // marked every message as the client's. The business number can be
+        // configured or read off the delivery itself.
+        const ourNumber = config?.businessNumber ?? value.metadata?.display_phone_number;
+        const isFromUs = ourNumber != null && samePhoneNumber(message.from, ourNumber);
+
         out.push({
           externalId: message.id,
-          threadKey: `whatsapp:${message.from}`,
+          // A conversation is with the other party, so a message we sent belongs
+          // to the recipient's thread rather than to one of our own.
+          threadKey: `whatsapp:${isFromUs ? (message.to ?? message.from) : message.from}`,
           from: message.from,
           fromName: names.get(message.from) ?? null,
           text,
           sentAt: new Date(seconds * 1000),
           mediaType: type === 'text' ? null : type,
-          isFromUs: Boolean(config?.phoneNumberId && value.metadata?.phone_number_id === message.from),
+          isFromUs,
         });
       }
     }
   }
 
   return out;
+}
+
+/** Two numbers written differently are still one number. */
+function samePhoneNumber(a: string, b: string): boolean {
+  const left = normalisePhone(a);
+  const right = normalisePhone(b);
+  return left != null && left === right;
 }
 
 /**
