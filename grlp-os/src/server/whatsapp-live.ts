@@ -2,7 +2,7 @@ import { prisma } from './db';
 import { analyseThread } from '../domain/thread-analysis';
 import type { ParsedMessage } from '../domain/whatsapp-export';
 import { matchContact } from '../domain/contact-match';
-import type { InboundMessage } from '../integrations/whatsapp';
+import type { InboundMessage, MessageCorrections } from '../integrations/whatsapp';
 
 /**
  * The live feed, for a WhatsApp Business number.
@@ -161,6 +161,56 @@ async function reanalyse(threadId: string, ourNames: string[], now: Date): Promi
       data: { threadId, quote: c.quote, side: c.side, what: c.what, dueAt: c.dueAt, saidAt: c.saidAt },
     });
   }
+}
+
+export interface CorrectionResult {
+  revoked: number;
+  edited: number;
+}
+
+/**
+ * Applies a deletion or an edit made in the WhatsApp Business app.
+ *
+ * A deleted message keeps its place in the conversation — the fact that
+ * something was said and withdrawn is part of what happened — but not its
+ * wording, which is what WhatsApp itself does and what the sender intended.
+ */
+export async function applyCorrections(
+  corrections: MessageCorrections,
+  now = new Date(),
+): Promise<CorrectionResult> {
+  const result: CorrectionResult = { revoked: 0, edited: 0 };
+  const touched = new Set<string>();
+
+  for (const id of corrections.revoked) {
+    const existing = await prisma.communication.findUnique({ where: { externalId: id } });
+    if (!existing) continue;
+    await prisma.communication.update({
+      where: { externalId: id },
+      data: { body: '[deleted by sender]' },
+    });
+    if (existing.threadId) touched.add(existing.threadId);
+    result.revoked += 1;
+  }
+
+  for (const edit of corrections.edited) {
+    const existing = await prisma.communication.findUnique({ where: { externalId: edit.originalId } });
+    if (!existing) continue;
+    await prisma.communication.update({
+      where: { externalId: edit.originalId },
+      data: { body: edit.text },
+    });
+    if (existing.threadId) touched.add(existing.threadId);
+    result.edited += 1;
+  }
+
+  if (touched.size) {
+    const staff = await prisma.user.findMany({ where: { active: true }, select: { name: true } });
+    const ourNames = staff.map((u) => u.name);
+    for (const threadId of touched) await reanalyse(threadId, ourNames, now);
+  }
+
+  return result;
 }
 
 /**

@@ -124,34 +124,81 @@ in an afternoon.
 
 ### Which WhatsApp is the number on?
 
-"WhatsApp Business" is two different products, and only one of them has an API.
+"WhatsApp Business" is two different products, and there is now a third
+arrangement that combines them.
 
-| | **WhatsApp Business App** | **WhatsApp Business Platform (Cloud API)** |
-|---|---|---|
-| What it is | The free green app on a phone | A programmatic interface, no app |
-| Who replies | A person, in the app | Whatever tool you connect; there is no app |
-| Webhooks | None | Yes — this is what the live feed uses |
-| Chat export | Yes | No |
+| | **Business App** | **Cloud API** | **Coexistence** |
+|---|---|---|---|
+| Replying | In the app, by a person | Only through a connected tool | In the app, by a person |
+| Live feed to this system | No | Yes | Yes |
+| History before connecting | By export | Not available | 1:1 chats sync |
+| Group chats | Yes | No | In the app only — not synced |
+| Voice and video calls | Yes | No | Yes |
 
-**A number can only be on one of them.** Registering a number on the Cloud API
-takes it out of the app on the phone: from that moment nobody can open a chat
-on that number and type a reply the ordinary way.
+**A number can normally only be on one of the first two.** Registering a number
+on the Cloud API takes it out of the app: nobody can open a chat on it and type
+a reply the ordinary way.
 
 That matters here more than usual, because **this system deliberately cannot
-send**. If a number is moved to the Cloud API and this is the only thing
-connected to it, messages will arrive, be read, categorised and filed — and
-nobody will be able to answer them. Answering would need a separate inbox tool
-connected to the same number.
+send**. A number moved to the plain Cloud API with only this connected would
+receive messages, read them, categorise and file them — and nobody would be
+able to answer. Answering would need a separate inbox tool.
 
-So there are two sensible shapes:
+### Coexistence — both at once, which is what GRLP wants
 
-* **The number stays on the Business App.** A person keeps replying as they do
-  now, and conversations reach the system by export — Export Chat → Mail, which
-  the mailbox picks up. Nothing changes about how anyone works.
-* **The number moves to the Cloud API**, and GRLP also connects an inbox tool
-  that can reply. The live feed then organises everything in real time.
+Coexistence registers the number on the Cloud API **while it stays working in
+the WhatsApp Business app**. Mandy keeps replying on her phone exactly as she
+does now; this system receives both sides live.
 
-Choose the first unless replying is already handled elsewhere.
+That last part is the whole reason it matters. On the plain Cloud API this
+system would only ever see the client's half of a conversation, so every chat
+would look unanswered for ever and it would raise reply tasks for work already
+done. Under Coexistence, replies typed on the phone come back as
+`smb_message_echoes`, and "waiting on a reply" stays true.
+
+What still works in the app afterwards: one-to-one messages, **voice and video
+calls**, contacts, labels, quick replies, greeting and away messages, the
+catalog, the business profile, and Channels. Message history for 1:1 chats
+syncs both ways.
+
+What it costs:
+
+* **Group chats are not synced.** They keep working in the app, but the
+  "New Listings and Changes" group will not reach this system. Group content
+  still has to arrive by export.
+* **Disappearing, view-once and live-location messages are turned off** for 1:1
+  chats on that number.
+* **Broadcast lists become read-only** — existing ones stay, new ones cannot be
+  made.
+* **Linked companion devices are unlinked** during onboarding and must be
+  linked again afterwards (WhatsApp for Windows and WearOS are exempt).
+* **The phone has to be used.** If the primary device goes unused for about
+  fourteen days the connection drops.
+
+### What Coexistence needs from a provider
+
+This is the part GRLP cannot do alone. Meta's documentation is explicit:
+onboarding a WhatsApp Business app user to the Cloud API requires the party
+doing the onboarding to be a **Solution Partner or Tech Provider**, through
+Embedded Signup. It is not available from the plain Meta developer console.
+
+So the order of work is:
+
+1. **Choose a provider that supports Coexistence** on a number you own, and
+   that will point the webhook at a URL you nominate. Ask them plainly:
+   *"Do you support Coexistence onboarding, and will you deliver `messages` and
+   `smb_message_echoes` to our own webhook URL?"* If the answer to either half
+   is no, they are the wrong provider for this.
+2. They run Embedded Signup against +27 … and the WhatsApp Business Account.
+3. They give you the **Phone Number ID** and the **App Secret** for the app the
+   webhook belongs to — or they configure the webhook themselves, pointed at
+   this system.
+4. Fill in `.env`, run `npm run whatsapp:setup`, then `npm run whatsapp:status`.
+
+**Subscribe to both `messages` and `smb_message_echoes`.** Subscribing to
+`messages` alone is the mistake that makes the whole thing look broken: client
+messages arrive, replies never do, and every conversation sits in "waiting on a
+reply" for ever.
 
 ### The three values, and what they are not
 
@@ -184,7 +231,8 @@ could send a message even if someone added code to try.
 3. In the Meta app, under **WhatsApp → Configuration → Webhook**:
    * **Callback URL** — `https://your-host/api/whatsapp`
    * **Verify token** — the one from step 2
-   * **Subscribe to** — `messages`
+   * **Subscribe to** — `messages`, and `smb_message_echoes` if the number
+     also runs the WhatsApp Business app
    Meta calls the URL once with the verify token before it will save the
    subscription. A wrong token is refused, and the endpoint returns 404 until
    the credentials are set, so nothing is advertised before it works.
@@ -206,6 +254,15 @@ Until a real delivery arrives it says so plainly.
 
 ### What the live feed sees
 
-Only what happens after it is connected, on that one number. It cannot see a
-personal account, and it cannot see anything said before the webhook was saved.
-History comes from exports.
+Only what happens after it is connected, on that one number, and only 1:1
+chats. It cannot see a personal account and it cannot see group chats. Under
+Coexistence the app's own 1:1 history syncs; anything older than the connection
+on a plain Cloud API number, and anything said in a group, comes from exports.
+
+### Deletions and edits
+
+A message deleted in the app is deleted here: the conversation keeps the fact
+that something was sent and withdrawn, but not its wording. An edited message
+is replaced by the wording that now stands. A record that still shows what
+somebody withdrew is worse than one that never had it — it is wrong, and it
+looks authoritative.

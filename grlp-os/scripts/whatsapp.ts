@@ -31,9 +31,15 @@ function setup() {
   console.log(`  Callback URL   ${publicUrl}/api/whatsapp`);
   console.log(`  Verify token   ${config?.verifyToken ?? '(set WHATSAPP_VERIFY_TOKEN first)'}`);
   console.log('  Subscribe to   messages');
+  console.log('                 smb_message_echoes   ← only if the number also');
+  console.log('                                        runs the WhatsApp Business app');
   console.log('');
   console.log('The URL must be reachable from the internet over HTTPS. Meta calls it');
-  console.log('once with the verify token before it will save the subscription.\n');
+  console.log('once with the verify token before it will save the subscription.');
+  console.log('');
+  console.log('smb_message_echoes carries the replies sent from the phone. Without it');
+  console.log('the system sees only the client\u2019s half and every conversation looks');
+  console.log('as though nobody has answered.\n');
 
   console.log('Configuration:');
   const rows: Array<[string, string]> = [

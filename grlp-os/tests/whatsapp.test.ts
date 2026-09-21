@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 import { parseWhatsAppExport, titleFromFilename } from '../src/domain/whatsapp-export';
 import { analyseThread } from '../src/domain/thread-analysis';
 import { importWhatsAppExport, isOneOfUs } from '../src/server/whatsapp-import';
-import { CAPABILITIES, parseWebhook, verifySignature, verifyWebhookSubscription, whatsappConfig } from '../src/integrations/whatsapp';
+import { CAPABILITIES, parseMessageCorrections, parseWebhook, verifySignature, verifyWebhookSubscription, whatsappConfig } from '../src/integrations/whatsapp';
 import { createHmac } from 'node:crypto';
 
 const prisma = new PrismaClient();
@@ -390,6 +390,84 @@ describe('the live webhook, when a business number is connected', () => {
     expect(parseWebhook({
       entry: [{ changes: [{ value: { metadata: { phone_number_id: '845019283746152' }, statuses: [{ id: 'wamid.x', status: 'delivered' }] } }] }],
     })).toHaveLength(0);
+  });
+
+  // Coexistence: the number runs the WhatsApp Business app and the Cloud API at
+  // once. Replies Mandy types on her phone arrive as echoes, and without them
+  // the system would see only the client's half of every conversation.
+  describe('replies sent from the phone', () => {
+    const echo = (message: Record<string, unknown>) => ({
+      object: 'whatsapp_business_account',
+      entry: [{
+        id: '10000000000000000',
+        changes: [{
+          field: 'smb_message_echoes',
+          value: {
+            messaging_product: 'whatsapp',
+            metadata: { phone_number_id: '845019283746152', display_phone_number: '27740000000' },
+            message_echoes: [message],
+          },
+        }],
+      }],
+    });
+
+    it('reads a message we sent from the app as ours', () => {
+      const messages = parseWebhook(echo({
+        id: 'wamid.echo1', from: '27740000000', to: '27825551234',
+        timestamp: '1789003600', type: 'text', text: { body: 'I will call you at 2pm.' },
+      }));
+
+      expect(messages).toHaveLength(1);
+      expect(messages[0]!.isFromUs).toBe(true);
+      expect(messages[0]!.text).toBe('I will call you at 2pm.');
+      expect(messages[0]!.threadKey).toBe('whatsapp:27825551234');
+    });
+
+    it('does not need the business number configured to know an echo is ours', () => {
+      const messages = parseWebhook(echo({
+        id: 'wamid.echo2', from: '27740000000', to: '27825551234',
+        timestamp: '1789003600', type: 'text', text: { body: 'On my way.' },
+      }), { appSecret: 's', verifyToken: 't' });
+
+      expect(messages[0]!.isFromUs).toBe(true);
+    });
+
+    it('does not treat a deletion or an edit as a new message', () => {
+      expect(parseWebhook(echo({
+        id: 'wamid.r', from: '27740000000', to: '27825551234', timestamp: '1789003600',
+        type: 'revoke', revoke: { original_message_id: 'wamid.echo1' },
+      }))).toHaveLength(0);
+
+      expect(parseWebhook(echo({
+        id: 'wamid.e', from: '27740000000', to: '27825551234', timestamp: '1789003600',
+        type: 'edit', edit: { original_message_id: 'wamid.echo1', message: { type: 'text', text: { body: '3pm' } } },
+      }))).toHaveLength(0);
+    });
+
+    it('reports a deletion against the message it withdraws', () => {
+      const corrections = parseMessageCorrections(echo({
+        id: 'wamid.r', from: '27740000000', to: '27825551234', timestamp: '1789003600',
+        type: 'revoke', revoke: { original_message_id: 'wamid.echo1' },
+      }));
+
+      expect(corrections.revoked).toEqual(['wamid.echo1']);
+      expect(corrections.edited).toEqual([]);
+    });
+
+    it('reports an edit with the wording that now stands', () => {
+      const corrections = parseMessageCorrections(echo({
+        id: 'wamid.e', from: '27740000000', to: '27825551234', timestamp: '1789003600',
+        type: 'edit',
+        edit: { original_message_id: 'wamid.echo1', message: { type: 'text', text: { body: 'I will call you at 3pm.' } } },
+      }));
+
+      expect(corrections.edited).toEqual([{ originalId: 'wamid.echo1', text: 'I will call you at 3pm.' }]);
+    });
+
+    it('shrugs off a delivery with nothing to correct', () => {
+      expect(parseMessageCorrections({})).toEqual({ revoked: [], edited: [] });
+      expect(parseMessageCorrections(null)).toEqual({ revoked: [], edited: [] });
+    });
   });
 
   it('skips anything it cannot read rather than guessing', () => {

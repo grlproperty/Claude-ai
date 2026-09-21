@@ -1,7 +1,13 @@
 import { NextResponse } from 'next/server';
 
-import { parseWebhook, verifySignature, verifyWebhookSubscription, whatsappConfig } from '../../../integrations/whatsapp';
-import { ingestLiveMessages, recordWhatsAppDelivery } from '../../../server/whatsapp-live';
+import {
+  parseMessageCorrections,
+  parseWebhook,
+  verifySignature,
+  verifyWebhookSubscription,
+  whatsappConfig,
+} from '../../../integrations/whatsapp';
+import { applyCorrections, ingestLiveMessages, recordWhatsAppDelivery } from '../../../server/whatsapp-live';
 
 export const dynamic = 'force-dynamic';
 
@@ -56,13 +62,15 @@ export async function POST(request: Request) {
   }
 
   const messages = parseWebhook(payload, config);
+  const corrections = parseMessageCorrections(payload);
 
   try {
     const result = await ingestLiveMessages(messages);
+    const corrected = await applyCorrections(corrections);
     // Noted even when the delivery carried no messages: a delivery receipt is
     // still proof that the subscription is live.
     await recordWhatsAppDelivery({ messages: messages.length, stored: result.stored });
-    return NextResponse.json(result, { status: 200 });
+    return NextResponse.json({ ...result, ...corrected }, { status: 200 });
   } catch (error) {
     // A failure here is ours, and Meta should send it again rather than drop it.
     console.error('WhatsApp ingestion failed', error);

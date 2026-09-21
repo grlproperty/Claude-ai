@@ -118,9 +118,22 @@ export interface InboundMessage {
   isFromUs: boolean;
 }
 
+interface RawMessage {
+  id?: string;
+  from?: string;
+  to?: string;
+  timestamp?: string;
+  type?: string;
+  text?: { body?: string };
+  revoke?: { original_message_id?: string };
+  edit?: { original_message_id?: string; message?: { type?: string; text?: { body?: string } } };
+  [k: string]: unknown;
+}
+
 interface Payload {
   entry?: Array<{
     changes?: Array<{
+      field?: string;
       value?: {
         metadata?: { phone_number_id?: string; display_phone_number?: string };
         contacts?: Array<{ wa_id?: string; profile?: { name?: string } }>;
@@ -133,6 +146,13 @@ interface Payload {
           text?: { body?: string };
           [k: string]: unknown;
         }>;
+        /**
+         * Messages the business sent from the WhatsApp Business app, delivered
+         * under the `smb_message_echoes` field when a number runs both the app
+         * and the Cloud API. Without these the system would see only the
+         * client's half of every conversation and think nobody had replied.
+         */
+        message_echoes?: RawMessage[];
       };
     }>;
   }>;
@@ -155,13 +175,17 @@ export function parseWebhook(payload: unknown, config?: WhatsAppConfig): Inbound
   for (const entry of body.entry ?? []) {
     for (const change of entry.changes ?? []) {
       const value = change.value;
-      if (!value?.messages?.length) continue;
+      const incoming = value?.messages ?? [];
+      // An echo is something we sent from the phone, so it is ours by
+      // definition rather than by comparing numbers.
+      const echoed = (value?.message_echoes ?? []).filter((m) => m.type !== 'revoke' && m.type !== 'edit');
+      if (!incoming.length && !echoed.length) continue;
 
       const names = new Map(
-        (value.contacts ?? []).map((c) => [c.wa_id ?? '', c.profile?.name ?? null] as const),
+        (value!.contacts ?? []).map((c) => [c.wa_id ?? '', c.profile?.name ?? null] as const),
       );
 
-      for (const message of value.messages) {
+      for (const message of [...incoming, ...echoed] as RawMessage[]) {
         if (!message.id || !message.from || !message.timestamp) continue;
 
         const seconds = Number(message.timestamp);
@@ -174,8 +198,9 @@ export function parseWebhook(payload: unknown, config?: WhatsAppConfig): Inbound
         // phone-number id: those are different identifiers, and comparing them
         // marked every message as the client's. The business number can be
         // configured or read off the delivery itself.
-        const ourNumber = config?.businessNumber ?? value.metadata?.display_phone_number;
-        const isFromUs = ourNumber != null && samePhoneNumber(message.from, ourNumber);
+        const ourNumber = config?.businessNumber ?? value!.metadata?.display_phone_number;
+        const isFromUs =
+          echoed.includes(message) || (ourNumber != null && samePhoneNumber(message.from, ourNumber));
 
         out.push({
           externalId: message.id,
@@ -189,6 +214,45 @@ export function parseWebhook(payload: unknown, config?: WhatsAppConfig): Inbound
           mediaType: type === 'text' ? null : type,
           isFromUs,
         });
+      }
+    }
+  }
+
+  return out;
+}
+
+export interface MessageCorrections {
+  /** Messages the sender deleted for everyone. */
+  revoked: string[];
+  /** Messages the sender edited, with the wording that now stands. */
+  edited: Array<{ originalId: string; text: string }>;
+}
+
+/**
+ * Deletions and edits made in the WhatsApp Business app.
+ *
+ * A record that still shows what somebody withdrew, or the first version of
+ * what they corrected, is worse than one that never had it: it is wrong, and it
+ * looks authoritative. These arrive as ordinary echoes with a type of their own.
+ */
+export function parseMessageCorrections(payload: unknown): MessageCorrections {
+  const out: MessageCorrections = { revoked: [], edited: [] };
+  if (payload == null || typeof payload !== 'object') return out;
+
+  const body = payload as Payload;
+  if (!Array.isArray(body.entry)) return out;
+
+  for (const entry of body.entry ?? []) {
+    for (const change of entry.changes ?? []) {
+      for (const echo of change.value?.message_echoes ?? []) {
+        if (echo.type === 'revoke') {
+          const id = echo.revoke?.original_message_id;
+          if (id) out.revoked.push(id);
+        } else if (echo.type === 'edit') {
+          const id = echo.edit?.original_message_id;
+          const text = echo.edit?.message?.text?.body;
+          if (id && typeof text === 'string') out.edited.push({ originalId: id, text });
+        }
       }
     }
   }

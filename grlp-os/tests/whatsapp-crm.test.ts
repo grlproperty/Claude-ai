@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import PizZip from 'pizzip';
 
 import { intakeExport, intakeMany, isChatExportAttachment } from '../src/server/whatsapp-intake';
-import { ingestLiveMessages } from '../src/server/whatsapp-live';
+import { applyCorrections, ingestLiveMessages } from '../src/server/whatsapp-live';
 import {
   createContactForThread,
   fileThread,
@@ -14,6 +14,7 @@ import {
 import { ForbiddenError, type Principal } from '../src/server/permissions';
 import { ingestMail } from '../src/server/mail-ingest';
 import type { IncomingMessage, MailTransport, OutgoingMessage } from '../src/integrations/mailbox';
+import { parseMessageCorrections, parseWebhook } from '../src/integrations/whatsapp';
 import type { InboundMessage } from '../src/integrations/whatsapp';
 
 const prisma = new PrismaClient();
@@ -462,5 +463,95 @@ describe('a chat mailed in from the phone', () => {
 
     expect(result.whatsappRejected).toHaveLength(1);
     expect(result.stored).toBe(1);
+  });
+});
+
+describe('coexistence — the app and the live feed on one number', () => {
+  const OURS = '27740000000';
+  const THEIRS = '27825551234';
+  const config = { appSecret: 's', verifyToken: 't', businessNumber: OURS };
+
+  const delivery = (field: string, key: string, messages: unknown[]) => ({
+    object: 'whatsapp_business_account',
+    entry: [{
+      id: '10000000000000000',
+      changes: [{
+        field,
+        value: {
+          messaging_product: 'whatsapp',
+          metadata: { phone_number_id: '845019283746152', display_phone_number: OURS },
+          contacts: [{ wa_id: THEIRS, profile: { name: 'Johan Meyer' } }],
+          [key]: messages,
+        },
+      }],
+    }],
+  });
+
+  const fromClient = delivery('messages', 'messages', [{
+    id: 'wamid.in1', from: THEIRS, timestamp: '1789000000', type: 'text',
+    text: { body: 'Hi, is 14 Protea Street still available? Can you call me today?' },
+  }]);
+
+  const repliedOnPhone = delivery('smb_message_echoes', 'message_echoes', [{
+    id: 'wamid.out1', from: OURS, to: THEIRS, timestamp: '1789003600', type: 'text',
+    text: { body: 'Morning Johan, I will call you at 2pm.' },
+  }]);
+
+  async function deliver(payload: unknown) {
+    await ingestLiveMessages(parseWebhook(payload, config));
+    await applyCorrections(parseMessageCorrections(payload));
+  }
+
+  it('puts a reply typed on the phone into the same conversation, as ours', async () => {
+    await deliver(fromClient);
+    await deliver(repliedOnPhone);
+
+    const thread = await prisma.messageThread.findUniqueOrThrow({ where: { externalId: `whatsapp:${THEIRS}` } });
+    expect(thread.messageCount).toBe(2);
+    expect(thread.counterpartyPhone).toBe(THEIRS);
+
+    const ours = await prisma.communication.findUniqueOrThrow({ where: { externalId: 'wamid.out1' } });
+    expect(ours.direction).toBe('OUTBOUND');
+  });
+
+  // Without echoes every conversation would look unanswered for ever, and the
+  // system would raise a reply task for work already done.
+  it('stops saying they are waiting once the reply is echoed back', async () => {
+    await deliver(fromClient);
+    expect((await prisma.messageThread.findUniqueOrThrow({ where: { externalId: `whatsapp:${THEIRS}` } })).waitingOnUs).toBe(true);
+
+    await deliver(repliedOnPhone);
+    expect((await prisma.messageThread.findUniqueOrThrow({ where: { externalId: `whatsapp:${THEIRS}` } })).waitingOnUs).toBe(false);
+  });
+
+  it('keeps a deleted message in its place but not its wording', async () => {
+    await deliver(fromClient);
+    await deliver(repliedOnPhone);
+    await deliver(delivery('smb_message_echoes', 'message_echoes', [{
+      id: 'wamid.rev', from: OURS, to: THEIRS, timestamp: '1789004000',
+      type: 'revoke', revoke: { original_message_id: 'wamid.out1' },
+    }]));
+
+    const ours = await prisma.communication.findUniqueOrThrow({ where: { externalId: 'wamid.out1' } });
+    expect(ours.body).toBe('[deleted by sender]');
+    expect(await prisma.communication.count({ where: { channel: 'WHATSAPP' } })).toBe(2);
+  });
+
+  it('replaces the wording when a message is edited on the phone', async () => {
+    await deliver(fromClient);
+    await deliver(repliedOnPhone);
+    await deliver(delivery('smb_message_echoes', 'message_echoes', [{
+      id: 'wamid.ed', from: OURS, to: THEIRS, timestamp: '1789004000',
+      type: 'edit',
+      edit: { original_message_id: 'wamid.out1', message: { type: 'text', text: { body: 'Morning Johan, I will call you at 3pm.' } } },
+    }]));
+
+    const ours = await prisma.communication.findUniqueOrThrow({ where: { externalId: 'wamid.out1' } });
+    expect(ours.body).toContain('3pm');
+  });
+
+  it('ignores a correction for a message it never had', async () => {
+    const result = await applyCorrections({ revoked: ['wamid.unknown'], edited: [] });
+    expect(result.revoked).toBe(0);
   });
 });
