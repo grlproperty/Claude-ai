@@ -6,7 +6,8 @@ import { ingestMail } from '../src/server/mail-ingest';
  * Mailbox operator tooling.
  *
  *   npx tsx scripts/mail.ts test      — log in to the mailbox and report the result
- *   npx tsx scripts/mail.ts ingest    — read new mail, triage it, route it
+ *   npx tsx scripts/mail.ts ingest    — read new mail, triage it, route it, and
+ *                                       import any WhatsApp chat exports mailed in
  *   npx tsx scripts/mail.ts ingest --days 3
  *
  * `test` is the honest definition of "connected": it performs a real IMAP login.
@@ -79,6 +80,17 @@ async function ingest(days: number) {
         console.log(`  ${who.padEnd(18)} ${count}`);
       }
     }
+    if (result.whatsappImported.length || result.whatsappRejected.length) {
+      console.log('');
+      console.log('WhatsApp exports mailed in:');
+      for (const w of result.whatsappImported) {
+        console.log(`  ${w.title.padEnd(28)} ${w.newMessages} new message(s)`);
+      }
+      for (const w of result.whatsappRejected) {
+        console.log(`  ${w.filename.padEnd(28)} not read — ${w.problem}`);
+      }
+    }
+
     console.log('');
     console.log(`${result.needsCeo} of ${result.stored} needed the CEO.`);
     console.log('Nothing was sent. Replies go out only after a person approves the draft.');

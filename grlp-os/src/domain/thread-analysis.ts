@@ -159,6 +159,14 @@ export function analyseThread(messages: ParsedMessage[], { ourNames, now = new D
   };
 }
 
+/** Past a couple of days nobody counts in hours, and "291 hours" hides how bad it is. */
+function describeWait(hours: number): string {
+  if (hours < 1) return 'less than an hour';
+  if (hours < 48) return `${hours} hour${hours === 1 ? '' : 's'}`;
+  const days = Math.floor(hours / 24);
+  return `${days} days`;
+}
+
 function unique(values: string[]): string[] {
   return [...new Set(values.map((v) => v.trim()).filter(Boolean))].slice(0, 12);
 }
@@ -192,7 +200,7 @@ function buildOutline(args: {
   if (ourCommitments.length) parts.push(`${ourCommitments.length} undertaking(s) given by us.`);
   if (dated.length) parts.push(`${dated.length} with a date attached.`);
   if (openQuestions.length) parts.push(`${openQuestions.length} question(s) unanswered.`);
-  if (waitingOnUs) parts.push(`They spoke last, ${waitingHours} hours ago.`);
+  if (waitingOnUs) parts.push(`They spoke last, ${describeWait(waitingHours)} ago.`);
 
   return parts.join(' ');
 }

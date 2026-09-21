@@ -7,6 +7,7 @@ import {
   principalForAgent,
   require_,
   scopeFor,
+  canSeeThread,
   type Principal,
 } from './permissions';
 
@@ -82,5 +83,28 @@ describe('the AI is not a way around permissions', () => {
     const agent = principalForAgent(linda);
     expect(can(agent, 'view:all_business')).toBe(false);
     expect(canReadDomain(agent, 'PERSONAL', 'mandy')).toBe(false);
+  });
+});
+
+describe('reading a WhatsApp conversation', () => {
+  const ceo: Principal = { id: 'u_mandy', name: 'Mandy', role: 'CEO', department: 'EXECUTIVE', isCeo: true };
+  const agent: Principal = { id: 'u_jason', name: 'Jason', role: 'SALES_AGENT', department: 'SALES', isCeo: false };
+
+  it('lets the CEO read across the business', () => {
+    expect(canSeeThread(agent, { ownerId: 'u_someone_else' })).toBe(false);
+    expect(canSeeThread(ceo, { ownerId: 'u_someone_else' })).toBe(true);
+  });
+
+  it('lets anyone read their own conversations and unowned ones', () => {
+    expect(canSeeThread(agent, { ownerId: 'u_jason' })).toBe(true);
+    expect(canSeeThread(agent, { ownerId: null })).toBe(true);
+  });
+
+  // Mandy's WhatsApp carries her family as well as her clients. Sorting the
+  // business out of it must not put the rest in front of staff.
+  it('keeps a personal conversation away from staff, even an unowned one', () => {
+    expect(canSeeThread(agent, { ownerId: null, category: 'PERSONAL' })).toBe(false);
+    expect(canSeeThread(agent, { ownerId: 'u_jason', category: 'PERSONAL' })).toBe(true);
+    expect(canSeeThread(ceo, { ownerId: null, category: 'PERSONAL' })).toBe(true);
   });
 });

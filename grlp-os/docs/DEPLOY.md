@@ -159,7 +159,7 @@ does without rather than fakes:
 | `ANTHROPIC_API_KEY` | Drafting and free-text summarising. | Routing, triage, validation, document population, the market assessment and the risk sweep all still run — they are deterministic and use no language model. Only the prose-writing stops. |
 | `MAIL_*` | Reading and sending from the GRLP mailbox. | Mail is neither read nor sent. The follow-up engine still prepares what it would send, and stops there. |
 | `DROPBOX_*` | Importing master documents and the knowledge base. | Masters and knowledge must be loaded another way. Document generation stays blocked until templates are approved. |
-| `WHATSAPP_*` | The live WhatsApp Business webhook. | Conversations come in from chat exports instead. The system never replies on WhatsApp under any configuration. |
+| `WHATSAPP_*` | The live WhatsApp Business webhook, for a dedicated business number. | Conversations come in by upload on the Messages screen, or by mailing an export to the connected mailbox. The system never replies on WhatsApp under any configuration. See [WhatsApp](WHATSAPP.md). |
 | `GOOGLE_*`, `MS_*` | Single sign-on and calendar. | Sign-in is by email and password. |
 | `ESIGN_*` | Electronic signature routing. | Signature routing stays manual. |
 

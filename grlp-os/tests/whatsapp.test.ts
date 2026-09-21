@@ -61,9 +61,32 @@ describe('it can never reply — that is structural, not a policy', () => {
     expect(CAPABILITIES.reply).toBe(false);
   });
 
-  it('the import service does not send either', async () => {
-    const source = await readFile('src/server/whatsapp-import.ts', 'utf8');
-    expect(/\.send\(/.test(source)).toBe(false);
+  // The guarantee has to cover everything that touches WhatsApp, not the two
+  // files it started as. Every new one is swept, so the promise cannot rot as
+  // the surface grows.
+  it('holds across every file that touches WhatsApp', async () => {
+    const files = [
+      'src/integrations/whatsapp.ts',
+      'src/server/whatsapp-import.ts',
+      'src/server/whatsapp-intake.ts',
+      'src/server/whatsapp-live.ts',
+      'src/server/threads.ts',
+      'src/app/api/whatsapp/route.ts',
+      'src/app/messages/actions.ts',
+      'src/app/messages/[id]/page.tsx',
+    ];
+
+    for (const path of files) {
+      const source = await readFile(path, 'utf8');
+      const code = source
+        .split('\n')
+        .filter((l) => !l.trim().startsWith('*') && !l.trim().startsWith('//') && !l.trim().startsWith('/*'))
+        .join('\n');
+
+      expect(/graph\.facebook\.com/.test(code), `${path} reaches WhatsApp's API`).toBe(false);
+      expect(/\bsendMessage\b|\bsendWhatsApp\b|\breplyTo\b/i.test(code), `${path} looks like it sends`).toBe(false);
+      expect(/fetch\([^)]*whatsapp/i.test(code), `${path} posts to WhatsApp`).toBe(false);
+    }
   });
 });
 
@@ -154,6 +177,15 @@ describe('understanding the conversation', () => {
     );
     expect(rental.category).toBe('RENTAL');
     expect(rental.importance).toBe('URGENT');
+  });
+
+  it('counts a long wait in days, because nobody reads 291 hours', () => {
+    const stale = analyseThread(parseWhatsAppExport(ANDROID_EXPORT).messages, {
+      ourNames: OUR,
+      now: new Date('2026-09-21T09:00:00Z'),
+    });
+    expect(stale.outline).toContain('They spoke last, 12 days ago.');
+    expect(stale.outline).not.toMatch(/\d{3} hours/);
   });
 
   it('writes an outline without needing a language model', () => {

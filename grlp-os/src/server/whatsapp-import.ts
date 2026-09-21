@@ -2,6 +2,7 @@ import { prisma } from './db';
 import { parseWhatsAppExport, titleFromFilename, type ParsedMessage } from '../domain/whatsapp-export';
 import { analyseThread, type ThreadAnalysis } from '../domain/thread-analysis';
 import { route } from '../domain/routing';
+import { matchContact } from '../domain/contact-match';
 import { getStaff } from './snapshot';
 import type { Priority } from '../domain/types';
 
@@ -39,6 +40,8 @@ export interface ImportOptions {
   ourNames?: string[];
   /** Whose WhatsApp this is. */
   ownerId?: string | null;
+  /** Known only on the live feed — an export carries no numbers. */
+  counterpartyPhone?: string | null;
   /** Analyse and report without writing anything. */
   dryRun?: boolean;
   now?: Date;
@@ -86,7 +89,7 @@ export async function importWhatsAppExport(options: ImportOptions): Promise<Impo
   const title = titleFromFilename(options.filename);
   const externalId = `whatsapp:export:${title.toLowerCase().replace(/\s+/g, '-')}`;
 
-  const contact = await findContact(parsed.participants, ourNames);
+  const contact = await findContact(parsed.participants, ourNames, options.counterpartyPhone);
   const property = await findProperty(analysis);
 
   if (options.dryRun) {
@@ -130,7 +133,8 @@ export async function importWhatsAppExport(options: ImportOptions): Promise<Impo
       externalId,
       title,
       kind: parsed.isGroup ? 'GROUP' : 'DIRECT',
-      counterpartyName: parsed.participants.find((p) => !ourNames.includes(p)) ?? null,
+      counterpartyName: parsed.participants.find((p) => !isOneOfUs(p, ourNames)) ?? null,
+      counterpartyPhone: options.counterpartyPhone ?? null,
       category: analysis.category,
       importance: analysis.importance,
       messageCount: analysis.messageCount,
@@ -321,23 +325,24 @@ async function raiseTasks(
   return created;
 }
 
-/** Links the chat to a client where the name matches a record. */
-async function findContact(participants: string[], ourNames: string[]) {
-  const others = participants.filter((p) => !ourNames.includes(p));
-  for (const name of others) {
-    const parts = name.trim().split(/\s+/);
-    const last = parts.at(-1);
-    if (!last || last.length < 3) continue;
+/**
+ * Links the chat to a client, but only where there is a real reason to.
+ *
+ * Matching on a first name — which this used to do — files one Pieter's offer
+ * in another Pieter's history, and nobody finds out until it matters. An
+ * uncertain match is left off; the Messages screen offers it for a person to
+ * confirm instead.
+ */
+async function findContact(participants: string[], ourNames: string[], phone?: string | null) {
+  const others = participants.filter((p) => !isOneOfUs(p, ourNames));
+  const candidates = await prisma.contact.findMany({
+    select: { id: true, firstName: true, lastName: true, phone: true },
+  });
+  if (!candidates.length) return null;
 
-    const contact = await prisma.contact.findFirst({
-      where: {
-        OR: [
-          { lastName: { equals: last, mode: 'insensitive' } },
-          { firstName: { equals: parts[0], mode: 'insensitive' } },
-        ],
-      },
-    });
-    if (contact) return contact;
+  for (const name of others.length ? others : [null]) {
+    const match = matchContact({ displayName: name, phone, candidates });
+    if (match?.certain) return prisma.contact.findUnique({ where: { id: match.contactId } });
   }
   return null;
 }

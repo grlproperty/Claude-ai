@@ -5,6 +5,7 @@ import { route } from '../domain/routing';
 import { mailboxConfig, mailTransport, type IncomingMessage, type MailTransport } from '../integrations/mailbox';
 import type { CommunicationCategory, TriageDecision } from '../domain/triage';
 import type { Department } from '../domain/types';
+import { intakeExport, isChatExportAttachment } from './whatsapp-intake';
 
 /**
  * Inbox ingestion (§20, §21).
@@ -28,6 +29,10 @@ export interface IngestResult {
   byDecision: Record<TriageDecision, number>;
   routedTo: Record<string, number>;
   needsCeo: number;
+  /** WhatsApp conversations that arrived as attachments and were brought in. */
+  whatsappImported: Array<{ filename: string; title: string; newMessages: number }>;
+  /** Attachments that looked like chat exports but could not be read. */
+  whatsappRejected: Array<{ filename: string; problem: string }>;
   /** Set when the mailbox is not configured; nothing was read. */
   unavailable?: string;
 }
@@ -74,6 +79,8 @@ export async function ingestMail(options: IngestOptions = {}): Promise<IngestRes
       byDecision: { ...EMPTY_DECISIONS },
       routedTo: {},
       needsCeo: 0,
+      whatsappImported: [],
+      whatsappRejected: [],
       unavailable:
         'The mailbox is not connected. Set MAIL_IMAP_HOST, MAIL_SMTP_HOST, MAIL_USER and MAIL_PASSWORD. Nothing was read.',
     };
@@ -98,6 +105,8 @@ export async function ingestMail(options: IngestOptions = {}): Promise<IngestRes
     byDecision: { ...EMPTY_DECISIONS },
     routedTo: {},
     needsCeo: 0,
+    whatsappImported: [],
+    whatsappRejected: [],
   };
 
   for (const message of messages) {
@@ -106,6 +115,11 @@ export async function ingestMail(options: IngestOptions = {}): Promise<IngestRes
       result.skippedDuplicates += 1;
       continue;
     }
+
+    // A chat exported on a phone arrives here. Export Chat → Mail is two taps,
+    // and it is as close to a live connection as a personal WhatsApp account
+    // allows, so the mailbox doubles as the way conversations get in.
+    await takeAnyChatExports(message, result);
 
     const contact = message.fromAddress ? contactByEmail.get(message.fromAddress.toLowerCase()) : undefined;
     const verdict = triage({
@@ -216,4 +230,37 @@ async function defaultSince(now: Date): Promise<Date> {
     select: { receivedAt: true },
   });
   return latest?.receivedAt ?? new Date(now.getTime() - 7 * 86_400_000);
+}
+
+/**
+ * Pulls WhatsApp chat exports out of a message's attachments.
+ *
+ * A failure here must not cost the mail run: the message still has to be
+ * triaged, and an unreadable attachment is reported rather than thrown.
+ */
+async function takeAnyChatExports(message: IncomingMessage, result: IngestResult): Promise<void> {
+  const candidates = (message.attachments ?? []).filter((a) => isChatExportAttachment(a.filename, a.contentType));
+  if (!candidates.length) return;
+
+  for (const attachment of candidates) {
+    try {
+      const outcome = await intakeExport({
+        filename: attachment.filename,
+        bytes: attachment.content,
+        channel: 'email',
+      });
+
+      if (outcome.ok && outcome.thread) {
+        result.whatsappImported.push({
+          filename: attachment.filename,
+          title: outcome.thread.title,
+          newMessages: outcome.thread.newMessages,
+        });
+      } else if (outcome.problem) {
+        result.whatsappRejected.push({ filename: attachment.filename, problem: outcome.problem });
+      }
+    } catch (error) {
+      result.whatsappRejected.push({ filename: attachment.filename, problem: (error as Error).message });
+    }
+  }
 }

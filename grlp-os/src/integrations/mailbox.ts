@@ -85,6 +85,18 @@ export interface IncomingMessage {
   receivedAt: Date;
   /** Set when the message is a reply, so threads can be followed. */
   inReplyTo: string | null;
+  /**
+   * Files that came with the message. Carried because a WhatsApp chat exported
+   * on a phone arrives this way: Export Chat → Mail is two taps, and it is the
+   * nearest thing to a live connection a personal account allows.
+   */
+  attachments?: MailAttachment[];
+}
+
+export interface MailAttachment {
+  filename: string;
+  contentType: string;
+  content: Uint8Array;
 }
 
 /**
@@ -148,6 +160,13 @@ export function createImapSmtpTransport(config: MailboxConfig): MailTransport {
               toAddresses: to.flatMap((t) => t.value.map((v) => v.address ?? '').filter(Boolean)),
               receivedAt,
               inReplyTo: parsed.inReplyTo ?? null,
+              attachments: (parsed.attachments ?? [])
+                .filter((a) => a.filename)
+                .map((a) => ({
+                  filename: a.filename!,
+                  contentType: a.contentType ?? 'application/octet-stream',
+                  content: new Uint8Array(a.content),
+                })),
             });
           }
         } finally {

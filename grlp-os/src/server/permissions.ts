@@ -118,6 +118,23 @@ export function ownershipWhere(scope: Scope, fields: { ownerField?: string; depa
 }
 
 /**
+ * Whether a WhatsApp conversation may be read.
+ *
+ * A personal chat is the CEO's alone (§30) — her WhatsApp carries her family as
+ * well as her clients, and the point of reading it is to sort the business out
+ * of it, never to expose the rest. A conversation nobody owns is a business
+ * conversation until someone says otherwise.
+ */
+export function canSeeThread(
+  principal: Principal,
+  thread: { ownerId?: string | null; category?: string | null },
+): boolean {
+  if (thread.category === 'PERSONAL') return principal.isCeo || thread.ownerId === principal.id;
+  if (can(principal, 'view:all_business')) return true;
+  return thread.ownerId == null || thread.ownerId === principal.id;
+}
+
+/**
  * An agent acting for a user gets that user's permissions and no more. There is
  * no service account that can read everything.
  */
