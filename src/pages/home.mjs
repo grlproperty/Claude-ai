@@ -38,9 +38,12 @@ export function renderHome({ site, notes, data }) {
     ['Certification Decoder', '/tools/certifications/', `${data.certifications.schemes.length} schemes. Who runs a label, what it verifies, and what it does not.`],
     ['Greenwashing Decoder', '/tools/greenwashing/', `${data.greenwashing.terms.length} terms. What brands claim, and what the words actually mean.`],
     ['Material Decoder', '/tools/materials/', `${data.materials.materials.length} materials. What a fibre or leather is, and what it costs an animal or the planet.`],
+    // The reading list sat in this row as a sixth card. It is a shelf, not an
+    // instrument, and it was holding the place of the one tool on the site a
+    // reader can put their own shopping through.
+    ['Ingredient Decoder', '/tools/ingredients/', `${data.ingredients.ingredients.length} substances. Paste an ingredients list and read back what each one is, and whether an animal paid for it.`],
     ['Record Checker', '/tools/record/', `${data.record.findings.length} documented findings — regulatory actions, rulings, and formal findings, each with a named source.`],
     ['Where to Act', '/tools/act/', `${data.act.organisations.length} established organisations, filterable by the subject they work on.`],
-    ['The Reading List', '/library/', `${data.library.entries.length} investigations and databases worth your time, each linked to the original.`],
   ];
 
   const body = `
@@ -84,7 +87,7 @@ export function renderHome({ site, notes, data }) {
 
     ${
       hero
-        ? `<figure class="hero__plate${hero.cutout ? ' hero__plate--cutout' : ''}">
+        ? `<figure class="hero__plate reveal reveal--wipe${hero.cutout ? ' hero__plate--cutout' : ''}">
       <span class="hero__frame"><img data-drift src="${esc(hero.image)}" srcset="${esc(hero.thumb)} 640w, ${esc(hero.image)} 1200w" sizes="(min-width: 60rem) 42vw, (min-width: 34rem) 32rem, 100vw" alt="${esc(
             hero.title
           )}" width="${hero.width ?? 2096}" height="${hero.height ?? 2795}" fetchpriority="high" decoding="async"></span>
@@ -103,6 +106,31 @@ export function renderHome({ site, notes, data }) {
         { figure: String(data.library.entries.length), label: 'Library entries' },
         { figure: String(data.industries.industries.length), label: 'Industries covered' },
       ])}
+      ${
+        // The photograph is taller than four numbers, and the column beside it
+        // ran out two-fifths of the way down. What belongs in the rest is the
+        // thing the plate is one of: the series. The newest three, so the top
+        // of the front page moves whenever the archive does. One link, named
+        // by its text, so a screen reader is not read three captions in a row
+        // on the way to the same page.
+        shots.length >= 3
+          ? `<a class="hero__latest reveal" href="/archive/">
+        <span class="label">Newest in the archive</span>
+        <span class="hero__latest-row">
+          ${shots
+            .slice(0, 3)
+            .map(
+              (post) =>
+                `<span class="hero__latest-shot"><img src="${esc(post.thumb)}" alt="" loading="lazy" decoding="async"${
+                  post.width && post.height ? ` width="${post.width}" height="${post.height}"` : ''
+                }></span>`
+            )
+            .join('')}
+        </span>
+        <span class="arrow">All ${shots.length} frames</span>
+      </a>`
+          : ''
+      }
     </div>
   </div>
 </section>
@@ -170,7 +198,7 @@ ${ticker(
       stamp: `${data.industries.industries.length} industries · open file`,
       split: true,
     })}
-    <div class="grid grid--4">
+    <div class="grid grid--4 grid--ten">
       ${data.industries.industries
         .map(
           (ind) => `<a class="plate tilt reveal" data-pointer-label="Open file" href="/industries/#${esc(slugify(ind.name))}" style="text-decoration:none;color:inherit;display:block;">
@@ -219,7 +247,10 @@ ${
       lede: 'Each image in the series carries a single documented case. The archive files them in full, with the caption and the note behind it.',
       wide: true,
       split: true,
-      stamp: `${data.archive.entries.length} filed`,
+      // The strip under this heading is the frames, so the stamp counts the
+      // frames. It used to carry the number of written entries, a different
+      // collection that happens to live on the same page.
+      stamp: `${shots.length} frames`,
     })}
     <div class="rail" data-rail>
       ${shots
@@ -236,9 +267,9 @@ ${
         )
         .join('')}
     </div>
-    <p style="margin-top:3rem;"><a class="arrow" href="/archive/">The full archive — ${
+    <p style="margin-top:3rem;"><a class="arrow" href="/archive/">The full archive — ${shots.length} frames, ${
       data.archive.entries.length
-    } entries</a></p>
+    } written entries</a></p>
   </div>
 </section>`
     : ''

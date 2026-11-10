@@ -31,7 +31,7 @@ export function renderIndustries({ site, data }) {
             <div class="panel">
               <h3>Standing reference</h3>
               <p class="row__index" style="margin-bottom:.6rem;">${esc(ind.resource.publisher)}</p>
-              <h3 style="font-size:1.25rem;margin-bottom:.75rem;">${typo(ind.resource.title)}</h3>
+              <p class="panel__title">${typo(ind.resource.title)}</p>
               <p>${typo(ind.resource.body)}</p>
               <p style="margin-top:1.25rem;">
                 <a class="arrow" href="${esc(ind.resource.url)}" target="_blank" rel="noopener noreferrer">${esc(ind.resource.label)}</a>

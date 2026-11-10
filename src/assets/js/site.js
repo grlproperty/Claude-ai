@@ -128,7 +128,28 @@
       // Gentler on a narrow screen, where the plate has less room above it
       // before it meets what follows — but present, rather than absent.
       var rate = window.innerWidth >= 1088 ? 0.075 : 0.04;
-      if (y < limit) plate.style.transform = 'translate3d(0,' + (y * rate).toFixed(2) + 'px,0)';
+      if (y >= limit) return;
+
+      // The drift has a ceiling: whatever sits below the plate. Uncapped, the
+      // plate travelled scroll × rate with nothing to stop it, and ran under
+      // the ticker on a desktop and onto the counts on a phone. The room is
+      // measured from where the plate would be at rest — its current box less
+      // the offset already applied — to the first thing beneath it in the
+      // hero, or the hero's own edge, minus the depth of its offset shadow.
+      var applied = parseFloat(plate.getAttribute('data-ty') || '0');
+      var rect = plate.getBoundingClientRect();
+      var rest = rect.bottom - applied;
+      var floor = hero ? hero.getBoundingClientRect().bottom : rest;
+      var kids = plate.parentNode ? plate.parentNode.children : [];
+      for (var i = 0; i < kids.length; i++) {
+        if (kids[i] === plate) continue;
+        var top = kids[i].getBoundingClientRect().top;
+        if (top >= rest - 2 && top < floor) floor = top;
+      }
+      var room = Math.max(0, floor - rest - 20);
+      var ty = Math.min(y * rate, room);
+      plate.setAttribute('data-ty', ty.toFixed(2));
+      plate.style.transform = 'translate3d(0,' + ty.toFixed(2) + 'px,0)';
     };
     window.addEventListener(
       'scroll',
@@ -287,6 +308,30 @@
     });
   }
 
+  // ---- frames that develop -------------------------------------------------
+  // A lazy image arrives all at once: a rectangle of ground becoming a
+  // photograph between one frame and the next. Only an image that has not
+  // loaded yet is marked, so one already in the cache never flashes, and the
+  // mark comes off on error as well as on load so a missing file cannot leave
+  // a hole that stays invisible.
+  function developFrames() {
+    if (reduced) return;
+    var frames = document.querySelectorAll('.shot img, .hero__latest-shot img');
+    Array.prototype.forEach.call(frames, function (img) {
+      if (img.getAttribute('data-developed')) return;
+      img.setAttribute('data-developed', 'true');
+      if (img.complete && img.naturalWidth > 0) return;
+      img.classList.add('is-developing');
+      var settle = function () {
+        img.classList.remove('is-developing');
+        img.removeEventListener('load', settle);
+        img.removeEventListener('error', settle);
+      };
+      img.addEventListener('load', settle);
+      img.addEventListener('error', settle);
+    });
+  }
+
   // ------------------------------------------------ content-scoped
   // Re-runnable. Called once now, and again by the router in the
   // single-file build after it swaps the contents of <main>.
@@ -298,6 +343,7 @@
     }
     collectSpines();
     paintSpine();
+    developFrames();
   // ---- pointer tilt ------------------------------------------------------
   // Cards rotate a few degrees toward the pointer. Capped low deliberately:
   // this is an editorial platform, and a card that swings is a toy.

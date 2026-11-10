@@ -3881,3 +3881,218 @@ code {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================================================================
+   Autumn pass: imagery and movement
+   ========================================================================= */
+
+/* ------------------------------------------------------ a title in a panel
+ *
+ * .panel h3 is the small crimson label at the head of a panel. The industries
+ * page also set each investigation's own title as an h3 inside the same panel,
+ * so the headline of a Sunday Times investigation came out in monospace
+ * capitals at four times the size the rule was written for. A title is not a
+ * label; it gets the face every other title on the site is set in.
+ */
+.panel .panel__title {
+  font-family: var(--editorial);
+  font-size: clamp(1.3rem, 1.1rem + 0.7vw, 1.6rem);
+  font-weight: 600;
+  line-height: 1.18;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink);
+  margin: 0 0 var(--s2);
+  text-wrap: balance;
+}
+
+/* ------------------------------------------------------- ten, in two rows
+ *
+ * Ten cards in four columns is two full rows and two left over. Ten divides
+ * by five and by two, so those are the only counts this grid is allowed.
+ */
+@media (min-width: 980px) {
+  .grid--ten {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1240px) {
+  .grid--ten {
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--s4);
+  }
+
+  .grid--ten .plate {
+    padding: var(--s4);
+  }
+}
+
+/* ------------------------------------------------- newest in the archive
+ *
+ * Three frames under the counts, beside the photograph. One link.
+ */
+.hero__latest {
+  display: block;
+  margin-top: var(--s6);
+  color: inherit;
+  text-decoration: none;
+}
+
+.hero__latest-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s3);
+  margin: var(--s3) 0 var(--s4);
+}
+
+.hero__latest-shot {
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--rule-soft);
+  background: var(--blush-pale);
+  box-shadow: var(--lift-1);
+  transition: box-shadow 0.3s var(--ease), transform 0.3s var(--ease);
+}
+
+.hero__latest-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+/* The three lift one after another, left to right, so the row reads as prints
+   being picked up rather than a banner changing state. */
+.hero__latest:hover .hero__latest-shot,
+.hero__latest:focus-visible .hero__latest-shot {
+  box-shadow: var(--lift-2);
+  transform: translateY(-3px);
+}
+
+.hero__latest-shot:nth-child(2) {
+  transition-delay: 60ms;
+}
+
+.hero__latest-shot:nth-child(3) {
+  transition-delay: 120ms;
+}
+
+.hero__latest:focus-visible {
+  outline: 2px solid var(--crimson);
+  outline-offset: 6px;
+}
+
+/* --------------------------------------------------------- the plate wipe
+ *
+ * The photograph is uncovered from the top edge down instead of fading up
+ * with everything else.
+ *
+ * The class sits on the figure and the clip on the frame inside it, and that
+ * split is load-bearing. An IntersectionObserver measures what is left of an
+ * element after its own clip-path, so a frame clipped to nothing is never
+ * "in view" and the reveal that would unclip it never fires: put both on one
+ * element and the photograph simply does not appear.
+ *
+ * The clip also reaches past the right and bottom edges on purpose. clip-path
+ * cuts the frame's offset shadow along with the frame, and an inset of zero
+ * would leave the plate permanently without it.
+ */
+.js .reveal.reveal--wipe {
+  opacity: 1;
+  transform: none;
+}
+
+.js .reveal--wipe .hero__frame {
+  clip-path: inset(0 -1rem 100% 0);
+  transition: clip-path 1.15s var(--ease-out);
+}
+
+.js .reveal--wipe[data-shown='true'] .hero__frame {
+  clip-path: inset(0 -1rem -1rem 0);
+}
+
+/* --------------------------------------------------- frames that develop
+ *
+ * A lazy image used to arrive all at once, a rectangle of blush becoming a
+ * photograph between one frame and the next. The class is put on by the
+ * script only for an image that has not loaded yet and taken off when it has,
+ * so a cached image never flashes and a page whose script did not run shows
+ * every picture as before.
+ */
+.shot img,
+.hero__latest-shot img {
+  transition: opacity 0.7s var(--ease-out), filter 1.1s var(--ease-out), transform 0.6s var(--ease-out);
+}
+
+img.is-developing {
+  opacity: 0;
+  filter: saturate(0) brightness(1.12);
+}
+
+/* ------------------------------------------------- from page to page
+ *
+ * Every page here is its own document, and going between two of them cut to
+ * white and back. Where the browser can carry a transition across the
+ * navigation, the old page lets go quickly and the new one settles in under a
+ * masthead that stays where it is. Elsewhere nothing changes.
+ */
+@view-transition {
+  navigation: auto;
+}
+
+.masthead {
+  view-transition-name: masthead;
+}
+
+::view-transition-old(root) {
+  animation: 0.16s cubic-bezier(0.22, 0.61, 0.36, 1) both ff-page-out;
+}
+
+::view-transition-new(root) {
+  animation: 0.34s cubic-bezier(0.16, 1, 0.3, 1) both ff-page-in;
+}
+
+@keyframes ff-page-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes ff-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+
+  .js .reveal--wipe .hero__frame {
+    clip-path: none;
+    transition: none;
+  }
+
+  .shot img,
+  .hero__latest-shot img,
+  .hero__latest-shot {
+    transition: none;
+  }
+
+  img.is-developing {
+    opacity: 1;
+    filter: none;
+  }
+}
+
+/* Stacked, the counts come straight after the photograph, and the plate's
+   offset shadow ate most of the row gap between them. */
+@media (max-width: 59.99rem) {
+  .hero__stats {
+    margin-top: var(--s4);
+  }
+}
