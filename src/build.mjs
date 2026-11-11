@@ -297,11 +297,9 @@ async function main() {
   // and the figure is put there — or nothing is, if there is no photograph.
   const founder = await buildFounderImage({ dist: DIST, dir: join(CONTENT, 'images') });
   const founderFigure = founder
-    ? `<figure class="founder"><img src="${founder.image}" srcset="${founder.thumb} 640w, ${founder.image} 1200w" sizes="11rem" alt="${esc(
+    ? `<figure class="founder"><img src="${founder.image}" srcset="${founder.thumb} 640w, ${founder.image} 1200w" sizes="9rem" alt="${esc(
         site.founder.name
-      )}, founder of ${esc(site.name)}" width="${founder.width}" height="${founder.height}" loading="lazy" decoding="async"><figcaption>${esc(
-        site.founder.name
-      )}</figcaption></figure>`
+      )}, founder of ${esc(site.name)}" width="${founder.width}" height="${founder.height}" loading="lazy" decoding="async"></figure>`
     : '';
   for (const page of pages) {
     page.html = page.html.replace(/<p>\[\[founder-photo\]\]<\/p>/g, founderFigure);

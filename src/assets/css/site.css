@@ -4652,13 +4652,15 @@ img.is-developing {
 
 /* -------------------------------------------------------- THE FOUNDER'S NOTE
 
-   A photograph beside a note written in the first person. Floated, so the
-   note runs round it the way a letter runs round a portrait, and stacked on a
-   phone where there is no room to run round anything. */
+   A portrait beside a note written in the first person. The figure is cut
+   out, with no ground of its own, so it stands on the page's colour rather
+   than in a box on top of it; a rule under it gives the bust something to
+   rest on. Floated, so the note runs round it, and stacked on a phone where
+   there is no room to run round anything. */
 
 .prose .founder {
   float: left;
-  width: min(11rem, 38%);
+  width: min(9rem, 34%);
   margin: 0.35rem var(--s4) var(--s2) 0;
 }
 
@@ -4666,8 +4668,7 @@ img.is-developing {
   display: block;
   width: 100%;
   height: auto;
-  border: 1px solid var(--rule-soft);
-  box-shadow: var(--lift-1);
+  border-bottom: 1px solid var(--ink);
 }
 
 .prose .founder figcaption {
@@ -4676,7 +4677,7 @@ img.is-developing {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-muted);
-  margin-top: var(--s3);
+  margin-top: var(--s2);
 }
 
 .prose .founder-sign {
@@ -4702,7 +4703,7 @@ img.is-developing {
 @media (max-width: 34rem) {
   .prose .founder {
     float: none;
-    width: 9.5rem;
+    width: 8rem;
     margin: 0 0 var(--s4);
   }
 }
