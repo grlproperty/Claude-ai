@@ -101,14 +101,25 @@ const wrapItem = (id, category, text, inner) =>
 // ------------------------------------------------------------------- index
 
 export function renderToolsIndex({ site, data, covers = {} }) {
+  // Two shelves. The first four take something of the reader's own — a label,
+  // a page of copy, a guess, a question. The rest are files to look things up
+  // in. They were one undifferentiated grid, which put the one thing a visitor
+  // can do in the same row as six things a visitor can read.
+  const instruments = [
+    ['01', 'Label Scanner', '/tools/scan/', 'Start here', 'Type, paste or photograph a product label. Read back what comes from an animal, which words are selling, and what each certification does not cover.'],
+    ['02', 'Spot the Greenwash', '/tools/spot/', 'Two minutes', 'Ten claims off the kind of packaging you buy every week. Which ones tell you anything? With a score card to share.'],
+    ['03', 'Message Builder', '/tools/ask/', 'Ask the brand', 'A short, polite message asking a brand what evidence is behind a claim, written for you and sent from your own email.'],
+    ['04', 'Claim Checker', '/tools/claims/', 'For brands', `Paste your own copy before it ships. See which of ${data.greenwashing.terms.length} terms it uses, and what to have ready for each.`],
+  ];
+
   const tools = [
-    ['01', 'Certification Decoder', '/tools/certifications/', 'Cross-industry literacy', `Who runs a label, what it verifies, and what it does not. ${data.certifications.schemes.length} schemes.`],
-    ['02', 'Greenwashing Decoder', '/tools/greenwashing/', 'Cross-industry literacy', `What brands claim, and what the term actually means. ${data.greenwashing.terms.length} terms.`],
-    ['03', 'Material Decoder', '/tools/materials/', 'Fashion & home', `What a fibre, leather, filling, or fabric really is — and what it costs. ${data.materials.materials.length} materials.`],
-    ['04', 'Ingredient Decoder', '/tools/ingredients/', 'Beauty & home', `Paste an ingredients list and read back what each substance is, and what it cost. ${data.ingredients.ingredients.length} entries.`],
-    ['05', 'Record Checker', '/tools/record/', 'Corporate accountability', `Documented regulatory actions, rulings, and findings, each tied to a named public source. ${data.record.findings.length} entries.`],
-    ['06', 'Where to Act', '/tools/act/', 'Take action', `Established organisations working on the two subjects we hold at equal weight. ${data.act.organisations.length} listed.`],
-    ['07', 'The Reading List', '/library/', 'Research', `The investigations and databases the field notes are built from. ${data.library.entries.length} entries.`],
+    ['05', 'Certification Decoder', '/tools/certifications/', 'Cross-industry literacy', `Who runs a label, what it verifies, and what it does not. ${data.certifications.schemes.length} schemes.`],
+    ['06', 'Greenwashing Decoder', '/tools/greenwashing/', 'Cross-industry literacy', `What brands claim, and what the term actually means. ${data.greenwashing.terms.length} terms.`],
+    ['07', 'Material Decoder', '/tools/materials/', 'Fashion & home', `What a fibre, leather, filling, or fabric really is — and what it costs. ${data.materials.materials.length} materials.`],
+    ['08', 'Ingredient Decoder', '/tools/ingredients/', 'Beauty & home', `Paste an ingredients list and read back what each substance is, and what it cost. ${data.ingredients.ingredients.length} entries.`],
+    ['09', 'Record Checker', '/tools/record/', 'Corporate accountability', `Documented regulatory actions, rulings, and findings, each tied to a named public source. ${data.record.findings.length} entries.`],
+    ['10', 'Where to Act', '/tools/act/', 'Take action', `Established organisations working on the two subjects we hold at equal weight. ${data.act.organisations.length} listed.`],
+    ['11', 'The Reading List', '/library/', 'Research', `The investigations and databases the field notes are built from. ${data.library.entries.length} entries.`],
   ];
 
   const body = `
@@ -117,19 +128,35 @@ export function renderToolsIndex({ site, data, covers = {} }) {
     ${sectionHead({
       eyebrow: 'Free tools',
       title: 'Awareness, made usable',
-      stamp: `${tools.length} tools \u00b7 all free`,
+      stamp: `${instruments.length + tools.length} tools \u00b7 all free`,
       lede: 'Reading is the first step; these are the second. Every tool is free — no account, no sign-up, no payment — and every entry names the source it rests on.',
       wide: true,
       level: 1,
     })}
 
+    <h2 class="tools-shelf">Put something through it</h2>
+    <div class="grid grid--2 tools-instruments">
+      ${instruments
+        .map(
+          ([n, name, href, cat, text]) => `<a class="plate plate--instrument tilt reveal" href="${esc(href)}" style="text-decoration:none;color:inherit;display:block;">
+            <div class="plate__number display">${n}</div>
+            <p class="row__index" style="margin-bottom:.5rem;">${esc(cat)}</p>
+            <h3 class="plate__name">${esc(name)}</h3>
+            <p style="font-size:.9375rem;line-height:1.6;color:var(--ink-muted);margin:0 0 1.25rem;">${typo(text)}</p>
+            <span class="arrow">Open</span>
+          </a>`
+        )
+        .join('')}
+    </div>
+
+    <h2 class="tools-shelf">Look something up</h2>
     <div class="grid grid--3">
       ${tools
         .map(
           ([n, name, href, cat, text]) => `<a class="plate tilt reveal" href="${esc(href)}" style="text-decoration:none;color:inherit;display:block;">
             <div class="plate__number display">${n}</div>
             <p class="row__index" style="margin-bottom:.5rem;">${esc(cat)}</p>
-            <h2 class="plate__name">${esc(name)}</h2>
+            <h3 class="plate__name">${esc(name)}</h3>
             <p style="font-size:.8125rem;line-height:1.65;color:var(--ink-muted);margin:0 0 1.25rem;">${typo(text)}</p>
             <span class="arrow">Open</span>
           </a>`
@@ -154,7 +181,7 @@ ${supportBanner(site)}
     site,
     title: 'Free Tools',
     description:
-      'Six free reference tools: the Certification, Greenwashing, and Material decoders, the Record Checker, the Where to Act directory, and the Reading List.',
+      'Eleven free tools: a label scanner that reads a product by text or photograph, a greenwashing quiz, a message builder, a claim checker for brands, and seven reference files.',
     path: '/tools/',
     body,
   });

@@ -34,6 +34,8 @@ import { buildTermIndex, crosslink } from './lib/crosslink.mjs';
 import { renderPage, renderNotFound, renderRedirect } from './pages/simple.mjs';
 import { renderFindUs } from './pages/find-us.mjs';
 import { renderShop } from './pages/shop.mjs';
+import { renderScan, renderClaims, renderSpot, renderAsk } from './pages/lab.mjs';
+import { buildLexicon, lexiconScript } from './lib/lexicon.mjs';
 import { buildOgImages, buildBrandAssets, buildHeroImage, buildCovers, buildProductJackets } from './lib/images.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -265,6 +267,15 @@ async function main() {
   await cp(ASSETS, join(DIST, 'assets'), { recursive: true });
   if (existsSync(PUBLIC)) await cp(PUBLIC, DIST, { recursive: true });
   await buildBrandAssets({ dist: DIST, site });
+
+  // What the interactive tools read. It is the four decoder datasets and the
+  // claim tests, written out once as a script, so the scanner can only ever
+  // say what a decoder page already says.
+  const { tests } = await readJson(join(ROOT, 'products/copy.json'));
+  await writeFile(
+    join(DIST, 'assets/js/lexicon.js'),
+    lexiconScript(buildLexicon({ ...data, tests }))
+  );
   // The hero photograph, if one has been put in content/images/. Everything
   // else on the page comes from the Instagram pull, and the frames there carry
   // a burnt-in wordmark that a page already headed FERAL FEMME does not need a
@@ -313,6 +324,17 @@ async function main() {
   for (const [path, render, dataset] of tools) {
     await writePage(path, render({ site, data: dataset, covers: data.covers }));
     track(path, { priority: '0.8', lastmod: dataset.reviewed });
+  }
+
+  // The four tools a reader puts something of their own through.
+  for (const [path, render] of [
+    ['/tools/scan/', renderScan],
+    ['/tools/claims/', renderClaims],
+    ['/tools/spot/', renderSpot],
+    ['/tools/ask/', renderAsk],
+  ]) {
+    await writePage(path, render({ site, data, covers: data.covers }));
+    track(path, { priority: '0.9' });
   }
 
   // A page per catalogued entry, sitting under its decoder. These are the
@@ -411,6 +433,10 @@ async function main() {
   const index = [
     ...notes.map((e) => ({ t: e.title, u: e.url, s: e.summary, k: 'Field note', c: e.topic ?? '', b: e.text.slice(0, 1200) })),
     ...pages.map((e) => ({ t: e.title, u: e.url, s: e.summary, k: 'Page', c: '', b: e.text.slice(0, 600) })),
+    { t: 'Label Scanner', u: '/tools/scan/', s: 'Paste or photograph a product label and read back what it says.', k: 'Tool', c: '', b: 'scan label ingredients fabric certification photograph camera check product' },
+    { t: 'Claim Checker', u: '/tools/claims/', s: 'Paste marketing copy and see which claims it makes and what each calls for.', k: 'Tool', c: '', b: 'brand copy claims substantiation evidence greenwashing checker' },
+    { t: 'Spot the Greenwash', u: '/tools/spot/', s: 'Ten packaging claims: which ones tell you anything?', k: 'Tool', c: '', b: 'quiz game greenwash labels score' },
+    { t: 'Message Builder', u: '/tools/ask/', s: 'Write a short message asking a brand for its evidence.', k: 'Tool', c: '', b: 'email letter template ask brand question evidence ingredient animal testing' },
     ...data.certifications.schemes.map((x) => ({ t: x.name, u: `/tools/certifications/${slugify(x.name)}/`, s: x.verifies, k: 'Certification', c: x.cat, b: `${x.verifies} ${x.notguarantee}` })),
     ...data.greenwashing.terms.map((x) => ({ t: x.term, u: `/tools/greenwashing/${slugify(x.term)}/`, s: x.actual, k: 'Greenwashing', c: x.cat, b: `${x.claim} ${x.actual}` })),
     ...data.materials.materials.map((x) => ({ t: x.name, u: `/tools/materials/${slugify(x.name)}/`, s: x.what, k: 'Material', c: x.cat, b: `${x.what} ${x.welfare} ${x.environment}` })),

@@ -4,7 +4,7 @@ summary: What this site collects, which is close to nothing, and how that sits w
 order: 5
 ---
 
-*Last updated: 12 September 2026*
+*Last updated: 11 November 2026*
 
 FERAL FEMME is a South African publication and processes personal information in line with the **Protection of Personal Information Act 4 of 2013 (POPIA)**. It has no premises: it is written from wherever the editor is, and the address below reaches her wherever that is.
 
@@ -21,6 +21,8 @@ FERAL FEMME is published by **Ayden Rosemary Brown**, who trades under that name
 **No third-party fonts.** Bodoni Moda, Cormorant Garamond, and Jost are served from this domain. Requesting a font from a third party would disclose your IP address and the page you are reading to that provider on every visit.
 
 **No third-party scripts, embeds, or trackers.** No social widgets, no embedded players, no tag managers, no advertising pixels. Every asset on every page is served from this domain.
+
+**The tools read what you give them on your own device.** The label scanner, the claim checker, the quiz and the message builder run entirely in your browser. What you type is not sent anywhere and is not stored. A photograph of a label is read on your device, by a text-recognition library served from this domain like every other file here; the photograph is never uploaded. The message builder writes a message and hands it to your own email program. Nothing is sent from this site, and we never see it.
 
 **No profiling**, no cross-site tracking, and no personal information sold or shared with anyone.
 

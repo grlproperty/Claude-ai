@@ -8,6 +8,7 @@ import {
   ticker,
   shelf,
 } from '../templates/components.mjs';
+import { scannerPanel, LAB_SCRIPTS } from './lab.mjs';
 import { esc, typo, slugify } from '../lib/util.mjs';
 
 const SPELLED = ['zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
@@ -35,6 +36,9 @@ export function renderHome({ site, notes, data }) {
   // existed — an unsourced number on the front page of a publication whose
   // whole argument is that a claim should be checkable against its source.
   const tools = [
+    ['Spot the Greenwash', '/tools/spot/', 'Ten claims off the kind of packaging you buy every week. Which ones tell you anything? Two minutes, with a score card to share.'],
+    ['Message Builder', '/tools/ask/', 'A short, polite message asking a brand what evidence is behind a claim. Written for you, sent from your own email.'],
+    ['Claim Checker', '/tools/claims/', `For brands. Paste your own copy and see which of ${data.greenwashing.terms.length} terms it uses, and what to have ready for each.`],
     ['Certification Decoder', '/tools/certifications/', `${data.certifications.schemes.length} schemes. Who runs a label, what it verifies, and what it does not.`],
     ['Greenwashing Decoder', '/tools/greenwashing/', `${data.greenwashing.terms.length} terms. What brands claim, and what the words actually mean.`],
     ['Material Decoder', '/tools/materials/', `${data.materials.materials.length} materials. What a fibre or leather is, and what it costs an animal or the planet.`],
@@ -213,13 +217,26 @@ ${ticker(
   </div>
 </section>
 
+<section class="section on-white" id="scan">
+  <div class="wrap">
+    ${sectionHead({
+      eyebrow: 'Try it now',
+      title: 'What does the label actually say?',
+      lede: 'Type, paste or photograph anything printed on a product. This reads it back: what comes from an animal, which words are doing the selling, and what each certification on it does not cover.',
+      stamp: 'Free \u00b7 nothing leaves this page',
+    })}
+    ${scannerPanel({ mode: 'reader', h: 'h3' })}
+    <p style="margin-top:var(--s5);"><a class="arrow" href="/tools/scan/">The scanner on its own page, and what it reads from</a></p>
+  </div>
+</section>
+
 <section class="section" id="tools">
   <div class="wrap">
     ${sectionHead({
       eyebrow: 'Free tools',
       title: 'Awareness, made usable',
-      lede: `${SPELLED[tools.length] ?? tools.length} interactive tools that turn reading into practice. All free — no account, no sign-up, no payment.`,
-      stamp: `${tools.length} tools \u00b7 no account, no payment`,
+      lede: `The scanner above is one of ${(SPELLED[tools.length + 1] ?? String(tools.length + 1)).toLowerCase()}. These are the others — three more to put something through, and six files to look things up in. All free: no account, no sign-up, no payment.`,
+      stamp: `${tools.length + 1} tools \u00b7 no account, no payment`,
     })}
     <div class="grid grid--3">
       ${tools
@@ -304,6 +321,6 @@ ${supportBanner(site)}
     // The mesh first: cage.js reads it at module scope, and a deferred script
     // that arrives second would find nothing there. Both are deferred, and
     // deferred scripts run in document order, so ordering them here is enough.
-    scripts: ['/assets/js/cage-mesh.js', '/assets/js/cage.js'],
+    scripts: ['/assets/js/cage-mesh.js', '/assets/js/cage.js', ...LAB_SCRIPTS],
   });
 }

@@ -122,7 +122,8 @@ async function main() {
   const css = await readFile(join(DIST, 'assets/css/site.css'), 'utf8');
   const js = [];
   // cage-mesh.js declares the model cage.js reads, so it has to come first.
-  for (const f of ['site.js', 'filter.js', 'inci.js', 'cage-mesh.js', 'cage.js'])
+  // lexicon.js sets the global lab.js reads, so it comes first of the two.
+  for (const f of ['site.js', 'filter.js', 'inci.js', 'lexicon.js', 'lab.js', 'cage-mesh.js', 'cage.js'])
     js.push(await readFile(join(DIST, 'assets/js', f), 'utf8'));
 
   // Images are re-encoded down: at a data URI every byte is paid for on the
@@ -361,7 +362,11 @@ ${favicon}<link rel="manifest" href="/site.webmanifest">
 
   function paint(path) {
     var t = views[path];
-    main.innerHTML = t ? t.textContent.replace(/<\\\/script/gi, '</script') : miss;
+    // The pages are stored with their own closing script tags written as
+    // <\\/script, so they can sit inside one. Put the real tag back. (The
+    // pattern here used to match the unescaped form, which is never there, and
+    // nothing noticed until a page carried a data block of its own.)
+    main.innerHTML = t ? t.textContent.replace(/<\\\\\\/script/gi, '<' + '/script') : miss;
     document.title = t ? t.getAttribute('data-title') : 'Page not found';
     // The masthead sits outside <main>, so it survives the swap — including
     // the mobile menu's open state. Closing the panel without also resetting
@@ -381,6 +386,7 @@ ${favicon}<link rel="manifest" href="/site.webmanifest">
       if (FF.initContent) FF.initContent();
       if (FF.initFilters) FF.initFilters();
       if (FF.initInci) FF.initInci();
+      if (FF.initLab) FF.initLab();
       if (FF.initCage) FF.initCage();
       // The currency selector is inside <main>, so a swap replaces it with a
       // fresh, unpopulated one — and the reader's chosen currency has to be
@@ -543,7 +549,7 @@ ${favicon}<link rel="manifest" href="/site.webmanifest">
   await mkdir(OUT, { recursive: true });
   // The image payload sits last, after the routes: nothing before it waits on
   // it, and the parser reaches the first screen without walking through it.
-  const doc = `<!doctype html>\n<html lang="en">\n<head>\n${head}\n</head>\n<body>\n${shellBody}\n<script>${imageMap}\n${js.join(
+  const doc = `<!doctype html>\n<html lang="en" data-single>\n<head>\n${head}\n</head>\n<body>\n${shellBody}\n<script>${imageMap}\n${js.join(
     '\n;\n'
   )}\n${router}\n${lateFonts}\n</script>\n${views}\n<script type="application/json" id="ff-img">${imageJson}</script>\n</body>\n</html>\n`;
   await writeFile(join(OUT, 'index.html'), doc);
@@ -575,6 +581,17 @@ ${favicon}<link rel="manifest" href="/site.webmanifest">
       await writeFile(join(OUT, 'downloads', name), await readFile(join(DOWNLOADS_DIR, name)));
       copied.push('downloads/' + name);
     }
+  }
+
+  // The photograph reader. Eleven megabytes that only load when somebody
+  // presses the camera button, so they sit beside the document, never in it.
+  const OCR_DIR = join(DIST, 'vendor/ocr');
+  if (existsSync(OCR_DIR)) {
+    await mkdir(join(OUT, 'vendor/ocr'), { recursive: true });
+    for (const name of await readdir(OCR_DIR)) {
+      await writeFile(join(OUT, 'vendor/ocr', name), await readFile(join(OCR_DIR, name)));
+    }
+    copied.push('vendor/ocr/');
   }
 
   // dist/robots.txt points at a sitemap this build does not produce, and a
