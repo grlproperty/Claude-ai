@@ -8,6 +8,20 @@ Most industries solve a problem someone already has. Several of the ones documen
 
 That is the whole remit. We investigate every industry built on a body that could not agree to it, and we hold animals and women at equal weight. Neither is a metaphor for the other. Both are literal.
 
+## A note from the founder
+
+[[founder-photo]]
+
+I started FERAL FEMME because I care about women. I care about animals too, and I got tired of watching the same industries use both, under gentler names.
+
+Most of the cruelty I write about is legal, ordinary and beautifully packaged. It is on the shelf, in the wardrobe and in the advert, and nobody tells you. So I read the investigations, the rulings and the small print, and I write down what they actually say, in plain words, with the source beside every claim, so you never have to take my word for it.
+
+I am not here to make you feel guilty. I am here to show you what is behind the label, so that the choice is finally yours. When enough of us can see it, it gets harder to sell. That is how it changes.
+
+Everything here is free to read, and it will stay that way. If it helps you, pass it on to a woman you love.
+
+<p class="founder-sign">Ayden Rosemary Brown<br><span>Founder, FERAL FEMME</span></p>
+
 ## What we publish
 
 **Field notes** — investigations that already exist in the public record, read in full, reframed, and connected to the pattern of the industry they document. The original publisher always gets the credit.
@@ -16,7 +30,9 @@ That is the whole remit. We investigate every industry built on a body that coul
 
 **The reading list** — the investigations, databases, and reports the notes are built from, every one public and linked to its original.
 
-**Free tools** — the Certification, Greenwashing, and Material decoders, the Record Checker, and the Where to Act directory. No account, no sign-up, no payment.
+**Free tools** — a label scanner you can type or photograph a product into, a quiz, a message builder and a claim checker, with the decoders, the Record Checker and the Where to Act directory behind them. No account, no sign-up, no payment.
+
+**Free guides** — four printable references to [download](/shop/): the label words, the certification marks, the ingredients and the fabrics.
 
 ## The cruelty is rarely called cruelty
 

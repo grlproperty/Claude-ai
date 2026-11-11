@@ -242,6 +242,36 @@ export async function buildOgImages({ dist, site, entries }) {
  * palette; a hero chosen by hand has already been graded by the person who
  * chose it, and putting it through that a second time flattens it.
  */
+/**
+ * The founder's photograph, for the note on the About page.
+ *
+ * Dropped in content/images/ as founder.jpg (or .png / .webp) and emitted at
+ * two widths. If the file is not there the note simply runs without a picture,
+ * so removing the photograph is deleting one file.
+ */
+export async function buildFounderImage({ dist, dir }) {
+  if (!existsSync(dir)) return null;
+  const named = (await readdir(dir)).filter((f) => /^founder\.(jpe?g|png|webp)$/i.test(f));
+  if (!named.length) return null;
+  const src = join(dir, named[0]);
+  const meta = await sharp(src).metadata();
+  const out = join(dist, 'assets/img');
+  await mkdir(out, { recursive: true });
+  for (const width of [640, 1200]) {
+    await sharp(src)
+      .resize({ width, withoutEnlargement: true })
+      .webp({ quality: 84, effort: 5 })
+      .toFile(join(out, `founder-${width}.webp`));
+  }
+  console.log(`  Founder photograph: ${named[0]} (${meta.width}x${meta.height})`);
+  return {
+    thumb: '/assets/img/founder-640.webp',
+    image: '/assets/img/founder-1200.webp',
+    width: meta.width ?? null,
+    height: meta.height ?? null,
+  };
+}
+
 export async function buildHeroImage({ dist, dir }) {
   if (!existsSync(dir)) return null;
   const named = (await readdir(dir)).filter((f) => /^hero\.(jpe?g|png|webp)$/i.test(f));

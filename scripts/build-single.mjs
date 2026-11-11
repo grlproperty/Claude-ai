@@ -173,6 +173,10 @@ async function main() {
   if (existsSync(join(DIST, 'assets/img/hero-640.webp'))) {
     await inline(join(DIST, 'assets/img'), '/assets/img/', 'hero-640.webp', 880, 76);
   }
+  // The founder's photograph on the About page, for the same reason.
+  if (existsSync(join(DIST, 'assets/img/founder-640.webp'))) {
+    await inline(join(DIST, 'assets/img'), '/assets/img/', 'founder-640.webp', 640, 76);
+  }
 
   // The free PDFs.
   //

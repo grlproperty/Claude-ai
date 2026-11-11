@@ -36,7 +36,14 @@ import { renderFindUs } from './pages/find-us.mjs';
 import { renderShop } from './pages/shop.mjs';
 import { renderScan, renderClaims, renderSpot, renderAsk } from './pages/lab.mjs';
 import { buildLexicon, lexiconScript } from './lib/lexicon.mjs';
-import { buildOgImages, buildBrandAssets, buildHeroImage, buildCovers, buildProductJackets } from './lib/images.mjs';
+import {
+  buildOgImages,
+  buildBrandAssets,
+  buildHeroImage,
+  buildFounderImage,
+  buildCovers,
+  buildProductJackets,
+} from './lib/images.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const CONTENT = join(ROOT, 'content');
@@ -284,6 +291,21 @@ async function main() {
   // After dist is emptied and the static assets are in, or its output is one
   // of the things the wipe takes with it.
   data.hero = await buildHeroImage({ dist: DIST, dir: join(CONTENT, 'images') });
+
+  // The founder's note on the About page carries a photograph. A page written
+  // in Markdown marks the place with [[founder-photo]] on a line of its own,
+  // and the figure is put there — or nothing is, if there is no photograph.
+  const founder = await buildFounderImage({ dist: DIST, dir: join(CONTENT, 'images') });
+  const founderFigure = founder
+    ? `<figure class="founder"><img src="${founder.image}" srcset="${founder.thumb} 640w, ${founder.image} 1200w" sizes="(min-width: 40rem) 17rem, 100vw" alt="${esc(
+        site.founder.name
+      )}, founder of ${esc(site.name)}" width="${founder.width}" height="${founder.height}" loading="lazy" decoding="async"><figcaption>${esc(
+        site.founder.name
+      )}</figcaption></figure>`
+    : '';
+  for (const page of pages) {
+    page.html = page.html.replace(/<p>\[\[founder-photo\]\]<\/p>/g, founderFigure);
+  }
   data.covers = await buildCovers({ dist: DIST, dir: join(CONTENT, 'images/covers') });
   // Anything still without a cover gets a typeset jacket, so the shelf never
   // draws a placeholder where a volume should be.
