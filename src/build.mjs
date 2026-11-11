@@ -297,7 +297,7 @@ async function main() {
   // and the figure is put there — or nothing is, if there is no photograph.
   const founder = await buildFounderImage({ dist: DIST, dir: join(CONTENT, 'images') });
   const founderFigure = founder
-    ? `<figure class="founder"><img src="${founder.image}" srcset="${founder.thumb} 640w, ${founder.image} 1200w" sizes="(min-width: 40rem) 17rem, 100vw" alt="${esc(
+    ? `<figure class="founder"><img src="${founder.image}" srcset="${founder.thumb} 640w, ${founder.image} 1200w" sizes="11rem" alt="${esc(
         site.founder.name
       )}, founder of ${esc(site.name)}" width="${founder.width}" height="${founder.height}" loading="lazy" decoding="async"><figcaption>${esc(
         site.founder.name

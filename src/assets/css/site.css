@@ -4658,8 +4658,8 @@ img.is-developing {
 
 .prose .founder {
   float: left;
-  width: min(17rem, 44%);
-  margin: 0.35rem var(--s5) var(--s3) 0;
+  width: min(11rem, 38%);
+  margin: 0.35rem var(--s4) var(--s2) 0;
 }
 
 .prose .founder img {
@@ -4667,7 +4667,7 @@ img.is-developing {
   width: 100%;
   height: auto;
   border: 1px solid var(--rule-soft);
-  box-shadow: var(--lift-2);
+  box-shadow: var(--lift-1);
 }
 
 .prose .founder figcaption {
@@ -4702,8 +4702,7 @@ img.is-developing {
 @media (max-width: 34rem) {
   .prose .founder {
     float: none;
-    width: 100%;
-    max-width: 22rem;
+    width: 9.5rem;
     margin: 0 0 var(--s4);
   }
 }
