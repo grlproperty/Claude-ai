@@ -332,6 +332,60 @@ export function shelf(site, covers = {}, { tier = 'all', limit = 3, heading = tr
   </section>`;
 }
 
+/**
+ * The free shelf: the four references, where a first-time visitor will see
+ * them.
+ *
+ * The front page showed the four documents that cost money and said nothing
+ * about the four that do not. A stranger is not going to pay thirty dollars to
+ * a site they met a minute ago; they may well take a free guide, read it, and
+ * come back. So the free ones are the offer the front page makes, and each
+ * cover is the download itself rather than a link to a page with a button on
+ * it. The size is printed because a link that saves a file should say how big
+ * the file is.
+ */
+export function freeShelf(site, covers = {}, { id = 'free' } = {}) {
+  const free = site.shop?.free ?? [];
+  if (!free.length) return '';
+  const slugOf = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const kb = (bytes) => `${Math.round(Number(bytes) / 1024)} KB`;
+  const count = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six'][free.length] ?? String(free.length);
+
+  const items = free
+    .map((f) => {
+      const c = covers[slugOf(f.name)];
+      return `<li class="shelf__item shelf__item--free">
+        <a class="shelf__link" href="${esc(f.file)}" download="${esc(f.file.split('/').pop())}" data-pointer-label="Download">
+          ${
+            c
+              ? `<span class="shelf__cover"><img src="${esc(c.thumb)}" alt="" loading="lazy" decoding="async" width="${
+                  c.width ?? 911
+                }" height="${c.height ?? 1287}"></span>`
+              : '<span class="shelf__cover shelf__cover--blank" aria-hidden="true"></span>'
+          }
+          <span class="shelf__name">${esc(f.name)}</span>
+          <span class="shelf__price">Free</span>
+          <span class="shelf__what">${typo(f.summary)}</span>
+          <span class="shelf__get">Download the PDF <span class="shelf__size">${f.pages} pages \u00b7 ${kb(f.bytes)}</span></span>
+        </a>
+      </li>`;
+    })
+    .join('');
+
+  return `<section class="section on-white" id="${esc(id)}">
+    <div class="wrap">
+      ${sectionHead({
+        eyebrow: 'Free to download',
+        title: `${count} guides to print and keep`,
+        lede: 'The whole reference, in a form you can take into a shop: every label word, every certification mark, every ingredient and every fabric this site holds. No email, no account, no payment. The link is the file.',
+        stamp: `${free.length} PDFs \u00b7 free \u00b7 nothing asked for`,
+      })}
+      <ul class="shelf shelf--free">${items}</ul>
+      <p class="shelf__more"><a class="arrow" href="/shop/">What is in each, and the four workbooks that put them to work</a></p>
+    </div>
+  </section>`;
+}
+
 export function supportBanner(site) {
   return `<section class="section on-crimson">
     <div class="wrap">

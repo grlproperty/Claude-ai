@@ -217,6 +217,12 @@ async function main() {
     return imageIds.get(uri);
   };
 
+  const fileIds = new Map();
+  const fileFor = (path) => {
+    if (!fileIds.has(path)) fileIds.set(path, `f${fileIds.size}`);
+    return fileIds.get(path);
+  };
+
   const inlineImages = (html) =>
     html
       .replace(/srcset="[^"]*"/g, '')
@@ -226,7 +232,10 @@ async function main() {
       )
       // Before rewrite() runs, which only looks at hrefs beginning with "/".
       // Once this is a data: URI it is no longer a candidate for routing.
-      .replace(/href="(\/downloads\/[^"]+)"/g, (m, p) => (pdfs.has(p) ? `href="${pdfs.get(p)}"` : m));
+      // A download is carried once, like an image, and given its address when
+      // the page is painted. Written into every link it was three megabytes
+      // for each page that offers the guides, and two pages do.
+      .replace(/href="(\/downloads\/[^"]+)"/g, (m, p) => (pdfs.has(p) ? `data-file="${fileFor(p)}"` : m));
 
   /**
    * Internal links become routes.
@@ -539,19 +548,28 @@ ${favicon}<link rel="manifest" href="/site.webmanifest">
     `(function(){var MAP=null;` +
     `function map(){if(!MAP){var el=document.getElementById('ff-img');MAP=el?JSON.parse(el.textContent):{};}return MAP;}` +
     `function paint(root){var n=(root||document).querySelectorAll('img[data-img]');` +
-    `if(!n.length)return;var m=map();` +
+    `if(!n.length){files(root);return;}var m=map();` +
     `for(var i=0;i<n.length;i++){var s=m[n[i].getAttribute('data-img')];` +
-    `if(s){n[i].src=s;n[i].removeAttribute('data-img');}}}` +
+    `if(s){n[i].src=s;n[i].removeAttribute('data-img');}}files(root);}` +
+    `var FILES=null;function files(root){var a=(root||document).querySelectorAll('a[data-file]');if(!a.length)return;` +
+    `if(!FILES){var el=document.getElementById('ff-file');FILES=el?JSON.parse(el.textContent):{};}` +
+    `for(var i=0;i<a.length;i++){var u=FILES[a[i].getAttribute('data-file')];if(u){a[i].href=u;a[i].removeAttribute('data-file');}}}` +
     `window.FF=window.FF||{};window.FF.paintImages=paint;` +
     `if(document.readyState!=='loading')paint();` +
     `else document.addEventListener('DOMContentLoaded',function(){paint();});})();`;
+
+  const fileJson = fileIds.size
+    ? `\n<script type="application/json" id="ff-file">${JSON.stringify(
+        Object.fromEntries([...fileIds].map(([path, id]) => [id, pdfs.get(path)]))
+      )}</script>`
+    : '';
 
   await mkdir(OUT, { recursive: true });
   // The image payload sits last, after the routes: nothing before it waits on
   // it, and the parser reaches the first screen without walking through it.
   const doc = `<!doctype html>\n<html lang="en" data-single>\n<head>\n${head}\n</head>\n<body>\n${shellBody}\n<script>${imageMap}\n${js.join(
     '\n;\n'
-  )}\n${router}\n${lateFonts}\n</script>\n${views}\n<script type="application/json" id="ff-img">${imageJson}</script>\n</body>\n</html>\n`;
+  )}\n${router}\n${lateFonts}\n</script>\n${views}\n<script type="application/json" id="ff-img">${imageJson}</script>${fileJson}\n</body>\n</html>\n`;
   await writeFile(join(OUT, 'index.html'), doc);
 
   // The footer links /feed.xml and the newsletter automation reads it, so the

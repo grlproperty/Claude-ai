@@ -916,8 +916,29 @@
     });
   }
 
+  /**
+   * A link to a section of the page it is on. Scrolled by hand rather than
+   * left to a #fragment, because in the single-file build the fragment is the
+   * router's, and "#free" there is a page that does not exist. The href is a
+   * real page, for when this has not run.
+   */
+  function initSkip() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-jump]'), function (a) {
+      if (a.getAttribute('data-ready')) return;
+      a.setAttribute('data-ready', '1');
+      a.addEventListener('click', function (e) {
+        var to = document.getElementById(a.getAttribute('data-jump'));
+        if (!to) return;
+        e.preventDefault();
+        var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        to.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
+      });
+    });
+  }
+
   function init() {
     initJump();
+    initSkip();
     initLab();
     initSpot();
     initAsk();

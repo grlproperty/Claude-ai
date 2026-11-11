@@ -7,6 +7,7 @@ import {
   supportBanner,
   ticker,
   shelf,
+  freeShelf,
 } from '../templates/components.mjs';
 import { scannerPanel, LAB_SCRIPTS } from './lab.mjs';
 import { esc, typo, slugify } from '../lib/util.mjs';
@@ -129,6 +130,11 @@ export function renderHome({ site, notes, data }) {
       <a class="btn" href="/tools/scan/" data-scan-jump>Check a label</a>
       <a class="btn btn--ghost" href="/field-notes/">Read the investigations</a>
     </div>
+    ${
+      (site.shop?.free ?? []).length
+        ? `<p class="hero__also"><a class="arrow" href="/shop/" data-jump="free">Or download the ${(site.shop.free.length === 4 ? 'four' : site.shop.free.length)} free guides</a></p>`
+        : ''
+    }
    </div>
 
     ${
@@ -260,6 +266,8 @@ ${
     </div>
   </div>
 </section>
+
+${freeShelf(site, data.covers)}
 
 <section class="section" id="industries">
   <div class="wrap">
