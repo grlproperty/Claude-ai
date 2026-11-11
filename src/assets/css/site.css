@@ -4553,3 +4553,54 @@ img.is-developing {
   .lab-row__k { padding-top: 0; }
   .lab__controls .btn { flex: 1 1 100%; }
 }
+
+/* ------------------------------------------------------------ THE FACTS
+
+   Three sentences directly under the opening screen, each a link to the entry
+   it was taken from. Set large, because they are the reason to keep reading,
+   and on the dark ground so the page changes key before the scanner. */
+
+.facts__title {
+  max-width: 18ch;
+  margin-bottom: var(--s6);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s6);
+}
+
+.fact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  border-top: 1px solid var(--blush);
+  padding-top: var(--s4);
+  color: var(--white);
+  text-decoration: none;
+}
+
+.fact__k {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blush);
+}
+
+.fact__t {
+  font-family: var(--editorial);
+  font-size: clamp(1.375rem, 2.2vw, 1.875rem);
+  line-height: 1.25;
+  color: var(--white);
+  text-wrap: pretty;
+}
+
+.fact .arrow { margin-top: auto; color: var(--blush); }
+
+.fact:hover .fact__t { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
+
+@media (max-width: 52rem) {
+  .facts { grid-template-columns: minmax(0, 1fr); gap: var(--s5); }
+}

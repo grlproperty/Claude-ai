@@ -50,6 +50,45 @@ export function renderHome({ site, notes, data }) {
     ['Where to Act', '/tools/act/', `${data.act.organisations.length} established organisations, filterable by the subject they work on.`],
   ];
 
+  /*
+   * Three things a stranger did not know, at the top of the page.
+   *
+   * The front page used to open on what the publication is and how it works,
+   * which is what a reader wants once they have a reason to care and not
+   * before. These are that reason. Each one is the first sentence of an entry
+   * this site already holds, with its source, and links to it — so nothing is
+   * said here that is not said, and cited, on the page it leads to. If an
+   * entry is ever renamed or removed its fact simply drops out.
+   */
+  const sentence = (text, n = 1, from = 0) =>
+    String(text ?? '')
+      .split(/(?<=[.!?])\s+/)
+      .slice(from, from + n)
+      .join(' ');
+  const natural = data.greenwashing.terms.find((t) => t.term === 'Natural');
+  const bunny = data.certifications.schemes.find((x) => x.name === 'Leaping Bunny');
+  const garment = notes.find((n) => /garment-worker/.test(n.url));
+  const facts = [
+    natural && {
+      kicker: 'On the front of the pack',
+      text: sentence(natural.actual),
+      href: `/tools/greenwashing/${slugify(natural.term)}/`,
+      more: 'What “natural” means',
+    },
+    bunny && {
+      kicker: 'Beside the logo',
+      text: sentence(bunny.notguarantee, 1, 1),
+      href: `/tools/certifications/${slugify(bunny.name)}/`,
+      more: 'What the mark covers',
+    },
+    garment && {
+      kicker: 'Behind the price',
+      text: sentence(garment.summary, 2),
+      href: garment.url,
+      more: 'Read the investigation',
+    },
+  ].filter((f) => f && f.text);
+
   const body = `
 <section class="hero">
   <div class="hero__cage" data-cage aria-hidden="true"></div>
@@ -81,11 +120,14 @@ export function renderHome({ site, notes, data }) {
     <div class="hero__slot" aria-hidden="true"></div>
 
    <div class="hero__say">
-    <p class="hero__body">${typo(site.positioning.lede)}</p>
+    <p class="hero__body">${typo(site.positioning.hook)}</p>
 
+    <!-- The first button does something rather than going somewhere: it puts
+         the reader in the scanner, which is on this page. The href is where it
+         leads if the script has not run. -->
     <div class="hero__actions">
-      <a class="btn" href="/field-notes/">Read the field notes</a>
-      <a class="btn btn--ghost" href="/tools/">Free tools</a>
+      <a class="btn" href="/tools/scan/" data-scan-jump>Check a label</a>
+      <a class="btn btn--ghost" href="/field-notes/">Read the investigations</a>
     </div>
    </div>
 
@@ -147,41 +189,45 @@ ${ticker(
   { ariaLabel: 'The ten industries this publication documents' }
 )}
 
-<section class="section on-dark" id="about">
+${
+  facts.length
+    ? `<section class="section on-dark" id="facts">
   <div class="wrap">
-    <div class="grid grid--2 grid--held" style="gap:4rem;align-items:start;">
-      <div class="reveal grid__hold">
-        ${label('The subject')}
-        <h2>${typo('Two subjects. One machine.')}</h2>
-        <p class="lede">${typo(site.positioning.body)}</p>
-        <p class="mb-0" style="margin-top:2rem;">
-          <a class="btn btn--quiet" href="/about/">${esc(site.standard)}</a>
-        </p>
-      </div>
-      <div class="reveal">
-        ${label('How we work')}
-        <div class="rows" style="border-top-color:rgba(253,252,252,.2);">
-          ${site.method
-            .map(
-              (m) => `<div class="row row--label-16" style="border-bottom-color:rgba(253,252,252,.12);">
-                <div class="row__index" style="color:var(--blush);">${esc(m.title)}</div>
-                <div>
-                  <p class="row__summary" style="color:var(--on-dark);">${typo(m.body)}</p>
-                  <p class="row__index" style="margin-top:.5rem;color:var(--on-dark-dim);">${esc(m.stamp)}</p>
-                </div>
-              </div>`
-            )
-            .join('')}
-        </div>
-      </div>
+    ${label('Before you read anything else')}
+    <h2 class="facts__title">${typo(`${SPELLED[facts.length]} things the label will not tell you`)}</h2>
+    <div class="facts">
+      ${facts
+        .map(
+          (f) => `<a class="fact reveal" href="${esc(f.href)}">
+        <span class="fact__k">${esc(f.kicker)}</span>
+        <span class="fact__t">${typo(f.text)}</span>
+        <span class="arrow">${esc(f.more)}</span>
+      </a>`
+        )
+        .join('')}
     </div>
+  </div>
+</section>`
+    : ''
+}
+
+<section class="section on-white" id="scan">
+  <div class="wrap">
+    ${sectionHead({
+      eyebrow: 'Try it now',
+      title: 'What does the label actually say?',
+      lede: 'Type, paste or photograph anything printed on a product. This reads it back: what comes from an animal, which words are doing the selling, and what each certification on it does not cover.',
+      stamp: 'Free \u00b7 nothing leaves this page',
+    })}
+    ${scannerPanel({ mode: 'reader', h: 'h3' })}
+    <p style="margin-top:var(--s5);"><a class="arrow" href="/tools/scan/">The scanner on its own page, and what it reads from</a></p>
   </div>
 </section>
 
 <section class="section" id="field-notes">
   <div class="wrap">
     ${sectionHead({
-      eyebrow: 'Latest',
+      eyebrow: 'The investigations',
       title: 'Field notes',
       lede: 'Public-record investigations, read in full and reframed with the original publisher credited.',
       stamp: `${notes.length} filed \u00b7 newest first`,
@@ -193,7 +239,29 @@ ${ticker(
   </div>
 </section>
 
-<section class="section on-pale" id="industries">
+<section class="section on-pale" id="tools">
+  <div class="wrap">
+    ${sectionHead({
+      eyebrow: 'Free tools',
+      title: 'Awareness, made usable',
+      lede: `The scanner above is one of ${(SPELLED[tools.length + 1] ?? String(tools.length + 1)).toLowerCase()}. These are the others — three more to put something through, and six files to look things up in. All free: no account, no sign-up, no payment.`,
+      stamp: `${tools.length + 1} tools \u00b7 no account, no payment`,
+    })}
+    <div class="grid grid--3">
+      ${tools
+        .map(
+          ([name, href, text]) => `<article class="card card--linked tilt reveal" data-pointer-label="Open">
+            <h3><a class="stretch" href="${esc(href)}">${esc(name)}</a></h3>
+            <p>${typo(text)}</p>
+            <div class="card__foot"><span class="arrow">Open</span></div>
+          </article>`
+        )
+        .join('')}
+    </div>
+  </div>
+</section>
+
+<section class="section" id="industries">
   <div class="wrap">
     ${sectionHead({
       eyebrow: 'The remit',
@@ -217,37 +285,34 @@ ${ticker(
   </div>
 </section>
 
-<section class="section on-white" id="scan">
+<section class="section on-dark" id="about">
   <div class="wrap">
-    ${sectionHead({
-      eyebrow: 'Try it now',
-      title: 'What does the label actually say?',
-      lede: 'Type, paste or photograph anything printed on a product. This reads it back: what comes from an animal, which words are doing the selling, and what each certification on it does not cover.',
-      stamp: 'Free \u00b7 nothing leaves this page',
-    })}
-    ${scannerPanel({ mode: 'reader', h: 'h3' })}
-    <p style="margin-top:var(--s5);"><a class="arrow" href="/tools/scan/">The scanner on its own page, and what it reads from</a></p>
-  </div>
-</section>
-
-<section class="section" id="tools">
-  <div class="wrap">
-    ${sectionHead({
-      eyebrow: 'Free tools',
-      title: 'Awareness, made usable',
-      lede: `The scanner above is one of ${(SPELLED[tools.length + 1] ?? String(tools.length + 1)).toLowerCase()}. These are the others — three more to put something through, and six files to look things up in. All free: no account, no sign-up, no payment.`,
-      stamp: `${tools.length + 1} tools \u00b7 no account, no payment`,
-    })}
-    <div class="grid grid--3">
-      ${tools
-        .map(
-          ([name, href, text]) => `<article class="card card--linked tilt reveal" data-pointer-label="Open">
-            <h3><a class="stretch" href="${esc(href)}">${esc(name)}</a></h3>
-            <p>${typo(text)}</p>
-            <div class="card__foot"><span class="arrow">Open</span></div>
-          </article>`
-        )
-        .join('')}
+    <div class="grid grid--2 grid--held" style="gap:4rem;align-items:start;">
+      <div class="reveal grid__hold">
+        ${label('The subject')}
+        <h2>${typo('Two subjects. One machine.')}</h2>
+        <p class="lede">${typo(site.positioning.lede)}</p>
+        <p style="color:var(--on-dark);">${typo(site.positioning.body)}</p>
+        <p class="mb-0" style="margin-top:2rem;">
+          <a class="btn btn--quiet" href="/about/">${esc(site.standard)}</a>
+        </p>
+      </div>
+      <div class="reveal">
+        ${label('Why you can trust this')}
+        <div class="rows" style="border-top-color:rgba(253,252,252,.2);">
+          ${site.method
+            .map(
+              (m) => `<div class="row row--label-16" style="border-bottom-color:rgba(253,252,252,.12);">
+                <div class="row__index" style="color:var(--blush);">${esc(m.title)}</div>
+                <div>
+                  <p class="row__summary" style="color:var(--on-dark);">${typo(m.body)}</p>
+                  <p class="row__index" style="margin-top:.5rem;color:var(--on-dark-dim);">${esc(m.stamp)}</p>
+                </div>
+              </div>`
+            )
+            .join('')}
+        </div>
+      </div>
     </div>
   </div>
 </section>

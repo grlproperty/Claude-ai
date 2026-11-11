@@ -900,7 +900,24 @@
     build();
   }
 
+  /** "Check a label" on the front page puts the reader in the box below it. */
+  function initJump() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-scan-jump]'), function (a) {
+      if (a.getAttribute('data-ready')) return;
+      a.setAttribute('data-ready', '1');
+      a.addEventListener('click', function (e) {
+        var input = document.querySelector('#scan [data-lab-input]');
+        if (!input || input.closest('[hidden]')) return;
+        e.preventDefault();
+        var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        document.getElementById('scan').scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
+        input.focus({ preventScroll: true });
+      });
+    });
+  }
+
   function init() {
+    initJump();
     initLab();
     initSpot();
     initAsk();

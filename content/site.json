@@ -172,7 +172,7 @@
         "for": "For the bathroom shelf",
         "file": "/downloads/feral-femme-ingredient-reader.pdf",
         "pages": 10,
-        "bytes": 639285,
+        "bytes": 636730,
         "summary": "Fifty-three names from the back of the bottle: which come from an animal, which might, and how to read the list they sit in.",
         "contains": [
           "How an ingredients list is ordered and named",
@@ -211,8 +211,9 @@
     "notAdvice": "Every document here is an educational reference. None of it is legal, regulatory, financial or medical advice; none of it certifies that a claim, a label, a product or a business is lawful, compliant, safe or ethical; and buying or downloading one creates no adviser–client relationship. The worksheets and template messages are starting points to adapt, not legal documents. The same notice is printed in full on the first page after the contents of every file, and in the footer of every page."
   },
   "positioning": {
+    "hook": "The cruelty is rarely called cruelty. It is called tradition, testing, farming, wellness, self-care. We translate the words, cite the source, and show you how to check it yourself.",
     "lede": "We investigate every industry built on a body that could not agree to it — and we hold animals and women at equal weight. Neither is a metaphor for the other. Both are literal.",
-    "body": "The cruelty is rarely called cruelty. It is called tradition, testing, farming, research, wellness, self-care. We translate the vocabulary, cite the source, and file the receipt — across fashion, food, beauty, wildlife, medicine, tech, and the advertising that obscures all of it."
+    "body": "That is the whole remit — across fashion, food, beauty, wildlife, medicine, tech, and the advertising that obscures all of it."
   },
   "nav": [
     {
