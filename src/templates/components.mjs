@@ -270,8 +270,8 @@ export function newsletterForm(site, { dark = false, note = true } = {}) {
  * so this block says what the money buys, and does not reach for a denial to
  * excuse itself.
  *
- * `tier` picks who is being shown to: 'reader' for the volumes under $50,
- * 'professional' for the org-licensed packs. A reader at the end of a field
+ * `tier` picks who is being shown to, by each product's own `tier` in
+ * site.json: 'reader', 'professional', or 'both'. A reader at the end of a field
  * note and an auditor half-way through the certification decoder are not
  * looking at the same thing.
  */
@@ -282,9 +282,9 @@ export function shelf(site, covers = {}, { tier = 'all', limit = 3, heading = tr
 
   const pick =
     tier === 'reader'
-      ? all.filter((p) => p.price < 50)
+      ? all.filter((p) => p.tier === 'reader' || p.tier === 'both')
       : tier === 'professional'
-        ? all.filter((p) => p.price >= 50)
+        ? all.filter((p) => p.tier === 'professional' || p.tier === 'both')
         : all;
   const shown = (pick.length ? pick : all).slice(0, limit);
   if (!shown.length) return '';

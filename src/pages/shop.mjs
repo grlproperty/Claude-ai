@@ -94,7 +94,7 @@ export function renderShop({ site, rates, covers = {} }) {
       eyebrow: 'Published',
       title: 'Printed, and worth printing',
       stamp: `${s.free.length} free \u00b7 ${s.products.length} paid`,
-      lede: 'Everything on this site is free and stays free. These are the documents that took long enough to assemble that they are sold instead — plus two pocket cards that are not, because a card you can carry is worth more in circulation than it is behind a payment.',
+      lede: 'Everything on this site is free and stays free, and so are four of these. The free ones are the reference, complete: every word, mark, ingredient and fibre the site holds, in a form you can print. The four that are sold are that reference put to work — worksheets to fill in, templates to send, a method to follow from the first page to the last.',
       wide: true,
       level: 1,
     })}
@@ -107,7 +107,7 @@ ${
   <div class="wrap">
     ${sectionHead({
       eyebrow: 'Free to download',
-      title: 'The two pocket cards',
+      title: 'The four references',
       stamp: 'No email \u00b7 no account',
       lede: s.freeNote,
     })}
@@ -118,7 +118,7 @@ ${
         ${cover(covers, f.name, 'Free')}
         <p class="product__for">${esc(f.for)}</p>
         <h2 class="product__name">${typo(f.name)}</h2>
-        <p class="product__meta">1 page &middot; PDF &middot; ${kb(f.bytes)} &middot; Free</p>
+        <p class="product__meta">${f.pages} pages &middot; PDF &middot; ${kb(f.bytes)} &middot; Free</p>
         <p class="product__summary">${typo(f.summary)}</p>
         <ul class="product__contains">
           ${f.contains.map((c) => `<li>${typo(c)}</li>`).join('')}
@@ -140,9 +140,9 @@ ${
   <div class="wrap">
     ${sectionHead({
       eyebrow: 'Published',
-      title: 'The documents',
+      title: 'The four workbooks',
       stamp: `${s.products.length} volumes \u00b7 ${s.products.reduce((n, p) => n + p.pages, 0)} pages`,
-      lede: 'Priced in US dollars, which is what the payment links are issued in. Use the selector to read them in another currency — your bank sets the rate it actually applies.',
+      lede: 'One price for each. Priced in US dollars, which is what the payment links are issued in. Use the selector to read them in another currency — your bank sets the rate it actually applies.',
     })}
     ${currencyPicker(rates)}
     <div class="grid grid--2" style="gap:2.5rem;align-items:start;">
@@ -160,8 +160,10 @@ ${
         <div class="product__buy">
           ${buyAction(site, { name: p.name, price: p.price, symbol: sym, featured: p.featured, buy: p.buy })}
           <p class="product__delivery">${
-            p.buy ? `Paid by ${esc(s.processor)}. ` : ''
-          }Emailed to the address you give at checkout &mdash; not downloaded.</p>
+            p.buy
+              ? `Paid by ${esc(s.processor)}. Emailed to the address you give at checkout &mdash; not downloaded.`
+              : 'Opens an email to us. We reply with how to pay, and the file is sent by email &mdash; not downloaded.'
+          }</p>
         </div>
       </article>`
         )
@@ -196,10 +198,10 @@ ${
 <section class="section--tight">
   <div class="wrap">
     ${sectionHead({ eyebrow: 'Before you buy', title: 'What these are not' })}
-    <p class="prose">None of it is legal advice. Nothing here certifies compliance or approves a claim.</p>
-    <p class="prose">The Claims Compliance Pack and the Greenwashing Field Guide are generated from the same reviewed datasets the <a href="/tools/">free tools</a> run on, so a change to a certification reaches the PDF rather than leaving a stale file in circulation. The Conscious volumes and the journal are written documents rather than generated ones &mdash; every brand and material entry cites a source you can open and read, but they are revised on their own schedule and the edition date on the cover is the one that matters.</p>
-    <p class="prose">Where an entry says a claim requires substantiation, that is a statement about what the published guidance asks for &mdash; not an opinion on your liability. For that, take advice from a qualified attorney on your specific product and market.</p>
-    <p class="prose">If you want the reference material and not the document, the decoders and the record are all on this site, searchable and always current. The PDFs exist because a printed reference you can take into a shop or a meeting is a different thing from a website, not because the website is missing anything. The two pocket cards above are the clearest case of that, which is why they are free.</p>
+    ${note('Not legal advice', `<p class="mb-0">${typo(s.notAdvice)}</p>`)}
+    <p class="prose">The reference sections in all eight are generated from the same reviewed datasets the <a href="/tools/">free tools</a> run on, so a change to a certification reaches the next edition rather than leaving a stale file in circulation. The edition date on the cover is the date the entries were true to their sources.</p>
+    <p class="prose">Where an entry says what to have ready before using a claim, that is a description of what published guidance asks for &mdash; not an opinion on your liability. None of them makes a finding about any company&rsquo;s conduct; where a company or a scheme is named, the reference is to the public source cited. For a decision that carries legal or financial consequences, read the primary source and take advice from a qualified professional in your own country.</p>
+    <p class="prose">If you want the reference material and not the document, the decoders and the record are all on this site, searchable and always current. The PDFs exist because something you can print, write on and take into a shop or a meeting is a different thing from a website, not because the website is missing anything.</p>
     ${note(
       'If something in them is wrong',
       `<p class="mb-0">Tell us: <a href="mailto:${esc(site.email)}">${esc(
@@ -225,7 +227,7 @@ ${
     site,
     title: 'Published',
     description:
-      'Five documents and two free pocket cards: a claims-compliance reference for brands, the Conscious Wardrobe and Home Kit, a thirty-day journal, and a field guide for readers.',
+      'Four free printable references — label words, certification marks, ingredients and fabrics — and four workbooks: a brand audit, a claims file for brands, a wardrobe and bathroom audit, and a complaint kit.',
     path: '/shop/',
     body,
   });

@@ -4,7 +4,7 @@ summary: The terms on which this platform is published, and how its work may be 
 order: 6
 ---
 
-*Last updated: 12 September 2026*
+*Last updated: 11 November 2026*
 
 ## Who these terms are with
 
@@ -17,6 +17,8 @@ Using this site means accepting these terms. If you do not accept them, please d
 FERAL FEMME publishes editorial and research material about industry conduct across ten sectors.
 
 It is not legal advice, financial advice, or professional advice of any kind. It is not a certification, an endorsement, or a statement about the current compliance of any company or product. Standards change and companies change; entries reflect the position at the date stated on the page.
+
+The same is true of every document in the [shop](/shop/), free or sold. Each is an educational reference. None is legal, regulatory, financial or medical advice, none certifies that any claim, label, product or business is lawful, compliant, safe or ethical, and buying or downloading one creates no adviser–client relationship. The worksheets and template messages in them are starting points for you to adapt; they are not legal documents, and using one does not make a claim compliant, a complaint well-founded, or a statement about a business safe to publish. What you do with them is your own decision and your own responsibility.
 
 Field notes summarise reporting that already exists in the public record. Where a note describes an investigation, the finding belongs to the original publisher, who is credited in the note, and any characterisation of it is ours.
 
@@ -54,7 +56,7 @@ Links to any page are welcome and require no permission. Framing pages so as to 
 
 The documents in the [shop](/shop/) are digital files, delivered by email after payment through PayPal. Prices are charged in US dollars; your bank sets the rate it applies.
 
-**A delivered file is not refundable.** It cannot be un-received, and there is no version of returning it. Each document is described in full before purchase — its page count, its contents, and what it is not — and the two pocket cards are published free so that the work can be read before any of it is paid for.
+**A delivered file is not refundable.** It cannot be un-received, and there is no version of returning it. Each document is described in full before purchase — its page count, its contents, and what it is not — and four complete references are published free so that the work can be read before any of it is paid for.
 
 That said, we will always put right a transaction that did not deliver what it promised:
 

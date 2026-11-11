@@ -1,0 +1,452 @@
+[
+  {
+    "name": "The Phrasebook",
+    "slug": "phrasebook",
+    "tier": "free",
+    "pages": 10,
+    "bytes": 548599,
+    "sections": [
+      {
+        "label": "Part one",
+        "title": "Six habits",
+        "page": 2,
+        "pages": 1
+      },
+      {
+        "label": "Part two",
+        "title": "36 words, decoded",
+        "page": 3,
+        "pages": 6
+      },
+      {
+        "label": "Part three",
+        "title": "What this cannot do",
+        "page": 9,
+        "pages": 1
+      }
+    ]
+  },
+  {
+    "name": "The Logo Guide",
+    "slug": "logo-guide",
+    "tier": "free",
+    "pages": 9,
+    "bytes": 538413,
+    "sections": [
+      {
+        "label": "Part one",
+        "title": "Six checks for any logo",
+        "page": 2,
+        "pages": 1
+      },
+      {
+        "label": "Part two",
+        "title": "22 marks, and what each covers",
+        "page": 3,
+        "pages": 5
+      },
+      {
+        "label": "Part three",
+        "title": "Before you rely on a mark",
+        "page": 8,
+        "pages": 1
+      }
+    ]
+  },
+  {
+    "name": "The Ingredient Reader",
+    "slug": "ingredient-reader",
+    "tier": "free",
+    "pages": 10,
+    "bytes": 639285,
+    "sections": [
+      {
+        "label": "Part one",
+        "title": "How to read the list",
+        "page": 2,
+        "pages": 1
+      },
+      {
+        "label": "Part two",
+        "title": "Animal-derived",
+        "page": 3,
+        "pages": 2
+      },
+      {
+        "label": "Part three",
+        "title": "Ask first",
+        "page": 5,
+        "pages": 2
+      },
+      {
+        "label": "Part four",
+        "title": "The rest of the list",
+        "page": 7,
+        "pages": 2
+      },
+      {
+        "label": "Part five",
+        "title": "The pocket card",
+        "page": 9,
+        "pages": 1
+      }
+    ]
+  },
+  {
+    "name": "The Fabric Reader",
+    "slug": "fabric-reader",
+    "tier": "free",
+    "pages": 10,
+    "bytes": 498843,
+    "sections": [
+      {
+        "label": "Part one",
+        "title": "How to read the label",
+        "page": 2,
+        "pages": 1
+      },
+      {
+        "label": "Part two",
+        "title": "Animal fibres",
+        "page": 3,
+        "pages": 4
+      },
+      {
+        "label": "Part three",
+        "title": "Plant and synthetic fibres",
+        "page": 7,
+        "pages": 2
+      },
+      {
+        "label": "Part four",
+        "title": "The pocket card",
+        "page": 9,
+        "pages": 1
+      }
+    ]
+  },
+  {
+    "name": "The Brand Audit Workbook",
+    "slug": "brand-audit-workbook",
+    "tier": "paid",
+    "pages": 33,
+    "bytes": 1095352,
+    "sections": [
+      {
+        "label": "Start here",
+        "title": "The standard",
+        "page": 3,
+        "pages": 1
+      },
+      {
+        "label": "Start here",
+        "title": "How the workbook runs",
+        "page": 4,
+        "pages": 1
+      },
+      {
+        "label": "Module one",
+        "title": "The claim inventory",
+        "page": 5,
+        "pages": 2
+      },
+      {
+        "label": "Module two",
+        "title": "Testing each claim",
+        "page": 7,
+        "pages": 2
+      },
+      {
+        "label": "Module three",
+        "title": "The certifications",
+        "page": 9,
+        "pages": 2
+      },
+      {
+        "label": "Module four",
+        "title": "What it is made of",
+        "page": 11,
+        "pages": 1
+      },
+      {
+        "label": "Module five",
+        "title": "The record",
+        "page": 12,
+        "pages": 2
+      },
+      {
+        "label": "Module six",
+        "title": "Ownership and disclosure",
+        "page": 14,
+        "pages": 1
+      },
+      {
+        "label": "The result",
+        "title": "The scorecard",
+        "page": 15,
+        "pages": 1
+      },
+      {
+        "label": "Going public",
+        "title": "Writing it up fairly",
+        "page": 16,
+        "pages": 1
+      },
+      {
+        "label": "Going public",
+        "title": "The sentences, and the right of reply",
+        "page": 17,
+        "pages": 1
+      },
+      {
+        "label": "Reference A",
+        "title": "Certification scopes",
+        "page": 18,
+        "pages": 5
+      },
+      {
+        "label": "Reference B",
+        "title": "The phrasebook",
+        "page": 23,
+        "pages": 3
+      },
+      {
+        "label": "Reference C",
+        "title": "Materials and ingredients",
+        "page": 26,
+        "pages": 4
+      },
+      {
+        "label": "Reference D",
+        "title": "Where to look",
+        "page": 30,
+        "pages": 3
+      }
+    ]
+  },
+  {
+    "name": "The Claims Desk",
+    "slug": "claims-desk",
+    "tier": "paid",
+    "pages": 36,
+    "bytes": 1127049,
+    "sections": [
+      {
+        "label": "Method",
+        "title": "How to run a claims review",
+        "page": 3,
+        "pages": 1
+      },
+      {
+        "label": "Working document 1",
+        "title": "The claim inventory",
+        "page": 4,
+        "pages": 2
+      },
+      {
+        "label": "Working document 2",
+        "title": "The implied claim",
+        "page": 6,
+        "pages": 1
+      },
+      {
+        "label": "Working document 3",
+        "title": "The evidence file",
+        "page": 7,
+        "pages": 2
+      },
+      {
+        "label": "Working document 4",
+        "title": "Sign-off",
+        "page": 9,
+        "pages": 1
+      },
+      {
+        "label": "Working document 5",
+        "title": "The change log",
+        "page": 10,
+        "pages": 2
+      },
+      {
+        "label": "Reference A",
+        "title": "The claim register",
+        "page": 12,
+        "pages": 8
+      },
+      {
+        "label": "Reference B",
+        "title": "Certification scopes",
+        "page": 20,
+        "pages": 5
+      },
+      {
+        "label": "Reference C",
+        "title": "Material claims",
+        "page": 25,
+        "pages": 6
+      },
+      {
+        "label": "Reference D",
+        "title": "Eight claims, rewritten",
+        "page": 31,
+        "pages": 2
+      },
+      {
+        "label": "Sources",
+        "title": "Where to check for yourself",
+        "page": 33,
+        "pages": 3
+      }
+    ]
+  },
+  {
+    "name": "The Wardrobe & Bathroom Audit",
+    "slug": "wardrobe-bathroom-audit",
+    "tier": "paid",
+    "pages": 31,
+    "bytes": 1019015,
+    "sections": [
+      {
+        "label": "Start here",
+        "title": "The rule, and the four weeks",
+        "page": 3,
+        "pages": 2
+      },
+      {
+        "label": "Week one",
+        "title": "The wardrobe",
+        "page": 5,
+        "pages": 2
+      },
+      {
+        "label": "File one",
+        "title": "The fibre file",
+        "page": 7,
+        "pages": 6
+      },
+      {
+        "label": "Week two",
+        "title": "The bathroom shelf",
+        "page": 13,
+        "pages": 2
+      },
+      {
+        "label": "File two",
+        "title": "The ingredient file",
+        "page": 15,
+        "pages": 6
+      },
+      {
+        "label": "File three",
+        "title": "The marks",
+        "page": 21,
+        "pages": 5
+      },
+      {
+        "label": "Week three",
+        "title": "Ask",
+        "page": 26,
+        "pages": 2
+      },
+      {
+        "label": "Week four",
+        "title": "The replacement list",
+        "page": 28,
+        "pages": 1
+      },
+      {
+        "label": "To carry",
+        "title": "The pocket cards",
+        "page": 29,
+        "pages": 1
+      },
+      {
+        "label": "Colophon",
+        "title": "Licence, corrections, edition",
+        "page": 30,
+        "pages": 1
+      }
+    ]
+  },
+  {
+    "name": "The Complaint Kit",
+    "slug": "complaint-kit",
+    "tier": "paid",
+    "pages": 32,
+    "bytes": 921760,
+    "sections": [
+      {
+        "label": "Before you start",
+        "title": "Five rules, and where to go",
+        "page": 3,
+        "pages": 2
+      },
+      {
+        "label": "Step one",
+        "title": "The evidence",
+        "page": 5,
+        "pages": 1
+      },
+      {
+        "label": "Step two",
+        "title": "The problem, in one sentence",
+        "page": 6,
+        "pages": 1
+      },
+      {
+        "label": "Step three",
+        "title": "Ask the brand",
+        "page": 7,
+        "pages": 2
+      },
+      {
+        "label": "Step four",
+        "title": "Ask the scheme",
+        "page": 9,
+        "pages": 1
+      },
+      {
+        "label": "Step five",
+        "title": "The regulator",
+        "page": 10,
+        "pages": 2
+      },
+      {
+        "label": "Step six",
+        "title": "The retailer",
+        "page": 12,
+        "pages": 1
+      },
+      {
+        "label": "Keep",
+        "title": "The log, and how it ends",
+        "page": 13,
+        "pages": 2
+      },
+      {
+        "label": "Going public",
+        "title": "Saying it out loud",
+        "page": 15,
+        "pages": 2
+      },
+      {
+        "label": "Reference A",
+        "title": "The phrasebook",
+        "page": 17,
+        "pages": 7
+      },
+      {
+        "label": "Reference B",
+        "title": "Certification scopes",
+        "page": 24,
+        "pages": 5
+      },
+      {
+        "label": "Sources",
+        "title": "Where to check for yourself",
+        "page": 29,
+        "pages": 3
+      }
+    ]
+  }
+]

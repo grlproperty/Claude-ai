@@ -1,0 +1,19 @@
+{
+  "title": "Where complaints go",
+  "slug": "regulators",
+  "reviewed": "2026-11-10",
+  "reviewCycleDays": 180,
+  "summary": "Bodies that receive complaints or reports about advertising and consumer claims, by country. Used in The Complaint Kit. Each was opened and confirmed on the review date; what each one does with a complaint is set out on its own site and is not restated here.",
+  "bodies": [
+    { "country": "South Africa", "name": "Advertising Regulatory Board", "role": "Advertising self-regulatory body", "url": "https://www.arb.org.za/" },
+    { "country": "South Africa", "name": "National Consumer Commission", "role": "Consumer protection regulator", "url": "https://thencc.org.za/" },
+    { "country": "United Kingdom", "name": "Advertising Standards Authority", "role": "Advertising regulator", "url": "https://www.asa.org.uk/make-a-complaint.html" },
+    { "country": "United Kingdom", "name": "Competition and Markets Authority", "role": "Consumer law enforcement; publishes the Green Claims Code", "url": "https://www.gov.uk/government/publications/green-claims-code-making-environmental-claims" },
+    { "country": "United States", "name": "Federal Trade Commission", "role": "Federal consumer protection agency", "url": "https://reportfraud.ftc.gov/" },
+    { "country": "Australia", "name": "Australian Competition and Consumer Commission", "role": "Competition and consumer regulator", "url": "https://www.accc.gov.au/" },
+    { "country": "Australia", "name": "Ad Standards", "role": "Advertising complaints body", "url": "https://adstandards.com.au/" },
+    { "country": "Canada", "name": "Competition Bureau", "role": "Federal agency covering misleading advertising", "url": "https://competition-bureau.canada.ca/" },
+    { "country": "New Zealand", "name": "Commerce Commission", "role": "Fair trading regulator", "url": "https://comcom.govt.nz/" },
+    { "country": "New Zealand", "name": "Advertising Standards Authority", "role": "Advertising complaints body", "url": "https://asa.co.nz/" }
+  ]
+}

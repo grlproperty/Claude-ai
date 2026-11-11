@@ -1,12 +1,12 @@
 /**
- * Exports every paid product's cover as a standalone PNG, for shop listings,
- * social posts and press use.
+ * Exports the cover of every product, free and sold, as a standalone PNG, for
+ * shop listings, social posts and press use.
  *
- * Two kinds of cover exist and they are produced differently. Four products
- * ship a real cover file, which is resampled. The other two have their jacket
- * generated from type, and those are vector — so they are re-rasterised at the
- * export size rather than scaled up from the 840px build output, which would
- * soften every letter edge.
+ * Every product built in this repository has a real cover file, written by
+ * `npm run products` from the first page of the PDF, and that is resampled.
+ * A product listed without one gets its jacket generated from type; that is
+ * vector, so it is rasterised at the export size rather than scaled up from
+ * the 840px build output, which would soften every letter edge.
  *
  * Writes to export/covers/.
  */
@@ -23,7 +23,7 @@ const OUT = join(ROOT, 'export/covers');
 const WIDTH = 1200;
 
 const site = JSON.parse(await readFile(join(ROOT, 'content/site.json'), 'utf8'));
-const products = site.shop?.products ?? [];
+const products = [...(site.shop?.free ?? []), ...(site.shop?.products ?? [])];
 const slugOf = (n) =>
   n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 

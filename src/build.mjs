@@ -420,7 +420,15 @@ async function main() {
   ];
   await writeFileAt('/search-index.json', JSON.stringify(index));
 
-  await writeFileAt('/_redirects', '/rss.xml  /feed.xml  301\n/feed  /feed.xml  301\n/research/  /field-notes/  301\n');
+  await writeFileAt('/_redirects', [
+      '/rss.xml  /feed.xml  301',
+      '/feed  /feed.xml  301',
+      '/research/  /field-notes/  301',
+      // The two pocket cards were replaced by the free Readers, each of which
+      // has its card at the back.
+      '/downloads/feral-femme-pocket-wardrobe-card.pdf  /downloads/feral-femme-fabric-reader.pdf  301',
+      '/downloads/feral-femme-pocket-home-card.pdf  /downloads/feral-femme-ingredient-reader.pdf  301',
+    ].join('\n') + '\n');
 
   await buildOgImages({ dist: DIST, site, entries: notes });
 

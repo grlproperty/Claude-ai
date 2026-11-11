@@ -173,18 +173,16 @@ async function main() {
     await inline(join(DIST, 'assets/img'), '/assets/img/', 'hero-640.webp', 880, 76);
   }
 
-  // The free pocket cards.
+  // The free PDFs.
   //
-  // Carrying them inside the document costs more than anything else here: two
-  // PDFs of about half a megabyte each become 1.25MB of base64, a quarter of
-  // the whole file, and the browser tokenises every byte of it before the page
-  // is interactive. Measured, that quarter is worth about 135ms of parse time
-  // and 190ms of load on a local server, before any network is involved.
+  // Carrying them inside the document costs more than anything else here:
+  // each is about half a megabyte and grows by a third as base64, and the
+  // browser tokenises every byte of it before the page is interactive.
   //
   // So the default is to leave them beside the file, where this build already
   // writes them: COMPANION_FILE keeps /downloads/*.pdf an ordinary link, and
-  // the packer copies both PDFs into downloads/ next to index.html. Deployed,
-  // that is the same working button for a quarter less document.
+  // the packer copies the PDFs into downloads/ next to index.html. Deployed,
+  // that is the same working button for a much smaller document.
   //
   // --inline-pdfs restores the old behaviour, for handing someone a genuinely
   // lone .html with no folder around it. Then they live in the packed view for
@@ -239,8 +237,8 @@ async function main() {
    *    drops the anchor, because the address bar's fragment is what the router
    *    reads and it cannot hold two. Getting the reader to the right page
    *    beats not linking at all.
-   * 2. A file shipped next to this one — the feed, the manifest, the two free
-   *    pocket cards in downloads/. Those really are at that address on the
+   * 2. A file shipped next to this one — the feed, the manifest, the free
+   *    PDFs in downloads/. Those really are at that address on the
    *    server, so they stay ordinary links. A type missing from this list is
    *    not a broken link but a dead one: case 3 turns it into a span that
    *    still looks like whatever it was wearing, so a download button keeps

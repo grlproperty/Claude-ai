@@ -1,112 +1,124 @@
 # Products
 
-Two PDFs that are sold rather than published: a reference pack for brands and
-agencies, and a field guide for readers.
+Eight PDFs: four free, four sold.
 
-    npm run products      →  products/dist/*.pdf
+    npm run products         build all eight, and bring the shop page into line
+    npm run products:check   confirm every file is there and matches the shop page
 
-The build needs `dist/` to exist for the typefaces, which is why the script
+| No. | Title                          | Tier | Goes to                                      |
+|-----|--------------------------------|------|----------------------------------------------|
+| 01  | The Phrasebook                 | free | `public/downloads/feral-femme-phrasebook.pdf` |
+| 02  | The Logo Guide                 | free | `public/downloads/feral-femme-logo-guide.pdf` |
+| 03  | The Ingredient Reader          | free | `public/downloads/feral-femme-ingredient-reader.pdf` |
+| 04  | The Fabric Reader              | free | `public/downloads/feral-femme-fabric-reader.pdf` |
+| 05  | The Brand Audit Workbook       | paid | `products/dist/brand-audit-workbook.pdf`     |
+| 06  | The Claims Desk                | paid | `products/dist/claims-desk.pdf`              |
+| 07  | The Wardrobe & Bathroom Audit  | paid | `products/dist/wardrobe-bathroom-audit.pdf`  |
+| 08  | The Complaint Kit              | paid | `products/dist/complaint-kit.pdf`            |
+
+The free ones are committed and served by the site. The sold ones are
+gitignored — paid documents do not belong in the repository — and are emailed
+by hand after payment, so **`products/dist/` is the folder to send from**.
+
+The build also writes the first page of each as
+`content/images/covers/the-<slug>.jpg`, which is what the shop shows, and the
+real page count and file size into `content/site.json`, which is what the shop
+prints. Neither is typed in by hand.
+
+The build needs `dist/` to exist for the typefaces, which is why the npm script
 runs the site build first.
 
-## Where the content comes from
+## What is in which file
+
+| File            | What it holds                                                    |
+|-----------------|------------------------------------------------------------------|
+| `catalogue.mjs` | The eight products: title, cover text, and the sections in order. |
+| `written.mjs`   | Everything that had to be written: methods, worksheet instructions, template messages, the notice, the licences. |
+| `copy.json`     | Older written content still in use: the 36 claim tests, the review procedure, the eight rewrites, the six reader habits. |
+| `parts.mjs`     | What a worksheet, a template, a checklist and a reference entry look like. |
+| `style.mjs`     | The print stylesheet. The colours are the site's own tokens.      |
+| `build.mjs`     | The machinery: rendering, page counting, covers, metadata.       |
 
 The reference sections are **generated**, not written. They come out of
-`content/data/greenwashing.json`, `certifications.json`, `materials.json` and
-`sources.json` — the same datasets the public decoders render. When a dataset
-is reviewed, rebuilding reissues the products, so a scope change reaches the
-paid PDFs rather than leaving a stale file in circulation.
+`content/data/greenwashing.json`, `certifications.json`, `materials.json`,
+`ingredients.json`, `sources.json` and `regulators.json` — the same datasets
+the public tools render. When a dataset is reviewed, rebuilding reissues the
+products, so a change reaches the PDFs rather than leaving a stale file in
+circulation.
 
-`copy.json` holds the part that had to be written:
+## Three rules for anything written here
 
-| Key             | What it is                                                        |
-|-----------------|-------------------------------------------------------------------|
-| `tests`         | For each of the 36 flagged terms, the evidence a brand must be able to produce if it uses the term. Keyed by the term exactly as it appears in `greenwashing.json`. |
-| `procedure`     | The six-step claims review that opens the pack.                   |
-| `rewrites`      | Eight real claim patterns, with why each fails and a defensible version. |
-| `consumerSteps` | The six checks that open the field guide.                         |
+These are in the header of `written.mjs` and they are the reason the products
+are safe to publish. Keep them when editing.
 
-Every term needs a matching entry in `tests`. Nothing enforces that, so after
-adding a term to `greenwashing.json`:
+1. **No new facts about a company, a scheme or a substance.** Anything of that
+   kind belongs in a dataset, with a source, where the review cycle and the
+   citation monitor can see it. The written parts describe how to check, not
+   what is true, and they name no company.
+2. **Nothing tells a reader what the law requires of them.** The text says what
+   published guidance asks for and where to read it.
+3. **A template asks a question or states what was seen.** None alleges intent,
+   and none threatens.
 
-    node -e "const g=require('./content/data/greenwashing.json').terms.map(t=>t.term), \
-      c=Object.keys(require('./products/copy.json').tests); \
-      console.log(g.filter(t=>!c.includes(t)), c.filter(t=>!g.includes(t)))"
+## The notice
+
+Every product says that it is not legal advice in four places, and none of
+them is optional or configurable per product:
+
+- on the cover, under the rule;
+- on the first page after the contents (sharing the contents page in the
+  short free ones), in a box, before anything else can be read;
+- in the footer of every page;
+- in the file's own properties, which is what `products:check` looks for.
+
+The wording is `NOTICE` in `written.mjs`. Products with worksheets or
+templates add a paragraph saying they are not legal documents; products with
+ingredient names add one saying they are not medical or allergy advice.
 
 ## How it renders
 
-Headless Chromium, not a PDF library, so the pages can use the site's own
-typefaces and hold to the same design. Three things in `build.mjs` are less
-obvious than they look, and all three were bugs first:
+Headless Chromium, not a PDF library, so the pages use the site's own
+typefaces. Four things in `build.mjs` are less obvious than they look:
 
 1. **Fonts are embedded as data URIs.** A `file://` page cannot fetch a
    `file://` font.
 
-2. **The body is rendered twice.** The contents page cites page numbers, and a
-   page number does not exist until the document has been laid out. So a
-   throwaway call collects the section list, a measuring pass renders *with* a
-   contents page and blank numbers — so it paginates identically to the final
-   one — and `pages.py` reads back where each section landed. Leaving the blank
-   contents out of the measuring pass puts every number out by one.
+2. **Page numbers are counted, not searched for.** Every section starts on a
+   new page, so a section rendered alone has exactly as many pages as it has
+   in the book. The front matter and each section are rendered once on their
+   own, the counts are added into the contents, and the total is checked
+   against the finished body. If they disagree the build stops rather than
+   print a contents page that is out by one.
 
-3. **The cover is a separate render, merged in by `merge.py`.** Chromium
+3. **The cover is a separate render, placed in front afterwards.** Chromium
    reserves the running-footer strip on every page of a render, which stops a
-   full-bleed cover reaching the foot of the paper, and a cover should not
-   carry a folio anyway. Its document also has to reset `@page { margin: 0 }`,
-   because the stylesheet's own `@page` margin wins over the one passed to
-   `page.pdf()` — without that the cover spills onto a second, nearly empty
-   page.
+   full-bleed cover reaching the foot of the paper. Its document also resets
+   `@page { margin: 0 }`, because the stylesheet's own `@page` margin wins
+   over the one passed to `page.pdf()`. The cover is unnumbered, which is why
+   the folios in the contents match the printed footers rather than the PDF's
+   own page index.
 
-The cover is unnumbered, which is the ordinary print convention and is why the
-folios in the contents match the printed footers rather than the PDF's page
-indices.
+4. **A worksheet given `page: true` gets a page to itself and is ruled to the
+   foot of it.** Otherwise a sheet that does not fit under its introduction
+   is pushed whole to the next page and leaves half of each blank.
 
-## Checking they can be delivered
+Chromium is not bundled with `playwright-core`. Set `PLAYWRIGHT_BROWSERS_PATH`
+or `FF_CHROMIUM` if the build cannot find one.
 
-    npm run products:check
+## Adding or changing a product
 
-Every product in the shop carries a live PayPal link, and delivery is manual,
-so the failure mode is silent and on this side: a buy button for a document
-that is not on the shelf, discovered only once somebody has paid. This checks
-that each product on sale has a file in `products/dist/`, and that the file's
-real page count matches the number `content/site.json` advertises — a
-publication that audits other people's claims cannot be loose about the one
-number a buyer can verify the second the file opens.
-
-It is not part of `npm run check` and not in CI. `products/dist/` is
-gitignored, so a clean checkout has none of these and a CI run would fail
-every time, which is how a check gets ignored.
-
-Only two of the six are built here; the rest are authored elsewhere and
-emailed by hand from wherever they are kept. So the shelf is an argument, and
-pointing it at that folder is the run that actually means something:
-
-    npm run products:check -- --shelf ~/path/to/the/documents
-
-With no argument it checks `products/dist/` and reports the other four as not
-on this shelf rather than as faults — absence there proves nothing. Given a
-shelf, absence is a fault, because that folder is meant to hold everything on
-sale.
+- Text: edit `written.mjs` or `copy.json`, rebuild.
+- A new term in `greenwashing.json` needs a matching entry in `copy.json`
+  `tests`. The build refuses to run without it.
+- A new product: add it to `CATALOGUE` in `catalogue.mjs`, then add its card
+  to `shop.products` or `shop.free` in `content/site.json` under the same
+  name. `pages` and `bytes` are filled in by the build.
+- After any change, look at the pages. `pdftoppm -r 60 -png <file> <prefix>`
+  is enough to see a worksheet that has been pushed off its page.
 
 ## Selling them
 
-Through PayPal, and by hand.
-
-Create one PayPal no-code checkout link per product — the same way the donate
-tiers were made, with the price fixed on PayPal's side — and paste each into
-`shop.products[].buy` in `content/site.json`. With that field empty the buy
-button falls back to an enquiry email, so `/shop/` is publishable and can earn
-before the links exist.
-
-PayPal hands the buyer a receipt, not a file. Delivery is manual: the payment
-notification arrives, you email the PDF to the address on the receipt. At a
-handful of sales a month that is a few minutes, it is more reliable than a
-storefront, and it leaves you holding the buyer's address — which is how they
-get told when an edition changes. `/shop/` says all of this next to the button,
-because a buyer who is not told expects an instant download and reads the email
-as a failure.
-
-Both products carry their own licence and disclaimer pages, so nothing further
-is needed to put them on sale.
-
-Bump the edition line in `build.mjs` when the content changes materially, and
-email the new file to anyone who bought the previous one.
+Each sold product needs its own PayPal checkout link with the price fixed on
+PayPal's side, pasted into that product's `buy` in `content/site.json`. While
+`buy` is empty the button on the shop page is an email enquiry, so the page is
+safe to publish before the links exist.

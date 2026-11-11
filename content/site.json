@@ -53,7 +53,7 @@
     ]
   },
   "shop": {
-    "note": "`buy` is a PayPal no-code checkout link, created the same way as the donate ones — one per product, with the price fixed on PayPal's side. Leave it empty and the button falls back to an enquiry email, so the page is publishable before the links exist.",
+    "note": "`buy` is a PayPal no-code checkout link, created the same way as the donate ones — one per product, with the price fixed on PayPal's side. Leave it empty and the button falls back to an enquiry email, so the page is publishable before the links exist. `pages` and `bytes` are written by `npm run products` from the files themselves; do not type them in. `tier` decides which shelf a product appears on elsewhere on the site: reader, professional, or both.",
     "currency": "USD",
     "currencySymbol": "$",
     "processor": "PayPal",
@@ -61,140 +61,145 @@
     "delivery": "The file is emailed to you — it is not downloaded from this site. PayPal asks for your email address at checkout, and that is the address it goes to, so use one you can actually receive at. It is sent by a person, usually within a few hours and always within one working day, which is also how you get told when an edition changes.",
     "products": [
       {
-        "name": "The Claims Compliance Pack",
-        "for": "For brands and agencies",
-        "price": 145,
-        "pages": 34,
-        "summary": "Everything needed to check an environmental, welfare or sourcing claim before it ships — and the evidence you must be able to produce if you use it.",
+        "name": "The Brand Audit Workbook",
+        "for": "For anyone checking a brand before buying from it, writing about it or working with it",
+        "price": 30,
+        "pages": 33,
+        "tier": "both",
+        "summary": "Check a brand yourself, from the public record, in an afternoon — and come out with findings you can source, date and stand behind.",
         "contains": [
-          "The six-step claims review, in full",
-          "All 36 flagged terms, each with the substantiation it requires",
-          "All 22 certification scopes, with what each one does not cover",
-          "21 materials, with the welfare and environmental position on each",
-          "Eight real claims rewritten to be defensible",
-          "A printable pre-launch sign-off sheet",
-          "The 54 primary authorities everything traces back to"
+          "The six-rule standard a finding has to meet before it is written down",
+          "Six modules, worked in order: claims, tests, certifications, composition, the record, disclosure",
+          "Six worksheets and a one-page scorecard, made to be printed and filled in by hand",
+          "The status ladder for court and regulator matters — filed, investigated, found, settled, dismissed",
+          "How to write it up fairly, with a right-of-reply template",
+          "Four reference sections: 22 certification scopes, 36 terms, 21 materials and 53 ingredients, and where to look"
         ],
-        "licence": "Single-organisation licence. Circulate it internally as widely as you like.",
-        "buy": "https://www.paypal.com/ncp/payment/LDVYFL2CUVN5G",
+        "licence": "Personal licence",
+        "buy": "",
         "featured": true
       },
       {
-        "name": "The Brand Audit Pack",
-        "for": "For auditors, journalists and brands auditing themselves",
-        "price": 120,
-        "pages": 27,
-        "summary": "The method Feral Femme uses to audit a company, written down so you can run it yourself. Six modules in the order they have to be worked, twelve templates that feed them, and the standard a finding has to meet before it is published.",
+        "name": "The Claims Desk",
+        "for": "For brands, agencies and anyone who signs off a claim",
+        "price": 30,
+        "pages": 36,
+        "tier": "professional",
+        "summary": "A review procedure, what to have ready before using each of thirty-six terms, and the working file that shows what you checked.",
         "contains": [
-          "The six-step sequence — scope, trace, label, regulator, receipt, write-up",
-          "Twelve working templates, T01 to T12, made to be printed at A4 and filled by hand",
-          "The supply-chain trace to tier three, with the public sources for each tier",
-          "All 22 certification schemes, with what each one does not cover",
-          "The regulator map — South Africa, the UK, the US and the EU, and what each publishes",
-          "The publication standard, and the claim-language checklist behind it",
-          "The brand scorecard, the corrections notice, and the re-audit schedule",
-          "Where the records live: every register and database the method draws on"
+          "The six-step claims review",
+          "Five working documents: claim inventory, implied claims, evidence file, sign-off sheet, change log",
+          "A supplier evidence-request template, and a log for what comes back",
+          "All 36 flagged terms, each with what to have ready before you use it",
+          "All 22 certification scopes and all 21 material entries, in full",
+          "Eight claims rewritten, with why the original fails",
+          "The 54 primary authorities and 10 regulators everything traces back to"
         ],
-        "licence": "Single-organisation licence. Circulate it internally as widely as you like.",
-        "buy": "https://www.paypal.com/ncp/payment/K4M3LQMSGSL28"
+        "licence": "Single-organisation licence",
+        "buy": ""
       },
       {
-        "name": "The Conscious Wardrobe",
-        "for": "For anyone who buys clothes",
-        "price": 32,
-        "pages": 26,
-        "summary": "Six animal materials decoded under the names the label actually uses, the plant and recycled alternatives that replace each, and 80+ brands checked — with what is available in South Africa marked.",
+        "name": "The Wardrobe & Bathroom Audit",
+        "for": "For two rooms, over four weeks",
+        "price": 30,
+        "pages": 31,
+        "tier": "reader",
+        "summary": "Four weeks, an hour a week. Find out what you already own is made of — and decide, once, what you will buy next. Nothing in it asks you to throw anything away.",
         "contains": [
-          "Six materials decoded — leather, wool, silk, down, fur and shearling, exotics",
-          "The material map: the plant, synthetic or recycled alternative for each",
-          "80+ verified brands across luxury, mid-range and high street",
-          "South African availability marked — Woolworths, Cotton On, Mr Price, Superbalist",
-          "The wardrobe audit: a four-step method for every garment you own, with the worksheet",
-          "Eight pre-written messages to brands, retailers and the ARB"
+          "A four-week plan at an hour a week, with a tick-list for each",
+          "Four worksheets: wardrobe inventory, bathroom shelf, reply log, replacement list",
+          "The fibre file: 21 materials, in full",
+          "The ingredient file: 53 ingredients, with the names a label uses",
+          "22 certification marks, and what each one does not cover",
+          "Three template questions to send a brand",
+          "Two cut-out pocket cards"
         ],
-        "licence": "Personal use.",
-        "buy": "https://www.paypal.com/ncp/payment/2PAMCVZ53RYG8"
+        "licence": "Personal licence",
+        "buy": ""
       },
       {
-        "name": "The Conscious Home Kit",
-        "for": "For everything else on the shelf",
-        "price": 32,
-        "pages": 26,
-        "summary": "Five categories of animal material hiding in an ordinary house — cleaning, candles, bedding, furniture, pet supplies — decoded, with 70+ verified brands and a room-by-room walkthrough.",
+        "name": "The Complaint Kit",
+        "for": "For anyone who has seen a claim they do not believe",
+        "price": 30,
+        "pages": 32,
+        "tier": "reader",
+        "summary": "How to ask about a claim, who to take it to, and how to say so without overstating what you know.",
         "contains": [
-          "Five categories decoded — cleaning, candles, bedding, furniture, pet supplies",
-          "The home material map: the plant-based or recycled alternative for each",
-          "70+ verified brands, with South African availability marked",
-          "The room-by-room audit: kitchen, bathroom, bedroom, lounge, pet area",
-          "Eight pre-written messages to brands, retailers, the ARB and pet retailers"
+          "Five rules that keep a complaint calm, specific and evidenced",
+          "Six steps, in order: evidence, problem, brand, scheme, regulator, retailer",
+          "Five template messages, including a follow-up and a complaint to a regulator",
+          "An evidence log, a problem statement and a complaint log",
+          "Regulators and complaint bodies in six countries",
+          "How to say it in public, and the sentences that stay inside what you know",
+          "The 36-term phrasebook and 22 certification scopes, for reference"
         ],
-        "licence": "Personal use.",
-        "buy": "https://www.paypal.com/ncp/payment/U5JJYCHEUJ9YS"
-      },
-      {
-        "name": "The 30-Day Re-Wilding Journal",
-        "for": "For the part that is not shopping",
-        "price": 32,
-        "pages": 27,
-        "summary": "Thirty days of prompts in your own handwriting. Not a guide, and nothing in it to buy — half an hour a day of paying attention to what the industry took, and finding what is underneath.",
-        "contains": [
-          "One prompt a day for thirty days, built as an arc rather than a list",
-          "Day zero: the starting line, so there is something to measure against",
-          "Four practices — refusal, investigation, replacement, action",
-          "Made to be printed and written in by hand",
-          "Cross-referenced to the volumes above, and self-contained without them"
-        ],
-        "licence": "Personal use.",
-        "buy": "https://www.paypal.com/ncp/payment/WC5QHVACNEKVE"
-      },
-      {
-        "name": "The Greenwashing Field Guide",
-        "for": "For anyone who buys things",
-        "price": 14,
-        "pages": 24,
-        "summary": "Thirty-six words that sound like a promise, twenty-two logos that are narrower than they look, and twenty-one materials — with what each one actually tells you.",
-        "contains": [
-          "Six checks that take about a minute each",
-          "The 36 terms decoded, without the compliance framing",
-          "Which logos mean something, and how narrowly",
-          "What things are made of, and what exists instead",
-          "An honest section on what a guide like this cannot settle"
-        ],
-        "licence": "Personal use.",
-        "buy": "https://www.paypal.com/ncp/payment/ZGWKATME8GCWJ"
+        "licence": "Personal licence",
+        "buy": ""
       }
     ],
-    "freeNote": "The two pocket cards are the printable sections of the volumes they come from, published on their own and free. No email, no account, no payment — the link is the file.",
+    "freeNote": "Four references, complete, and free. No email, no account, no payment — the link is the file. Print them, forward them, pin them up.",
     "free": [
       {
-        "name": "The Pocket Wardrobe Card",
-        "for": "From The Conscious Wardrobe",
-        "file": "/downloads/feral-femme-pocket-wardrobe-card.pdf",
-        "bytes": 493924,
-        "summary": "A wallet-sized 60-second check for a clothing label. Print it at 100%, cut along the dashed line, fold once.",
+        "name": "The Phrasebook",
+        "for": "For anyone who buys things",
+        "file": "/downloads/feral-femme-phrasebook.pdf",
+        "pages": 10,
+        "bytes": 548599,
+        "summary": "Thirty-six words that sound like a promise on a label, with what each one is meant to make you think — and what it actually tells you.",
         "contains": [
-          "Six fibres to recognise, by the names the label uses",
-          "Five certifications worth trusting, and what each covers",
-          "Three traps — including why “faux” and “natural” are not answers",
-          "Five questions to ask before the till"
+          "Six habits that take about a minute each",
+          "All 36 flagged terms, grouped by subject",
+          "What you are meant to think, set beside what it means",
+          "The source for every reading"
         ]
       },
       {
-        "name": "The Pocket Home Card",
-        "for": "From The Conscious Home Kit",
-        "file": "/downloads/feral-femme-pocket-home-card.pdf",
-        "bytes": 488135,
-        "summary": "The same check for everything else you buy — soap, candles, bedding, pet supplies.",
+        "name": "The Logo Guide",
+        "for": "For anyone who reads a pack",
+        "file": "/downloads/feral-femme-logo-guide.pdf",
+        "pages": 9,
+        "bytes": 538413,
+        "summary": "Twenty-two certification marks: who runs each, what it verifies, and — the useful line — what it does not.",
         "contains": [
-          "Six ingredients to refuse, under their industry names",
-          "Five certifications worth trusting, including BWC SA",
-          "Three traps — including what “fine bone china” is made of",
-          "Five questions to ask before the till"
+          "Six checks that work on any logo",
+          "All 22 certification schemes, and who runs each",
+          "What each one verifies, and what it does not",
+          "The source for every entry"
+        ]
+      },
+      {
+        "name": "The Ingredient Reader",
+        "for": "For the bathroom shelf",
+        "file": "/downloads/feral-femme-ingredient-reader.pdf",
+        "pages": 10,
+        "bytes": 639285,
+        "summary": "Fifty-three names from the back of the bottle: which come from an animal, which might, and how to read the list they sit in.",
+        "contains": [
+          "How an ingredients list is ordered and named",
+          "15 animal-derived ingredients, with the names a label uses",
+          "15 “ask first” ingredients whose origin the label cannot tell you",
+          "23 plant, mineral and synthetic names, so they are not mistaken for animal ones",
+          "A cut-out pocket card"
+        ]
+      },
+      {
+        "name": "The Fabric Reader",
+        "for": "For the wardrobe",
+        "file": "/downloads/feral-femme-fabric-reader.pdf",
+        "pages": 10,
+        "bytes": 498843,
+        "summary": "Twenty-one fibres from the sewn-in label: what each is, what it cost the animal where there was one, and what exists instead.",
+        "contains": [
+          "How to read a sewn-in label",
+          "13 animal fibres, with the welfare position on each",
+          "8 plant and synthetic fibres, and what to ask of them",
+          "What can be worn instead of each",
+          "A cut-out pocket card"
         ]
       }
     ],
     "refundsTitle": "Digital files are not refundable",
-    "refunds": "A delivered file cannot be un-received, so payment for one is final. Every document is described in full above — page count, contents, and what it is not — and the two pocket cards are free precisely so you can read the work before paying for any of it.",
+    "refunds": "A delivered file cannot be un-received, so payment for one is final. Every document is described in full above — page count, contents, and what it is not — and the four free references are there precisely so you can read the work before paying for any of it.",
     "refundsExceptions": [
       "It never arrives. Tell us and we send it, or refund it in full.",
       "The wrong file arrives. We send the right one.",
@@ -202,7 +207,8 @@
       "You paid twice, or paid by accident. Refunded in full, no questions."
     ],
     "refundsRights": "None of this removes a right the law gives you. Where a statutory right to cancel applies to a purchase, it applies whatever this page says. PayPal's own buyer protection is separate from this policy and is not affected by it.",
-    "deliveryNote": "Bought it and want it sent somewhere else? Reply to the PayPal receipt, or write to us with it. Nothing arrives automatically, so a wrong address is fixable rather than lost."
+    "deliveryNote": "Bought it and want it sent somewhere else? Reply to the PayPal receipt, or write to us with it. Nothing arrives automatically, so a wrong address is fixable rather than lost.",
+    "notAdvice": "Every document here is an educational reference. None of it is legal, regulatory, financial or medical advice; none of it certifies that a claim, a label, a product or a business is lawful, compliant, safe or ethical; and buying or downloading one creates no adviser–client relationship. The worksheets and template messages are starting points to adapt, not legal documents. The same notice is printed in full on the first page after the contents of every file, and in the footer of every page."
   },
   "positioning": {
     "lede": "We investigate every industry built on a body that could not agree to it — and we hold animals and women at equal weight. Neither is a metaphor for the other. Both are literal.",
