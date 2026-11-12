@@ -12,15 +12,15 @@ That is the whole remit. We investigate every industry built on a body that coul
 
 [[founder-photo]]
 
-I started FERAL FEMME for animals and for women. Both, equally, and for the same reason.
+I started FERAL FEMME because animals and women are being abused, and have been for generations.
 
-There are whole industries built on a body that could not say no. Animals cannot refuse, cannot leave, and cannot tell anyone what was done to them. And the women in those same industries, the ones who make the product and the ones it is sold to, are told as little as possible and asked even less.
+The cruelty is not new and it is not rare. It has been handed down from one generation to the next by industries built on a body that could not say no. Animals cannot refuse, cannot leave, and cannot tell anyone what was done to them. And the women in those same industries, the ones who make the product and the ones it is sold to, have been used, silenced and lied to for just as long.
 
-To me that is one harm, not two. The same business, the same gentle names, the same silence. I could never care about one and look away from the other, so here they stand side by side, at equal weight, and they always will.
+To me that is one cruelty, not two. I could never care about one and look away from the other, so here they stand side by side, at equal weight, and they always will.
 
-What I cannot get past is how ordinary it all is. Most of this cruelty is legal. It is beautifully packaged, with a kind word printed on the front, and nobody tells you what is behind it. So I read the investigations, the rulings and the small print, and I write down what they actually say, in plain words, with the source beside every claim, so you never have to take my word for it.
+What I cannot get past is how ordinary it has become. Most of this cruelty is legal. It is beautifully packaged, with a kind word printed on the front, and nobody tells you what is behind it. So I read the investigations, the rulings and the small print, and I write down what they actually say, in plain words, with the source beside every claim, so you never have to take my word for it.
 
-I am not here to make you feel guilty. I am here because I believe most people would choose differently if they could see what I have seen. Once you can see behind the label, the choice is finally yours. When enough of us can see it, it gets harder to sell. That is how it changes.
+I am not here to make you feel guilty. I am here because I believe most people would choose differently if they could see what I have seen. Once you can see behind the label, the choice is finally yours. When enough of us can see it, it gets harder to sell. That is how generations of cruelty finally end.
 
 Everything here is free to read, and it will stay that way. If it moves you, pass it on. The animals cannot ask you to, and too many of the women were never asked. So I am asking, for both.
 
