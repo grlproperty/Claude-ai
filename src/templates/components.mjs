@@ -251,6 +251,16 @@ export function newsletterForm(site, { dark = false, note = true } = {}) {
 
 /** Closing band: the funding position, and the briefing. */
 /**
+ * How wide a cover on a shelf is drawn, for the browser to choose a file by.
+ * Measured, not guessed: two covers sit two-up from 44rem; more than two sit
+ * three or four across on a wide screen. Everything is full width on a phone.
+ */
+const coverSizes = (count) =>
+  count > 2
+    ? '(min-width: 75rem) 18rem, (min-width: 60rem) 28vw, (min-width: 37rem) 45vw, 92vw'
+    : '(min-width: 100rem) 36rem, (min-width: 44rem) 45vw, 92vw';
+
+/**
  * The shelf: the paid documents, shown where the reading happens.
  *
  * They were reachable from every page and findable from none — one nav item,
@@ -300,7 +310,9 @@ export function shelf(site, covers = {}, { tier = 'all', limit = 3, heading = tr
         <a class="shelf__link" href="/shop/">
           ${
             c
-              ? `<span class="shelf__cover"><img src="${esc(c.thumb)}" alt="" loading="lazy" decoding="async" width="${
+              ? `<span class="shelf__cover"><img src="${esc(c.image)}" srcset="${esc(
+                  c.srcset ?? `${c.thumb} 420w, ${c.image} 840w`
+                )}" sizes="${coverSizes(shown.length)}" alt="" loading="lazy" decoding="async" width="${
                   c.width ?? 911
                 }" height="${c.height ?? 1287}"></span>`
               : '<span class="shelf__cover shelf__cover--blank" aria-hidden="true"></span>'
@@ -358,7 +370,9 @@ export function freeShelf(site, covers = {}, { id = 'free' } = {}) {
         <a class="shelf__link" href="${esc(f.file)}" download="${esc(f.file.split('/').pop())}" data-pointer-label="Download">
           ${
             c
-              ? `<span class="shelf__cover"><img src="${esc(c.thumb)}" alt="" loading="lazy" decoding="async" width="${
+              ? `<span class="shelf__cover"><img src="${esc(c.image)}" srcset="${esc(
+                  c.srcset ?? `${c.thumb} 420w, ${c.image} 840w`
+                )}" sizes="${coverSizes(free.length)}" alt="" loading="lazy" decoding="async" width="${
                   c.width ?? 911
                 }" height="${c.height ?? 1287}"></span>`
               : '<span class="shelf__cover shelf__cover--blank" aria-hidden="true"></span>'

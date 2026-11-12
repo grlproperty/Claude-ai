@@ -510,7 +510,7 @@ code {
 .stamp {
   display: inline-block;
   font-family: var(--mono);
-  font-size: 0.58rem;
+  font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -821,7 +821,7 @@ code {
 
 .nav a {
   font-family: var(--ui);
-  font-size: 0.6rem;
+  font-size: 0.66rem;
   font-weight: 400;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -855,7 +855,7 @@ code {
   border: 1px solid var(--rule);
   color: var(--ink);
   font-family: var(--ui);
-  font-size: 0.6rem;
+  font-size: 0.66rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   padding: 0.55rem 0.9rem;
@@ -976,7 +976,7 @@ code {
 
 .btn--sm {
   padding: 0.62rem 1.05rem;
-  font-size: 0.6rem;
+  font-size: 0.66rem;
 }
 
 .arrow {
@@ -1337,7 +1337,7 @@ code {
 
 .stat__label {
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: 0.66rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-muted);
@@ -1445,7 +1445,7 @@ code {
   align-items: center;
   gap: 0.7rem;
   font-family: var(--mono);
-  font-size: 0.56rem;
+  font-size: 0.64rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-faint);
@@ -1556,7 +1556,7 @@ code {
 
 .tag {
   font-family: var(--mono);
-  font-size: 0.52rem;
+  font-size: 0.625rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   padding: 0.28rem 0.55rem;
@@ -1602,7 +1602,7 @@ code {
 
 .row__index {
   font-family: var(--mono);
-  font-size: 0.56rem;
+  font-size: 0.64rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-faint);
@@ -1636,7 +1636,7 @@ code {
 
 .row__aside {
   font-family: var(--mono);
-  font-size: 0.56rem;
+  font-size: 0.64rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-faint);
@@ -1746,7 +1746,7 @@ code {
 }
 
 .prose th {
-  font-size: 0.56rem;
+  font-size: 0.64rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--ink-muted);
@@ -1770,7 +1770,7 @@ code {
 }
 
 .note__title {
-  font-size: 0.56rem;
+  font-size: 0.64rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--crimson);
@@ -1806,7 +1806,7 @@ code {
   flex-wrap: wrap;
   gap: var(--s4);
   font-family: var(--mono);
-  font-size: 0.56rem;
+  font-size: 0.64rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-faint);
@@ -1916,7 +1916,7 @@ code {
 
 .chip {
   font-family: var(--mono);
-  font-size: 0.56rem;
+  font-size: 0.64rem;
   font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -1964,7 +1964,7 @@ code {
 
 .entry__runby {
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: 0.66rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-faint);
@@ -1997,7 +1997,7 @@ code {
 .panel h2,
 .panel h3 {
   font-family: var(--mono);
-  font-size: 0.56rem;
+  font-size: 0.64rem;
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -2030,7 +2030,7 @@ code {
 
 .src-note {
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: 0.66rem;
   letter-spacing: 0.06em;
   color: var(--ink-faint);
   margin-top: var(--s3);
@@ -2136,7 +2136,7 @@ code {
 
 .amount__note {
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: 0.66rem;
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -2255,7 +2255,7 @@ code {
 
 .product__for {
   font-family: var(--mono);
-  font-size: 0.58rem;
+  font-size: 0.65rem;
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -2273,7 +2273,7 @@ code {
 
 .product__meta {
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.68rem;
   letter-spacing: 0.02em;
   line-height: 1.6;
   font-variant-numeric: tabular-nums;
@@ -2346,7 +2346,7 @@ code {
 
 .currency__label {
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: 0.66rem;
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -2395,7 +2395,7 @@ code {
 
 .amount__value .conv-usd {
   display: block;
-  font-size: 0.62rem;
+  font-size: 0.68rem;
   text-transform: uppercase;
   letter-spacing: 0.16em;
   margin-top: 0.55rem;
@@ -2545,7 +2545,7 @@ code {
 
 .search__count {
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: 0.66rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-faint);
@@ -2587,7 +2587,7 @@ code {
 
 .colophon h2 {
   font-family: var(--mono);
-  font-size: 0.56rem;
+  font-size: 0.64rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -2639,7 +2639,7 @@ code {
   justify-content: space-between;
   padding-top: var(--s5);
   font-family: var(--mono);
-  font-size: 0.56rem;
+  font-size: 0.64rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(253, 252, 252, 0.62);
@@ -3258,7 +3258,7 @@ code {
 .index-list > li::after {
   content: counter(idx, decimal-leading-zero);
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.68rem;
   letter-spacing: 0.06em;
   color: var(--ink-faint);
   font-variant-numeric: tabular-nums;
@@ -3284,7 +3284,7 @@ code {
    column of them lines up, and never a link target of its own. */
 .count {
   font-family: var(--mono);
-  font-size: 0.62em;
+  font-size: 0.8em;
   letter-spacing: 0.06em;
   font-variant-numeric: tabular-nums;
   color: var(--ink-faint);
@@ -3459,7 +3459,7 @@ code {
   z-index: 60;
   pointer-events: none;
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: 0.66rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -4705,5 +4705,29 @@ img.is-developing {
     float: none;
     width: 8rem;
     margin: 0 0 var(--s4);
+  }
+}
+
+/* ------------------------------------------------------------ TAP TARGETS
+   On a phone the menu button, the donate button in the masthead and the
+   filter chips were under 40px tall: easy to miss with a thumb. The label
+   stays the size it was; only the area that answers a touch grows. */
+@media (max-width: 1000px), (pointer: coarse) {
+  .nav-toggle,
+  .masthead__actions .btn--sm {
+    min-height: 2.75rem;
+  }
+
+  .chip {
+    min-height: 2.5rem;
+  }
+}
+
+/* A long stamp is allowed onto a second line on the narrowest phones rather
+   than pushing the page sideways. */
+@media (max-width: 400px) {
+  .stamp {
+    white-space: normal;
+    max-width: 100%;
   }
 }

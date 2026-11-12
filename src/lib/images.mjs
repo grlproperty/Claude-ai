@@ -458,7 +458,11 @@ export async function buildCovers({ dist, dir }) {
   for (const file of (await readdir(dir)).filter((f) => /\.(jpe?g|png|webp)$/i.test(f))) {
     const slug = file.replace(/\.[^.]+$/, '');
     const meta = await sharp(join(dir, file)).metadata();
-    for (const width of [420, 840]) {
+    // Three widths. A cover is shown up to about 580px wide, which is 1160
+    // device pixels on a phone or a laptop with a dense screen: with only 420
+    // and 840 to choose from, the largest cards were drawn soft.
+    const widths = [420, 840, 1200].filter((w, i) => i === 0 || w <= (meta.width ?? 0));
+    for (const width of widths) {
       await sharp(join(dir, file))
         .resize({ width, withoutEnlargement: true })
         .webp({ quality: 78, effort: 6 })
@@ -466,7 +470,8 @@ export async function buildCovers({ dist, dir }) {
     }
     covers[slug] = {
       thumb: `/assets/img/covers/${slug}-420.webp`,
-      image: `/assets/img/covers/${slug}-840.webp`,
+      image: `/assets/img/covers/${slug}-${widths.includes(840) ? 840 : 420}.webp`,
+      srcset: widths.map((w) => `/assets/img/covers/${slug}-${w}.webp ${w}w`).join(', '),
       width: meta.width ?? null,
       height: meta.height ?? null,
     };

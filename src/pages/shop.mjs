@@ -32,9 +32,9 @@ function cover(covers, name, tag = '') {
   // the one fact a reader scanning a wall of covers is actually looking for,
   // and it is repeated verbatim in the card's own buy row below — so it is
   // aria-hidden here rather than read out twice.
-  return `<div class="product__cover"><img src="${esc(c.image)}" srcset="${esc(c.thumb)} 420w, ${esc(
-    c.image
-  )} 840w" sizes="(min-width: 60rem) 22vw, 40vw" alt="Cover of ${esc(name)}" width="${c.width ?? 911}" height="${
+  return `<div class="product__cover"><img src="${esc(c.image)}" srcset="${esc(
+    c.srcset ?? `${c.thumb} 420w, ${c.image} 840w`
+  )}" sizes="(min-width: 100rem) 36rem, (min-width: 44rem) 45vw, 92vw" alt="Cover of ${esc(name)}" width="${c.width ?? 911}" height="${
     c.height ?? 1287
   }" loading="lazy" decoding="async">${
     tag ? `<span class="product__tag" aria-hidden="true">${esc(tag)}</span>` : ''
