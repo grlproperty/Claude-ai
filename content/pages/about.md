@@ -12,17 +12,17 @@ That is the whole remit. We investigate every industry built on a body that coul
 
 [[founder-photo]]
 
-I started FERAL FEMME for the animals.
+I started FERAL FEMME for animals and for women. Both, equally, and for the same reason.
 
-They cannot say no. They cannot leave, and they cannot tell anyone what was done to them. Somebody has to say it for them, and I decided it would be me.
+There are whole industries built on a body that could not say no. Animals cannot refuse, cannot leave, and cannot tell anyone what was done to them. And the women in those same industries, the ones who make the product and the ones it is sold to, are told as little as possible and asked even less.
 
-The longer I looked, the more I saw the same industries using women too: the women who make the product, and the women it is sold to. Different bodies, the same business. I could not care about one and look away from the other.
+To me that is one harm, not two. The same business, the same gentle names, the same silence. I could never care about one and look away from the other, so here they stand side by side, at equal weight, and they always will.
 
 What I cannot get past is how ordinary it all is. Most of this cruelty is legal. It is beautifully packaged, with a kind word printed on the front, and nobody tells you what is behind it. So I read the investigations, the rulings and the small print, and I write down what they actually say, in plain words, with the source beside every claim, so you never have to take my word for it.
 
 I am not here to make you feel guilty. I am here because I believe most people would choose differently if they could see what I have seen. Once you can see behind the label, the choice is finally yours. When enough of us can see it, it gets harder to sell. That is how it changes.
 
-Everything here is free to read, and it will stay that way. If it moves you, pass it on. The animals cannot ask you to, so I am asking for them.
+Everything here is free to read, and it will stay that way. If it moves you, pass it on. The animals cannot ask you to, and too many of the women were never asked. So I am asking, for both.
 
 <p class="founder-sign">Ayden Rosemary Brown<br><span>Founder, FERAL FEMME</span></p>
 
