@@ -18,7 +18,7 @@ body{background:#fff;color:var(--ink);font-family:Jost,Arial,sans-serif}
 .head .label{color:var(--blue);margin-right:230px;text-align:right;line-height:1.9;font-size:13px}
 .head .label span{color:var(--ink)}
 
-.hero{position:absolute;inset:138px 0 auto 0;height:730px;background:url(assets/pool.jpg) center 30%/cover}
+.hero{position:absolute;inset:138px 0 auto 0;height:660px;background:url(assets/pool.jpg) center 52%/cover}
 .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(#0A6CC000 58%,#0A6CC0b0 78%,#0A6CC0 97%)}
 
 .sun{position:absolute;right:50px;top:44px;width:206px;height:206px;border-radius:50%;background:var(--orange);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 0 8px #fff}
@@ -26,24 +26,23 @@ body{background:#fff;color:var(--ink);font-family:Jost,Arial,sans-serif}
 .sun strong{font:600 78px/.9 Cormorant,Georgia,serif;margin:6px 0 8px}
 
 
-.copy{position:absolute;left:54px;top:652px;color:#fff}
+.copy{position:absolute;left:54px;top:596px;color:#fff}
 .tag{display:inline-block;background:var(--orange);color:var(--ink);font-size:21px;letter-spacing:.26em;padding:15px 20px 14px 26px;margin-bottom:24px}
 .kicker{display:flex;align-items:center;gap:14px;margin-bottom:18px;text-shadow:0 1px 10px #05386a80}
 .kicker i{display:block;width:44px;height:3px;background:var(--orange)}
 h1{font:500 132px/.9 Cormorant,Georgia,serif;letter-spacing:-.02em;white-space:nowrap;text-shadow:0 2px 30px #05386a55}
 h1 span{font:500 .86em/1 Jost,Arial,sans-serif;letter-spacing:-.03em}
 h1 em{font-style:italic;font-weight:400;color:var(--orange);letter-spacing:-.01em}
-.intro{font:400 23px/1.42 Jost;margin-top:24px;width:650px}
-.feat{margin-top:20px;width:640px;white-space:nowrap;font-size:12px;letter-spacing:.2em;line-height:2;color:#ffffffd0}
-.btn{display:inline-block;margin-top:24px;background:var(--orange);color:var(--ink);font:500 22px/1 Jost;letter-spacing:.3em;text-transform:uppercase;padding:25px 32px 24px 42px}
+.intro{font:400 23px/1.42 Jost;margin-top:26px;width:560px;text-wrap:balance}
+.feat{margin-top:18px;width:560px;white-space:nowrap;letter-spacing:.17em;font-size:12px;letter-spacing:.2em;line-height:2;color:#ffffffd0}
+.btn{display:block;background:var(--orange);color:var(--ink);font:500 22px/1 Jost;letter-spacing:.3em;text-transform:uppercase;padding:25px 32px 24px 42px}
 .btn b{font-weight:500;margin-left:10px;letter-spacing:0}
-.contact{margin-top:18px;font:500 13.5px/1 Jost;letter-spacing:.13em;text-transform:uppercase}
+.contact{margin-top:18px;font:500 16px/1 Jost;letter-spacing:.02em}
 .contact + .contact{margin-top:10px;font:400 17px/1 Jost;letter-spacing:.04em;text-transform:none;color:#ffffffe0}
 
-.c{position:absolute;border-radius:50%;border:7px solid #fff;background:center/cover;box-shadow:0 20px 40px -16px #03244880}
-.c1{width:286px;height:286px;left:716px;top:940px;background-image:url(assets/living.jpg);background-position:62% 60%}
-.c2{width:190px;height:190px;left:574px;top:1118px;background-image:url(assets/bedroom.jpg);background-position:center 62%}
-.c3{width:150px;height:150px;left:872px;top:1172px;background-image:url(assets/sunset.jpg);background-position:70% 80%;background-size:190%}
+.cta{position:absolute;right:54px;top:948px;width:372px;color:#fff;text-align:center}
+.strip{position:absolute;left:0;right:0;bottom:0;height:206px;display:flex;gap:6px;border-top:6px solid #fff;background:#fff}
+.strip i{flex:1;background:center/cover}
 </style></head>
 <body>
 <div class="ad">
@@ -60,11 +59,21 @@ h1 em{font-style:italic;font-weight:400;color:var(--orange);letter-spacing:-.01e
     <h1><span>15–27</span> December<br><em>now available.</em></h1>
     <p class="intro">Peak-season dates have just opened up. Sleeps 8–10, with a private pool and braai, 260&nbsp;m from the Swartvlei Estuary.</p>
     <p class="label feat">Four bedrooms, one in the flatlet · Double sleeper couch<br>Jungle gym · Swings · Trampoline · Climbing wall<br>Pets welcome · Inverter &amp; backup water</p>
+  </div>
+
+  <div class="cta">
     <span class="btn">Book now<b>→</b></span>
     <p class="contact">sedgefieldholidayaccommodation.co.za</p>
     <p class="contact">WhatsApp +27 84 714 7793</p>
   </div>
 
-  <div class="c c1"></div><div class="c c2"></div><div class="c c3"></div>
+  <div class="strip">
+    <i style="background-image:url(assets/living.jpg);background-position:60% 60%"></i>
+    <i style="background-image:url(assets/bar.jpg);background-position:35% 40%"></i>
+    <i style="background-image:url(assets/bedroom.jpg);background-position:55% 60%"></i>
+    <i style="background-image:url(assets/lounge.jpg);background-position:45% 60%"></i>
+    <i style="background-image:url(assets/junglegym.jpg);background-position:30% 50%"></i>
+    <i style="background-image:url(assets/sunset.jpg);background-position:60% 70%"></i>
+  </div>
 </div>
 </body></html>
