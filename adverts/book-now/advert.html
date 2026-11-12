@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en-ZA"><head><meta charset="utf-8">
+<title>Sedgefield Holiday Accommodation — Book now</title>
+<style>
+@font-face{font-family:Cormorant;font-weight:500;src:url(assets/cormorant-garamond-latin-500-normal.woff2)}
+@font-face{font-family:Cormorant;font-weight:600;src:url(assets/cormorant-garamond-latin-600-normal.woff2)}
+@font-face{font-family:Cormorant;font-weight:400;font-style:italic;src:url(assets/cormorant-garamond-latin-400-italic.woff2)}
+@font-face{font-family:Jost;font-weight:400;src:url(assets/jost-latin-400-normal.woff2)}
+@font-face{font-family:Jost;font-weight:500;src:url(assets/jost-latin-500-normal.woff2)}
+:root{--ink:#0E1116;--blue:#0A6CC0;--orange:#F29B00;--orange-text:#C06A00;--mist:#F4F5F7;--charcoal:#454A52;--rule:#DADDE2}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#fff;color:var(--ink);font-family:Jost,Arial,sans-serif}
+.ad{position:relative;width:1080px;height:1350px;background:#fff;overflow:hidden}
+.label{font:500 15px/1 Jost;letter-spacing:.24em;text-transform:uppercase}
+
+.hero{position:absolute;inset:66px 0 auto 0;height:590px;background:url(assets/pool.jpg) center 40%/cover}
+.top{position:absolute;left:54px;right:54px;top:0;height:66px;display:flex;justify-content:space-between;align-items:center}
+.top .label{font-size:13px}
+.top .label:first-child{color:var(--blue)}
+
+.strip{position:absolute;left:46px;right:46px;top:556px;display:flex;gap:8px;padding:8px 8px 0;background:#fff}
+.strip figure{flex:1;height:206px;background:var(--mist) center/cover}
+.strip .a{background-image:url(assets/living.jpg);background-position:center 60%}
+.strip .b{background-image:url(assets/bedroom.jpg);background-position:center 55%}
+.strip .c{background-image:url(assets/sunset.jpg);background-position:center 70%}
+
+.copy{position:absolute;left:54px;right:54px;top:808px;display:grid;grid-template-columns:1fr 350px;column-gap:56px}
+.kicker{color:var(--blue);margin-bottom:22px;display:flex;align-items:center;gap:14px}
+.kicker i{display:block;width:40px;height:2px;background:var(--orange)}
+h1{font:500 84px/.96 Cormorant,Georgia,serif;letter-spacing:-.012em}
+  .intro{font:400 italic 28px/1.3 Cormorant,Georgia,serif;color:var(--charcoal);margin-top:22px;max-width:570px}
+
+.facts{align-self:end;border-top:1px solid var(--ink)}
+.facts div{display:flex;justify-content:space-between;align-items:baseline;padding:13px 0 12px;border-bottom:1px solid var(--rule)}
+.facts .label{font-size:12.5px;color:var(--blue)}
+.facts span:last-child{font:400 19px/1 Jost}
+
+.foot{position:absolute;left:54px;right:54px;bottom:46px;height:150px;border-top:1px solid var(--rule);padding-top:26px;display:flex;justify-content:space-between;align-items:center}
+.logo{height:134px;mix-blend-mode:multiply;margin-left:-14px}
+.cta{text-align:right}
+.btn{display:inline-block;background:var(--ink);color:#fff;font:500 19px/1 Jost;letter-spacing:.3em;text-transform:uppercase;padding:23px 30px 22px 40px}
+.btn b{font-weight:500;color:var(--orange);margin-left:10px;letter-spacing:0}
+.cta p{font:500 14px/1 Jost;letter-spacing:.14em;text-transform:uppercase;margin-top:16px}
+.cta p + p{font:400 17px/1 Jost;letter-spacing:.04em;text-transform:none;color:var(--charcoal);margin-top:10px}
+</style></head>
+<body>
+<div class="ad">
+  <div class="top">
+    <span class="label">The Island · Sedgefield · Garden Route</span>
+    <span class="label">Superhost · 4.86 from 120 reviews</span>
+  </div>
+  <div class="hero"></div>
+  <div class="strip"><figure class="a"></figure><figure class="b"></figure><figure class="c"></figure></div>
+
+  <div class="copy">
+    <div>
+      <div class="label kicker"><i></i>Entire home · Sleeps eight</div>
+      <h1>A slower pace,<br>a bit of wildness.</h1>
+      <p class="intro">A family home 260&nbsp;m from the Swartvlei Estuary, with a private pool, a braai and the garden all to yourselves.</p>
+    </div>
+    <div class="facts">
+      <div><span class="label">Bedrooms</span><span>4, plus garden flatlet</span></div>
+      <div><span class="label">Pool</span><span>Private and fenced</span></div>
+      <div><span class="label">Children</span><span>Jungle gym with slide</span></div>
+      <div><span class="label">Pets</span><span>Welcome, by arrangement</span></div>
+      <div><span class="label">Power</span><span>Inverter, backup water</span></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <img class="logo" src="assets/logo.jpg" alt="Sedgefield Holiday Accommodation">
+    <div class="cta">
+      <span class="btn">Book now<b>→</b></span>
+      <p>sedgefieldholidayaccommodation.co.za</p>
+      <p>WhatsApp +27 84 714 7793</p>
+    </div>
+  </div>
+</div>
+</body></html>
