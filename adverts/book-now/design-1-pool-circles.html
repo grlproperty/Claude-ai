@@ -15,8 +15,9 @@ body{background:#fff;color:var(--ink);font-family:Jost,Arial,sans-serif}
 
 .head{position:absolute;inset:0 0 auto 0;height:138px;background:#fff;padding:0 54px 0 40px;display:flex;align-items:center;justify-content:space-between}
 .logo{height:118px;mix-blend-mode:multiply}
-.head .label{color:var(--blue);margin-right:230px;text-align:right;line-height:1.9;font-size:13px}
-.head .label span{color:var(--ink)}
+.loc{margin-right:234px;text-align:right}
+.loc strong{display:block;font:500 47px/1 Cormorant,Georgia,serif;letter-spacing:-.005em;color:var(--ink)}
+.loc .label{display:block;margin-top:11px;font-size:12.5px;letter-spacing:.16em;color:var(--blue)}
 
 .hero{position:absolute;inset:138px 0 auto 0;height:730px;background:url(assets/pool.jpg) center 30%/cover}
 .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(#0A6CC000 58%,#0A6CC0b0 78%,#0A6CC0 97%)}
@@ -26,16 +27,19 @@ body{background:#fff;color:var(--ink);font-family:Jost,Arial,sans-serif}
 .sun strong{font:600 78px/.9 Cormorant,Georgia,serif;margin:6px 0 8px}
 
 
-.copy{position:absolute;left:54px;top:626px;color:#fff}
+.copy{position:absolute;left:54px;top:606px;color:#fff}
+.card{background:#fff;color:var(--ink);display:block;width:max-content;margin-top:12px;padding:17px 24px 18px}
+.card .tel{margin-top:0}
+.tel i{font-style:normal;color:var(--orange);margin:0 2px}
 .tag{display:inline-block;background:var(--orange);color:var(--ink);font-size:21px;letter-spacing:.26em;padding:15px 20px 14px 26px;margin-bottom:24px}
 .kicker{display:flex;align-items:center;gap:14px;margin-bottom:18px;text-shadow:0 1px 10px #05386a80}
 .kicker i{display:block;width:44px;height:3px;background:var(--orange)}
-h1{font:500 132px/.9 Cormorant,Georgia,serif;letter-spacing:-.02em;white-space:nowrap;text-shadow:0 2px 30px #05386a55}
+h1{font:500 124px/.9 Cormorant,Georgia,serif;letter-spacing:-.02em;white-space:nowrap;text-shadow:0 2px 30px #05386a55}
 h1 span{font:500 .86em/1 Jost,Arial,sans-serif;letter-spacing:-.03em}
 h1 em{font-style:italic;font-weight:400;color:var(--orange);letter-spacing:-.01em}
 .intro{font:400 23px/1.42 Jost;margin-top:24px;width:650px}
 .feat{margin-top:20px;width:640px;white-space:nowrap;font-size:12px;letter-spacing:.2em;line-height:2;color:#ffffffd0}
-.btn{display:inline-block;margin-top:22px;background:var(--orange);color:var(--ink);font:500 22px/1 Jost;letter-spacing:.3em;text-transform:uppercase;padding:25px 32px 24px 42px}
+.btn{display:inline-block;margin-top:22px;background:var(--orange);color:var(--ink);font:500 22px/1 Jost;letter-spacing:.3em;text-transform:uppercase;padding:20px 32px 19px 42px}
 .btn b{font-weight:500;margin-left:10px;letter-spacing:0}
 .tel{margin-top:18px;font:500 30px/1 Jost;letter-spacing:.01em}
 .web{margin-top:10px;font:500 20px/1 Jost;letter-spacing:.02em}
@@ -51,7 +55,7 @@ h1 em{font-style:italic;font-weight:400;color:var(--orange);letter-spacing:-.01e
   <div class="hero"></div>
   <div class="head">
     <img class="logo" src="assets/logo.jpg" alt="Sedgefield Holiday Accommodation">
-    <div class="label">The Island · Sedgefield<br><span>Garden Route</span></div>
+    <div class="loc"><strong>The Island, Sedgefield</strong><span class="label">30 min from George · 26 min from Knysna</span></div>
   </div>
   <div class="sun"><span class="label">Superhost</span><strong>4.86</strong><span class="label">120 reviews</span></div>
 
@@ -62,9 +66,11 @@ h1 em{font-style:italic;font-weight:400;color:var(--orange);letter-spacing:-.01e
     <p class="intro">Peak-season dates have just opened up. Sleeps 8–10, with a private pool and braai, 260&nbsp;m from the Swartvlei Estuary.</p>
     <p class="label feat">Four bedrooms, one in the flatlet · Double sleeper couch<br>Jungle gym · Swings · Trampoline · Climbing wall<br>Pets welcome · Inverter &amp; backup water</p>
     <span class="btn">Book now<b>→</b></span>
-    <p class="tel">WhatsApp +27 84 714 7793</p>
-    <p class="web">sedgefieldholidayaccommodation.co.za</p>
-    <p class="web">sedgefieldholidays@gmail.com</p>
+    <div class="card">
+      <p class="tel">084 714 7793 <i>·</i> 074 149 1634</p>
+      <p class="web">sedgefieldholidayaccommodation.co.za</p>
+      <p class="web">sedgefieldholidays@gmail.com</p>
+    </div>
   </div>
 
   <div class="c c1"></div><div class="c c2"></div><div class="c c3"></div>

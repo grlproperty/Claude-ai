@@ -12,35 +12,39 @@
 body{background:#fff;color:var(--ink);font-family:Jost,Arial,sans-serif}
 .ad{position:relative;width:1080px;height:1350px;background:#fff;overflow:hidden}
 .label{font:500 14px/1 Jost;letter-spacing:.24em;text-transform:uppercase}
-.sky{position:absolute;inset:0 0 auto 0;height:1136px;background:var(--blue)}
+.sky{position:absolute;inset:0 0 auto 0;height:1150px;background:var(--blue)}
 
 .top{position:absolute;left:0;right:0;top:50px;text-align:center;color:#fff}
 .tag{display:inline-block;background:var(--orange);color:var(--ink);font-size:21px;letter-spacing:.26em;padding:15px 22px 14px 28px}
-h1{font:500 138px/.9 Cormorant,Georgia,serif;letter-spacing:-.02em;white-space:nowrap;margin-top:22px}
+h1{font:500 126px/.9 Cormorant,Georgia,serif;letter-spacing:-.02em;white-space:nowrap;margin-top:22px}
 h1 span{font:500 .86em/1 Jost,Arial,sans-serif;letter-spacing:-.03em}
 h1 em{font-style:italic;font-weight:400;color:var(--orange);letter-spacing:-.01em}
-.intro{font:400 23px/1.42 Jost;margin:22px auto 0;width:700px;text-wrap:balance}
+.loc{margin-top:16px}
+.loc strong{display:block;font:500 50px/1 Cormorant,Georgia,serif}
+.loc .label{display:block;margin-top:11px;font-size:13px;letter-spacing:.18em}
+.intro{font:400 22px/1.42 Jost;margin:18px auto 0;width:700px;text-wrap:balance}
 
-.arch{position:absolute;bottom:214px;background:center/cover;border:6px solid #fff;border-bottom:0}
+.arch{position:absolute;bottom:200px;background:center/cover;border:6px solid #fff;border-bottom:0}
 .a1{left:46px;width:150px;height:296px;border-radius:75px 75px 0 0;background-image:url(assets/bar.jpg);background-position:34% 40%}
-.a2{left:208px;width:150px;height:420px;border-radius:75px 75px 0 0;background-image:url(assets/bedroom2.jpg);background-position:30% 50%}
-.a3{left:370px;width:340px;height:626px;border-radius:170px 170px 0 0;background-image:url(assets/pool.jpg);background-position:33% 50%}
-.a4{left:722px;width:150px;height:420px;border-radius:75px 75px 0 0;background-image:url(assets/junglegym.jpg);background-position:31% 50%}
+.a2{left:208px;width:150px;height:404px;border-radius:75px 75px 0 0;background-image:url(assets/bedroom2.jpg);background-position:30% 50%}
+.a3{left:370px;width:340px;height:598px;border-radius:170px 170px 0 0;background-image:url(assets/pool.jpg);background-position:33% 50%}
+.a4{left:722px;width:150px;height:404px;border-radius:75px 75px 0 0;background-image:url(assets/junglegym.jpg);background-position:31% 50%}
 .a5{left:884px;width:150px;height:296px;border-radius:75px 75px 0 0;background-image:url(assets/living.jpg);background-position:62% 60%}
 
-.feat{position:absolute;left:54px;top:522px;width:290px;color:#fff;font-size:12px;letter-spacing:.2em;line-height:1.95}
+.feat{position:absolute;left:54px;top:566px;width:290px;color:#fff;font-size:12px;letter-spacing:.2em;line-height:1.95}
 .feat i{display:block;width:44px;height:3px;background:var(--orange);margin-bottom:14px}
-.sun{position:absolute;left:800px;top:520px;width:176px;height:176px;border-radius:50%;background:var(--orange);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.sun{position:absolute;left:800px;top:562px;width:176px;height:176px;border-radius:50%;background:var(--orange);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center}
 .sun .label{font-size:10.5px;letter-spacing:.2em}
 .sun strong{font:600 66px/.9 Cormorant,Georgia,serif;margin:5px 0 7px}
 
-.foot{position:absolute;left:40px;right:54px;bottom:0;height:214px;display:flex;justify-content:space-between;align-items:center}
+.foot{position:absolute;left:40px;right:54px;bottom:0;height:200px;display:flex;justify-content:space-between;align-items:center}
 .logo{height:158px;mix-blend-mode:multiply}
 .cta{text-align:right}
 .btn{display:inline-block;background:var(--orange);color:var(--ink);font:500 22px/1 Jost;letter-spacing:.3em;text-transform:uppercase;padding:21px 34px 20px 44px}
 .btn b{font-weight:500;margin-left:10px;letter-spacing:0}
 .tel{font:500 30px/1 Jost;letter-spacing:.01em;margin-top:14px;color:var(--ink)}
-.web{font:500 20px/1 Jost;letter-spacing:.02em;margin-top:8px;color:var(--blue)}
+.web{font:500 20px/1 Jost;letter-spacing:.02em;margin-top:8px;color:var(--ink)}
+.tel i{font-style:normal;color:var(--orange);margin:0 2px}
 .tel + .web{margin-top:11px}
 </style></head>
 <body>
@@ -49,6 +53,7 @@ h1 em{font-style:italic;font-weight:400;color:var(--orange);letter-spacing:-.01e
   <div class="top">
     <div class="label tag">Last-minute cancellation</div>
     <h1><span>15–27</span> December<br><em>now available.</em></h1>
+    <p class="loc"><strong>The Island, Sedgefield</strong><span class="label">30 min from George · 26 min from Knysna</span></p>
     <p class="intro">Peak-season dates have just opened up. Sleeps 8–10, with a private pool and braai, 260&nbsp;m from the Swartvlei Estuary.</p>
   </div>
 
@@ -61,7 +66,7 @@ h1 em{font-style:italic;font-weight:400;color:var(--orange);letter-spacing:-.01e
     <img class="logo" src="assets/logo.jpg" alt="Sedgefield Holiday Accommodation">
     <div class="cta">
       <span class="btn">Book now<b>→</b></span>
-      <p class="tel">WhatsApp +27 84 714 7793</p>
+      <p class="tel">084 714 7793 <i>·</i> 074 149 1634</p>
       <p class="web">sedgefieldholidayaccommodation.co.za</p>
       <p class="web">sedgefieldholidays@gmail.com</p>
     </div>

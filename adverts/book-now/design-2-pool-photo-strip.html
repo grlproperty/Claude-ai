@@ -15,8 +15,9 @@ body{background:#fff;color:var(--ink);font-family:Jost,Arial,sans-serif}
 
 .head{position:absolute;inset:0 0 auto 0;height:138px;background:#fff;padding:0 54px 0 40px;display:flex;align-items:center;justify-content:space-between}
 .logo{height:118px;mix-blend-mode:multiply}
-.head .label{color:var(--blue);margin-right:230px;text-align:right;line-height:1.9;font-size:13px}
-.head .label span{color:var(--ink)}
+.loc{margin-right:234px;text-align:right}
+.loc strong{display:block;font:500 47px/1 Cormorant,Georgia,serif;letter-spacing:-.005em;color:var(--ink)}
+.loc .label{display:block;margin-top:11px;font-size:12.5px;letter-spacing:.16em;color:var(--blue)}
 
 .hero{position:absolute;inset:138px 0 auto 0;height:660px;background:url(assets/pool.jpg) center 52%/cover}
 .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(#0A6CC000 58%,#0A6CC0b0 78%,#0A6CC0 97%)}
@@ -42,7 +43,11 @@ h1 em{font-style:italic;font-weight:400;color:var(--orange);letter-spacing:-.01e
 .tel + .web{margin-top:12px}
 .contact + .contact{margin-top:10px;font:400 17px/1 Jost;letter-spacing:.04em;text-transform:none;color:#ffffffe0}
 
-.cta{position:absolute;right:54px;top:918px;width:400px;white-space:nowrap;color:#fff;text-align:center}
+.card{background:#fff;color:var(--ink);margin-top:8px;padding:13px 8px 14px}
+.card .tel{margin-top:0}
+.tel i{font-style:normal;color:var(--orange);margin:0 2px}
+.tel + .tel{margin-top:8px}
+.cta{position:absolute;right:54px;top:912px;width:400px;white-space:nowrap;color:#fff;text-align:center}
 .strip{position:absolute;left:0;right:0;bottom:0;height:206px;display:flex;gap:6px;border-top:6px solid #fff;background:#fff}
 .strip i{flex:1;background:center/cover}
 </style></head>
@@ -51,7 +56,7 @@ h1 em{font-style:italic;font-weight:400;color:var(--orange);letter-spacing:-.01e
   <div class="hero"></div>
   <div class="head">
     <img class="logo" src="assets/logo.jpg" alt="Sedgefield Holiday Accommodation">
-    <div class="label">The Island · Sedgefield<br><span>Garden Route</span></div>
+    <div class="loc"><strong>The Island, Sedgefield</strong><span class="label">30 min from George · 26 min from Knysna</span></div>
   </div>
   <div class="sun"><span class="label">Superhost</span><strong>4.86</strong><span class="label">120 reviews</span></div>
 
@@ -65,9 +70,12 @@ h1 em{font-style:italic;font-weight:400;color:var(--orange);letter-spacing:-.01e
 
   <div class="cta">
     <span class="btn">Book now<b>→</b></span>
-    <p class="tel">WhatsApp +27 84 714 7793</p>
-    <p class="web">sedgefieldholidayaccommodation.co.za</p>
-    <p class="web">sedgefieldholidays@gmail.com</p>
+    <div class="card">
+      <p class="tel">084 714 7793</p>
+      <p class="tel">074 149 1634</p>
+      <p class="web">sedgefieldholidayaccommodation.co.za</p>
+      <p class="web">sedgefieldholidays@gmail.com</p>
+    </div>
   </div>
 
   <div class="strip">
