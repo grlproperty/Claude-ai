@@ -12,13 +12,17 @@ That is the whole remit. We investigate every industry built on a body that coul
 
 [[founder-photo]]
 
-I started FERAL FEMME because I care about women. I care about animals too, and I got tired of watching the same industries use both, under gentler names.
+I started FERAL FEMME for the animals.
 
-Most of the cruelty I write about is legal, ordinary and beautifully packaged. It is on the shelf, in the wardrobe and in the advert, and nobody tells you. So I read the investigations, the rulings and the small print, and I write down what they actually say, in plain words, with the source beside every claim, so you never have to take my word for it.
+They cannot say no. They cannot leave, and they cannot tell anyone what was done to them. Somebody has to say it for them, and I decided it would be me.
 
-I am not here to make you feel guilty. I am here to show you what is behind the label, so that the choice is finally yours. When enough of us can see it, it gets harder to sell. That is how it changes.
+The longer I looked, the more I saw the same industries using women too: the women who make the product, and the women it is sold to. Different bodies, the same business. I could not care about one and look away from the other.
 
-Everything here is free to read, and it will stay that way. If it helps you, pass it on to a woman you love.
+What I cannot get past is how ordinary it all is. Most of this cruelty is legal. It is beautifully packaged, with a kind word printed on the front, and nobody tells you what is behind it. So I read the investigations, the rulings and the small print, and I write down what they actually say, in plain words, with the source beside every claim, so you never have to take my word for it.
+
+I am not here to make you feel guilty. I am here because I believe most people would choose differently if they could see what I have seen. Once you can see behind the label, the choice is finally yours. When enough of us can see it, it gets harder to sell. That is how it changes.
+
+Everything here is free to read, and it will stay that way. If it moves you, pass it on. The animals cannot ask you to, so I am asking for them.
 
 <p class="founder-sign">Ayden Rosemary Brown<br><span>Founder, FERAL FEMME</span></p>
 
