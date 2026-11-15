@@ -341,3 +341,7 @@ Written content is published under
 name and marks, and the archive's editorial imagery, are fully reserved. Bodoni
 Moda, Cormorant Garamond, and Jost are licensed under the SIL Open Font
 License 1.1.
+
+## AI operating systems
+
+`ai-os/` holds the AI business operating systems built alongside this site. It is not part of the site build and is never deployed. See [`ai-os/README.md`](ai-os/README.md).

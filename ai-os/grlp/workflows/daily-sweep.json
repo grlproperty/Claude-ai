@@ -1,0 +1,13 @@
+{
+  "id": "daily-sweep",
+  "name": "Daily sweep",
+  "trigger": "Every working morning (scheduled), or on request",
+  "required": [],
+  "example": {},
+  "steps": [
+    { "id": "quiet", "name": "Buyers who have gone quiet", "agent": "GRLP-A035", "run": "followup.sweep", "onError": "continue" },
+    { "id": "leases", "name": "Leases approaching expiry", "agent": "GRLP-A081", "run": "lease.renewals", "onError": "continue" },
+    { "id": "mandates", "name": "Mandates approaching expiry", "agent": "GRLP-A017", "run": "mandate.track", "onError": "continue" },
+    { "id": "scorecard", "name": "Sales scorecards recalculated", "agent": "GRLP-A004", "run": "scorecard", "onError": "continue" }
+  ]
+}

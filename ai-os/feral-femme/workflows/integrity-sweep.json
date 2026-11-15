@@ -1,0 +1,11 @@
+{
+  "id": "integrity-sweep",
+  "name": "Integrity sweep",
+  "trigger": "Weekly (scheduled), or on request",
+  "required": [],
+  "example": {},
+  "steps": [
+    { "id": "datasets", "name": "Tool datasets checked against their review cycle", "agent": "FF-A092", "run": "dataset.review", "onError": "continue" },
+    { "id": "notes", "name": "Published notes audited for date and attribution fields", "agent": "FF-A110", "run": "notes.audit", "onError": "continue" }
+  ]
+}

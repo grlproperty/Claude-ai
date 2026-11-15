@@ -1,0 +1,20 @@
+{
+  "id": "new-buyer-enquiry",
+  "name": "New buyer enquiry",
+  "trigger": "An enquiry arrives by website form, portal, email, WhatsApp, phone or walk-in",
+  "required": ["name"],
+  "example": { "name": "Sample Buyer", "phone": "082 111 2222", "email": "sample.buyer@example.com", "source": "website", "message": "Looking for a 3 bed house in George up to R3m, cash buyer", "timeframe_months": 3, "consent_marketing": false, "sample": true },
+  "steps": [
+    { "id": "capture", "name": "Enquiry received and buyer details captured", "agent": "GRLP-A024", "run": "lead.capture" },
+    { "id": "dedupe", "name": "Duplicate contact check", "agent": "GRLP-A094", "run": "duplicate.check", "onError": "continue" },
+    { "id": "requirements", "name": "Requirements analysed", "agent": "GRLP-A026", "run": "requirements.analyse" },
+    { "id": "score", "name": "Lead scored", "agent": "GRLP-A025", "run": "lead.qualify" },
+    { "id": "match", "name": "Suitable listings identified", "agent": "GRLP-A027", "run": "property.match" },
+    { "id": "notify", "name": "Responsible agent notified", "agent": "GRLP-A067", "run": "agent.notify" },
+    { "id": "reply", "name": "First reply drafted for approval", "agent": "GRLP-A068", "run": "reply.draft", "gate": { "action": "client.message.send", "title": "Reply to buyer {{input.name}} ({{score.band}} lead)" } },
+    { "id": "followup", "name": "Follow-up task created", "agent": "GRLP-A097", "run": "followup.task" },
+    { "id": "viewing", "name": "Viewing proposed, to be scheduled when the agent confirms", "agent": "GRLP-A029", "run": "viewing.request" },
+    { "id": "crm", "name": "CRM record updated", "agent": "GRLP-A092", "run": "crm.update" },
+    { "id": "track", "name": "Lead conversion tracked", "agent": "GRLP-A034", "run": "conversion.track", "onError": "continue" }
+  ]
+}

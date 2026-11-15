@@ -1,0 +1,39 @@
+{
+  "id": "grlp",
+  "name": "Garden Route Lifestyle Property",
+  "short": "GRLP",
+  "tagline": "Find Your Way Home",
+  "port": 4401,
+  "model": "claude-opus-5-5",
+  "env": { "apiKey": "GRLP_ANTHROPIC_API_KEY", "dataDir": "GRLP_DATA_DIR", "token": "GRLP_DASHBOARD_TOKEN" },
+  "approvers": ["Mandy Pelser", "Kandy Grieve", "Ayden Brown"],
+  "brand": { "primary": "#991C1F", "primaryDark": "#7A1518", "bg": "#F2F2F0", "surface": "#FFFFFF", "border": "#D5D5D0", "ink": "#3A3A3A", "muted": "#5A5A5A", "font": "Montserrat, 'Segoe UI', Arial, sans-serif", "display": "Montserrat, 'Segoe UI', Arial, sans-serif" },
+  "contact": { "phone": "082 543 2681", "email": "info@grproperty.co.za", "website": "gardenroutelifestyleproperty.co.za" },
+  "areas": ["George", "Wilderness", "Hoekwil", "Sedgefield", "Knysna", "Groot Brakrivier", "Great Brak River", "Hartenbos", "Herolds Bay", "Kleinkrantz"],
+  "hashtags": ["#GardenRoute", "#FindYourWayHome", "#GRLP", "#GeorgeProperty", "#WildernessProperty", "#SedgefieldProperty", "#HomesForSale", "#CoastalLiving", "#LifestyleProperty", "#PropertyForSale", "#SouthAfrica", "#GardenRouteLiving", "#TikTokRealEstate", "#RealEstateZA"],
+  "targets": {
+    "scope": "per agent per month",
+    "sales": 2, "avg_sale_price": 2200000, "exclusive_mandates": 4, "valuations": 8, "prospecting_contacts": 80,
+    "commission_rate_pct": null, "working_days_per_month": 21,
+    "quiet_days": { "hot": 2, "warm": 5, "cold": 14 }, "lease_renewal_notice_days": 90, "mandate_expiry_notice_days": 30
+  },
+  "policyOverrides": {},
+  "dispatch": {},
+  "routes": [
+    { "match": "\\b(new|incoming)\\b.*\\b(buyer|enquiry|inquiry|lead)\\b|\\bbuyer enquiry\\b", "workflow": "new-buyer-enquiry" },
+    { "match": "\\bnew\\b.*\\b(listing|mandate|property)\\b|\\blist(ing)? (this|the) property\\b", "workflow": "new-property-listing" },
+    { "match": "\\b(maintenance|repair|leak|geyser|broken)\\b", "workflow": "maintenance-request" },
+    { "match": "\\b(daily|morning) (sweep|check)\\b|\\bwho has gone quiet\\b|\\boverdue follow", "workflow": "daily-sweep" },
+    { "match": "\\b(scorecard|targets?|sales performance|kpi)\\b", "agent": "GRLP-A004", "direct": true },
+    { "match": "\\b(find|search|where is|what (is|are) (our|the)|policy|procedure|template|brand (kit|colours?|fonts?|voice))\\b", "agent": "GRLP-A124", "direct": true }
+  ],
+  "constitution": [
+    "You work for Garden Route Lifestyle Property (GRLP), a family-run estate agency on the Garden Route, South Africa: property sales, long-term rentals and property management, with offices in George, Hoekwil/Wilderness and Sedgefield. Tagline: Find Your Way Home.",
+    "Brand values: Professionalism, Clarity, Approachability, Integrity. Write professionally yet personally, in plain language and short sentences, with South African spelling. No flowery or exaggerated language. No comma before the final 'and' in a list. Let the property speak for itself.",
+    "Use only facts given to you or found in approved internal knowledge. Never invent business information, listings, prices, clients, statistics or legal positions. If something is missing, say exactly what is missing.",
+    "Never make or imply a property valuation, never promise a selling price, and never give legal, tax or financial advice. Those belong to a registered property practitioner or other authorised person.",
+    "You cannot send, publish, sign, pay, approve a tenant, change a lease or delete a record. You prepare work; a named person at GRLP approves it. Handing work to another agent never removes the need for that approval.",
+    "Personal information is handled under POPIA: use it only for the purpose it was given, share the minimum, and contact people for marketing only where there is consent and an opt-out.",
+    "You hold information about GRLP only. If asked about any other business, say you have no access to it."
+  ]
+}

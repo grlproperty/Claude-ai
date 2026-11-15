@@ -1,0 +1,39 @@
+{
+  "id": "new-investigation",
+  "name": "New investigation",
+  "trigger": "An investigation opportunity is identified",
+  "required": ["title", "industry", "question"],
+  "example": {
+    "title": "SAMPLE — When a net-zero pledge is treated as a consumer claim",
+    "industry": "Food & Agriculture",
+    "question": "What does the public record show about the New York Attorney General's case over JBS USA's net-zero marketing?",
+    "summary": "A sample note assembled from one entry already in the Record Checker.",
+    "sources": [
+      { "publisher": "NY Attorney General", "title": "Attorney General James sues JBS USA over net zero climate claims (press release)", "url": "https://ag.ny.gov/press-release/2024/attorney-general-james-sues-jbs-usa-fraudulent-net-zero-climate-claims", "date": "2024-02", "type": "primary" }
+    ],
+    "claims": [
+      { "text": "The New York Attorney General sued JBS USA in February 2024, alleging that its \"Net Zero by 2040\" marketing misled consumers.", "classification": "allegation", "sources": [1] },
+      { "text": "The case tests whether a corporate climate pledge can be treated as a claim made to consumers.", "classification": "editorial_interpretation" },
+      { "text": "The outcome of the case is not recorded in this sample.", "classification": "unresolved" }
+    ],
+    "sample": true
+  },
+  "steps": [
+    { "id": "open", "name": "Investigation opportunity identified", "agent": "FF-A010", "run": "investigation.open" },
+    { "id": "brief", "name": "Research brief created", "agent": "FF-A009", "run": "research.brief" },
+    { "id": "sources", "name": "Public sources gathered", "agent": "FF-A011", "run": "sources.register" },
+    { "id": "verify", "name": "Sources checked", "agent": "FF-A025", "run": "source.verify" },
+    { "id": "classify", "name": "Evidence categorised", "agent": "FF-A027", "run": "evidence.classify" },
+    { "id": "sheet", "name": "Sources verified by a person", "agent": "FF-A033", "run": "verification.sheet", "gate": { "action": "source.verification.confirm", "title": "Confirm each claim against its source — {{input.title}}" } },
+    { "id": "draft", "name": "Editorial draft produced", "agent": "FF-A034", "run": "draft.fieldnote" },
+    { "id": "factcheck", "name": "Fact-checking completed", "agent": "FF-A043", "run": "fact.check" },
+    { "id": "voice", "name": "Editorial voice checked", "agent": "FF-A040", "run": "voice.check" },
+    { "id": "review", "name": "Editorial review requested", "agent": "FF-A003", "run": "editorial.review", "gate": { "action": "editorial.review", "title": "Editorial review — {{input.title}}" } },
+    { "id": "visual", "name": "Visual essay brief created", "agent": "FF-A045", "run": "visual.brief" },
+    { "id": "final", "name": "Final human approval", "agent": "FF-A044", "run": "final.package", "gate": { "action": "editorial.publish", "title": "Approve for publication — {{input.title}}" } },
+    { "id": "publish", "name": "Website publication prepared", "agent": "FF-A055", "run": "publication.record" },
+    { "id": "briefing", "name": "Research briefing distribution", "agent": "FF-A058", "run": "briefing.prepare" },
+    { "id": "social", "name": "Social content prepared", "agent": "FF-A061", "run": "social.prepare", "gate": { "action": "social.publish", "title": "Social posts — {{input.title}}" } },
+    { "id": "archive", "name": "Archive updated", "agent": "FF-A063", "run": "archive.update" }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "digital-product",
+  "name": "Digital product",
+  "trigger": "A product opportunity is identified",
+  "required": ["name", "purpose"],
+  "example": {
+    "name": "SAMPLE — Reading a Sustainability Report",
+    "purpose": "A sample workbook outline used to test the product workflow. Not a real product.",
+    "kind": "paid document", "price": 30,
+    "demand_evidence": ["SAMPLE evidence line — replace with real reader requests or tool usage"],
+    "sources": [ { "publisher": "NY Attorney General", "title": "Attorney General James sues JBS USA over net zero climate claims (press release)", "url": "https://ag.ny.gov/press-release/2024/attorney-general-james-sues-jbs-usa-fraudulent-net-zero-climate-claims", "date": "2024-02", "type": "primary" } ],
+    "sections": ["What a pledge is and is not", "Where the evidence should be", "Questions to send the company"],
+    "sample": true
+  },
+  "steps": [
+    { "id": "opportunity", "name": "Product opportunity identified", "agent": "FF-A073", "run": "product.opportunity" },
+    { "id": "research", "name": "Market and source research checked", "agent": "FF-A073", "run": "product.research" },
+    { "id": "outline", "name": "Product outline created", "agent": "FF-A074", "run": "product.outline" },
+    { "id": "content", "name": "Content developed", "agent": "FF-A074", "run": "product.content" },
+    { "id": "review", "name": "Editorial and factual review", "agent": "FF-A081", "run": "product.review" },
+    { "id": "design", "name": "Design and formatting specified", "agent": "FF-A052", "run": "product.design" },
+    { "id": "qa", "name": "Quality assurance", "agent": "FF-A081", "run": "product.qa" },
+    { "id": "approval", "name": "Human approval", "agent": "FF-A044", "run": "product.package", "gate": { "action": "product.release", "title": "Product approval — {{input.name}}" } },
+    { "id": "listing", "name": "Product listing prepared", "agent": "FF-A083", "run": "product.listing" },
+    { "id": "report", "name": "Publication and sales reporting set up", "agent": "FF-A109", "run": "product.report" }
+  ]
+}

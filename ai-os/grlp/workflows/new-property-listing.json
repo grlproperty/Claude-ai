@@ -1,0 +1,20 @@
+{
+  "id": "new-property-listing",
+  "name": "New property listing",
+  "trigger": "A signed mandate is captured as a new listing",
+  "required": ["ref", "area", "property_type"],
+  "example": { "ref": "SAMPLE-GEO-010", "address": "SAMPLE — 10 Example Avenue, George", "area": "George", "suburb": "Heatherlands", "property_type": "house", "price": 3250000, "bedrooms": 4, "bathrooms": 2, "size_m2": 220, "erf_m2": 900, "mandate_type": "sole", "mandate_expiry": "2027-06-30", "features": ["a north-facing garden", "an open-plan kitchen", "a double garage"], "photos": 14, "agent_name": "Sample Agent A", "agent_phone": "082 000 0000", "mandate_signed": true, "mandatory_disclosure_received": true, "fica_seller_complete": true, "sample": true },
+  "steps": [
+    { "id": "register", "name": "New property entered into the system", "agent": "GRLP-A092", "run": "listing.register" },
+    { "id": "check", "name": "Listing information checked; missing information identified", "agent": "GRLP-A013", "run": "listing.check" },
+    { "id": "compliance", "name": "Mandate and compliance documents checked", "agent": "GRLP-A114", "run": "mandate.check" },
+    { "id": "copy", "name": "Property description generated", "agent": "GRLP-A039", "run": "listing.copy" },
+    { "id": "seo", "name": "SEO information prepared", "agent": "GRLP-A040", "run": "seo.prepare" },
+    { "id": "social", "name": "Social media content created", "agent": "GRLP-A042", "run": "social.pack" },
+    { "id": "design", "name": "Marketing graphic layout prepared", "agent": "GRLP-A058", "run": "graphic.brief" },
+    { "id": "brand", "name": "Brand consistency checked", "agent": "GRLP-A059", "run": "brand.check" },
+    { "id": "campaign", "name": "Agent approval requested", "agent": "GRLP-A037", "run": "campaign.assemble", "gate": { "action": "campaign.launch", "title": "New listing campaign for {{input.ref}} — {{input.area}}" } },
+    { "id": "schedule", "name": "Approved content scheduled", "agent": "GRLP-A054", "run": "schedule.content" },
+    { "id": "monitor", "name": "Campaign performance monitoring set up", "agent": "GRLP-A055", "run": "campaign.monitor" }
+  ]
+}

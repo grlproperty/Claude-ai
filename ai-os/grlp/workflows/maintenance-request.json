@@ -1,0 +1,11 @@
+{
+  "id": "maintenance-request",
+  "name": "Maintenance request",
+  "trigger": "A tenant or landlord reports a maintenance problem",
+  "required": ["property", "description"],
+  "example": { "property": "SAMPLE — 5 Example Lane, George", "description": "Geyser is leaking in the roof", "reported_by": "Sample Tenant", "contact": "sample.tenant@example.com", "sample": true },
+  "steps": [
+    { "id": "log", "name": "Request logged, urgency classified, owner assigned", "agent": "GRLP-A084", "run": "maintenance.log" },
+    { "id": "ack", "name": "Acknowledgement drafted for approval", "agent": "GRLP-A087", "run": "maintenance.ack", "gate": { "action": "client.message.send", "title": "Maintenance acknowledgement — {{input.property}}" } }
+  ]
+}

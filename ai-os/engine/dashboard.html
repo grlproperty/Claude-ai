@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Command Centre</title>
+<style>
+:root { --primary:#444; --primaryDark:#222; --bg:#f4f4f4; --surface:#fff; --border:#ddd; --ink:#222; --muted:#666; --font:system-ui,sans-serif; --display:system-ui,sans-serif;
+  --green:#2e7d4f; --amber:#b26a00; --red:#b3261e; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 var(--font); }
+header { background:var(--primary); color:#fff; padding:18px 24px; display:flex; flex-wrap:wrap; gap:12px 24px; align-items:center; justify-content:space-between; }
+header h1 { margin:0; font:600 24px/1.2 var(--display); letter-spacing:.02em; }
+header p { margin:2px 0 0; opacity:.85; font-size:13px; }
+.seg { display:inline-flex; border:1px solid rgba(255,255,255,.5); border-radius:6px; overflow:hidden; }
+.seg button { background:none; border:0; color:#fff; padding:6px 14px; cursor:pointer; font:inherit; }
+.seg button[aria-pressed=true] { background:#fff; color:var(--primary); font-weight:600; }
+main { max-width:1280px; margin:0 auto; padding:20px 16px 60px; display:grid; gap:18px; }
+section { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:16px 18px; min-width:0; }
+h2 { margin:0 0 10px; font:600 17px/1.3 var(--display); color:var(--primary); }
+h3 { margin:14px 0 6px; font-size:14px; }
+.note { color:var(--muted); font-size:13px; margin:0 0 8px; }
+.cols { display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); }
+.tiles { display:grid; gap:10px; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); }
+.tile { border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:6px; padding:10px 12px; background:var(--bg); }
+.tile.alert { border-left-color:var(--red); }
+.tile b { display:block; font:600 26px/1.1 var(--display); font-variant-numeric:tabular-nums; }
+.tile span { font-size:13px; font-weight:600; }
+.tile small { display:block; color:var(--muted); font-size:12px; }
+ol,ul { margin:0; padding-left:20px; } li { margin:3px 0; }
+.empty { color:var(--muted); font-style:italic; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th,td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--border); vertical-align:top; }
+th { color:var(--muted); font-weight:600; white-space:nowrap; }
+td { font-variant-numeric:tabular-nums; }
+.scroll { overflow-x:auto; max-height:420px; overflow-y:auto; }
+.badge { display:inline-block; padding:1px 8px; border-radius:10px; font-size:12px; font-weight:600; color:#fff; background:var(--muted); white-space:nowrap; }
+.badge.green,.badge.live,.badge.completed,.badge.done,.badge.approved { background:var(--green); }
+.badge.amber,.badge.waiting_approval,.badge.awaiting_approval,.badge.blocked,.badge.llm-ready,.badge.medium { background:var(--amber); }
+.badge.red,.badge.failed,.badge.rejected,.badge.high { background:var(--red); }
+.card { border:1px solid var(--border); border-radius:6px; padding:12px; margin:10px 0; background:var(--bg); }
+.card.red { border-left:4px solid var(--red); } .card.amber { border-left:4px solid var(--amber); }
+.row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:8px; }
+input,select,textarea,button { font:inherit; }
+input,select,textarea { border:1px solid var(--border); border-radius:6px; padding:7px 9px; background:#fff; color:var(--ink); min-width:0; }
+textarea { width:100%; min-height:70px; font-family:ui-monospace,Consolas,monospace; font-size:13px; }
+button.btn { background:var(--primary); color:#fff; border:0; border-radius:6px; padding:8px 14px; cursor:pointer; font-weight:600; }
+button.btn.ghost { background:none; color:var(--primary); border:1px solid var(--primary); }
+button.btn.no { background:none; color:var(--red); border:1px solid var(--red); }
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible { outline:2px solid var(--primary); outline-offset:2px; }
+pre { white-space:pre-wrap; word-break:break-word; background:#fff; border:1px solid var(--border); border-radius:6px; padding:10px; font-size:12.5px; max-height:380px; overflow:auto; margin:8px 0 0; }
+details summary { cursor:pointer; color:var(--primary); font-weight:600; font-size:13px; }
+.grow { flex:1 1 220px; }
+#toast { position:fixed; right:16px; bottom:16px; background:var(--ink); color:#fff; padding:10px 14px; border-radius:6px; max-width:420px; display:none; }
+svg { max-width:560px; display:block; }
+svg text { font:11px var(--font); fill:var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <div><h1 id="bizName">Command Centre</h1><p id="bizSub"></p></div>
+  <div class="row" style="margin:0">
+    <input id="token" type="password" placeholder="Access token" aria-label="Access token" style="display:none">
+    <div class="seg" role="group" aria-label="Period">
+      <button data-period="day" aria-pressed="true">Daily</button><button data-period="week" aria-pressed="false">Weekly</button><button data-period="month" aria-pressed="false">Monthly</button>
+    </div>
+  </div>
+</header>
+<main>
+  <section>
+    <h2>Here's what I need done today</h2>
+    <div class="row" style="margin:0"><input id="instruction" class="grow" placeholder="Tell the orchestrator what you need. It assigns the work and reports back." aria-label="Instruction"><button class="btn" id="send">Send</button></div>
+    <pre id="instructOut" style="display:none"></pre>
+  </section>
+  <div class="cols">
+    <section><h2>Three highest-priority actions</h2><ol id="priorities"></ol></section>
+    <section><h2>Warnings</h2><ul id="warnings"></ul></section>
+  </div>
+  <section><h2>At a glance</h2><div class="tiles" id="tiles"></div></section>
+  <section><h2>Pending approvals <span class="badge" id="apCount">0</span></h2><p class="note">Nothing leaves the business until a named person approves it. Red items need the authorisation phrase typed exactly.</p><div id="approvals"></div></section>
+  <div id="tables" style="display:grid;gap:18px"></div>
+  <div class="cols" id="trends"></div>
+  <div class="cols">
+    <section><h2>Outstanding tasks</h2><div class="scroll"><table id="tasks"></table></div></section>
+    <section><h2>Deadlines and opportunities</h2><h3>Deadlines</h3><ul id="deadlines"></ul><h3>Opportunities</h3><ul id="opportunities"></ul></section>
+  </div>
+  <div class="cols">
+    <section><h2>Run a workflow</h2>
+      <div class="row" style="margin:0"><select id="wfSelect" aria-label="Workflow"></select><button class="btn" id="wfRun">Start</button></div>
+      <p class="note" id="wfNote" style="margin-top:8px"></p><textarea id="wfInput" aria-label="Workflow input (JSON)" style="min-height:150px"></textarea>
+    </section>
+    <section><h2>Workflow history</h2><div class="scroll" id="runs"></div></section>
+  </div>
+  <section><h2>AI agent activity</h2><p class="note" id="agentSummary"></p>
+    <div class="row" style="margin:0 0 8px"><input id="agentFilter" class="grow" placeholder="Filter by name, department or status" aria-label="Filter agents"></div>
+    <div class="scroll"><table id="agents"></table></div><pre id="agentDetail" style="display:none"></pre></section>
+  <div class="cols">
+    <section><h2>Knowledge base</h2><div class="row" style="margin:0"><input id="kbQ" class="grow" placeholder="Search approved knowledge" aria-label="Search knowledge base"><button class="btn ghost" id="kbGo">Search</button></div><div id="kbOut"></div></section>
+    <section><h2>Reports and exports</h2>
+      <div class="row" style="margin:0"><button class="btn" id="report">Generate report for this period</button></div>
+      <div class="row"><span class="note" style="margin:0">Export CSV:</span><span id="exports"></span></div>
+      <pre id="reportOut" style="display:none"></pre>
+    </section>
+  </div>
+  <section id="targetsBox" style="display:none"><h2>Targets</h2><p class="note">Change a target here and every scorecard recalculates. No rebuild needed. Changes are recorded in the audit trail.</p><div class="row" id="targets"></div>
+    <div class="row"><select id="targetsBy" aria-label="Changed by"></select><button class="btn" id="targetsSave">Save targets</button></div></section>
+</main>
+<div id="toast" role="status"></div>
+<script>
+const NEEDS_TOKEN = __NEEDS_TOKEN__;
+const $ = (id) => document.getElementById(id);
+const el = (tag, props = {}, ...kids) => { const e = Object.assign(document.createElement(tag), props); for (const k of kids.flat()) e.append(k?.nodeType ? k : document.createTextNode(k ?? '')); return e; };
+let period = 'day', state = null;
+const tokenBox = $('token');
+if (NEEDS_TOKEN) { tokenBox.style.display = ''; try { tokenBox.value = sessionStorage.getItem('aios-token') || ''; } catch {} tokenBox.onchange = () => { try { sessionStorage.setItem('aios-token', tokenBox.value); } catch {} load(); }; }
+const api = async (path, body) => {
+  const r = await fetch(path, { method: body ? 'POST' : 'GET', headers: { ...(body ? { 'content-type': 'application/json' } : {}), 'x-aios-token': tokenBox.value }, body: body ? JSON.stringify(body) : undefined });
+  const ct = r.headers.get('content-type') || ''; const data = ct.includes('json') ? await r.json() : await r.blob();
+  if (!r.ok) throw new Error(data.error || r.statusText); return data;
+};
+const toast = (msg) => { const t = $('toast'); t.textContent = msg; t.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(() => (t.style.display = 'none'), 6000); };
+const act = async (fn) => { try { await fn(); await load(); } catch (e) { toast(e.message); } };
+const list = (node, items, render = (x) => x) => { node.replaceChildren(...(items.length ? items.map((i) => el('li', {}, render(i))) : [el('li', { className: 'empty' }, 'Nothing here.')])); };
+const badge = (text, cls = text) => el('span', { className: `badge ${String(cls).replace(/\s/g, '_')}` }, text);
+const table = (node, cols, rows) => node.replaceChildren(el('thead', {}, el('tr', {}, cols.map((c) => el('th', {}, c)))), el('tbody', {}, rows.length ? rows.map((r) => el('tr', {}, r.map((c) => el('td', {}, c)))) : el('tr', {}, el('td', { colSpan: cols.length, className: 'empty' }, 'Nothing here.'))));
+
+function chart(t) {
+  const w = 520, h = 150, max = Math.max(1, ...t.series), bw = (w - 30) / t.series.length;
+  const ns = 'http://www.w3.org/2000/svg'; const svg = document.createElementNS(ns, 'svg'); svg.setAttribute('viewBox', `0 0 ${w} ${h}`); svg.setAttribute('role', 'img'); svg.setAttribute('aria-label', t.label);
+  t.series.forEach((v, i) => {
+    const bh = (v / max) * (h - 40); const r = document.createElementNS(ns, 'rect');
+    r.setAttribute('x', 20 + i * bw + 2); r.setAttribute('y', h - 22 - bh); r.setAttribute('width', Math.max(2, bw - 4)); r.setAttribute('height', Math.max(1, bh)); r.setAttribute('fill', 'var(--primary)'); r.setAttribute('rx', 2);
+    const ti = document.createElementNS(ns, 'title'); ti.textContent = `${t.labels[i]}: ${v}`; r.append(ti); svg.append(r);
+    if (t.series.length <= 14 || i % 2 === 0) { const x = document.createElementNS(ns, 'text'); x.setAttribute('x', 20 + i * bw + bw / 2); x.setAttribute('y', h - 6); x.setAttribute('text-anchor', 'middle'); x.textContent = t.labels[i]; svg.append(x); }
+    if (v) { const n = document.createElementNS(ns, 'text'); n.setAttribute('x', 20 + i * bw + bw / 2); n.setAttribute('y', h - 26 - bh); n.setAttribute('text-anchor', 'middle'); n.textContent = v; svg.append(n); }
+  });
+  return el('section', {}, el('h2', {}, t.label), svg);
+}
+
+function render(s) {
+  state = s; const b = s.business;
+  for (const [k, v] of Object.entries(b.brand)) document.documentElement.style.setProperty(`--${k}`, v);
+  document.title = `${b.name} — Command Centre`; $('bizName').textContent = `${b.name} — Command Centre`; $('bizSub').textContent = `${b.tagline} · ${b.mode} · updated ${new Date(s.generated).toLocaleTimeString()}`;
+  list($('priorities'), s.priorities); list($('warnings'), s.warnings, (w) => [badge(w.severity), ' ', w.text]);
+  $('tiles').replaceChildren(...s.tiles.map((t) => el('div', { className: `tile${t.alert ? ' alert' : ''}` }, el('b', {}, String(t.value)), el('span', {}, t.label), el('small', {}, t.hint || ''))));
+  $('apCount').textContent = s.approvals.length;
+  $('approvals').replaceChildren(...(s.approvals.length ? s.approvals.map((a) => {
+    const by = el('select', { ariaLabel: 'Decided by' }, s.approvers.map((n) => el('option', {}, n)));
+    const note = el('input', { className: 'grow', placeholder: 'Note (required to reject)', ariaLabel: 'Note' });
+    const confirm = a.phrase ? el('input', { placeholder: `Type: ${a.phrase}`, ariaLabel: 'Authorisation phrase', style: 'min-width:220px' }) : null;
+    const go = (decision) => act(async () => { if (decision === 'reject' && !note.value.trim()) throw new Error('Give a reason when rejecting, so the agent knows what to fix.'); const r = await api('/api/decide', { id: a.id, decision, by: by.value, note: note.value, confirm: confirm?.value || '' }); toast(`${a.id} ${r.status}${r.dispatch ? ' — ' + r.dispatch.note : ''}`); });
+    return el('div', { className: `card ${a.level}` }, el('div', {}, badge(a.level.toUpperCase(), a.level), ' ', el('strong', {}, `${a.id} · ${a.title}`)), el('div', { className: 'note', style: 'margin:4px 0' }, `${a.action} · requested by ${a.requested_by_name} (${a.requested_by})${a.run_id ? ' · ' + a.run_id : ''}`),
+      el('details', {}, el('summary', {}, 'Review what will be released'), el('pre', {}, JSON.stringify(a.payload, null, 2).replace(/\\n/g, '\n'))),
+      el('div', { className: 'row' }, by, note, confirm || '', el('button', { className: 'btn', onclick: () => go('approve') }, a.level === 'red' ? 'Authorise' : 'Approve'), el('button', { className: 'btn no', onclick: () => go('reject') }, 'Reject')));
+  }) : [el('p', { className: 'empty' }, 'No approvals waiting.')]));
+  $('tables').replaceChildren(...s.tables.map((t) => { const tb = el('table'); table(tb, t.columns, t.rows.map((r) => r.map(String))); return el('section', {}, el('h2', {}, t.title), t.note ? el('p', { className: 'note' }, t.note) : '', el('div', { className: 'scroll' }, tb)); }));
+  $('trends').replaceChildren(...s.trends.map(chart));
+  table($('tasks'), ['', 'Task', 'Owner', 'Due', ''], s.tasks.map((t) => [`P${t.priority}`, el('span', { title: t.detail || '' }, `${t.title} (${t.id})`), t.agent_name, t.due || '—', el('button', { className: 'btn ghost', onclick: () => act(() => api('/api/task', { id: t.id, status: 'done' })) }, 'Done')]));
+  list($('deadlines'), s.deadlines, (d) => `${d.date} — ${d.text}`); list($('opportunities'), s.opportunities);
+  const sel = $('wfSelect'); const cur = sel.value; sel.replaceChildren(...s.workflows.map((w) => el('option', { value: w.id }, w.name))); if (cur) sel.value = cur; if (!$('wfInput').value) pickWf();
+  $('runs').replaceChildren(...(s.runs.length ? s.runs.map((r) => el('details', { className: 'card', style: 'margin:6px 0;padding:8px 10px' }, el('summary', {}, `${r.id} · ${r.workflow} `, badge(r.status.replace('_', ' '), r.status)), r.error ? el('p', { className: 'note' }, r.error) : '', el('ul', {}, r.steps.map((x) => el('li', {}, badge(x.status.replace('_', ' '), x.status), ` ${x.name} — ${x.agent}${x.error ? ': ' + x.error : ''}`))))) : [el('p', { className: 'empty' }, 'No workflow has run yet.')]));
+  $('agentSummary').textContent = `${s.agents.total} agent roles: ${Object.entries(s.agents.by_status).map(([k, v]) => `${v} ${k}`).join(' · ')}. Live = coded and tested. llm-ready = works once Claude is connected. Planned = needs a connected application.`;
+  renderAgents();
+  $('exports').replaceChildren(...['tasks', 'approvals', 'runs', 'agents', 'audit'].map((w) => el('button', { className: 'btn ghost', style: 'margin-right:6px;padding:4px 10px', onclick: () => act(async () => { const blob = await api(`/api/export?what=${w}`); const a = el('a', { href: URL.createObjectURL(blob), download: `${b.id}-${w}.csv` }); a.click(); }) }, w)));
+  if (s.targets && typeof s.targets.sales === 'number') {
+    $('targetsBox').style.display = ''; $('targetsBy').replaceChildren(...s.approvers.map((n) => el('option', {}, n)));
+    if (!$('targets').dataset.dirty) $('targets').replaceChildren(...Object.entries(s.targets).filter(([, v]) => v === null || typeof v === 'number').map(([k, v]) => el('label', { style: 'font-size:13px' }, k.replace(/_/g, ' '), el('br'), Object.assign(el('input', { type: 'number', step: 'any', value: v ?? '', name: k, style: 'width:150px', oninput: () => ($('targets').dataset.dirty = '1') })))));
+  }
+}
+function renderAgents() {
+  const f = $('agentFilter').value.toLowerCase();
+  table($('agents'), ['ID', 'Agent', 'Department', 'Status', 'May request', 'Steps run'], state.agents.list.filter((a) => !f || `${a.id} ${a.name} ${a.department} ${a.status}`.toLowerCase().includes(f)).map((a) => [a.id, el('a', { href: '#', onclick: (e) => { e.preventDefault(); act(async () => { const d = await api(`/api/agent?id=${a.id}`); const p = $('agentDetail'); p.style.display = ''; p.textContent = d.instructions; p.scrollIntoView({ block: 'nearest' }); }); } }, a.name), a.department, badge(a.status), badge(a.ceiling), String(a.steps)]));
+}
+function pickWf() { const w = state.workflows.find((x) => x.id === $('wfSelect').value) || state.workflows[0]; if (!w) return; $('wfNote').textContent = `${w.trigger}. ${w.steps.length} steps, ${w.steps.filter((x) => x.gate).length} approval gate(s). Needs: ${(w.required || []).join(', ') || 'no input'}. The example below is sample data.`; $('wfInput').value = JSON.stringify(w.example || {}, null, 2); }
+async function load() { try { render(await api(`/api/state?period=${period}`)); } catch (e) { toast(e.message); } }
+
+document.querySelectorAll('[data-period]').forEach((b) => (b.onclick = () => { period = b.dataset.period; document.querySelectorAll('[data-period]').forEach((x) => x.setAttribute('aria-pressed', x === b)); load(); }));
+$('send').onclick = () => act(async () => { const t = $('instruction').value.trim(); if (!t) return; const r = await api('/api/instruct', { text: t }); const o = $('instructOut'); o.style.display = ''; o.textContent = r.summary + (r.result ? '\n\n' + JSON.stringify(r.result, null, 2) : ''); $('instruction').value = ''; });
+$('instruction').onkeydown = (e) => { if (e.key === 'Enter') $('send').click(); };
+$('wfSelect').onchange = pickWf;
+$('wfRun').onclick = () => act(async () => { const r = await api('/api/run', { workflow: $('wfSelect').value, input: JSON.parse($('wfInput').value || '{}') }); toast(`${r.id} is ${r.status.replace('_', ' ')}${r.error ? ': ' + r.error : ''}`); });
+$('agentFilter').oninput = renderAgents;
+$('kbGo').onclick = () => act(async () => { const r = await api(`/api/kb?q=${encodeURIComponent($('kbQ').value)}`); $('kbOut').replaceChildren(...(r.length ? r.map((h) => el('div', { className: 'card' }, el('strong', {}, h.title), el('div', { className: 'note', style: 'margin:2px 0' }, `${h.path} · v${h.version} · ${h.status} · owner: ${h.owner}`), el('div', {}, h.excerpt), el('div', { className: 'note', style: 'margin:4px 0 0' }, `Source: ${h.source}`))) : [el('p', { className: 'empty' }, 'Nothing in approved knowledge matches.')])); });
+$('kbQ').onkeydown = (e) => { if (e.key === 'Enter') $('kbGo').click(); };
+$('report').onclick = () => act(async () => { const r = await api(`/api/report?period=${period}`); const o = $('reportOut'); o.style.display = ''; o.textContent = r.markdown; });
+$('targetsSave').onclick = () => act(async () => { const t = {}; $('targets').querySelectorAll('input').forEach((i) => (t[i.name] = i.value === '' ? null : Number(i.value))); await api('/api/targets', { targets: t, by: $('targetsBy').value }); delete $('targets').dataset.dirty; toast('Targets saved'); });
+load(); setInterval(load, 60000);
+</script>
+</body>
+</html>
