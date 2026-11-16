@@ -22,7 +22,7 @@ flowchart TB
     D12["D12 Marketing Operations (17)"]
   end
   subgraph BRAIN["CENTRAL INTELLIGENCE — Feral Femme only"]
-    KB[("Knowledge base<br/>constitution · voice · standards · catalogue")]
+    KB[("Knowledge base<br/>constitution · brand kit · voice · standards · catalogue")]
     DB[("Feral Femme database<br/>investigations · sources · claims · approvals · audit")]
     REG["Agent registry + instruction files"]
     WF["Workflows<br/>new investigation · digital product · integrity sweep"]

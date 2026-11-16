@@ -49,7 +49,7 @@ test('knowledge, agents, records and prompts never cross', async () => {
   await f.workflows.start('new-investigation', example(f, 'new-investigation'));
   // knowledge
   assert.ok(g.kb.search('maroon logo').length > 0);
-  assert.equal(f.kb.search('maroon mandate Montserrat').length, 0);
+  assert.equal(f.kb.search('maroon mandate PropCntrl').length, 0);
   assert.ok(f.kb.search('allegation sourcing').length > 0);
   assert.equal(g.kb.search('allegation greenwashing Bodoni').length, 0);
   // agents

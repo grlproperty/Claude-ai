@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import { checkSource, classifyClaims, voiceCheck, factCheck, datasetStatus } from '../feral-femme/handlers/lib.mjs';
+import { checkSource, classifyClaims, voiceCheck, factCheck, datasetStatus, frameCheck } from '../feral-femme/handlers/lib.mjs';
 import { ctxFor, example, pending, approveAll, siteCopy } from './helpers.mjs';
 
 const BY = 'Ayden Rosemary Brown';
@@ -31,6 +31,16 @@ test('voice check rejects sensational writing and passes restrained writing', ()
   const v = voiceCheck('This shocking report exposed the truth!', 'You won\'t believe what they found').violations.join('|');
   assert.match(v, /shocking/); assert.match(v, /exposed/); assert.match(v, /Exclamation/); assert.match(v, /you won't believe/);
   assert.ok(voiceCheck('The medieval period', '').passed, 'matches whole words only (no "evil" in "medieval")');
+  // brand kit: words we leave out, emoji, urgency
+  for (const t of ['A heartbreaking report.', 'A guilt-free choice.', 'Join the movement.', 'Read it now \u{1F525}', 'Act now.']) assert.equal(voiceCheck(t).passed, false, t);
+  assert.ok(voiceCheck('Documented. On the record. According to the regulator, the claim was unsupported.').passed);
+});
+
+test('brand kit: one case per frame — a frame without a source is not published', () => {
+  const f = { sentence: 'A farmed fox\'s cage is less than half the size of a single bed.', source: { publisher: 'Named body' }, handle: '@feralfemme.co', disclosure: 'x' };
+  assert.ok(frameCheck(f).ok);
+  assert.match(frameCheck({ ...f, source: null }).problems[0], /not published/);
+  assert.match(frameCheck({ ...f, sentence: 'One. Two. Three.' }).problems[0], /single case/);
 });
 
 test('fact check: every figure and publisher must be on the verification sheet', () => {
@@ -57,7 +67,7 @@ test('workflow: new investigation passes four human gates, and an allegation nee
   const done = c.db.run(run.id); assert.equal(done.status, 'completed'); assert.equal(c.db.runSteps(run.id).filter((s) => s.status === 'done').length, 16);
   const md = done.state.draft.markdown;
   assert.match(md, /^---\ntitle: "SAMPLE/); assert.match(md, /topic: "Food & Agriculture"/); assert.match(md, /NY Attorney General/); assert.match(md, /What is not established/); assert.match(md, /DRAFT SKELETON/);
-  assert.match(done.state.visual.disclosure, /Not documentary photography/);
+  assert.match(done.state.visual.disclosure, /not documentary photography/); assert.equal(done.state.visual.figure.length, 6); assert.ok(done.state.visual.frame_check.ok); assert.equal(done.state.visual.archive_frame.source.publisher, 'NY Attorney General');
   assert.match(done.state.final.before_approving[0], /skeleton/);
   assert.equal(done.state.publish.status, 'approved — file in outbox, to be added to content/field-notes by a person');
   assert.equal(c.db.list('archive_entry')[0].approvals.length, 4);
@@ -114,6 +124,7 @@ test('workflow: digital product — no invented prices, catalogue respected', as
   const run = await c.workflows.start('digital-product', base);
   assert.equal(pending(c)[0].action, 'product.release'); assert.match(pending(c)[0].payload.before_approving[0], /NOT READY TO SELL/);
   await approveAll(c, BY, run.id); assert.equal(c.db.run(run.id).status, 'completed');
+  assert.match(c.db.run(run.id).state.design.ground, /Crimson/); assert.match(c.db.run(run.id).state.design.typography.evidence, /Space Mono/);
   const noPrice = await c.workflows.start('digital-product', { ...base, price: null }); assert.match(noPrice.error, /no price decided/);
   const odd = await c.workflows.start('digital-product', { ...base, price: 45 });
   assert.equal(pending(c).find((a) => a.run_id === odd.id).level, 'red', 'a price outside the catalogue needs explicit authorisation');

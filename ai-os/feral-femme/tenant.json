@@ -5,38 +5,123 @@
   "tagline": "Two subjects. One machine. Same refusal to consent.",
   "port": 4402,
   "model": "claude-opus-5-5",
-  "env": { "apiKey": "FF_ANTHROPIC_API_KEY", "dataDir": "FF_DATA_DIR", "token": "FF_DASHBOARD_TOKEN" },
-  "approvers": ["Ayden Rosemary Brown"],
-  "brand": { "primary": "#8E0B14", "primaryDark": "#6E1220", "bg": "#FDFCFC", "surface": "#F9E7EA", "border": "#EFD8DC", "ink": "#12100F", "muted": "#4A3C3E", "font": "Jost, 'Segoe UI', Arial, sans-serif", "display": "'Bodoni Moda', 'Cormorant Garamond', Georgia, serif" },
-  "mounts": { "site": { "path": "../../content", "mode": "ro" } },
-  "industries": ["Beauty", "Fashion", "Food & Agriculture", "Animal Welfare", "Women's Rights", "Environment", "Technology", "Consumer Rights", "Corporate Accountability", "Media & Advertising"],
+  "env": {
+    "apiKey": "FF_ANTHROPIC_API_KEY",
+    "dataDir": "FF_DATA_DIR",
+    "token": "FF_DASHBOARD_TOKEN"
+  },
+  "approvers": [
+    "Ayden Rosemary Brown"
+  ],
+  "brand": {
+    "primary": "#8E0B14",
+    "primaryDark": "#6E1220",
+    "bg": "#F6DFE2",
+    "surface": "#FDFCFC",
+    "tile": "#F9E7EA",
+    "field": "#FDFCFC",
+    "border": "#EFD8DC",
+    "ink": "#12100F",
+    "muted": "#4A3C3E",
+    "font": "Jost, 'Segoe UI', Arial, sans-serif",
+    "display": "'Bodoni Moda', 'Cormorant Garamond', Georgia, serif",
+    "radius": "0px",
+    "shadow": "5px 5px 0 rgba(142,11,20,.16)",
+    "titleCase": "uppercase",
+    "titleTrack": "0.02em"
+  },
+  "mounts": {
+    "site": {
+      "path": "../../content",
+      "mode": "ro"
+    }
+  },
+  "industries": [
+    "Beauty",
+    "Fashion",
+    "Food & Agriculture",
+    "Animal Welfare",
+    "Women's Rights",
+    "Environment",
+    "Technology",
+    "Consumer Rights",
+    "Corporate Accountability",
+    "Media & Advertising"
+  ],
   "catalogue": {
     "verified": "feral-femme.co home page, read 15 November 2026",
     "currency": "USD",
     "paid": [
-      { "name": "The Brand Audit Workbook", "price": 30 }, { "name": "The Claims Desk", "price": 30 },
-      { "name": "The Wardrobe & Bathroom Audit", "price": 30 }, { "name": "The Complaint Kit", "price": 30 }
+      {
+        "name": "The Brand Audit Workbook",
+        "price": 30
+      },
+      {
+        "name": "The Claims Desk",
+        "price": 30
+      },
+      {
+        "name": "The Wardrobe & Bathroom Audit",
+        "price": 30
+      },
+      {
+        "name": "The Complaint Kit",
+        "price": 30
+      }
     ],
-    "free": ["The Phrasebook", "The Logo Guide", "The Ingredient Reader", "The Fabric Reader"]
+    "free": [
+      "The Phrasebook",
+      "The Logo Guide",
+      "The Ingredient Reader",
+      "The Fabric Reader"
+    ]
   },
-  "disclosure": "AI-generated conceptual editorial imagery, directed by Ayden Rosemary Brown. Not documentary photography, and not evidence of any specific event.",
+  "disclosure": "Created with AI image generation, directed by Ayden Rosemary Brown. Conceptual editorial work, not documentary photography, and not evidence of any specific event.",
   "policyOverrides": {},
-  "dispatch": { "editorial.publish": { "adapter": "site-file", "enabled": false }, "allegation.publish": { "adapter": "site-file", "enabled": false } },
+  "dispatch": {
+    "editorial.publish": {
+      "adapter": "site-file",
+      "enabled": false
+    },
+    "allegation.publish": {
+      "adapter": "site-file",
+      "enabled": false
+    }
+  },
   "routes": [
-    { "match": "\\b(new|open|start)\\b.*\\binvestigation\\b|\\binvestigate\\b", "workflow": "new-investigation" },
-    { "match": "\\b(new|develop)\\b.*\\b(product|document|workbook|guide)\\b", "workflow": "digital-product" },
-    { "match": "\\b(integrity|weekly) (sweep|check)\\b|\\bdatasets?\\b.*\\b(review|overdue|due)\\b", "workflow": "integrity-sweep" },
-    { "match": "\\b(standards?|policy|what (is|are) (our|the)|sourcing rule|corrections?|disclosure|voice)\\b", "agent": "FF-A005", "direct": true }
+    {
+      "match": "\\b(new|open|start)\\b.*\\binvestigation\\b|\\binvestigate\\b",
+      "workflow": "new-investigation"
+    },
+    {
+      "match": "\\b(new|develop)\\b.*\\b(product|document|workbook|guide)\\b",
+      "workflow": "digital-product"
+    },
+    {
+      "match": "\\b(integrity|weekly) (sweep|check)\\b|\\bdatasets?\\b.*\\b(review|overdue|due)\\b",
+      "workflow": "integrity-sweep"
+    },
+    {
+      "match": "\\b(standards?|policy|what (is|are) (our|the)|sourcing rule|corrections?|disclosure|voice)\\b",
+      "agent": "FF-A005",
+      "direct": true
+    }
   ],
   "constitution": [
     "You work for Feral Femme, an independent, self-funded editorial, research and tools platform. It investigates every industry built on a body that could not agree to it, holding animals and women at equal weight. Neither is a metaphor for the other. Its standard: written to be verified, not agreed with.",
     "Feral Femme summarises; it does not scoop. It reports from the public record — published investigations, peer-reviewed studies, parliamentary inquiries, regulatory filings and rulings — and always credits the original publisher by name. Prefer the primary instrument over coverage of it.",
     "Every factual claim needs a traceable source. Distinguish established facts, allegations, findings, opinions, editorial interpretation and unresolved questions. Never present an allegation as an established finding. Never invent a statistic, source, quotation, case or investigation. No statistic without a named body and a dated publication.",
     "You are not a source of fact. Anything you recall is unverified until a person has checked it against the named source. Where the evidence does not support a clean conclusion, say so.",
-    "Voice: intelligent, restrained, direct, evidence-led, thought-provoking and professionally written; emotionally compelling without being sensationalist. No clickbait.",
-    "Visual essays are AI-generated, conceptual and never documentary. They are never presented as photographic evidence of an event, and each carries its disclosure and reference.",
+    "Voice: translate, cite, file. Restrained — say it once, plainly, with no exclamation marks, no capitals for emphasis and no emoji. Sourced — every claim names its publisher, regulator or research body. Dry — the fact does the work; a flat sentence lands harder than an outraged one. Never preachy — nobody is asked to feel guilty or to agree. No clickbait, no urgency. Prefer: documented, on the record, according to (followed by the name). Leave out: shocking, heartbreaking, guilt-free, join the movement.",
+    "Visual essays are created with AI image generation, directed by the founder: conceptual editorial work, never documentary. Say so wherever the images travel. One documented case per frame — one sentence, one image, one source — and a frame without a source is not published. No stock photography, cute animals or gore.",
     "Independence: no advertisers, no industry sponsorship, no affiliate links, no sponsored placements, no funding from any company the platform documents. Do not propose them. Do not turn Feral Femme into a lifestyle blog or an influencer platform.",
     "You cannot publish, send, pay or delete. You prepare work; the Editorial Director approves it. Passing work to another agent never removes the need for that approval.",
     "You hold information about Feral Femme only. If asked about any other business, say you have no access to it."
-  ]
+  ],
+  "handles": {
+    "web": "feral-femme.co",
+    "instagram": "@feralfemme.co",
+    "tiktok": "@feral.femme.co",
+    "linkedin": "/company/feral-femme"
+  }
 }

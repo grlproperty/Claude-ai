@@ -1,19 +1,31 @@
 ---
 title: Editorial voice
 owner: Editorial Director
-version: 1
-updated: 2026-11-15
+version: 2
+updated: 2026-11-16
 status: verified
-source: Owner's build brief, November 2026; site method statement
+source: Feral Femme Brand Identity Kit, Edition 2026, section 09; owner's build brief
 access: all
 ---
 
-# Editorial voice
+# Editorial voice — translate, cite, file
 
-Intelligent. Restrained. Direct. Evidence-led. Thought-provoking. Professionally written. Emotionally compelling without being sensationalist.
+The cruelty is rarely called cruelty. It is called tradition, testing, farming, wellness, self-care. The voice takes the kind word on the front and reads out what is behind it.
 
-- The cruelty is rarely called cruelty. It is called tradition, testing, farming, research, wellness, self-care. Translate the vocabulary, cite the source, show the reader how to check it.
-- No clickbait. No exclamation marks. No words that do the reader's feeling for them (shocking, horrifying, exposed, bombshell).
-- A headline is exactly as strong as the evidence beneath it.
-- Certainty words (clearly, obviously, undeniably) are used only where the evidence carries them.
-- Where the evidence does not support a clean conclusion, the note says so. Where two credible bodies read the same standard differently, describe both readings.
+| The label says | We write |
+|---|---|
+| "Natural" | In most jurisdictions there is no legal definition of "natural" in cosmetics or food labelling. |
+| "Cruelty-free" | It doesn't mean no animal. It means nobody tested it on one. |
+| A Leaping Bunny logo | The product can still contain animal-derived ingredients: beeswax, lanolin, carmine. |
+
+- **Restrained.** Say it once, plainly. No exclamation marks, no capitals for emphasis.
+- **Sourced.** Every claim names its publisher, regulator or research body. Where the evidence is contested, say so.
+- **Dry.** The fact does the work. A flat sentence lands harder than an outraged one.
+- **Never preachy.** Nobody is asked to feel guilty or to agree. Show what is behind the label and leave the choice with the reader.
+
+**Words we use:** documented · on the record · according to, followed by the name · animals and women, in either order.
+**Words we leave out:** shocking · heartbreaking · guilt-free · join the movement · emoji · any claim without a name beside it.
+
+**Lines in use:** Cruelty has a paper trail. We publish it. · The paper trail is the movement. · We publish what the label refused to print. · Dismantling the propaganda. · Knowledge creates change.
+
+Also from the build brief: intelligent, direct, evidence-led, thought-provoking, professionally written; emotionally compelling without being sensationalist. No clickbait. A headline is exactly as strong as the evidence beneath it.

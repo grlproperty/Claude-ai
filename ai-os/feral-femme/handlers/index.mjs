@@ -3,7 +3,7 @@
  * database, and read the site's own content through a declared read-only mount.
  */
 import { readFileSync, readdirSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
-import { CLASSES, NEEDS_SOURCE, slug, checkSource, classifyClaims, voiceCheck, factCheck, datasetStatus } from './lib.mjs';
+import { CLASSES, NEEDS_SOURCE, slug, checkSource, classifyClaims, voiceCheck, factCheck, datasetStatus, frameCheck } from './lib.mjs';
 
 const today = (ctx) => ctx.clock().toISOString().slice(0, 10);
 const addDays = (d, n) => new Date(new Date(d).getTime() + n * 864e5).toISOString().slice(0, 10);
@@ -86,10 +86,16 @@ export const handlers = {
   },
   async 'visual.brief'(ctx, s) {
     const i = inv(ctx, s);
-    const brief = { investigation: i.id, reference: `Field note "${i.title}" and its sources`, disclosure: ctx.tenant.cfg.disclosure,
-      constraints: ['Conceptual, not documentary: nothing that could be read as a photograph of a real event', 'No likeness of any real person', 'No company logo, product or trade dress', 'Consistent with the archive\'s visual language and the cage motif'],
+    const src = s.input.sources[0]; const cfg = ctx.tenant.cfg;
+    const brief = { investigation: i.id, reference: `Field note "${i.title}" and its sources`, disclosure: cfg.disclosure,
+      figure: ['Fox ears: prosthetic, real fur tones, always worn — never a costume headband', 'The blaze: a white stripe painted from brow to nose', 'Painted muzzle: darkened nose tip and a line to the lip', 'Smudged eye: dark, slept-in shadow — never clean glamour make-up', 'One restraint: a collar, wire, thread or line — a single detail, not a set', 'The stare: direct and unsmiling'],
+      setting_options: ['The studio — a plain ground, one or two figures, one idea', 'The street — protest, crowd, megaphone, hand-painted slogans', 'The scene — the industry itself as a set; one documented case per frame'],
+      direction: 'Hard flash or plain daylight. Real texture: plaster, tile, fur, skin. Portrait 4:5 or 3:4. Crimson enters as an object in the scene, never as a wash over the picture.',
+      constraints: ['Conceptual, not documentary: never presented as a photograph of a real event', 'No likeness of a real, identifiable person', 'No company logo, product or trade dress', 'No stock photography, cute animals or gore', 'Not the retired 2024 look: no caged collage, soft-focus chains or cool desaturated grading. A cage may appear; it is not the whole idea'],
+      archive_frame: { layout: ['Wordmark top left; series or section stamp top right, in Space Mono', 'Headline in Cormorant Garamond; the turn of the sentence sits in a crimson highlight', 'One image: the figure, or an engraving-style drawing of the animal', 'Source and handle at the foot'], sentence: s.input.summary || null, source: { publisher: src.publisher, date: src.date }, handle: cfg.handles.instagram, disclosure: cfg.disclosure },
       concept: null, image_prompt: null, caption: null, status: 'concept to be written by the founder' };
-    const ai = await ctx.llm.run(ctx.registry.get('FF-A045'), `Propose one visual essay concept for the field note "${i.title}" (${i.industry}). Give: a two-sentence concept, an image prompt, and a caption of at most 30 words that explains the idea and does not imply documentation. Respect these constraints:\n- ${brief.constraints.join('\n- ')}`, { schema: { type: 'object', additionalProperties: false, required: ['concept', 'image_prompt', 'caption'], properties: { concept: { type: 'string' }, image_prompt: { type: 'string' }, caption: { type: 'string' } } }, effort: 'medium' });
+    brief.frame_check = frameCheck(brief.archive_frame);
+    const ai = await ctx.llm.run(ctx.registry.get('FF-A045'), `Propose one visual essay concept for the field note "${i.title}" (${i.industry}). Give: a two-sentence concept, an image prompt, and a caption of at most 30 words that explains the idea and does not imply documentation. The recurring figure always has: ${brief.figure.join('; ')}. Direction: ${brief.direction} Respect these constraints:\n- ${brief.constraints.join('\n- ')}`, { schema: { type: 'object', additionalProperties: false, required: ['concept', 'image_prompt', 'caption'], properties: { concept: { type: 'string' }, image_prompt: { type: 'string' }, caption: { type: 'string' } } }, effort: 'medium' });
     if (ai) Object.assign(brief, ai.json, { status: 'concept proposed by Claude — founder to direct' });
     ctx.db.put('visual', { ...brief, state: 'in production' }, ctx.db.nextId('VIS'));
     return brief;
@@ -154,7 +160,11 @@ export const handlers = {
   },
   'product.design'(ctx, s) {
     const b = ctx.tenant.cfg.brand;
-    return { format: 'PDF, A4, print-and-keep', palette: { blush: '#F6DFE2', crimson: b.primary, ink: b.ink, white: b.bg }, typography: { display: 'Bodoni Moda', editorial: 'Cormorant Garamond', ui: 'Jost' }, layout: ['Cover with wordmark and title', 'One section per spread', 'Sources page at the back', 'No advertising, no affiliate links'], sections: s.outline.sections.length };
+    const free = s.input.kind === 'free guide';
+    return { format: 'PDF, A4, print-and-keep', ground: free ? 'Blush #F6DFE2 (free guides sit on blush)' : 'Crimson #8E0B14 cover (paid workbooks sit on crimson); inside pages on blush and white',
+      palette: { blush: '#F6DFE2', crimson: b.primary, ink: b.ink, white: '#FDFCFC', note: 'Roughly 60% blush, 25% crimson, 10% ink, 5% white. Ink is for text and symbols, never a ground. Flat colour: no gradients, no tints of crimson, no new hues.' },
+      typography: { display: 'Bodoni Moda Medium, uppercase — name, section titles, numerals', editorial: 'Cormorant Garamond — headlines, ledes, claims; sentence case', reading: 'Jost Light — body', evidence: 'Space Mono, uppercase — labels, dates, counts, sources, stamps' },
+      layout: ['Same grid, same numeral and same foot as the existing documents', 'Wordmark FERAL FEMME. with its full stop; clear space the height of the capital F', 'Square corners, hairline rules, depth from a hard offset shadow — never a blur', 'A named source beside every claim; sources page at the back', 'No advertising, no affiliate links, no emoji'], sections: s.outline.sections.length };
   },
   'product.qa'(ctx, s) {
     const cat = ctx.tenant.cfg.catalogue; const price = s.input.price; const norm = [...new Set(cat.paid.map((p) => p.price))];

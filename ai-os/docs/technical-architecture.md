@@ -11,7 +11,7 @@ Claude is the reasoning engine. Around it sits a small orchestration layer that 
 | Orchestration | No-code automation platforms (Zapier, Make, n8n); own workflow runner | **Own runner (about 100 lines)** now; a no-code platform optional later for connectors | An approval gate that cannot be bypassed must sit in code the owner controls. A platform is useful as the "hands" for specific connections once the gate exists |
 | Tools and connections | Model Context Protocol connectors; direct APIs | **MCP connectors where an official one exists**, direct API otherwise | Several connectors are already visible in the owner's Claude account. Each is added per business, after testing |
 | Database | SQLite; PostgreSQL; hosted database | **SQLite, one file per business** | No server to run, trivially separate, easy to back up. PostgreSQL when several people write at once or the GRLP Executive OS becomes the system of record |
-| Search | Full-text search; vector database | **SQLite full-text search** | With 14–16 documents per business a vector database adds cost and nothing else. Revisit beyond a few hundred documents |
+| Search | Full-text search; vector database | **SQLite full-text search** | With 16 documents per business a vector database adds cost and nothing else. Revisit beyond a few hundred documents |
 | Dashboard | Next.js or similar; plain HTML | **One HTML file served by Node** | Nothing to build or maintain; themed per business from its own configuration; no third-party requests |
 | Hosting | Office PC; small cloud server; serverless | **Start on one machine; a small server per business when remote access is needed** | See the cost plan |
 | Authentication | None; shared token; single sign-on | **Local-only by default; access token when exposed** | The server refuses to listen on a network address without a token. Single sign-on is the upgrade path when more people use it |
@@ -33,7 +33,7 @@ ai-os/
     cli.mjs          command line         ·   build-registry.mjs
   grlp/              tenant.json · registry/ · knowledge/ · workflows/ · handlers/ · docs/ · data/ (ignored)
   feral-femme/       the same shape, entirely its own
-  tests/             50 tests
+  tests/             51 tests
 ```
 
 ## Separation, and how it is demonstrated

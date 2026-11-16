@@ -30,6 +30,10 @@ Each workflow is a JSON file in `workflows/`. Every step names its responsible a
 | 15 | Social content prepared — **approval (amber)** | Social Media Caption Writer (A061) |
 | 16 | Archive updated | Archive Management Assistant (A063) |
 
+**Visual brief (step 11)** follows the Brand Kit: the recurring figure's six marks, studio / street / scene, the lighting and crop direction, the retired 2024 look excluded, and the archive-frame rule — one sentence, one image, one source. A frame without a named source fails the frame check.
+
+**Voice check (step 9)** enforces the Brand Kit's "words we leave out" (shocking, heartbreaking, guilt-free, join the movement), and rejects exclamation marks, emoji and urgency.
+
 **Evidence classes:** established fact · allegation · finding · opinion · editorial interpretation · unresolved question. The first three need a source. Unresolved questions are printed under "What is not established".
 
 **Without Claude connected**, step 7 assembles a labelled skeleton from the verification sheet rather than writing prose, and the final approval packet says the prose is still to be written. With Claude connected, the writer is given only the confirmed claims and is told to add no fact that is not among them; the fact check then enforces that.
@@ -37,7 +41,7 @@ Each workflow is a JSON file in `workflows/`. Every step names its responsible a
 **Publication.** The approved file goes to the outbox; a person adds it to `content/field-notes/`, sets the date and pushes. The Research Briefing then sends itself after the deploy.
 
 ## Digital product
-Opportunity → demand and source research → outline → content → editorial review → design specification → quality assurance → **approval** → listing → sales tracking.
+Opportunity → demand and source research → outline → content → editorial review → design specification (Brand Kit: free guides on blush, paid workbooks on crimson, four typefaces, square corners, flat colour) → quality assurance → **approval** → listing → sales tracking.
 
 - The name is checked against the live catalogue.
 - The system never suggests a price. With no price, the run stops. A price that differs from the catalogue raises the approval to **red**.

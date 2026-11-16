@@ -17,4 +17,6 @@ The archive's visual essays are AI-generated, directed by the founder, and conce
 - Every visual has a documented source, case reference or editorial explanation.
 - No likeness of a real person, no company logo, no trade dress.
 
-**Standard disclosure line:** "AI-generated conceptual editorial imagery, directed by Ayden Rosemary Brown. Not documentary photography, and not evidence of any specific event."
+**Standard disclosure line:** "Created with AI image generation, directed by Ayden Rosemary Brown. Conceptual editorial work, not documentary photography, and not evidence of any specific event." Say so wherever the images travel.
+
+See also `the-figure-and-the-frame.md` for the imagery direction.

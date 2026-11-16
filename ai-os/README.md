@@ -19,7 +19,7 @@ Two businesses. Two AI workforces. One human in control of each.
 ```bash
 cd ai-os
 npm install
-npm test                      # 50 tests: isolation, approvals, every workflow
+npm test                      # 51 tests: isolation, approvals, every workflow
 
 npm run grlp -- seed-sample   # GRLP only: clearly-labelled SAMPLE records to try it with
 npm run grlp -- serve         # GRLP command centre
@@ -63,7 +63,7 @@ Legend: ✅ done and tested · 🟡 built, waiting on something named · ⬜ not
 - ✅ Both websites analysed; both businesses documented (audits)
 - ✅ Existing software identified, with what is verified and what is to confirm
 - ✅ Two separate architectures, security and access controls
-- ✅ Both knowledge bases (GRLP 16 documents, Feral Femme 14), searchable, with owner, version, provenance and access
+- ✅ Both knowledge bases (GRLP 16 documents, Feral Femme 16, including its 2026 Brand Kit), searchable, with owner, version, provenance and access
 - ✅ Both agent registries, with an instruction file per agent
 
 ### Phase 2 — Central intelligence
@@ -80,7 +80,7 @@ Legend: ✅ done and tested · 🟡 built, waiting on something named · ⬜ not
 - 🟡 Feral Femme: written prose — waiting on the Claude key
 
 ### Phase 4 — Marketing departments
-- ✅ Both marketing teams mapped to agents; brand and voice checkers live
+- ✅ Both marketing teams mapped to agents; brand and voice checkers live, each enforcing that business's own Brand Kit
 - ✅ GRLP listing campaign: description, SEO, captions, layout, schedule
 - 🟡 Daily non-listing content (lifestyle, education, team) — waiting on the Claude key
 - ⬜ Performance reporting from real platform data
@@ -96,7 +96,7 @@ Legend: ✅ done and tested · 🟡 built, waiting on something named · ⬜ not
 - ✅ GRLP targets editable without a rebuild
 
 ### Phase 7 — Testing and deployment
-- ✅ Individual agents · delegation · complete workflows · approval controls · reporting · separation · command-centre API (50 automated tests)
+- ✅ Individual agents · delegation · complete workflows · approval controls · reporting · separation · command-centre API (51 automated tests)
 - ✅ Both command centres exercised in a real browser
 - ⬜ Integration reliability (nothing is connected yet)
 - ⬜ Hosting, access tokens, backups scheduled

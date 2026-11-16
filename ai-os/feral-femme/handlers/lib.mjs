@@ -35,15 +35,18 @@ export function classifyClaims(claims, sources) {
   return { ok: problems.length === 0, problems, table: table.filter((t) => t.text), advisories: table.filter((t) => t.note) };
 }
 
-const SENSATIONAL = ['shocking', 'horrifying', 'horrific', "you won't believe", 'slams', 'slammed', 'destroys', 'exposed', 'bombshell', 'jaw-dropping', 'sickening', 'disgusting', 'outrageous', 'evil', 'monsters', 'the truth about', 'what they don\'t want you to know', 'mind-blowing', 'insane', 'unbelievable', 'nightmare', 'scandalous'];
+const SENSATIONAL = ['shocking', 'horrifying', 'horrific', "you won't believe", 'slams', 'slammed', 'destroys', 'exposed', 'bombshell', 'jaw-dropping', 'sickening', 'disgusting', 'outrageous', 'evil', 'monsters', 'the truth about', 'what they don\'t want you to know', 'mind-blowing', 'insane', 'unbelievable', 'nightmare', 'scandalous', 'heartbreaking', 'guilt-free', 'guilt free', 'join the movement', 'act now', 'hurry', "don't miss", 'last chance'];
+const EMOJI = /[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}]/u;
 export function voiceCheck(text, title = '') {
   const violations = [], warnings = []; const skeleton = /DRAFT SKELETON/.test(text);
   text = text.replace(/^---\n[\s\S]*?\n---\n/, '').replace(/<!--[\s\S]*?-->/g, '');
   const low = `${title}\n${text}`.toLowerCase();
   for (const w of SENSATIONAL) if (new RegExp(`(^|[^a-z])${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^a-z]|$)`).test(low)) violations.push(`Sensational or clickbait wording: "${w}"`);
   if (/!/.test(text) || /!/.test(title)) violations.push('Exclamation mark (the voice is restrained)');
+  if (EMOJI.test(text) || EMOJI.test(title)) violations.push('Emoji (brand kit: none)');
+  if (/\b(should feel|you should be ashamed|shame on|how can you)\b/i.test(text)) warnings.push('Reads as preachy — show what is behind the label and leave the choice with the reader');
   if (/\?$/.test(title.trim()) && /\byou\b/i.test(title)) warnings.push('Headline is a question addressed to the reader — check it is not bait');
-  const caps = (text.match(/\b[A-Z]{6,}\b/g) || []).filter((w) => !['FERAL', 'FEMME', 'SAMPLE'].includes(w)); if (caps.length) warnings.push(`Words in capitals: ${[...new Set(caps)].join(', ')}`);
+  const caps = (text.match(/\b[A-Z]{6,}\b/g) || []).filter((w) => !['FERAL', 'FEMME', 'SAMPLE'].includes(w)); if (caps.length) warnings.push(`Words in capitals: ${[...new Set(caps)].join(', ')} (brand kit: no capitals for emphasis)`);
   if (/\b(clearly|obviously|undeniably|everyone knows|it is a fact that)\b/i.test(text)) warnings.push('Certainty words — make sure the evidence carries them');
   if (skeleton) warnings.push('This is an assembled skeleton, not written prose');
   return { passed: violations.length === 0, violations, warnings };
@@ -66,4 +69,14 @@ export function datasetStatus(d, file, today) {
   const due = new Date(new Date(d.reviewed).getTime() + d.reviewCycleDays * 864e5).toISOString().slice(0, 10);
   const days = Math.floor((new Date(due) - new Date(today)) / 864e5);
   return { file, title: d.title || file, reviewed: d.reviewed, due, days_left: days, status: days < 0 ? 'overdue' : days <= 14 ? 'due soon' : 'current' };
+}
+
+/** Brand kit, "one case per frame": one sentence, one image, one source — and the disclosure travels with it. */
+export function frameCheck(f) {
+  const problems = [];
+  if (!f.sentence) problems.push('no sentence'); else if (f.sentence.split(/(?<=[.?])\s+/).filter(Boolean).length > 2) problems.push('more than one idea — a frame carries a single case');
+  if (!f.source?.publisher) problems.push('no named source — a frame without a source is not published');
+  if (!f.handle) problems.push('no handle at the foot');
+  if (!f.disclosure) problems.push('no AI-imagery disclosure');
+  return { ok: problems.length === 0, problems };
 }

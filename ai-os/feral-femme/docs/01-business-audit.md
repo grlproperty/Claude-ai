@@ -1,6 +1,6 @@
 # Feral Femme — business audit
 
-Audited 15 November 2026 from two sources: the live home page at feral-femme.co, and the site's own repository (content, configuration, scripts). Sub-pages of the live site could not be fetched individually, so anything about them comes from the repository. Each line is **Verified** or **To confirm**.
+Audited 15–16 November 2026 from three sources: the live home page at feral-femme.co, the site's own repository (content, configuration, scripts), and the Brand Identity Kit, Edition 2026. Sub-pages of the live site could not be fetched individually, so anything about them comes from the repository. Each line is **Verified** or **To confirm**.
 
 ## Business model
 | | Basis |
@@ -19,7 +19,7 @@ Audited 15 November 2026 from two sources: the live home page at feral-femme.co,
 | Library of investigations and databases | 42 | Verified |
 | Standing cited authorities | 54 | Verified (repository) |
 | Industries | 10: Beauty, Fashion, Food & Agriculture, Animal Welfare, Women's Rights, Environment, Technology, Consumer Rights, Corporate Accountability, Media & Advertising | Verified |
-| Free tools | Ten named on the live page (label scanner, Spot the Greenwash, Message Builder, Claim Checker, four decoders, Record Checker, Where to Act) | Verified; count To confirm |
+| Free tools | Ten named on the live page (label scanner, Spot the Greenwash, Message Builder, Claim Checker, four decoders, Record Checker, Where to Act) | Verified; the Brand Kit confirms ten |
 | Free guides | The Phrasebook, The Logo Guide, The Ingredient Reader, The Fabric Reader | Verified |
 | Paid documents | The Brand Audit Workbook, The Claims Desk, The Wardrobe & Bathroom Audit, The Complaint Kit — each shown at $30 | Verified |
 
@@ -51,9 +51,11 @@ Readers who want to check claims for themselves: consumers, researchers, journal
 | # | Finding | Why it matters |
 |---|---|---|
 | 1 | The editorial standards page in the repository says reader donations are "the only revenue it takes"; the live site sells four documents. | A platform whose subject is misleading claims should not carry a stale one about its own funding. |
-| 2 | The number of free tools differs by page: ten listed and "Eleven" stated on the live home page; nine in the site configuration; six in the README. | Same reason. |
+| 2 | The Brand Kit says ten free tools. The live home page lists ten but says "Eleven" in one place; the site configuration says nine; the README says six. | Same reason. Correct all three to ten. |
 | 3 | The brief's product names (Claims Compliance Pack, Brand Audit Pack, Conscious Wardrobe, Conscious Home Kit, Re-Wilding Journal, Greenwashing Field Guide) do not match the live catalogue. | The system is told never to invent products; it holds the unmatched names as planned until confirmed. |
 | 4 | The live home page links /about/, /shop/ and /donate/ as hash routes, and the plain addresses returned "not found" to a direct fetch. | Search engines and link previews may not reach those pages. Worth a technical SEO check. |
+| 6 | The Brand Kit sets four typefaces, adding Space Mono for evidence labels. The repository on this branch ships three (Bodoni Moda, Cormorant Garamond, Jost) and its README says "three faces". | Either the live site is ahead of this branch, or Space Mono still needs adding and self-hosting. |
+| 7 | The Brand Kit says "no affiliate revenue" and names readers as the only funders; the kit also shows paid workbooks. Consistent with the live site, not with the repository's standards page (finding 1). | Confirms which wording is current. |
 | 5 | The checkout provider and delivery method for paid documents are not visible. | Needed before sales reporting can be connected. |
 
 ## Opportunities for automation, ranked

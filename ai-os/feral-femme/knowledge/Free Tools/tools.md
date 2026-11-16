@@ -1,9 +1,9 @@
 ---
 title: Free tools
 owner: Editorial Director
-version: 1
-updated: 2026-11-15
-status: to-confirm
+version: 2
+updated: 2026-11-16
+status: verified
 source: feral-femme.co home page, read 15 November 2026; site repository README
 access: all
 ---
@@ -25,4 +25,4 @@ All free: no account, no sign-up, no payment. The label scanner states that noth
 | Record Checker | 21 documented findings, each with a named source |
 | Where to Act | 10 organisations, filterable by subject |
 
-**To confirm:** the live home page lists ten tools but also says "Eleven free tools"; `content/site.json` says nine; the repository README says six. The counts should be reconciled.
+**Count:** ten, as the 2026 Brand Kit states ("ten free tools and four free guides"). The live home page also says "Eleven free tools" in one place, `content/site.json` says nine and the repository README says six — those three should be corrected to ten.
